@@ -1,0 +1,29 @@
+services:
+  frontend:
+    build: ./apps/srcs/frontend
+    container_name: frontend
+    ports:
+        - 1234:1234
+    networks:
+        - ttts_network
+    restart: always
+
+  backend:
+    build: ./apps/srcs/backend
+    container_name: backend
+    ports:
+        - 4321:4321
+    networks:
+        - ttts_network
+    restart: always
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+        - 8080:80
+    networks:
+        - ttts_network
+
+networks:
+    ttts_network:
