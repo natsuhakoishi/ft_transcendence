@@ -25,3 +25,5 @@ fclean:
 	sudo docker network rm $(shell sudo docker network ls -q) 2>/dev/null || true
 
 re: down fclean up
+
+# npx ts-node /home/natsuhakoishi/42cp/wip/ft_klbq/app/srcs/backend/database/create_table.ts
