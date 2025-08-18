@@ -1,6 +1,6 @@
 import { execSQLite } from "./utils.ts";
 
-export async function create_table()
+export async function createTable()
 {
 	// --- USERS TABLE ---
 	await execSQLite(`
@@ -37,7 +37,6 @@ export async function create_table()
 			player1_score INTEGER NOT NULL,
 			player2_score INTEGER NOT NULL,
 			winner_id INTEGER,
-			draw_flag BOOLEAN DEFAULT FALSE,
 			tournament_flag BOOLEAN DEFAULT FALSE,
 			game_time TEXT DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (player1_id) REFERENCES users(id) ON DELETE CASCADE,

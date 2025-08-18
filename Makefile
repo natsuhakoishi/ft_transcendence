@@ -17,6 +17,9 @@ ps:
 clean:
 	sudo docker system prune
 
+dbclean:
+	rm -rf ./database/*
+
 fclean:
 	sudo docker stop $(shell sudo docker ps -qa) 2>/dev/null || true
 	sudo docker rm $(shell sudo docker ps -qa) 2>/dev/null || true
@@ -26,4 +29,4 @@ fclean:
 
 re: down fclean up
 
-# npx ts-node /home/natsuhakoishi/42cp/wip/ft_klbq/app/srcs/backend/database/create_table.ts
+# npx ts-node /home/natsuhakoishi/42cp/wip/ft_klbq/app/srcs/backend/database/main.ts

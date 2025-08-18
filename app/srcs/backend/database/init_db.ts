@@ -1,7 +1,7 @@
-import { create_table } from "./create_table.ts";
+import { createTable } from "./tables.ts";
 
 export async function initDB()
 {
-	await create_table();
+	await createTable();
 	console.log("Table create function called.");
 }

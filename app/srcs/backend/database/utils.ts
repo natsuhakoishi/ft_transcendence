@@ -25,6 +25,18 @@ export function execSQLite(sql:string): Promise<void>
 	});
 }
 
+export function getSQLite(sql:string, params: any[] = []): Promise<any>
+{
+	return new Promise((resolve, reject) => {
+		db.get(sql, params, (error, row) => {
+			if (error)
+				reject(error);
+			else
+				resolve(row);
+		});
+	});
+}
+
 export function runSQLite(sql:string, ...params: any[]): Promise<void>
 {
 	return new Promise((resolve, reject) => {
@@ -37,7 +49,7 @@ export function runSQLite(sql:string, ...params: any[]): Promise<void>
 	});
 }
 
-export function allSQLite(sql: string, ...params: any[]): Promise<any[]>
+export function allSQLite(sql: string, params: any[] = []): Promise<any[]>
 {
 	return new Promise((resolve, reject) => {
 		db.all(sql, params, (error, rows) => {
