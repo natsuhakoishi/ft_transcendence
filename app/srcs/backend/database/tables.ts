@@ -18,12 +18,14 @@ export async function createTable()
 	await execSQLite(`
 		CREATE TABLE IF NOT EXISTS profiles (
 			id INTEGER PRIMARY KEY,
+			username TEXT UNIQUE NOT NULL,
 			avatar_path TEXT,
 			login_status BOOLEAN DEFAULT FALSE,
 			win_games INTEGER DEFAULT 0,
 			lose_games INTEGER DEFAULT 0,
 			tournament_wins INTEGER DEFAULT 0,
-			FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
+			FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
 		);
 	`);
 
