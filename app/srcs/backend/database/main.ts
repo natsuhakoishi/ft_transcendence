@@ -3,6 +3,7 @@ import { createUser, getUserAll } from "./users.ts";
 import { createMatch, getMatchAll, getMatchByUserId } from "./matches.ts";
 import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournaments.ts";
 import { addWinLose, createProfile, getProfilesAll } from "./profiles.ts";
+import { addFriendbyId, checkFriendMutual, getFriendshipsAll, getFriendshipsById } from "./friendships.ts";
 
 async function main()
 {
@@ -116,6 +117,30 @@ async function main()
 	catch (error)
 	{
 		console.log("Profile error: ", error);
+	}
+
+	try {
+		await addFriendbyId(1, 2);
+		const checkMutual = await checkFriendMutual(1, 2);
+		console.log("Mutual Status: ", checkMutual);
+
+		await addFriendbyId(2, 1);
+		const checkMutual2 = await checkFriendMutual(1, 2);
+		console.log("Mutual Status: ", checkMutual2);
+
+		await addFriendbyId(1, 3);
+		await addFriendbyId(1, 4);
+		await addFriendbyId(3, 4);
+
+		const fsh = await getFriendshipsAll();
+		console.log("Friendships Table: ", fsh);
+
+		const fsh2 = await getFriendshipsById(1);
+		console.log("User 1 friendships Table: ", fsh2);
+	}
+	catch (error)
+	{
+		console.log("Friendships error: ", error);
 	}
 }
 

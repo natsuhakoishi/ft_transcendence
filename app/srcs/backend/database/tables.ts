@@ -91,7 +91,8 @@ export async function createTable()
 			friend_id INTEGER NOT NULL,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			FOREIGN KEY (friend_id) REFERENCES users(id) ON DELETE CASCADE,
-			CHECK (user_id != friend_id)
+			CHECK (user_id != friend_id),
+			UNIQUE (user_id, friend_id)
 		);
 	`);
 

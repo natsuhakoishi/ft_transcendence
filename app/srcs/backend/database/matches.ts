@@ -40,7 +40,6 @@ export async function getMatchByUserId(user_id: number)
 		JOIN users AS user2 ON matches.player2_id = user2.id
 		WHERE matches.player1_id = ? OR matches.player2_id = ?
 		ORDER BY matches.game_time DESC`,
-		[user_id,
-		user_id]
+		[user_id, user_id]
 	);
 }
