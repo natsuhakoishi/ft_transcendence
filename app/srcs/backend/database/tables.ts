@@ -1,5 +1,11 @@
 import { execSQLite } from "./utils.ts";
 
+export async function initDB()
+{
+	await createTable();
+	console.log("Table create function called.");
+}
+
 export async function createTable()
 {
 	// --- USERS TABLE ---

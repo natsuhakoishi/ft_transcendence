@@ -15,7 +15,7 @@ export async function getUserByEmail(email: string)
 	return await getSQLite(`SELECT * FROM users WHERE email = ?`, [email]);
 }
 
-export async function getUserById(id: string)
+export async function getUserById(id: number)
 {
 	return await getSQLite(`SELECT * FROM users WHERE id = ?`, [id]);
 }

@@ -1,6 +1,6 @@
-import { initDB } from "./init_db.ts";
+import { initDB } from "./tables.ts";
 import { createUser, getUserAll } from "./users.ts";
-import { createMatch, getMatchAll, getMatchByUserId } from "./matches.ts";
+import { createMatch, getMatchAll } from "./matches.ts";
 import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournaments.ts";
 import { addWinLose, createProfile, getProfilesAll } from "./profiles.ts";
 import { addFriendbyId, checkFriendMutual, getFriendshipsAll, getFriendshipsById } from "./friendships.ts";
