@@ -7,16 +7,6 @@ const userApi: FastifyPluginAsync = async (fastify) => {
 		const user = await getUserById(Number(id));
 		return user ?? { error: "User not exist" };
 	});
-
-	fastify.post('/', async (req, res) => {
-		const { username, email, password } = req.body as {
-			username: string;
-			email: string;
-			password: string;
-		};
-		await createUser(username, email, password);
-		return { success: true };
-	});
 };
 
 export default userApi;
