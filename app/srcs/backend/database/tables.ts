@@ -25,7 +25,7 @@ export async function createTable()
 		CREATE TABLE IF NOT EXISTS profiles (
 			id INTEGER PRIMARY KEY,
 			username TEXT UNIQUE NOT NULL,
-			avatar_path TEXT,
+			avatar_path TEXT DEFAULT 'default.webp',
 			login_status BOOLEAN DEFAULT FALSE,
 			win_games INTEGER DEFAULT 0,
 			lose_games INTEGER DEFAULT 0,

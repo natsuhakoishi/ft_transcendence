@@ -1,9 +1,9 @@
 import { initDB } from "./tables.ts";
-import { createUser, getUserAll } from "./users.ts";
-import { createMatch, getMatchAll } from "./matches.ts";
-import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournaments.ts";
-import { addWinLose, createProfile, getProfilesAll } from "./profiles.ts";
-import { addFriendbyId, checkFriendMutual, getFriendshipsAll, getFriendshipsById } from "./friendships.ts";
+import { createUser, getUserAll } from "./user.ts";
+import { createMatch, getMatchAll } from "./match.ts";
+import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournament.ts";
+import { addWinLose, createProfile, getProfilesAll } from "./profile.ts";
+import { addFriendbyId, checkFriendMutual, getFriendshipsAll, getFriendshipsById } from "./friendship.ts";
 
 async function main()
 {

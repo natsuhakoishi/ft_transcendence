@@ -1,8 +1,8 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { loginSchema, registerSchema } from './auth-helper/schema.ts';
-import { createUser, getUserByEmail, getUserByUsername } from '../../database/users.ts';
+import { createUser, getUserByEmail, getUserByUsername } from '../../database/user.ts';
 import { verifyPassword, hashPassword } from './auth-helper/pwHash.ts';
-import { createProfile, setLoginStatus } from '../../database/profiles.ts';
+import { createProfile, setLoginStatus } from '../../database/profile.ts';
 
 const authApi: FastifyPluginAsync = async (fastify: any) => {
 	// register

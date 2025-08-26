@@ -3,7 +3,7 @@ import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
 
 import { initDB } from './database/tables.ts';
-import userApi from './routes/api/users-api.ts';
+import userApi from './routes/api/user-api.ts';
 import authApi from './routes/api/auth-api.ts';
 
 dotenv.config();
@@ -24,7 +24,7 @@ async function initServer()
 	await initDB();
 
 	await fastify.register(jwt, { secret: JWT_SECRET });
-	await fastify.register(userApi, { prefix: '/api/users' });
+	await fastify.register(userApi, { prefix: '/api/user' });
 	await fastify.register(authApi, { prefix: '/api/auth' });
 	return fastify;
 }

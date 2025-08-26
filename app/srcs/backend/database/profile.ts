@@ -1,4 +1,4 @@
-import { getUserByUsername } from "./users.ts"
+import { getUserByUsername } from "./user.ts"
 import { allSQLite, getSQLite, runSQLite } from "./utils.ts";
 
 export async function createProfile(username: string)
