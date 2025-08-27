@@ -1,13 +1,13 @@
 import type { FastifyPluginAsync } from 'fastify';
-import { createUser, getUserById } from "../../database/user.ts";
+import { getUserById } from "../../database/user.ts";
 
 const userApi: FastifyPluginAsync = async (fastify) => {
 	fastify.get('/me', async (req, res) => {
-		const verify = await req.jwtVerify() as any;
-		if (!verify)
+		const jwt = await req.jwtVerify() as any;
+		if (!jwt)
 			return res.status(403).send({ message: 'Permission Denied' });
 
-		const user = await getUserById(verify.id);
+		const user = await getUserById(jwt.id);
 		if (!user)
 			return res.status(404).send({ message: 'User not found' });
 

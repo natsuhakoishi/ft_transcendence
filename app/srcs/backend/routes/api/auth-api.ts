@@ -17,16 +17,15 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 
 		await createUser(username, email, hashed_pw);
 		await createProfile(username);
-
 		res.send({ message: `User ${username} created successfully!` });
 	});
 
 	// login
 	fastify.post('/login', { schema: loginSchema }, async (req: any, res: any) => {
-		const { username, password } = req.body as any;
-		const user = await getUserByUsername(username);
+		const { email, password } = req.body as any;
+		const user = await getUserByEmail(email);
 		if (!user || !(await verifyPassword(password, user.password)))
-			return res.status(401).send({ message: 'Invalid username or password' });
+			return res.status(401).send({ message: 'Invalid email or password' });
 		await setLoginStatus(user.id, true);
 
 		const token = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });

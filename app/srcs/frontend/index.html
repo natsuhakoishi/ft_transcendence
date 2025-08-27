@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ft_klbq Auth & Profile Test</title>
+  <style>
+    #avatar-preview {
+      display: block;
+      margin-top: 10px;
+      max-width: 150px;
+      max-height: 150px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button { margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h1>ft_klbq Authentication & Profile</h1>
+
+  <h2>Register</h2>
+  <form id="register-form">
+    <input type="text" id="reg-username" placeholder="Username" required />
+    <input type="email" id="reg-email" placeholder="Email" required />
+    <input type="password" id="reg-password" placeholder="Password" required />
+    <button type="submit">Register</button>
+  </form>
+
+  <h2>Login</h2>
+  <form id="login-form">
+    <input type="email" id="login-email" placeholder="Email" required />
+    <input type="password" id="login-password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+
+  <h2>Logout</h2>
+  <button id="logout-btn">Logout</button>
+
+  <h2>Avatar Management</h2>
+  <form id="upload-form">
+    <input type="file" id="avatar-file" accept="image/*" />
+    <button type="submit">Upload Avatar</button>
+  </form>
+  <button id="delete-avatar-btn">Delete Avatar</button>
+  <img id="avatar-preview" src="http://localhost:4242/avatars/default.webp" alt="Avatar Preview" />
+
+  <h2>👤 User Info</h2>
+  <pre id="user-info">Not logged in.</pre>
+
+  <h2>🔧 System Messages</h2>
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+    const userInfo = document.getElementById("user-info");
+    const avatarPreview = document.getElementById("avatar-preview");
+
+    function showMessage(msg) {
+      output.textContent = msg;
+    }
+
+    function showUser(userData) {
+      if (typeof userData === "string") {
+        userInfo.textContent = userData;
+      } else {
+        userInfo.textContent = JSON.stringify(userData, null, 2);
+        const avatarPath = userData.profile?.avatar_path || 'default.webp';
+        avatarPreview.src = `http://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
+      }
+    }
+
+    function getToken() {
+      return localStorage.getItem("token");
+    }
+
+    async function fetchProfile() {
+      const token = getToken();
+      if (!token) {
+        showUser("⚠️ Not logged in.");
+        return;
+      }
+      try {
+        const res = await fetch("http://localhost:4242/api/profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: "{}"
+        });
+        const data = await res.json();
+        if (res.ok) showUser(data);
+        else showUser("❌ " + data.message);
+      } catch {
+        showUser("❌ Failed to fetch profile.");
+      }
+    }
+
+    // Register
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("reg-username").value;
+      const email = document.getElementById("reg-email").value;
+      const password = document.getElementById("reg-password").value;
+
+      try {
+        const res = await fetch("http://localhost:4242/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+        showMessage(res.ok ? "✅ Registered: " + data.message : "❌ " + data.message);
+      } catch {
+        showMessage("❌ Registration failed.");
+      }
+    });
+
+    // Login
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      try {
+        const res = await fetch("http://localhost:4242/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+          showMessage("✅ Login successful! Token saved.");
+          await fetchProfile();
+        } else {
+          showMessage("❌ " + data.message);
+        }
+      } catch {
+        showMessage("❌ Login failed.");
+      }
+    });
+
+    // Logout
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      const token = getToken();
+      if (!token) return showMessage("⚠️ Not logged in.");
+
+      try {
+        const res = await fetch("http://localhost:4242/api/logout", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.removeItem("token");
+          showMessage("✅ Logged out successfully.");
+          showUser("Not logged in.");
+        } else {
+          showMessage("❌ " + data.message);
+        }
+      } catch {
+        showMessage("❌ Logout failed.");
+      }
+    });
+
+    // Local preview for avatar
+    document.getElementById("avatar-file").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => avatarPreview.src = event.target.result;
+      reader.readAsDataURL(file);
+    });
+
+    // Upload Avatar
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const token = getToken();
+      if (!token) return showMessage("⚠️ Please login first.");
+
+      const fileInput = document.getElementById("avatar-file");
+      if (!fileInput.files.length) return showMessage("⚠️ Please select a file.");
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      try {
+        const res = await fetch("http://localhost:4242/api/upload_avatar", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage("✅ Avatar uploaded.");
+          await fetchProfile();
+        } else {
+          showMessage("❌ " + data.message);
+        }
+      } catch {
+        showMessage("❌ Avatar upload failed.");
+      }
+    });
+
+    // Delete Avatar
+    document.getElementById("delete-avatar-btn").addEventListener("click", async () => {
+      const token = getToken();
+      if (!token) return showMessage("⚠️ Please login first.");
+
+      try {
+        const res = await fetch("http://localhost:4242/api/delete_avatar", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage("✅ Avatar deleted.");
+          avatarPreview.src = `http://localhost:4242/avatars/default.webp?t=${Date.now()}`;
+          await fetchProfile();
+        } else {
+          showMessage("❌ " + data.message);
+        }
+      } catch {
+        showMessage("❌ Avatar deletion failed.");
+      }
+    });
+
+    // Auto fetch profile on load if logged in
+    window.addEventListener("DOMContentLoaded", fetchProfile);
+  </script>
+</body>
+</html>
