@@ -11,7 +11,7 @@ import { initDB } from './database/tables.ts';
 import userApi from './routes/api/user-api.ts';
 import authApi from './routes/api/auth-api.ts';
 import profileApi from './routes/api/profile-api.ts';
-import { Server } from 'http';
+import friendshipApi from './routes/api/friendship-api.ts';
 
 dotenv.config();
 
@@ -49,6 +49,7 @@ async function initServer()
 	await fastify.register(userApi, { prefix: '/api' });
 	await fastify.register(authApi, { prefix: '/api' });
 	await fastify.register(profileApi, { prefix: '/api' });
+	await fastify.register(friendshipApi, { prefix: '/api' });
 	return fastify;
 }
 

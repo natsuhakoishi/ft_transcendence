@@ -21,6 +21,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			res.send({
 				user:
 				{
+					user_id: user.id,
 					username: user.username,
 					email: user.email,
 					created_at: user.created_at
@@ -39,7 +40,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		}
 		catch (error)
 		{
-			res.status(401).send({ message: 'Invalid or Expired token' });
+			res.status(401).send({ message: 'Invalid / Expired token' });
 		}
 	});
 

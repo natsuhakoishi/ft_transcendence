@@ -11,6 +11,20 @@ export async function addFriendbyId(user_id: number, friend_id: number)
 	);
 }
 
+export async function deleteFriendbyId(user_id: number, friend_id: number)
+{
+	if (user_id === friend_id)
+		throw new Error("Error: User unable to delete themself");
+
+	const res = await runSQLite(`
+		DELETE FROM friendships WHERE user_id = ? AND friend_id = ?`,
+		user_id, friend_id
+	);
+
+	if (!res.changes || res.changes === 0)
+		throw new Error("Error: Friendship doesn't exist");
+}
+
 export async function checkFriendMutual(user1_id: number, user2_id: number)
 {
 	const rows = await allSQLite(`

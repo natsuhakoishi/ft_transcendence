@@ -13,6 +13,12 @@
       border: 1px solid #ccc;
     }
     button { margin-top: 5px; }
+    .friend {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px;
+      margin: 4px 0;
+    }
   </style>
 </head>
 <body>
@@ -47,6 +53,21 @@
   <h2>👤 User Info</h2>
   <pre id="user-info">Not logged in.</pre>
 
+  <!-- 好友管理 -->
+  <h2>👥 Friends</h2>
+  <div>
+    <form id="add-friend-form">
+      <input type="number" id="add-friend-id" placeholder="Friend ID to add" required />
+      <button type="submit">➕ Add Friend</button>
+    </form>
+  </div>
+  <button id="refresh-friends-btn">🔄 Refresh Friends</button>
+  <div id="friends-list">No friends yet.</div>
+
+  <!-- 顯示好友的詳細資料 -->
+  <h2>👥 Friend Profile</h2>
+  <pre id="friend-profile">Click a friend to see profile.</pre>
+
   <h2>🔧 System Messages</h2>
   <pre id="output"></pre>
 
@@ -54,6 +75,8 @@
     const output = document.getElementById("output");
     const userInfo = document.getElementById("user-info");
     const avatarPreview = document.getElementById("avatar-preview");
+    const friendsList = document.getElementById("friends-list");
+    const friendProfile = document.getElementById("friend-profile");
 
     function showMessage(msg) {
       output.textContent = msg;
@@ -67,6 +90,10 @@
         const avatarPath = userData.profile?.avatar_path || 'default.webp';
         avatarPreview.src = `http://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
       }
+    }
+
+    function showFriendProfile(friendData) {
+      friendProfile.textContent = JSON.stringify(friendData, null, 2);
     }
 
     function getToken() {
@@ -96,6 +123,110 @@
       }
     }
 
+    // 取得好友列表
+    async function fetchFriends() {
+      const token = getToken();
+      if (!token) {
+        friendsList.textContent = "⚠️ Not logged in.";
+        return;
+      }
+      try {
+        const res = await fetch("http://localhost:4242/api/my_friends", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: "{}"
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          friendsList.textContent = "❌ " + data.message;
+          return;
+        }
+
+        if (!data.friends || data.friends.length === 0) {
+          friendsList.textContent = "No friends yet.";
+          return;
+        }
+
+        friendsList.innerHTML = "";
+        data.friends.forEach(f => {
+          const div = document.createElement("div");
+          div.className = "friend";
+          div.innerHTML = `
+            <strong>${f.friend_profiles.friend_username}</strong>
+            (ID: ${f.friend_profiles.friend_id})
+            <br> Mutual: ${f.friend_mutual.mutual ? "✅ Yes" : "❌ No"}
+            <br>
+            <button data-id="${f.friend_profiles.friend_id}" class="view-btn">👁 View Profile</button>
+            <button data-id="${f.friend_profiles.friend_id}" class="delete-btn">❌ Delete</button>
+          `;
+          div.querySelector(".view-btn").addEventListener("click", () => showFriendProfile(f.friend_profiles));
+          div.querySelector(".delete-btn").addEventListener("click", () => deleteFriend(f.friend_profiles.friend_id));
+          friendsList.appendChild(div);
+        });
+      } catch {
+        friendsList.textContent = "❌ Failed to fetch friends.";
+      }
+    }
+
+    // 加好友
+    document.getElementById("add-friend-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const token = getToken();
+      if (!token) return showMessage("⚠️ Please login first.");
+      const friendId = document.getElementById("add-friend-id").value;
+      try {
+        const res = await fetch("http://localhost:4242/api/add_friend", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ friend_adding: Number(friendId) })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage("✅ Friend added.");
+          fetchFriends();
+        } else {
+          showMessage("❌ " + data.message);
+        }
+      } catch {
+        showMessage("❌ Failed to add friend.");
+      }
+    });
+
+    // 刪好友
+    async function deleteFriend(friendId) {
+      const token = getToken();
+      if (!token) return showMessage("⚠️ Please login first.");
+      try {
+        const res = await fetch("http://localhost:4242/api/delete_friend", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ friend_deleting: Number(friendId) })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage("✅ Friend deleted.");
+          fetchFriends();
+        } else {
+          showMessage("❌ " + data.message);
+        }
+      } catch {
+        showMessage("❌ Failed to delete friend.");
+      }
+    }
+
+    // 手動刷新好友
+    document.getElementById("refresh-friends-btn").addEventListener("click", fetchFriends);
+
+    // --- 下面是原本的註冊/登入/登出/頭像管理程式碼 ---
     // Register
     document.getElementById("register-form").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -133,6 +264,7 @@
           localStorage.setItem("token", data.token);
           showMessage("✅ Login successful! Token saved.");
           await fetchProfile();
+          await fetchFriends();
         } else {
           showMessage("❌ " + data.message);
         }
@@ -156,6 +288,8 @@
           localStorage.removeItem("token");
           showMessage("✅ Logged out successfully.");
           showUser("Not logged in.");
+          friendsList.textContent = "No friends yet.";
+          friendProfile.textContent = "Click a friend to see profile.";
         } else {
           showMessage("❌ " + data.message);
         }
@@ -226,8 +360,11 @@
       }
     });
 
-    // Auto fetch profile on load if logged in
-    window.addEventListener("DOMContentLoaded", fetchProfile);
+    // Auto fetch profile & friends on load if logged in
+    window.addEventListener("DOMContentLoaded", async () => {
+      await fetchProfile();
+      await fetchFriends();
+    });
   </script>
 </body>
 </html>

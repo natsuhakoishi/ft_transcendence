@@ -39,14 +39,14 @@ export function getSQLite(sql:string, params: any[] = []): Promise<any>
 	});
 }
 
-export function runSQLite(sql:string, ...params: any[]): Promise<void>
+export function runSQLite(sql:string, ...params: any[]): Promise<{ changes: number, lastID: number }>
 {
 	return new Promise((resolve, reject) => {
-		db.run(sql, params, (error) => {
+		db.run(sql, params, function (error) {
 			if (error)
 				reject(error);
 			else
-				resolve();
+				resolve({ changes: this.changes, lastID: this.lastID });
 		});
 	});
 }
