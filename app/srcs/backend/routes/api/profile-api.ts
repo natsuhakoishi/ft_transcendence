@@ -4,8 +4,9 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import type { FastifyPluginAsync } from "fastify";
-import { getUserById } from "../../database/user.ts";
+import { checkUsernameExist, getUserById, updatePasswordById, updateUsernameById } from "../../database/user.ts";
 import { getProfileById, setAvatarPath } from "../../database/profile.ts";
+import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
 
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
@@ -40,7 +41,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		}
 		catch (error)
 		{
-			res.status(401).send({ message: 'Invalid / Expired token' });
+			res.status(401).send({ message: 'Invalid / Expired token to show profile' });
 		}
 	});
 
@@ -103,6 +104,41 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			res.status(401).send({ message: 'Error caused when deleting avatar' });
 		}
 	});
-}
+
+	fastify.post('/update_username', async (req: any, res: any) => {
+		const jwt = await req.jwtVerify();
+		const user_id = jwt.id;
+		const new_username = req.body.username;
+		const flag_checkname = await checkUsernameExist(new_username);
+
+		if (flag_checkname)
+			return res.status(400).send({ message: 'Username already taken' });
+		await updateUsernameById(user_id, new_username);
+		res.send({ message: 'Username changed successfully' });
+	});
+
+	fastify.post('/update_password', async (req: any, res: any) => {
+		try
+		{
+			const jwt = await req.jwtVerify();
+			const user_id = jwt.id;
+			const user = await getUserById(jwt.id);
+			const { old_password, new_password } = req.body;
+
+			const checked = await verifyPassword(old_password, user.password);
+			if (!checked)
+				return res.code(400).send({ message: "Invalid old password" });
+
+			const hashed_pw = await hashPassword(new_password);
+			await updatePasswordById(user_id, hashed_pw);
+
+			res.send({ message: 'Password changed successfully' });
+		}
+		catch (error)
+		{
+			res.status(401).send({ message: 'Error caused when update password' });
+		}
+	});
+};
 
 export default profileApi;

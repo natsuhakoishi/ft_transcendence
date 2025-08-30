@@ -19,11 +19,15 @@
       padding: 8px;
       margin: 4px 0;
     }
+    #output { white-space: pre-wrap; }
+    .error { color: red; }
+    .success { color: green; }
   </style>
 </head>
 <body>
   <h1>ft_klbq Authentication & Profile</h1>
 
+  <!-- 註冊 -->
   <h2>Register</h2>
   <form id="register-form">
     <input type="text" id="reg-username" placeholder="Username" required />
@@ -32,6 +36,7 @@
     <button type="submit">Register</button>
   </form>
 
+  <!-- 登入 -->
   <h2>Login</h2>
   <form id="login-form">
     <input type="email" id="login-email" placeholder="Email" required />
@@ -39,9 +44,11 @@
     <button type="submit">Login</button>
   </form>
 
+  <!-- 登出 -->
   <h2>Logout</h2>
   <button id="logout-btn">Logout</button>
 
+  <!-- 頭像管理 -->
   <h2>Avatar Management</h2>
   <form id="upload-form">
     <input type="file" id="avatar-file" accept="image/*" />
@@ -50,26 +57,60 @@
   <button id="delete-avatar-btn">Delete Avatar</button>
   <img id="avatar-preview" src="http://localhost:4242/avatars/default.webp" alt="Avatar Preview" />
 
+  <!-- 使用者資料 -->
   <h2>👤 User Info</h2>
   <pre id="user-info">Not logged in.</pre>
 
   <!-- 好友管理 -->
   <h2>👥 Friends</h2>
-  <div>
-    <form id="add-friend-form">
-      <input type="number" id="add-friend-id" placeholder="Friend ID to add" required />
-      <button type="submit">➕ Add Friend</button>
-    </form>
-  </div>
+  <form id="add-friend-form">
+    <input type="number" id="add-friend-id" placeholder="Friend ID to add" required />
+    <button type="submit">➕ Add Friend</button>
+  </form>
   <button id="refresh-friends-btn">🔄 Refresh Friends</button>
   <div id="friends-list">No friends yet.</div>
 
-  <!-- 顯示好友的詳細資料 -->
   <h2>👥 Friend Profile</h2>
   <pre id="friend-profile">Click a friend to see profile.</pre>
 
+  <!-- 修改使用者名稱 -->
+  <h2>✏️ Update Username</h2>
+  <form id="update-username-form">
+    <input type="text" id="new-username" placeholder="New Username" required />
+    <button type="submit">Update Username</button>
+  </form>
+
+  <!-- 修改密碼 -->
+  <h2>🔑 Update Password</h2>
+  <form id="update-password-form">
+    <input type="password" id="old-password" placeholder="Old Password" required />
+    <input type="password" id="new-password" placeholder="New Password" required />
+    <button type="submit">Update Password</button>
+  </form>
+
+    <!-- Match 測試 -->
+  <h2>🎮 Match Test</h2>
+
+  <!-- 建立比賽 -->
+  <form id="create-match-form">
+    <input type="number" id="player1-id" placeholder="Player1 ID" required />
+    <input type="number" id="player2-id" placeholder="Player2 ID" required />
+    <input type="number" id="player1-score" placeholder="Player1 Score" required />
+    <input type="number" id="player2-score" placeholder="Player2 Score" required />
+    <label>
+      <input type="checkbox" id="tournament-flag" /> Tournament Match
+    </label>
+    <button type="submit">➕ Create Match</button>
+  </form>
+
+  <!-- 查詢自己對局 -->
+  <button id="my-matches-btn">📜 Get My Matches</button>
+  <pre id="my-matches">No matches yet.</pre>
+
+
+  <!-- 系統訊息 -->
   <h2>🔧 System Messages</h2>
-  <pre id="output"></pre>
+  <div id="output"></div>
 
   <script>
     const output = document.getElementById("output");
@@ -78,293 +119,187 @@
     const friendsList = document.getElementById("friends-list");
     const friendProfile = document.getElementById("friend-profile");
 
-    function showMessage(msg) {
-      output.textContent = msg;
+    // ==== 工具函式 ====
+    function log(msg, isError=false) {
+      output.innerHTML = `<span class="${isError ? 'error':'success'}">${msg}</span>`;
     }
-
+    function getToken() { return localStorage.getItem("token"); }
     function showUser(userData) {
-      if (typeof userData === "string") {
-        userInfo.textContent = userData;
-      } else {
-        userInfo.textContent = JSON.stringify(userData, null, 2);
-        const avatarPath = userData.profile?.avatar_path || 'default.webp';
-        avatarPreview.src = `http://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
+      if (!userData || typeof userData === "string") {
+        userInfo.textContent = userData || "Not logged in.";
+        return;
       }
+      userInfo.textContent = JSON.stringify(userData, null, 2);
+      const avatarPath = userData.profile?.avatar_path || 'default.webp';
+      avatarPreview.src = `http://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
     }
 
-    function showFriendProfile(friendData) {
-      friendProfile.textContent = JSON.stringify(friendData, null, 2);
+    async function apiFetch(endpoint, options={}) {
+      const token = getToken();
+      const headers = options.headers || {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      if (!(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+      }
+      return fetch(`http://localhost:4242/api/${endpoint}`, { ...options, headers });
     }
 
-    function getToken() {
-      return localStorage.getItem("token");
-    }
-
+    // ==== Profile ====
     async function fetchProfile() {
-      const token = getToken();
-      if (!token) {
-        showUser("⚠️ Not logged in.");
-        return;
-      }
-      try {
-        const res = await fetch("http://localhost:4242/api/profile", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: "{}"
-        });
-        const data = await res.json();
-        if (res.ok) showUser(data);
-        else showUser("❌ " + data.message);
-      } catch {
-        showUser("❌ Failed to fetch profile.");
-      }
+      const res = await apiFetch("profile", { method: "POST", body: "{}" });
+      const data = await res.json();
+      showUser(res.ok ? data : "❌ " + data.message);
     }
 
-    // 取得好友列表
+    // ==== Friends ====
     async function fetchFriends() {
-      const token = getToken();
-      if (!token) {
-        friendsList.textContent = "⚠️ Not logged in.";
-        return;
-      }
-      try {
-        const res = await fetch("http://localhost:4242/api/my_friends", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: "{}"
+      const res = await apiFetch("my_friends", { method: "POST", body: "{}" });
+      const data = await res.json();
+      if (!res.ok) return friendsList.textContent = "❌ " + data.message;
+      if (!data.friends || data.friends.length === 0) return friendsList.textContent = "No friends yet.";
+      friendsList.innerHTML = "";
+      data.friends.forEach(f => {
+        const div = document.createElement("div");
+        div.className = "friend";
+        div.innerHTML = `
+          <strong>${f.friend_profiles.friend_username}</strong>
+          (ID: ${f.friend_profiles.friend_id})
+          <br> Mutual: ${f.friend_mutual.mutual ? "✅ Yes" : "❌ No"}
+          <br>
+          <button data-id="${f.friend_profiles.friend_id}" class="view-btn">👁 View</button>
+          <button data-id="${f.friend_profiles.friend_id}" class="delete-btn">❌ Delete</button>
+        `;
+        div.querySelector(".view-btn").addEventListener("click", () => {
+          friendProfile.textContent = JSON.stringify(f.friend_profiles, null, 2);
         });
-        const data = await res.json();
-        if (!res.ok) {
-          friendsList.textContent = "❌ " + data.message;
-          return;
-        }
-
-        if (!data.friends || data.friends.length === 0) {
-          friendsList.textContent = "No friends yet.";
-          return;
-        }
-
-        friendsList.innerHTML = "";
-        data.friends.forEach(f => {
-          const div = document.createElement("div");
-          div.className = "friend";
-          div.innerHTML = `
-            <strong>${f.friend_profiles.friend_username}</strong>
-            (ID: ${f.friend_profiles.friend_id})
-            <br> Mutual: ${f.friend_mutual.mutual ? "✅ Yes" : "❌ No"}
-            <br>
-            <button data-id="${f.friend_profiles.friend_id}" class="view-btn">👁 View Profile</button>
-            <button data-id="${f.friend_profiles.friend_id}" class="delete-btn">❌ Delete</button>
-          `;
-          div.querySelector(".view-btn").addEventListener("click", () => showFriendProfile(f.friend_profiles));
-          div.querySelector(".delete-btn").addEventListener("click", () => deleteFriend(f.friend_profiles.friend_id));
-          friendsList.appendChild(div);
-        });
-      } catch {
-        friendsList.textContent = "❌ Failed to fetch friends.";
-      }
+        div.querySelector(".delete-btn").addEventListener("click", () => deleteFriend(f.friend_profiles.friend_id));
+        friendsList.appendChild(div);
+      });
     }
 
-    // 加好友
-    document.getElementById("add-friend-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const token = getToken();
-      if (!token) return showMessage("⚠️ Please login first.");
-      const friendId = document.getElementById("add-friend-id").value;
-      try {
-        const res = await fetch("http://localhost:4242/api/add_friend", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ friend_adding: Number(friendId) })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showMessage("✅ Friend added.");
-          fetchFriends();
-        } else {
-          showMessage("❌ " + data.message);
-        }
-      } catch {
-        showMessage("❌ Failed to add friend.");
-      }
-    });
-
-    // 刪好友
-    async function deleteFriend(friendId) {
-      const token = getToken();
-      if (!token) return showMessage("⚠️ Please login first.");
-      try {
-        const res = await fetch("http://localhost:4242/api/delete_friend", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ friend_deleting: Number(friendId) })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showMessage("✅ Friend deleted.");
-          fetchFriends();
-        } else {
-          showMessage("❌ " + data.message);
-        }
-      } catch {
-        showMessage("❌ Failed to delete friend.");
-      }
+    async function deleteFriend(id) {
+      const res = await apiFetch("delete_friend", { method: "POST", body: JSON.stringify({ friend_deleting: id }) });
+      const data = await res.json();
+      log(res.ok ? "✅ Friend deleted." : "❌ " + data.message, !res.ok);
+      fetchFriends();
     }
 
-    // 手動刷新好友
-    document.getElementById("refresh-friends-btn").addEventListener("click", fetchFriends);
-
-    // --- 下面是原本的註冊/登入/登出/頭像管理程式碼 ---
-    // Register
-    document.getElementById("register-form").addEventListener("submit", async (e) => {
+    // ==== Register/Login/Logout ====
+    document.getElementById("register-form").addEventListener("submit", async e => {
       e.preventDefault();
-      const username = document.getElementById("reg-username").value;
-      const email = document.getElementById("reg-email").value;
-      const password = document.getElementById("reg-password").value;
-
-      try {
-        const res = await fetch("http://localhost:4242/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, email, password })
-        });
-        const data = await res.json();
-        showMessage(res.ok ? "✅ Registered: " + data.message : "❌ " + data.message);
-      } catch {
-        showMessage("❌ Registration failed.");
-      }
+      const body = {
+        username: document.getElementById("reg-username").value,
+        email: document.getElementById("reg-email").value,
+        password: document.getElementById("reg-password").value,
+      };
+      const res = await apiFetch("register", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
     });
 
-    // Login
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
+    document.getElementById("login-form").addEventListener("submit", async e => {
       e.preventDefault();
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-
-      try {
-        const res = await fetch("http://localhost:4242/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem("token", data.token);
-          showMessage("✅ Login successful! Token saved.");
-          await fetchProfile();
-          await fetchFriends();
-        } else {
-          showMessage("❌ " + data.message);
-        }
-      } catch {
-        showMessage("❌ Login failed.");
-      }
+      const body = {
+        email: document.getElementById("login-email").value,
+        password: document.getElementById("login-password").value,
+      };
+      const res = await apiFetch("login", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        log("✅ Login successful!");
+        fetchProfile(); fetchFriends();
+      } else log("❌ " + data.message, true);
     });
 
-    // Logout
     document.getElementById("logout-btn").addEventListener("click", async () => {
-      const token = getToken();
-      if (!token) return showMessage("⚠️ Not logged in.");
-
-      try {
-        const res = await fetch("http://localhost:4242/api/logout", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.removeItem("token");
-          showMessage("✅ Logged out successfully.");
-          showUser("Not logged in.");
-          friendsList.textContent = "No friends yet.";
-          friendProfile.textContent = "Click a friend to see profile.";
-        } else {
-          showMessage("❌ " + data.message);
-        }
-      } catch {
-        showMessage("❌ Logout failed.");
-      }
+      const res = await apiFetch("logout", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.removeItem("token");
+        log("✅ Logged out.");
+        showUser("Not logged in."); friendsList.textContent = "No friends yet.";
+        friendProfile.textContent = "Click a friend to see profile.";
+      } else log("❌ " + data.message, true);
     });
 
-    // Local preview for avatar
-    document.getElementById("avatar-file").addEventListener("change", (e) => {
+    // ==== Avatar ====
+    document.getElementById("avatar-file").addEventListener("change", e => {
       const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (event) => avatarPreview.src = event.target.result;
-      reader.readAsDataURL(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => avatarPreview.src = ev.target.result;
+        reader.readAsDataURL(file);
+      }
     });
 
-    // Upload Avatar
-    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+    document.getElementById("upload-form").addEventListener("submit", async e => {
       e.preventDefault();
-      const token = getToken();
-      if (!token) return showMessage("⚠️ Please login first.");
-
-      const fileInput = document.getElementById("avatar-file");
-      if (!fileInput.files.length) return showMessage("⚠️ Please select a file.");
-
-      const formData = new FormData();
-      formData.append("file", fileInput.files[0]);
-
-      try {
-        const res = await fetch("http://localhost:4242/api/upload_avatar", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showMessage("✅ Avatar uploaded.");
-          await fetchProfile();
-        } else {
-          showMessage("❌ " + data.message);
-        }
-      } catch {
-        showMessage("❌ Avatar upload failed.");
-      }
+      const file = document.getElementById("avatar-file").files[0];
+      if (!file) return log("⚠️ Please select a file.", true);
+      const formData = new FormData(); formData.append("file", file);
+      const res = await apiFetch("upload_avatar", { method: "POST", body: formData });
+      const data = await res.json();
+      log(res.ok ? "✅ Avatar uploaded." : "❌ " + data.message, !res.ok);
+      fetchProfile();
     });
 
-    // Delete Avatar
     document.getElementById("delete-avatar-btn").addEventListener("click", async () => {
-      const token = getToken();
-      if (!token) return showMessage("⚠️ Please login first.");
-
-      try {
-        const res = await fetch("http://localhost:4242/api/delete_avatar", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showMessage("✅ Avatar deleted.");
-          avatarPreview.src = `http://localhost:4242/avatars/default.webp?t=${Date.now()}`;
-          await fetchProfile();
-        } else {
-          showMessage("❌ " + data.message);
-        }
-      } catch {
-        showMessage("❌ Avatar deletion failed.");
-      }
+      const res = await apiFetch("delete_avatar", { method: "POST" });
+      const data = await res.json();
+      log(res.ok ? "✅ Avatar deleted." : "❌ " + data.message, !res.ok);
+      if (res.ok) avatarPreview.src = `http://localhost:4242/avatars/default.webp?t=${Date.now()}`;
+      fetchProfile();
     });
 
-    // Auto fetch profile & friends on load if logged in
-    window.addEventListener("DOMContentLoaded", async () => {
-      await fetchProfile();
-      await fetchFriends();
+    // ==== Update Username ====
+    document.getElementById("update-username-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = { username: document.getElementById("new-username").value };
+      const res = await apiFetch("update_username", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+      if (res.ok) fetchProfile();
     });
+
+    // ==== Update Password (含舊密碼驗證) ====
+    document.getElementById("update-password-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = {
+        old_password: document.getElementById("old-password").value,
+        new_password: document.getElementById("new-password").value,
+      };
+      const res = await apiFetch("update_password", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    });
+
+    // ==== 初始化 ====
+    window.addEventListener("DOMContentLoaded", () => { fetchProfile(); fetchFriends(); });
+
+        // ==== Matches ====
+    document.getElementById("create-match-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = {
+        player1_id: parseInt(document.getElementById("player1-id").value),
+        player2_id: parseInt(document.getElementById("player2-id").value),
+        player1_score: parseInt(document.getElementById("player1-score").value),
+        player2_score: parseInt(document.getElementById("player2-score").value),
+        tournament_flag: document.getElementById("tournament-flag").checked,
+      };
+      const res = await apiFetch("match", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + (data.message || "Match created.") : "❌ " + data.message, !res.ok);
+    });
+
+    document.getElementById("my-matches-btn").addEventListener("click", async () => {
+      const res = await apiFetch("match/user", { method: "GET" });
+      const data = await res.json();
+      document.getElementById("my-matches").textContent = res.ok
+        ? JSON.stringify(data, null, 2)
+        : "❌ " + data.message;
+    });
+
   </script>
 </body>
 </html>

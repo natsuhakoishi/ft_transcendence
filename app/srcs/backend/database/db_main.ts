@@ -1,5 +1,5 @@
 import { initDB } from "./tables.ts";
-import { createUser, getUserAll } from "./user.ts";
+import { createUser, getUserAll, updateUsernameById } from "./user.ts";
 import { createMatch, getMatchAll } from "./match.ts";
 import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournament.ts";
 import { addWinLose, createProfile, getProfilesAll } from "./profile.ts";
@@ -26,6 +26,10 @@ async function main()
 
 		const users = await getUserAll();
 		console.log("All Users:", users);
+
+		await updateUsernameById(1, "labubu");
+		const users2 = await getUserAll();
+		console.log("All Users:", users2);
 	}
 	catch (error)
 	{
