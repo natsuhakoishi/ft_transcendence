@@ -18,7 +18,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 		}
 	});
 
-	fastify.get('/match/user', async (req: any, res: any) => {
+	fastify.get('/match/me', async (req: any, res: any) => {
 		try
 		{
 			const jwt = await req.jwtVerify();
