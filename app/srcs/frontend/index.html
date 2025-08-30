@@ -293,7 +293,7 @@
     });
 
     document.getElementById("my-matches-btn").addEventListener("click", async () => {
-      const res = await apiFetch("match/user", { method: "GET" });
+      const res = await apiFetch("match/me", { method: "GET" });
       const data = await res.json();
       document.getElementById("my-matches").textContent = res.ok
         ? JSON.stringify(data, null, 2)
