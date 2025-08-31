@@ -13,6 +13,7 @@ import authApi from './routes/api/auth-api.ts';
 import profileApi from './routes/api/profile-api.ts';
 import friendshipApi from './routes/api/friendship-api.ts';
 import matchApi from './routes/api/match-api.ts';
+import tournamentApi from './routes/api/tournament-api.ts';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ async function initServer()
 	await fastify.register(profileApi, { prefix: '/api' });
 	await fastify.register(friendshipApi, { prefix: '/api' });
 	await fastify.register(matchApi, { prefix: '/api' });
+	await fastify.register(tournamentApi, { prefix: '/api' });
 	return fastify;
 }
 

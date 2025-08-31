@@ -107,6 +107,60 @@
   <button id="my-matches-btn">📜 Get My Matches</button>
   <pre id="my-matches">No matches yet.</pre>
 
+    <!-- Tournament 測試 -->
+  <h2>🏆 Tournament Test</h2>
+
+  <!-- 建立比賽 -->
+  <form id="create-tournament-form">
+    <input type="text" id="tournament-name" placeholder="Tournament Name" required />
+    <button type="submit">➕ Create Tournament</button>
+  </form>
+
+  <!-- 加入比賽 -->
+  <form id="join-tournament-form">
+    <input type="number" id="join-tournament-id" placeholder="Tournament ID" required />
+    <button type="submit">👥 Join Tournament</button>
+  </form>
+
+  <!-- 查詢全部 -->
+  <button id="all-tournaments-btn">📜 Get All Tournaments</button>
+  <pre id="all-tournaments">No tournaments yet.</pre>
+
+  <!-- 查詢單一賽事 -->
+  <form id="get-tournament-form">
+    <input type="number" id="get-tournament-id" placeholder="Tournament ID" required />
+    <button type="submit">🔎 Get Tournament</button>
+  </form>
+  <pre id="tournament-info">No data yet.</pre>
+
+  <!-- 查詢參賽者 -->
+  <form id="get-participants-form">
+    <input type="number" id="participants-tournament-id" placeholder="Tournament ID" required />
+    <button type="submit">👥 Get Participants</button>
+  </form>
+  <pre id="participants-info">No data yet.</pre>
+
+  <!-- 查詢對局 -->
+  <form id="get-matches-form">
+    <input type="number" id="matches-tournament-id" placeholder="Tournament ID" required />
+    <button type="submit">🎮 Get Matches</button>
+  </form>
+  <pre id="matches-info">No data yet.</pre>
+
+  <!-- 查詢排行榜 -->
+  <form id="get-leaderboard-form">
+    <input type="number" id="leaderboard-tournament-id" placeholder="Tournament ID" required />
+    <button type="submit">🏅 Get Leaderboard</button>
+  </form>
+  <pre id="leaderboard-info">No data yet.</pre>
+
+  <!-- 綁定比賽 -->
+  <form id="bind-match-form">
+  <input type="number" id="bind-tournament-id" placeholder="Tournament ID" required />
+  <input type="number" id="bind-match-id" placeholder="Match ID" required />
+  <button type="submit">🔗 Bind Match</button>
+  </form>
+
 
   <!-- 系統訊息 -->
   <h2>🔧 System Messages</h2>
@@ -299,6 +353,83 @@
         ? JSON.stringify(data, null, 2)
         : "❌ " + data.message;
     });
+
+        // ==== Tournament ====
+    document.getElementById("create-tournament-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = { name: document.getElementById("tournament-name").value };
+      const res = await apiFetch("tournament", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    });
+
+    document.getElementById("join-tournament-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = { tournament_id: parseInt(document.getElementById("join-tournament-id").value) };
+      const res = await apiFetch("tournament/join", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    });
+
+    document.getElementById("all-tournaments-btn").addEventListener("click", async () => {
+      const res = await apiFetch("tournament", { method: "GET" });
+      const data = await res.json();
+      document.getElementById("all-tournaments").textContent = res.ok
+        ? JSON.stringify(data, null, 2)
+        : "❌ " + data.message;
+    });
+
+    document.getElementById("get-tournament-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("get-tournament-id").value);
+      const res = await apiFetch(`tournament/${id}`, { method: "GET" });
+      const data = await res.json();
+      document.getElementById("tournament-info").textContent = res.ok
+        ? JSON.stringify(data, null, 2)
+        : "❌ " + data.message;
+    });
+
+    document.getElementById("get-participants-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("participants-tournament-id").value);
+      const res = await apiFetch(`tournament/${id}/participants`, { method: "GET" });
+      const data = await res.json();
+      document.getElementById("participants-info").textContent = res.ok
+        ? JSON.stringify(data, null, 2)
+        : "❌ " + data.message;
+    });
+
+    document.getElementById("get-matches-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("matches-tournament-id").value);
+      const res = await apiFetch(`tournament/${id}/matches`, { method: "GET" });
+      const data = await res.json();
+      document.getElementById("matches-info").textContent = res.ok
+        ? JSON.stringify(data, null, 2)
+        : "❌ " + data.message;
+    });
+
+    document.getElementById("get-leaderboard-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("leaderboard-tournament-id").value);
+      const res = await apiFetch(`tournament/${id}/leaderboard`, { method: "GET" });
+      const data = await res.json();
+      document.getElementById("leaderboard-info").textContent = res.ok
+        ? JSON.stringify(data, null, 2)
+        : "❌ " + data.message;
+    });
+
+    document.getElementById("bind-match-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = {
+      tournament_id: parseInt(document.getElementById("bind-tournament-id").value),
+      match_id: parseInt(document.getElementById("bind-match-id").value),
+      };
+      const res = await apiFetch("tournament/bind_match", { method: "POST", body: JSON.stringify(body) });
+      const data = await res.json();
+      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    });
+
 
   </script>
 </body>
