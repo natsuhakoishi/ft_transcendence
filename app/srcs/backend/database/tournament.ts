@@ -106,3 +106,8 @@ export async function getTournamentLeaderboard(tournament_id: number)
 	);
 }
 
+export async function setTournamentStatus(tournament_id: number, status: 'waiting' | 'on-going' | 'completed')
+{
+	await runSQLite(`UPDATE tournaments SET status = ? WHERE id = ?`, status, tournament_id);
+}
+
