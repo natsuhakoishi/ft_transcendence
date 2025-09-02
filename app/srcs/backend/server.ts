@@ -14,6 +14,8 @@ import profileApi from './routes/api/profile-api.ts';
 import friendshipApi from './routes/api/friendship-api.ts';
 import matchApi from './routes/api/match-api.ts';
 import tournamentApi from './routes/api/tournament-api.ts';
+import jwtPlugin from './routes/api/jwt-plugin.ts'
+import tournamentGetApi from './routes/api/tournament-get-api.ts';
 
 dotenv.config();
 
@@ -48,12 +50,19 @@ async function initServer()
 	await fastify.register(fastifyStatic, { root: avatars_path, prefix: '/avatars/' });
 
 	await fastify.register(jwt, { secret: JWT_SECRET });
-	await fastify.register(userApi, { prefix: '/api' });
+
 	await fastify.register(authApi, { prefix: '/api' });
-	await fastify.register(profileApi, { prefix: '/api' });
-	await fastify.register(friendshipApi, { prefix: '/api' });
-	await fastify.register(matchApi, { prefix: '/api' });
-	await fastify.register(tournamentApi, { prefix: '/api' });
+	await fastify.register(tournamentGetApi, { prefix: '/api' });
+
+	await fastify.register(async (privateApiRoutes: any) => {
+		await privateApiRoutes.register(jwtPlugin);
+		await privateApiRoutes.register(userApi);
+		await privateApiRoutes.register(profileApi);
+		await privateApiRoutes.register(friendshipApi);
+		await privateApiRoutes.register(matchApi);
+		await privateApiRoutes.register(tournamentApi);
+	}, { prefix: '/api/private' });
+
 	return fastify;
 }
 

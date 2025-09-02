@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -198,16 +199,26 @@
       return fetch(`http://localhost:4242/api/${endpoint}`, { ...options, headers });
     }
 
+    async function apiFetchPr(endpoint, options={}) {
+      const token = getToken();
+      const headers = options.headers || {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      if (!(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+      }
+      return fetch(`http://localhost:4242/api/private/${endpoint}`, { ...options, headers });
+    }
+
     // ==== Profile ====
     async function fetchProfile() {
-      const res = await apiFetch("profile", { method: "POST", body: "{}" });
+      const res = await apiFetchPr("profile", { method: "POST", body: "{}" });
       const data = await res.json();
       showUser(res.ok ? data : "❌ " + data.message);
     }
 
     // ==== Friends ====
     async function fetchFriends() {
-      const res = await apiFetch("my_friends", { method: "POST", body: "{}" });
+      const res = await apiFetchPr("my_friends", { method: "POST", body: "{}" });
       const data = await res.json();
       if (!res.ok) return friendsList.textContent = "❌ " + data.message;
       if (!data.friends || data.friends.length === 0) return friendsList.textContent = "No friends yet.";
@@ -232,7 +243,7 @@
     }
 
     async function deleteFriend(id) {
-      const res = await apiFetch("delete_friend", { method: "POST", body: JSON.stringify({ friend_deleting: id }) });
+      const res = await apiFetchPr("delete_friend", { method: "POST", body: JSON.stringify({ friend_deleting: id }) });
       const data = await res.json();
       log(res.ok ? "✅ Friend deleted." : "❌ " + data.message, !res.ok);
       fetchFriends();
@@ -267,7 +278,7 @@
     });
 
     document.getElementById("logout-btn").addEventListener("click", async () => {
-      const res = await apiFetch("logout", { method: "POST" });
+      const res = await apiFetch("logout", { method: "POST", body: JSON.stringify({}) });
       const data = await res.json();
       if (res.ok) {
         localStorage.removeItem("token");
@@ -292,14 +303,14 @@
       const file = document.getElementById("avatar-file").files[0];
       if (!file) return log("⚠️ Please select a file.", true);
       const formData = new FormData(); formData.append("file", file);
-      const res = await apiFetch("upload_avatar", { method: "POST", body: formData });
+      const res = await apiFetchPr("upload_avatar", { method: "POST", body: formData });
       const data = await res.json();
       log(res.ok ? "✅ Avatar uploaded." : "❌ " + data.message, !res.ok);
       fetchProfile();
     });
 
     document.getElementById("delete-avatar-btn").addEventListener("click", async () => {
-      const res = await apiFetch("delete_avatar", { method: "POST" });
+      const res = await apiFetchPr("delete_avatar", { method: "POST" });
       const data = await res.json();
       log(res.ok ? "✅ Avatar deleted." : "❌ " + data.message, !res.ok);
       if (res.ok) avatarPreview.src = `http://localhost:4242/avatars/default.webp?t=${Date.now()}`;
@@ -310,7 +321,7 @@
     document.getElementById("update-username-form").addEventListener("submit", async e => {
       e.preventDefault();
       const body = { username: document.getElementById("new-username").value };
-      const res = await apiFetch("update_username", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiFetchPr("update_username", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
       log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
       if (res.ok) fetchProfile();
@@ -323,7 +334,7 @@
         old_password: document.getElementById("old-password").value,
         new_password: document.getElementById("new-password").value,
       };
-      const res = await apiFetch("update_password", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiFetchPr("update_password", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
       log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
     });
@@ -341,13 +352,13 @@
         player2_score: parseInt(document.getElementById("player2-score").value),
         tournament_flag: document.getElementById("tournament-flag").checked,
       };
-      const res = await apiFetch("match", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiFetchPr("match", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
       log(res.ok ? "✅ " + (data.message || "Match created.") : "❌ " + data.message, !res.ok);
     });
 
     document.getElementById("my-matches-btn").addEventListener("click", async () => {
-      const res = await apiFetch("match/me", { method: "GET" });
+      const res = await apiFetchPr("match/me", { method: "GET" });
       const data = await res.json();
       document.getElementById("my-matches").textContent = res.ok
         ? JSON.stringify(data, null, 2)
@@ -358,7 +369,7 @@
     document.getElementById("create-tournament-form").addEventListener("submit", async e => {
       e.preventDefault();
       const body = { name: document.getElementById("tournament-name").value };
-      const res = await apiFetch("tournament", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiFetchPr("tournament", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
       log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
     });
@@ -366,7 +377,7 @@
     document.getElementById("join-tournament-form").addEventListener("submit", async e => {
       e.preventDefault();
       const body = { tournament_id: parseInt(document.getElementById("join-tournament-id").value) };
-      const res = await apiFetch("tournament/join", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiFetchPr("tournament/join", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
       log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
     });
@@ -425,7 +436,7 @@
       tournament_id: parseInt(document.getElementById("bind-tournament-id").value),
       match_id: parseInt(document.getElementById("bind-match-id").value),
       };
-      const res = await apiFetch("tournament/bind_match", { method: "POST", body: JSON.stringify(body) });
+      const res = await apiFetchPr("tournament/bind_match", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
       log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
     });

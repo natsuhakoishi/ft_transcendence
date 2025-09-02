@@ -13,9 +13,9 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/profile', async (req: any, res: any) => {
 		try
 		{
-			const jwt = await req.jwtVerify();
-			const user = await getUserById(jwt.id);
-			const profile = await getProfileById(jwt.id);
+			const user_id = req.user;
+			const user = await getUserById(user_id);
+			const profile = await getProfileById(user_id);
 			if (!user || !profile)
 				return res.status(404).send({ message: 'User or Profie Not Found' });
 
@@ -48,7 +48,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/upload_avatar', async (req: any, res: any) => {
 		try
 		{
-			const jwt = await req.jwtVerify();
+			const user_id = req.user;
 			const data = await req.file();
 			if (!data)
 				return res.status(400).send({ message: 'No file uploaded' });
@@ -63,7 +63,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			if (!fs.existsSync(dir))
 				fs.mkdirSync(dir, { recursive: true });
 
-			const fileName = `user_${jwt.id}_${Date.now()}.webp`;
+			const fileName = `user_${user_id}_${Date.now()}.webp`;
 			const uploadPath = path.join(dir, fileName);
 
 			const chunks: Buffer[] = [];
@@ -72,7 +72,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			const buffer = Buffer.concat(chunks);
 
 			const compressed = await sharp(buffer).resize(256, 256, { fit: 'cover', position: 'center' }).webp({ quality: 75 }).toBuffer();
-			await setAvatarPath(jwt.id, fileName, compressed);
+			await setAvatarPath(user_id, fileName, compressed);
 			await fs.promises.writeFile(uploadPath, compressed);
 			res.send({ message: 'Avatar uploaded successfully', path: `/avatars/${fileName}`});
 		}
@@ -85,8 +85,8 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/delete_avatar', async (req: any, res: any) => {
 		try
 		{
-			const jwt = await req.jwtVerify();
-			const profile = await getProfileById(jwt.id);
+			const user_id = req.user;
+			const profile = await getProfileById(user_id);
 
 			if (profile.avatar_path && profile.avatar_path !== 'default.webp')
 			{
@@ -96,7 +96,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 				if (fs.existsSync(filePath))
 					fs.unlinkSync(filePath);
 			}
-			await setAvatarPath(jwt.id, 'default.webp');
+			await setAvatarPath(user_id, 'default.webp');
 			res.send({ message: 'Avatar deleted successfully' });
 		}
 		catch (error)
@@ -106,8 +106,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	});
 
 	fastify.post('/update_username', async (req: any, res: any) => {
-		const jwt = await req.jwtVerify();
-		const user_id = jwt.id;
+		const user_id = req.user;
 		const new_username = req.body.username;
 		const flag_checkname = await checkUsernameExist(new_username);
 
@@ -120,9 +119,8 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/update_password', async (req: any, res: any) => {
 		try
 		{
-			const jwt = await req.jwtVerify();
-			const user_id = jwt.id;
-			const user = await getUserById(jwt.id);
+			const user_id = req.user;
+			const user = await getUserById(req.user);
 			const { old_password, new_password } = req.body;
 
 			const checked = await verifyPassword(old_password, user.password);

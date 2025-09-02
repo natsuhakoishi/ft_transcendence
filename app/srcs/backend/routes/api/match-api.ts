@@ -5,7 +5,6 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.post('/match', async (req: any, res: any) => {
 		try
 		{
-			const jwt = await req.jwtVerify();
 			const { player1_id, player2_id, player1_score, player2_score, tournament_flag } = req.body as any;
 
 			if (typeof player1_id !== 'number' || typeof player2_id !== 'number' || typeof player1_score !== 'number' || typeof player2_score !== 'number')
@@ -21,8 +20,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.get('/match/me', async (req: any, res: any) => {
 		try
 		{
-			const jwt = await req.jwtVerify();
-			const user_id = jwt.id;
+			const user_id = req.user;
 			const user_matches = await getMatchByUserId(user_id);
 
 			const matches_total = user_matches.length;
