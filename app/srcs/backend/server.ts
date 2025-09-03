@@ -24,6 +24,10 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET!;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+export const SMTP_EMAIL = process.env.SMTP_EMAIL;
+export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
+
+console.log('EMAIL:', SMTP_EMAIL, 'PASS:', SMTP_APP_SECRET);
 
 if (!JWT_SECRET)
 {

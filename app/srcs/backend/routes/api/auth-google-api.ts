@@ -15,7 +15,7 @@ const authGoogleApi: FastifyPluginAsync = async (fastify: any) => {
 		// register if account not exist
 		if (!user)
 		{
-			const username = userData.email ? userData.email.split('@')[0] : userData.name || `user_${Date.now()}`;
+			const username = userData.name || `user_${Date.now()}`;
 			await createUserByGoogle(username, userData.email, '');
 			await createProfile(username);
 			user = await getUserByEmail(userData.email);
