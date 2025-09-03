@@ -31,6 +31,12 @@ if (!JWT_SECRET)
 	process.exit(1);
 }
 
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET)
+{
+	console.error('Error: GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not found!');
+	process.exit(1);
+}
+
 async function initServer()
 {
 	const fastify = Fastify(
