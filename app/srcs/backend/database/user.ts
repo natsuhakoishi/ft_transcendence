@@ -10,6 +10,17 @@ export async function createUser(username: string, email: string, password: stri
 	);
 }
 
+export async function createUserByGoogle(username: string, email: string, password: string)
+{
+	await runSQLite(
+		`INSERT INTO users (username, email, password, google_login_flag) VALUES (?, ?, ?, ?)`,
+		username,
+		email,
+		password,
+		true
+	);
+}
+
 export async function getUserByEmail(email: string)
 {
 	return await getSQLite(`SELECT * FROM users WHERE email = ?`, [email]);

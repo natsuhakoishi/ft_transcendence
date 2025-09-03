@@ -12,6 +12,8 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			return res.status(400).send({ message: 'Warning: Username already taken.' });
 		if (await getUserByEmail(email))
 			return res.status(400).send({ message: 'Warning: Email already registered.' });
+		if (!password || password.length < 8)
+		return res.status(400).send({ message: 'Warning: Password must be at least 8 characters long.' });
 
 		const hashed_pw = await hashPassword(password);
 
@@ -26,10 +28,12 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 		const user = await getUserByEmail(email);
 		if (!user || !(await verifyPassword(password, user.password)))
 			return res.status(401).send({ message: 'Invalid email or password' });
+		if (user.google_login_flag === 1)
+			return res.status(400).send({ message: 'This gmail already exist in our Database, please login with Google'} );
 		await setLoginStatus(user.id, true);
 
 		const token = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });
-		res.send({ token });
+		res.send({ token: token, email: email, name: user.username });
 	});
 
 	// logout

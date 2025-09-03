@@ -14,7 +14,8 @@ export async function createTable()
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			username TEXT UNIQUE NOT NULL,
 			email TEXT UNIQUE NOT NULL,
-			password TEXT NOT NULL CHECK (length(password) >= 8),
+			password TEXT NOT NULL,
+			google_login_flag BOOLEAN DEFAULT 0,
 			created_at TEXT DEFAULT CURRENT_TIMESTAMP
 		);
 	`);
@@ -27,7 +28,7 @@ export async function createTable()
 			username TEXT UNIQUE NOT NULL,
 			avatar_path TEXT DEFAULT 'default.webp',
 			avatar_buffer BLOB,
-			login_status BOOLEAN DEFAULT FALSE,
+			login_status BOOLEAN DEFAULT 0,
 			win_games INTEGER DEFAULT 0,
 			lose_games INTEGER DEFAULT 0,
 			tournament_wins INTEGER DEFAULT 0,
@@ -46,7 +47,7 @@ export async function createTable()
 			player1_score INTEGER NOT NULL,
 			player2_score INTEGER NOT NULL,
 			winner_id INTEGER,
-			tournament_flag BOOLEAN DEFAULT FALSE,
+			tournament_flag BOOLEAN DEFAULT 0,
 			game_time TEXT DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (player1_id) REFERENCES users(id) ON DELETE CASCADE,
 			FOREIGN KEY (player2_id) REFERENCES users(id) ON DELETE CASCADE,

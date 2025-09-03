@@ -28,6 +28,10 @@
 <body>
   <h1>ft_klbq Authentication & Profile</h1>
 
+    <!-- Google 登入 -->
+  <h2>🔑 Google Login</h2>
+  <button id="google-login-btn">Login with Google</button>
+
   <!-- 註冊 -->
   <h2>Register</h2>
   <form id="register-form">
@@ -250,6 +254,26 @@
     }
 
     // ==== Register/Login/Logout ====
+        // ==== Google Login ====
+    document.getElementById("google-login-btn").addEventListener("click", () => {
+      // 直接導向 Fastify 提供的 Google OAuth redirect
+      window.location.href = "http://localhost:4242/api/auth/google";
+    });
+
+    // 如果 Google callback 把 token 放在 URL (例如 /?token=xxx)
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      if (token) {
+        localStorage.setItem("token", token);
+        log("✅ Google Login successful!");
+        fetchProfile();
+        fetchFriends();
+        // 清掉網址上的 query
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+
     document.getElementById("register-form").addEventListener("submit", async e => {
       e.preventDefault();
       const body = {

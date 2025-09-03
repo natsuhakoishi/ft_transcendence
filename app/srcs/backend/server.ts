@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import fastifyStatic from '@fastify/static';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import oauthPlugin from '@fastify/oauth2';
 
 import { initDB } from './database/tables.ts';
 import userApi from './routes/api/user-api.ts';
@@ -16,10 +17,13 @@ import matchApi from './routes/api/match-api.ts';
 import tournamentApi from './routes/api/tournament-api.ts';
 import jwtPlugin from './routes/api/jwt-plugin.ts'
 import tournamentGetApi from './routes/api/tournament-get-api.ts';
+import authGoogleApi from './routes/api/auth-google-api.ts';
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET!;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 if (!JWT_SECRET)
 {
@@ -45,6 +49,20 @@ async function initServer()
 		}
 	});
 
+	await fastify.register((oauthPlugin as any), {
+		name: 'googleOAuth2',
+		scope: ['openid', 'profile', 'email'],
+		credentials: {
+			client: {
+				id: GOOGLE_CLIENT_ID,
+				secret: GOOGLE_CLIENT_SECRET
+			},
+			auth: oauthPlugin.GOOGLE_CONFIGURATION
+		},
+		startRedirectPath: '/api/auth/google',
+		callbackUri: 'http://localhost:4242/api/auth/google/callback',
+	});
+
 	const dir_name = path.dirname(fileURLToPath(import.meta.url));
 	const avatars_path = path.join(dir_name, 'assets/avatars');
 	await fastify.register(fastifyStatic, { root: avatars_path, prefix: '/avatars/' });
@@ -52,6 +70,7 @@ async function initServer()
 	await fastify.register(jwt, { secret: JWT_SECRET });
 
 	await fastify.register(authApi, { prefix: '/api' });
+	await fastify.register(authGoogleApi, { prefix: '/api' });
 	await fastify.register(tournamentGetApi, { prefix: '/api' });
 
 	await fastify.register(async (privateApiRoutes: any) => {
