@@ -6,6 +6,7 @@ import { createProfile, setLoginStatus } from '../../database/profile.ts';
 import { sendOTP } from './auth-helper/sendOTP.ts';
 
 export const otpTemp: Record<string, { otp: string; expires: number; attempts: number }> = {};
+export const dataUserRegister: Record<string, { username: string; email: string; password: string }> = {};
 
 const authApi: FastifyPluginAsync = async (fastify: any) => {
 	// register
@@ -20,9 +21,12 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 
 		const hashed_pw = await hashPassword(password);
 
-		await createUser(username, email, hashed_pw);
-		await createProfile(username);
-		res.send({ message: `User ${username} created successfully!` });
+		dataUserRegister[email] = { username, email, password: hashed_pw };
+
+		const sent = await sendOTP(email);
+		if (!sent)
+			return res.status(500).send({ message: 'Error: Failed to send OTP, please enter valid email address' });
+		res.send({ message: 'OTP sent successfully, please check email' });
 	});
 
 	// login
@@ -41,8 +45,50 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			res.status(500).send({ message: 'Error: Failed to send OTP' });
 	});
 
-	//verify-otp
-	fastify.post('/otp_verify', async (req: any, res: any) => {
+	fastify.post('/otp_verify_register', async (req: any, res: any) => {
+		const { email, otp } = req.body as { email: string, otp: string };
+		if (!email || !otp)
+			return res.status(400).send({ message: 'Error: Email and OTP are required.' });
+
+		const temp = otpTemp[email];
+		if (!temp)
+			return res.status(400).send({ message: 'Error: No OTP requested for this email.' });
+
+		if (temp.expires < Date.now())
+		{
+			delete otpTemp[email];
+			delete dataUserRegister[email];
+			return res.status(400).send({ message: 'Error: OTP expired, need to make a new request for OTP' });
+		}
+
+		if (temp.attempts >= 5)
+			return res.status(429).send({ message: 'Too many attempts. Try again later.' });
+
+		if (temp.otp !== otp)
+		{
+			temp.attempts += 1;
+			return res.status(400).send({ message: 'Invalid OTP.' });
+		}
+
+		const userData = dataUserRegister[email];
+		if (!userData)
+			return res.status(400).send({ message: 'Error: No user data for this email' });
+
+		await createUser(userData.username, userData.email, userData.password);
+		await createProfile(userData.username);
+
+		delete otpTemp[email];
+		delete dataUserRegister[email];
+
+		const user = await getUserByEmail(email);
+		await setLoginStatus(user.id, true);
+		const token = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });
+
+		res.send({ token, email, name: user.username });
+	});
+
+	//verify-otp-login
+	fastify.post('/otp_verify_login', async (req: any, res: any) => {
 		const { email, otp } = req.body as { email: string, otp: string };
 		if (!email || !otp)
 			return res.status(400).send({ message: 'Error: Email and OTP are required.' });
@@ -68,6 +114,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 		delete otpTemp[email];
 
 		const user = await getUserByEmail(email);
+		await setLoginStatus(user.id, true);
 		const token = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });
 		res.send({ token, email, name: user.username });
 	});

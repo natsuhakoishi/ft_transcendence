@@ -280,6 +280,7 @@
       }
     });
 
+ // ==== Register ====
     document.getElementById("register-form").addEventListener("submit", async e => {
       e.preventDefault();
       const body = {
@@ -289,9 +290,16 @@
       };
       const res = await apiFetch("register", { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
-      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+      if (res.ok) {
+        log("✅ " + data.message);
+        localStorage.setItem("otp_email", body.email);
+        localStorage.setItem("otp_flow", "register"); // 記錄流程
+      } else {
+        log("❌ " + data.message, true);
+      }
     });
 
+    // ==== Login ====
     document.getElementById("login-form").addEventListener("submit", async e => {
       e.preventDefault();
       const body = {
@@ -302,29 +310,41 @@
       const data = await res.json();
       if (res.ok) {
         log("✅ OTP sent! Check your email.");
-        // 暫存 email 用於 OTP 驗證
         localStorage.setItem("otp_email", body.email);
-      } else log("❌ " + data.message, true);
+        localStorage.setItem("otp_flow", "login"); // 記錄流程
+      } else {
+        log("❌ " + data.message, true);
+      }
     });
 
     document.getElementById("otp-form").addEventListener("submit", async e => {
       e.preventDefault();
       const email = localStorage.getItem("otp_email");
       const otp = document.getElementById("otp-code").value;
-        if (!email) return log("⚠️ Please login first.", true);
+      const flow = localStorage.getItem("otp_flow");
 
-      const res = await apiFetch("otp_verify", {
+      if (!email || !flow) return log("⚠️ No OTP request in progress.", true);
+
+      const endpoint = flow === "register" ? "otp_verify_register" : "otp_verify_login";
+      const res = await apiFetch(endpoint, {
         method: "POST",
         body: JSON.stringify({ email, otp })
       });
       const data = await res.json();
+
       if (res.ok) {
+        // ✅ 不論是註冊還是登入，兩邊都會回傳 token
         localStorage.setItem("token", data.token);
         log("✅ OTP verified, login successful!");
         fetchProfile();
         fetchFriends();
+
+        // 清掉暫存
         localStorage.removeItem("otp_email");
-      } else log("❌ " + data.message, true);
+        localStorage.removeItem("otp_flow");
+      } else {
+        log("❌ " + data.message, true);
+      }
     });
 
 
