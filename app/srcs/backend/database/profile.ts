@@ -1,4 +1,4 @@
-import { getUserByUsername } from "./users.ts"
+import { getUserByUsername } from "./user.ts"
 import { allSQLite, getSQLite, runSQLite } from "./utils.ts";
 
 export async function createProfile(username: string)
@@ -23,11 +23,12 @@ export async function setLoginStatus(user_id: number, login_status: boolean)
 	);
 }
 
-export async function setAvatarPath(user_id: number, avatar_path: string)
+export async function setAvatarPath(user_id: number, avatar_path: string, avatar_buffer?: any)
 {
 	await runSQLite(`
-		UPDATE profiles SET avatar_path = ? WHERE id = ?`,
+		UPDATE profiles SET avatar_path = ?, avatar_buffer = ? WHERE id = ?`,
 		avatar_path,
+		avatar_buffer,
 		user_id
 	);
 }

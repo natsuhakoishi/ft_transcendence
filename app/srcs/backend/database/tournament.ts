@@ -100,9 +100,14 @@ export async function getTournamentLeaderboard(tournament_id: number)
 		LEFT JOIN matches ON matches.id = tournament_matches.match_id AND (matches.player1_id = users.id OR matches.player2_id = users.id)
 		WHERE tournament_participants.tournament_id = ?
 		GROUP BY users.id
-		ORDER BY tm_wins DESC
+		ORDER BY match_wins DESC
 		`,
 		[tournament_id]
 	);
+}
+
+export async function setTournamentStatus(tournament_id: number, status: 'waiting' | 'on-going' | 'completed')
+{
+	await runSQLite(`UPDATE tournaments SET status = ? WHERE id = ?`, status, tournament_id);
 }
 
