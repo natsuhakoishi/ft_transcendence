@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import fs from "fs";
-import path, { dirname } from "path";
+import path from "path";
 import { fileURLToPath } from "url";
 
 const dir_name = path.dirname(fileURLToPath(import.meta.url));

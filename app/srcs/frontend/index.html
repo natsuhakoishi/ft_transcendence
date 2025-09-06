@@ -66,7 +66,7 @@
     <button type="submit">Upload Avatar</button>
   </form>
   <button id="delete-avatar-btn">Delete Avatar</button>
-  <img id="avatar-preview" src="http://localhost:4242/avatars/default.webp" alt="Avatar Preview" />
+  <img id="avatar-preview" src="https://localhost:4242/avatars/default.webp" alt="Avatar Preview" />
 
   <!-- 使用者資料 -->
   <h2>👤 User Info</h2>
@@ -196,7 +196,7 @@
       }
       userInfo.textContent = JSON.stringify(userData, null, 2);
       const avatarPath = userData.profile?.avatar_path || 'default.webp';
-      avatarPreview.src = `http://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
+      avatarPreview.src = `https://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
     }
 
     async function apiFetch(endpoint, options={}) {
@@ -206,7 +206,7 @@
       if (!(options.body instanceof FormData)) {
         headers["Content-Type"] = "application/json";
       }
-      return fetch(`http://localhost:4242/api/${endpoint}`, { ...options, headers });
+      return fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers });
     }
 
     async function apiFetchPr(endpoint, options={}) {
@@ -216,7 +216,7 @@
       if (!(options.body instanceof FormData)) {
         headers["Content-Type"] = "application/json";
       }
-      return fetch(`http://localhost:4242/api/private/${endpoint}`, { ...options, headers });
+      return fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers });
     }
 
     // ==== Profile ====
@@ -263,7 +263,7 @@
         // ==== Google Login ====
     document.getElementById("google-login-btn").addEventListener("click", () => {
       // 直接導向 Fastify 提供的 Google OAuth redirect
-      window.location.href = "http://localhost:4242/api/auth/google";
+      window.location.href = "https://localhost:4242/api/auth/google";
     });
 
     // 如果 Google callback 把 token 放在 URL (例如 /?token=xxx)
@@ -384,7 +384,7 @@
       const res = await apiFetchPr("delete_avatar", { method: "POST" });
       const data = await res.json();
       log(res.ok ? "✅ Avatar deleted." : "❌ " + data.message, !res.ok);
-      if (res.ok) avatarPreview.src = `http://localhost:4242/avatars/default.webp?t=${Date.now()}`;
+      if (res.ok) avatarPreview.src = `httpss://localhost:4242/avatars/default.webp?t=${Date.now()}`;
       fetchProfile();
     });
 

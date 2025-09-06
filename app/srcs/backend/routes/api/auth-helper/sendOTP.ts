@@ -36,7 +36,7 @@ export async function sendOTP(email: string): Promise<boolean>
 	try
 	{
 		const transporter = nodemailer.createTransport({
-			host: `"ft_klbq 2FA Verification" <${SMTP_EMAIL}>`,
+			host: "smtp.gmail.com",
 			port: 587,
 			secure: false,
 			auth: {
@@ -46,11 +46,16 @@ export async function sendOTP(email: string): Promise<boolean>
 		});
 
 		await transporter.sendMail({
-			from: SMTP_EMAIL,
+			from: `"no-reply.transcendence@gmail.com" <${SMTP_EMAIL}>`,
 			to: email,
-			subject: 'Your OTP Code for ft_klbq',
-			text: `Your 2FA Verification Code is: ${otp}. Valid for 5 minutes.`,
-			html: `<p>Your 2FA verification code is: <b>${otp}</b></p>`,
+			subject: `${otp} is your ft_klbq verification code`,
+			text: `Your 2FA Verification Code for ft_klbq is: ${otp}. Valid for 5 minutes.`,
+			html: `
+				<p><b>Hi!</b></p>
+				<p>You are completing identity verification. Your verification code is: <b>${otp}</b></p>
+				<p>Please complete the account verification process in 5 minutes.</p>
+				<p>Team ft_klbq</p>
+				<p><i>This is an automated email. Please do not reply to this email.</i></p>`,
 		});
 		return (true);
 	}
