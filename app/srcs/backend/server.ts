@@ -7,6 +7,7 @@ import fastifyStatic from '@fastify/static';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import oauthPlugin from '@fastify/oauth2';
+import fs, { existsSync } from 'fs';
 
 import { initDB } from './database/tables.ts';
 import userApi from './routes/api/user-api.ts';
@@ -24,10 +25,9 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET!;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const PEM_PASS = process.env.PEM_PASS;
 export const SMTP_EMAIL = process.env.SMTP_EMAIL;
 export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
-
-console.log('EMAIL:', SMTP_EMAIL, 'PASS:', SMTP_APP_SECRET);
 
 if (!JWT_SECRET)
 {
@@ -37,15 +37,34 @@ if (!JWT_SECRET)
 
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET)
 {
-	console.error('Error: GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not found!');
+	console.error('Error: GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not found');
+	process.exit(1);
+}
+
+if (!PEM_PASS)
+{
+	console.error('Error: PEM_PASS not found!');
 	process.exit(1);
 }
 
 async function initServer()
 {
-	const fastify = Fastify(
-		{ logger: true }
-	);
+	const cert_dirname = path.dirname(fileURLToPath(import.meta.url));
+	const cert_path = path.join(cert_dirname, '..', '..', 'certs');
+	if (!fs.existsSync(cert_path))
+	{
+		console.error('Error: certs path not found');
+		process.exit(1);
+	}
+
+	const fastify = Fastify({
+		logger: true,
+		https: {
+			key: fs.readFileSync(path.join(cert_path, "backend-ssl.key")),
+			cert: fs.readFileSync(path.join(cert_path, "backend-ssl.crt")),
+			passphrase: PEM_PASS
+		}
+	});
 	await initDB();
 
 	await fastify.register(cors, {
