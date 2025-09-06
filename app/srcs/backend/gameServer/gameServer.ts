@@ -1,5 +1,5 @@
 import { WebSocketServer } from "ws";
-import { gameData } from "../../share/type/gameData.ts";
+import { GameData } from "../../share/type/gameData";
 
 const wss = new WebSocketServer({ port: 3000 });
 
@@ -11,7 +11,7 @@ wss.on('connection', (ws) => {
     ws.on("message", (msg) => {
         console.log("receive message from client", msg.toString());
 
-        let data: gameData = JSON.parse(msg.toString());
+        let data: GameData = JSON.parse(msg.toString());
         console.log("player id:" + data.userId.toString());
         console.log("player pressed" + data.keyPress);
 

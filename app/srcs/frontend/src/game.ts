@@ -1,11 +1,11 @@
-import { gameData } from "../../share/type/gameData.ts";
+import { GameData } from "../../share/type/gameData";
 
 const ws = new WebSocket("ws://localhost:3000");
 
 let playerMethod: string = "arrow";
 // let keyPress: string = "";
 
-let data: gameData = {};
+let data: GameData;
 
 function pongGame(): void {
     
@@ -26,7 +26,7 @@ document.addEventListener("keypress", event => {
         if (event.key === "up" || event.key === "down")
         {
             data.keyPress = event.key;
-            ws.send();
+            ws.send("uppppp");
         }
 })
 

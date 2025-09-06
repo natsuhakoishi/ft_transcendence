@@ -1,5 +1,5 @@
 {
-  "name": "gameserver",
+  "name": "gameMatchingServer",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node --loader ts-node/esm gameServer.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --loader ts-node/esm gameServer.ts"
+    "dev": "node --loader ts-node/esm gameMatchingServer.ts"
   },
   "keywords": [],
   "author": "",

@@ -5,7 +5,7 @@ interface Player {
     ws: WebSocket;
 }
 
-const wss = new WebSocketServer({ port: 3010 });
+const wss = new WebSocketServer({ port: 8080 });
 const waitingPlayers: Player[] = [];
 
 //wss = server
@@ -32,7 +32,7 @@ wss.on('connection', (ws) => {
             console.log("qs: " + queryString);
             console.log(`Matched players: ${p1.id} vs ${p2.id}`);
         }
-    })
+    });
 
     ws.on("close", () => {
         const idx = waitingPlayers.findIndex(p => p.ws === ws);
