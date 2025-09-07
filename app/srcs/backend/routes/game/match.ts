@@ -1,17 +1,17 @@
-import WebSocket, { WebSocketServer } from "ws";
+import type { FastifyPluginAsync } from "fastify";
 
+//matching----------------
 interface Player {
     id: number;
-    ws: WebSocket;
+    ws: any;
 }
 
-const wss = new WebSocketServer({ port: 8080 });
 const waitingPlayers: Player[] = [];
 
-//wss = server
-//ws = every clients
-wss.on('connection', (ws) => {
-    console.log("connected");
+const match: FastifyPluginAsync = async(fastify: any) => {
+    fastify.get("/match", { websocket: true }, (connection: any, req) => {
+    const ws = connection.socket;
+   console.log("/match connected");
 
     ws.on("message", msg => {
         const playerID: number = parseInt(msg.toString(), 10);
@@ -42,9 +42,12 @@ wss.on('connection', (ws) => {
         if (idx !== -1)
             waitingPlayers.splice(idx, 1);
     });
-
-});
+    
+})
+}
 
 function createRoomID(p1: number, p2: number): string {
     return p1 > p2 ? `${p2}-${p1}` : `${p1}-${p2}`;
 }
+
+export default match;

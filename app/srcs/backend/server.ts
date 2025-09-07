@@ -20,6 +20,9 @@ import jwtPlugin from './routes/api/jwt-plugin.ts'
 import tournamentGetApi from './routes/api/tournament-get-api.ts';
 import authGoogleApi from './routes/api/auth-google-api.ts';
 
+//game
+import match from './routes/game/match.ts';
+
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -101,6 +104,9 @@ async function initServer()
 	await fastify.register(authApi, { prefix: '/api' });
 	await fastify.register(authGoogleApi, { prefix: '/api' });
 	await fastify.register(tournamentGetApi, { prefix: '/api' });
+
+	// game
+	await fastify.register(match, {prefix: '/game'});
 
 	await fastify.register(async (privateApiRoutes: any) => {
 		await privateApiRoutes.register(jwtPlugin);
