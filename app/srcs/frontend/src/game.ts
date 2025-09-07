@@ -1,13 +1,13 @@
-import { GameData } from "../../share/type/gameData";
+import type { GameData } from "../../share/type/gameData";
 
-const ws = new WebSocket("ws://localhost:3000");
+const ws = new WebSocket("ws://localhost:3000/game");
 
 let playerMethod: string = "arrow";
 // let keyPress: string = "";
 
-let data: GameData;
+let data: GameData = {userId: 0, roomId: "", keyPress: ""};
 
-function pongGame(): void {
+export function pongGame(): void {
     
 }
 
@@ -19,7 +19,6 @@ ws.onopen = () => {
 ws.onmessage = (event) => {
     console.log("server: ", event.data);
 }
-
 
 document.addEventListener("keypress", event => {
     if (playerMethod === "arrow")
