@@ -19,7 +19,7 @@ export function Matching() {
 }
 
 export function matching(): void {
-    const ws = new WebSocket("ws://localhost:3000/match");
+    const ws = new WebSocket("https://localhost:4242/game/match");
 
     console.log("Matching!");
     //TODO: get user id
@@ -28,11 +28,11 @@ export function matching(): void {
         ws.send("5555");
         console.log("sent ID");
         // ws.send(playerID);
+    };
 
-        };
-        ws.onmessage = (event) => {
-            console.log(event.data);
-            //TODO: start game;
+    ws.onmessage = (event) => {
+        console.log(event.data);
+        //TODO: start game;
     };
 
 

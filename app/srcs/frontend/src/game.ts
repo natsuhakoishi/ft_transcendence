@@ -1,4 +1,4 @@
-import type { GameData } from "../../share/type/gameData";
+import type { GameData } from "../../backend/share/type/gameData";
 
 const ws = new WebSocket("ws://localhost:3000/game");
 
