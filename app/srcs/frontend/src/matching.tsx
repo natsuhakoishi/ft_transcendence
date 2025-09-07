@@ -19,7 +19,7 @@ export function Matching() {
 }
 
 export function matching(): void {
-    const ws = new WebSocket("https://localhost:4242/game/match");
+    const ws = new WebSocket("ws://localhost:4242/game/match");
 
     console.log("Matching!");
     //TODO: get user id

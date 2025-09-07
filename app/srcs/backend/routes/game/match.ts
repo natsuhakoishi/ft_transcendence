@@ -10,7 +10,8 @@ const waitingPlayers: Player[] = [];
 
 const match: FastifyPluginAsync = async(fastify: any) => {
     fastify.get("/match", { websocket: true }, (connection: any, req) => {
-    const ws = connection.socket;
+    const ws = connection;
+
    console.log("/match connected");
 
     ws.on("message", msg => {
@@ -42,7 +43,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
         if (idx !== -1)
             waitingPlayers.splice(idx, 1);
     });
-    
+
 })
 }
 

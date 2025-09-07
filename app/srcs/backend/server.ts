@@ -22,6 +22,7 @@ import authGoogleApi from './routes/api/auth-google-api.ts';
 
 //game
 import match from './routes/game/match.ts';
+import websocketPlugin from "@fastify/websocket";
 
 dotenv.config();
 
@@ -62,11 +63,11 @@ async function initServer()
 
 	const fastify = Fastify({
 		logger: true,
-		https: {
-			key: fs.readFileSync(path.join(cert_path, "backend-ssl.key")),
-			cert: fs.readFileSync(path.join(cert_path, "backend-ssl.crt")),
-			passphrase: PEM_PASS
-		}
+		// https: {
+		// 	key: fs.readFileSync(path.join(cert_path, "backend-ssl.key")),
+		// 	cert: fs.readFileSync(path.join(cert_path, "backend-ssl.crt")),
+		// 	passphrase: PEM_PASS
+		// }
 	});
 	await initDB();
 
@@ -106,6 +107,7 @@ async function initServer()
 	await fastify.register(tournamentGetApi, { prefix: '/api' });
 
 	// game
+	await fastify.register(websocketPlugin);
 	await fastify.register(match, {prefix: '/game'});
 
 	await fastify.register(async (privateApiRoutes: any) => {

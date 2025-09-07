@@ -5,6 +5,7 @@
     "@fastify/multipart": "^9.0.3",
     "@fastify/oauth2": "^8.1.2",
     "@fastify/static": "^8.2.0",
+    "@fastify/websocket": "^11.2.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -21,7 +22,8 @@
     "@types/bcrypt": "^6.0.0",
     "@types/nodemailer": "^7.0.1",
     "@types/sqlite3": "^3.1.11",
-    "@types/validator": "^13.15.3"
+    "@types/validator": "^13.15.3",
+    "@types/ws": "^8.18.1"
   },
   "type": "module"
 }
