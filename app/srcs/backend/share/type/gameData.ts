@@ -1,6 +1,8 @@
 export interface GameData {
-    userId: number;
     roomId: string;
+
+    userId: number;
     keyPress: string;
 
 }
+
