@@ -20,13 +20,6 @@ function MainPage() {
 function ModeSelectPage() {
   // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
   const [page, setPage] = useState("Match");
-  // React.useEffect(() => {
-  //   if (page === "Matching")
-  //   {
-  //     matching();
-  //     console.log("use effect, matching");
-  //   }
-  // }, [page]);
 
   return (
     <div className="container bg-blue-500">

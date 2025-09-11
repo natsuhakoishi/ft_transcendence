@@ -43,7 +43,6 @@ const match: FastifyPluginAsync = async(fastify: any) => {
             if (idx !== -1)
                 waitingPlayers.splice(idx, 1);
         });
-
     })
 }
 

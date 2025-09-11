@@ -18,13 +18,15 @@ export function Matching() {
             console.log("sent ID");
         };
 
+        let RoomId: string = "";
         ws.onmessage = async (event) => {
             console.log("server: " + event.data);
             const data: GameData = {
                 roomId: event.data,
-                userId: playerID,
+                playerId: playerID,
                 keyPress: "//init//"
             };
+            RoomId = data.roomId;
 
             try {
                 const response = await fetch("http://localhost:4242/game/games", {
@@ -46,9 +48,8 @@ export function Matching() {
                 console.log("fetch error");
             }
 
-
-
-            navigate("/game/match");
+            const queryParams: string = "ROOMID=" + RoomId + "&PLAYERID=" + playerID
+            navigate("/game/match?" + queryParams);
         };
 
         return () => { //when user press 'back button'
