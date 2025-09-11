@@ -11,7 +11,7 @@ function MainPage() {
     <div className="container bg-blue-500">
       <h1>HOME</h1>
       <div className="container bg-green-500">
-        <Link to="/game/matching">Mode select</Link>
+        <Link to="/game/modeSelect">Mode select</Link>
       </div>
     </div>
   );
@@ -19,11 +19,11 @@ function MainPage() {
 
 function ModeSelectPage() {
   // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
-  const [page, setPage] = useState("Match");
+  const [page, setPage] = useState("select");
 
   return (
     <div className="container bg-blue-500">
-      {page === "Match" ? (
+      {page === "select" ? (
         <div className="container bg-blue-500">
           <h1 className="text-5xl decoration-cyan-800">Select a mode</h1>
           <div className="container bg-green-200">
@@ -51,14 +51,14 @@ function App() {
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/game" >
-        <Route path="matching" element={<ModeSelectPage />} />
-        <Route path="match" element={<GamePage />} />
+        <Route path="modeSelect" element={<ModeSelectPage />} />
+        <Route path="gameplay" element={<GamePage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
+      <Route path="/404" element={<NotFound />} />
     </Routes>
   );
 }
-
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>

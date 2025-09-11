@@ -4,7 +4,7 @@ import type { FastifyPluginAsync } from "fastify";
 import type { GameData } from "../../share/type/gameData";
 
 const games: FastifyPluginAsync = async(fastify: any) => {
-    fastify.post("/games", async (request, reply) => {
+    fastify.post("/gameplay", async (request, reply) => {
         const data: GameData = request.body as GameData;
 
         console.log("games(post): receive message from player", data);
@@ -15,7 +15,7 @@ const games: FastifyPluginAsync = async(fastify: any) => {
     });
 
 
-    fastify.get("/games", { websocket: true }, (connection: any, req) => {
+    fastify.get("/gameplay", { websocket: true }, (connection: any, req) => {
         const ws = connection;
 
         console.log("/games: connected");

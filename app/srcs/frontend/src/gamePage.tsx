@@ -1,29 +1,44 @@
 import React from "react";
-import type { GameData, GameState } from "../../backend/share/type/gameData";
-import { Navigate, useSearchParams } from "react-router-dom";
+import type { GameData, GameState } from "../../backend/share/type/gameData.ts";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function GamePage() {
+    const navigate = useNavigate();
     console.log("GamePage");
     const [ queryParams ] = useSearchParams();
     const RoomID: string | null = queryParams.get("ROOMID");
     const PlayerID: string | null = queryParams.get("PLAYERID");
-    
-    if (!RoomID || !PlayerID)
-        Navigate("/roomNotFound"); //TODO: create room not found react function
-
-    let gameData: GameData = {
-        roomId: RoomID!,
-        playerId: parseInt(PlayerID!),
-        keyPress: "null"
-    }
 
     React.useEffect(() => {
-        const ws = new WebSocket("ws://localhost:4242/game/games");
+        if (!RoomID || !PlayerID)
+        {
+            console.log("gamePage: not found");
+            navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function
+        }
+        const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
 
+        const boardWidth: number = import.meta.env.VITE_GAME_BOARD_WIDTH_PX;
+        const boardHeight: number = import.meta.env.VITE_GAME_BOARD_HEIGHT_PX;
+        const paddlesHeight: number = import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX;
+        const paddlesWidth: number = import.meta.env.VITE_GAME_PADDLES_WIDTH_PX;
+
+        console.log(boardHeight, boardWidth, paddlesHeight, paddlesWidth);
         let gameState: GameState = {
-            ball: { x: 300, y: 200, vx: 2, vy: 2 },
-            paddles: { left: 150, right: 150 }
+            ball: { x: boardWidth / 2, y: boardHeight / 2, vx: 2, vy: 2, radius: 10},
+            leftPaddles: { x: 20, y: boardHeight / 2 - 50, width: paddlesWidth, height: paddlesHeight},
+            rightPaddles: { x: boardWidth - 20 - 10, y: boardHeight / 2 - 50, width: paddlesWidth, height: paddlesHeight}
         };
+
+        console.log(gameState);
+
+        let gameData: GameData = {
+            roomId: RoomID!,
+            playerId: parseInt(PlayerID!),
+            keyPress: "null"
+        }
+
+        if (gameData.keyPress === "null")
+            draw(gameState);
 
         ws.onmessage = (msg) => {
             gameState = JSON.parse(msg.data);
@@ -66,15 +81,19 @@ function draw(gameState: GameState): void {
     console.log("gamePage: draw");
 
     const canvas = document.getElementById("gameBoard") as HTMLCanvasElement;
+    canvas.width = import.meta.env.VITE_GAME_BOARD_WIDTH_PX;
+    canvas.height = import.meta.env.VITE_GAME_BOARD_HEIGHT_PX;
+
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
     ctx.beginPath();
-    ctx.arc(gameState.ball.x, gameState.ball.y, 10, 0, Math.PI*2);
+    ctx.arc(gameState.ball.x, gameState.ball.y, gameState.ball.radius, 0, Math.PI*2);
     ctx.fill();
 
-    ctx.fillRect(20, gameState.paddles.left, 10, 80);
-    ctx.fillRect(570, gameState.paddles.right, 10, 80);
+    ctx.fillRect(gameState.leftPaddles.x, gameState.leftPaddles.x, gameState.leftPaddles.width, gameState.leftPaddles.height);
+    ctx.fillRect(gameState.rightPaddles.x, gameState.rightPaddles.x, gameState.rightPaddles.width, gameState.rightPaddles.height);
+
 }

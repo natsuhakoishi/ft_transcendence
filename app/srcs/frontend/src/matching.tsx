@@ -1,14 +1,13 @@
 import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import type { GameData } from "../../backend/share/type/gameData";
-// import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import type { GameData } from "../../backend/share/type/gameData.ts";
 
 export function Matching() {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-
-        const ws = new WebSocket("ws://localhost:4242/game/match");
+        
+        const ws = new WebSocket(import.meta.env.VITE_GAMEMATCHING_ROUTE);
         console.log("Matching...");
         //TODO: get user id
         const playerID: number = 5555;
@@ -29,7 +28,7 @@ export function Matching() {
             RoomId = data.roomId;
 
             try {
-                const response = await fetch("http://localhost:4242/game/games", {
+                const response = await fetch(import.meta.env.VITE_GAMEPLAY_HTTP_ROUTE, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -48,8 +47,14 @@ export function Matching() {
                 console.log("fetch error");
             }
 
-            const queryParams: string = "ROOMID=" + RoomId + "&PLAYERID=" + playerID
-            navigate("/game/match?" + queryParams);
+            navigate({
+                pathname: import.meta.env.VITE_PATH_GAMEPLAY,
+                search: new URLSearchParams({
+                    ROOMID: RoomId,
+                    PLAYERID: playerID.toString()
+                }).toString(),
+            });
+
         };
 
         return () => { //when user press 'back button'

@@ -12,11 +12,21 @@ export interface GameState {
         y: number;
         vx: number;
         vy: number;
+        radius: number;
     };
 
-    paddles: {
-        left: number;
-        right: number;
+    rightPaddles: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+
+    leftPaddles: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
     };
 }
 
