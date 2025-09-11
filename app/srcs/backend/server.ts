@@ -31,6 +31,7 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const PEM_PASS = process.env.PEM_PASS;
+const BACKEND_PORT = process.env.BACKEND_PORT;
 export const SMTP_EMAIL = process.env.SMTP_EMAIL;
 export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
 
@@ -49,6 +50,12 @@ if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET)
 if (!PEM_PASS)
 {
 	console.error('Error: PEM_PASS not found!');
+	process.exit(1);
+}
+
+if (!BACKEND_PORT)
+{
+	console.error('Error: BACKEND_PORT not found!');
 	process.exit(1);
 }
 
@@ -94,8 +101,12 @@ async function initServer()
 			auth: oauthPlugin.GOOGLE_CONFIGURATION
 		},
 		startRedirectPath: '/api/auth/google',
-		callbackUri: 'http://localhost:4242/api/auth/google/callback',
+		callbackUri: 'https://localhost:4242/api/auth/google/callback',
 	});
+
+	// fastify.get('/', async (req, reply) => {
+	// 	return { hello: 'world' }
+	// })
 
 	const dir_name = path.dirname(fileURLToPath(import.meta.url));
 	const avatars_path = path.join(dir_name, 'assets/avatars');
@@ -130,8 +141,8 @@ async function main()
 
 	try
 	{
-		await server.listen({ port: 4242, host: "0.0.0.0"});
-		console.log("Server listening at http://localhost:4242");
+		await server.listen({ port: Number(BACKEND_PORT), host: "0.0.0.0"});
+		console.log(`Server listening at https://localhost:${BACKEND_PORT}`);
 	}
 	catch (error)
 	{

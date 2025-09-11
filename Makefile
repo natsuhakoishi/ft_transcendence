@@ -21,6 +21,9 @@ dbclean:
 	rm -rf ./database/*
 	find ./app/srcs/backend/assets/avatars -type f ! -name 'default.*' -delete
 
+ngclean:
+	pkill ngrok
+
 fclean:
 	sudo docker stop $(shell sudo docker ps -qa) 2>/dev/null || true
 	sudo docker rm $(shell sudo docker ps -qa) 2>/dev/null || true
