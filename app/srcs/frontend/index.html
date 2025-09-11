@@ -384,7 +384,7 @@
       const res = await apiFetchPr("delete_avatar", { method: "POST" });
       const data = await res.json();
       log(res.ok ? "✅ Avatar deleted." : "❌ " + data.message, !res.ok);
-      if (res.ok) avatarPreview.src = `httpss://localhost:4242/avatars/default.webp?t=${Date.now()}`;
+      if (res.ok) avatarPreview.src = `https://localhost:4242/avatars/default.webp?t=${Date.now()}`;
       fetchProfile();
     });
 
