@@ -128,6 +128,12 @@ async function initServer()
 		await privateApiRoutes.register(tournamentApi);
 	}, { prefix: '/api/private' });
 
+//Feat: print received cookie for every request
+//   fastify.addHook('onRequest', (req, res, done) => {
+//     console.log('Cookies received:', req.cookies);
+//     done();
+//   });
+
 	return fastify;
 }
 
