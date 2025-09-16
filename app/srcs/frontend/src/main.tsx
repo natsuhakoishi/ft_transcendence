@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import "./input.css";
 import { Matching } from "./matching";
 import { GamePage } from "./gamePage";
 import NotFound from "./NotFound";
+import { LoginPage } from "./loginPage";
+import { Temp } from "./mainPage";
 
 function MainPage() {
   return (
@@ -48,15 +51,20 @@ function ModeSelectPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/game" >
-        <Route path="modeSelect" element={<ModeSelectPage />} />
-        <Route path="gameplay" element={<GamePage />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
+    <>
+      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/temp" element={<Temp />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/game" >
+          <Route path="modeSelect" element={<ModeSelectPage />} />
+          <Route path="gameplay" element={<GamePage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/404" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
 
