@@ -28,7 +28,13 @@ const authGoogleApi: FastifyPluginAsync = async (fastify: any) => {
 				return res.status(400).send({ message: 'This gmail already exist in our Database, please login with your password '});
 			await setLoginStatus(user.id, true);
 			const jwtToken = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });
-			res.send({ token: jwtToken, email: userData.email, name: userData.name });
+			res.setCookie("cookiesToken", jwtToken, {
+				path: "/",
+				httpOnly: true,
+				secure: true,
+				sameSite: "lax",
+				maxAge: 2 * 60 * 60
+			}).send({ email: userData.email, name: user.username });
 		}
 		catch (error)
 		{

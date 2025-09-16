@@ -8,8 +8,20 @@ const jwtPlugin: FastifyPluginAsync = async (fastify: any) => {
 	fastify.addHook('preHandler', async (req: any, res: any) => {
 		if (!req.url.startsWith('/api/private'))
 			return ;
-		await req.jwtVerify();
-		req.user = (req.user as any).id;
+
+		const token = req.cookies.cookiesToken;
+		if (!token)
+			return res.status(401).send({ message: "Unauthorized due to missing cookiesToken" });
+
+		try
+		{
+			const jwt = fastify.jwt.verify(token);
+			req.user = (jwt as any).id;
+		}
+		catch (error)
+		{
+			return res.status(401).send({ message: "Invalid or expired Token" });
+		}
 	});
 };
 
