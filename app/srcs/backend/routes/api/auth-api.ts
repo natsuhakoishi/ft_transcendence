@@ -84,7 +84,13 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 		await setLoginStatus(user.id, true);
 		const token = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });
 
-		res.send({ token, email, name: user.username });
+		res.setCookie("cookiesToken", token, {
+			path: "/",
+			httpOnly: true,
+			secure: true,
+			sameSite: "strict",
+			maxAge: 2 * 60 * 60
+		}).send({ email, name: user.username });
 	});
 
 	//verify-otp-login
@@ -116,7 +122,13 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 		const user = await getUserByEmail(email);
 		await setLoginStatus(user.id, true);
 		const token = fastify.jwt.sign({ id: user.id }, { expiresIn: '2h' });
-		res.send({ token, email, name: user.username });
+		res.setCookie("cookiesToken", token, {
+			path: "/",
+			httpOnly: true,
+			secure: true,
+			sameSite: "strict",
+			maxAge: 2 * 60 * 60
+		}).send({ email, name: user.username });
 	});
 
 	// logout

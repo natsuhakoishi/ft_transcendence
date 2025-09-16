@@ -7,7 +7,7 @@ import fastifyStatic from '@fastify/static';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import oauthPlugin from '@fastify/oauth2';
-import fs, { existsSync } from 'fs';
+import fs from 'fs';
 
 import { initDB } from './database/tables.ts';
 import userApi from './routes/api/user-api.ts';
@@ -71,11 +71,11 @@ async function initServer()
 
 	const fastify = Fastify({
 		logger: true,
-		// https: {
-		// 	key: fs.readFileSync(path.join(cert_path, "backend-ssl.key")),
-		// 	cert: fs.readFileSync(path.join(cert_path, "backend-ssl.crt")),
-		// 	passphrase: PEM_PASS
-		// }
+		https: {
+			key: fs.readFileSync(path.join(cert_path, "backend-ssl.key")),
+			cert: fs.readFileSync(path.join(cert_path, "backend-ssl.crt")),
+			passphrase: PEM_PASS
+		}
 	});
 	await initDB();
 
@@ -101,12 +101,8 @@ async function initServer()
 			auth: oauthPlugin.GOOGLE_CONFIGURATION
 		},
 		startRedirectPath: '/api/auth/google',
-		callbackUri: 'https://localhost:4242/api/auth/google/callback',
+		callbackUri: `https://localhost:${BACKEND_PORT}/api/auth/google/callback`,
 	});
-
-	// fastify.get('/', async (req, reply) => {
-	// 	return { hello: 'world' }
-	// })
 
 	const dir_name = path.dirname(fileURLToPath(import.meta.url));
 	const avatars_path = path.join(dir_name, 'assets/avatars');
