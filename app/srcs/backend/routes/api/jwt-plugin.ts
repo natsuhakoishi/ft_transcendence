@@ -9,7 +9,7 @@ const jwtPlugin: FastifyPluginAsync = async (fastify: any) => {
 		if (!req.url.startsWith('/api/private'))
 			return ;
 
-		const token = req.cookies.authToken;
+		const token = req.cookies.cookiesToken;
 		if (!token)
 			return res.status(401).send({ message: "Unauthorized due to missing cookiesToken" });
 
