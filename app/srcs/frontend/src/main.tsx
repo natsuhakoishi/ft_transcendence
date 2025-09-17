@@ -1,21 +1,13 @@
 import { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import "./input.css";
 import { Matching } from "./matching";
 import { GamePage } from "./gamePage";
 import NotFound from "./NotFound";
-
-function MainPage() {
-  return (
-    <div className="container bg-blue-500">
-      <h1>HOME</h1>
-      <div className="container bg-green-500">
-        <Link to="/game/modeSelect">Mode select</Link>
-      </div>
-    </div>
-  );
-}
+import { LoginPage } from "./loginPage";
+import { MainPage } from "./mainPage";
 
 function ModeSelectPage() {
   // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
@@ -48,15 +40,19 @@ function ModeSelectPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/game" >
-        <Route path="modeSelect" element={<ModeSelectPage />} />
-        <Route path="gameplay" element={<GamePage />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
+    <>
+      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/game" >
+          <Route path="modeSelect" element={<ModeSelectPage />} />
+          <Route path="gameplay" element={<GamePage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/404" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
 

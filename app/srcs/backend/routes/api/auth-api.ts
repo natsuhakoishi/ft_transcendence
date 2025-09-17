@@ -40,7 +40,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 
 		const sent = await sendOTP(email);
 		if (sent)
-			res.send({ message: 'OTP sent successfully' });
+			res.send({ message: 'OTP sent successfully', requireOTP: true });
 		else
 			res.status(500).send({ message: 'Error: Failed to send OTP' });
 	});
