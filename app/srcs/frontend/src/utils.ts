@@ -30,3 +30,17 @@ export function initGameData(_roomId: string, _playerID: number, boardWidth: num
             };
     return data;
 }
+
+export async function apiFetch(endpoint: string, options: RequestInit = {}) {
+  const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
+  if (!(options.body instanceof FormData))
+    headers["Content-Type"] = "application/json";
+  return fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers, credentials: 'include' });
+}
+
+export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
+  const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
+  if (!(options.body instanceof FormData))
+    headers["Content-Type"] = "application/json";
+  return fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+}

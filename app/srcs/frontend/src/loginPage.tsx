@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-
-async function apiFetch(endpoint: string, options: RequestInit = {}) {
-  const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
-  if (!(options.body instanceof FormData))
-    headers["Content-Type"] = "application/json";
-  return fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers, credentials: 'include' });
-}
-//todo move it to utils.tsx and export
+import { apiFetch } from "./utils";
 
 const GoogleLogIn: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
@@ -141,7 +134,7 @@ export function LoginPage() {
       const data = await res.json();
 
       if (res.ok)
-        navigate("/temp"); //todo update to correct route
+        navigate("/");
       else
         toast.error(data.message);
     } catch (err: any) {

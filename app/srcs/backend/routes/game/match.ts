@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
-import { Player } from "../../share/type/roomData";
+import type { Player } from "../../share/type/roomData";
 
 const waitingPlayers: Player[] = [];
 const waitingTPlayers: Player[] = [];

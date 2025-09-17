@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, {Toaster } from "react-hot-toast"
-
-async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
-  const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
-  if (!(options.body instanceof FormData))
-    headers["Content-Type"] = "application/json";
-  return fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
-}
-
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { apiFetchPrivate } from "./utils";
 
 function LoadingScreen() {
   const [count, setCount] = useState(0);
@@ -37,7 +31,7 @@ function LoadingScreen() {
   //memo spinner / counter
 }
 
-export function Temp() {
+export function MainPage() {
   useEffect(() => {
   	document.title = "Main Page";
   }, []);
@@ -77,6 +71,9 @@ export function Temp() {
   return (
     <div>
       <h1>yOOOOOOO!</h1>
+      <button className="container bg-green-300">
+        <Link to="/game/modeSelect">Mode Select</Link>
+      </button>
     </div>
   );
 }

@@ -7,18 +7,7 @@ import { Matching } from "./matching";
 import { GamePage } from "./gamePage";
 import NotFound from "./NotFound";
 import { LoginPage } from "./loginPage";
-import { Temp } from "./mainPage";
-
-function MainPage() {
-  return (
-    <div className="container bg-blue-500">
-      <h1>HOME</h1>
-      <div className="container bg-green-500">
-        <Link to="/game/modeSelect">Mode select</Link>
-      </div>
-    </div>
-  );
-}
+import { MainPage } from "./mainPage";
 
 function ModeSelectPage() {
   // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
@@ -55,7 +44,6 @@ function App() {
       <Toaster position="top-center" />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/temp" element={<Temp />} />
         <Route path="/" element={<MainPage />} />
         <Route path="/game" >
           <Route path="modeSelect" element={<ModeSelectPage />} />
