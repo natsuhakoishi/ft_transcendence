@@ -1,6 +1,6 @@
 import { initDB } from "./tables.ts";
 import { createUser, getUserAll, updateUsernameById } from "./user.ts";
-import { createMatch, getMatchAll } from "./match.ts";
+import { createMatch, getMatchAll, getMatchByUserId } from "./match.ts";
 import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournament.ts";
 import { addWinLose, createProfile, getProfilesAll } from "./profile.ts";
 import { addFriendbyId, checkFriendMutual, getFriendshipsAll, getFriendshipsById } from "./friendship.ts";
@@ -24,12 +24,15 @@ async function main()
 		// await createUser("Kita", "kita@yippie.com", "77777777");
 		// await createUser("Bocchi", "hitori@yippie.com", "11111111");
 
-		const users = await getUserAll();
-		console.log("All Users:", users);
+		// const users = await getUserAll();
+		// console.log("All Users:", users);
 
-		await updateUsernameById(1, "labubu");
-		const users2 = await getUserAll();
-		console.log("All Users:", users2);
+		// await updateUsernameById(1, "labubu");
+		// const users2 = await getUserAll();
+		// console.log("All Users:", users2);
+		const match = await getMatchAll();
+
+		console.log(match);
 	}
 	catch (error)
 	{
@@ -37,19 +40,19 @@ async function main()
 	}
 
 	// //make profiles
-	try {
-	// 	await createProfile("Nijika");
-	// 	await createProfile("Ryo");
-	// 	await createProfile("Kita");
-	// 	await createProfile("Bocchi");
+	// try {
+	// // 	await createProfile("Nijika");
+	// // 	await createProfile("Ryo");
+	// // 	await createProfile("Kita");
+	// // 	await createProfile("Bocchi");
 
-		const profiles = await getProfilesAll();
-		console.log("Profiles: ", profiles);
-	}
-	catch (error)
-	{
-		console.log("Profile error: ", error);
-	}
+	// 	const profiles = await getProfilesAll();
+	// 	console.log("Profiles: ", profiles);
+	// }
+	// catch (error)
+	// {
+	// 	console.log("Profile error: ", error);
+	// }
 
 	// //make matches
 	// try {
