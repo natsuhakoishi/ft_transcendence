@@ -8,7 +8,7 @@ export interface GameData {
     gameState: GameState;
 }
 
-export interface TGameData {
+export interface TData {
     roomId: string;
 
     playerId: number;
