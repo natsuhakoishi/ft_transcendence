@@ -5,7 +5,7 @@ const ws = new WebSocket("ws://localhost:3000/game");
 let playerMethod: string = "arrow";
 // let keyPress: string = "";
 
-let data: GameData = {userId: 0, roomId: "", keyPress: ""};
+let data: GameData = {playerId: 0, roomId: "", keyPress: ""};
 
 export function pongGame(): void {
     
