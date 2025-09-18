@@ -22,6 +22,7 @@ import authGoogleApi from './routes/api/auth-google-api.ts';
 
 //game
 import websocketPlugin from "@fastify/websocket";
+import roomManagerPlugin from "./share/type/roomData.ts"
 import match from './routes/game/match.ts';
 import games from './routes/game/games.ts';
 
@@ -115,6 +116,7 @@ async function initServer()
 	await fastify.register(tournamentGetApi, { prefix: '/api' });
 
 	// game
+	fastify.register(roomManagerPlugin);
 	await fastify.register(websocketPlugin);
 	await fastify.register(match, {prefix: '/game'});
 	await fastify.register(games, {prefix: "/game"});
@@ -128,11 +130,11 @@ async function initServer()
 		await privateApiRoutes.register(tournamentApi);
 	}, { prefix: '/api/private' });
 
-//Feat: print received cookie for every request
-//   fastify.addHook('onRequest', (req, res, done) => {
-//     console.log('Cookies received:', req.cookies);
-//     done();
-//   });
+// Feat: print received cookie for every request
+  fastify.addHook('onRequest', (req, res, done) => {
+    console.log('Cookies received:', req.cookies);
+    done();
+  });
 
 	return fastify;
 }

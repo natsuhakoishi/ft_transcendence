@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { Player } from "../../share/type/roomData";
+import { createRoomID } from "./gameUtils.ts";
 
 const waitingPlayers: Player[] = [];
 const waitingTPlayers: Player[] = [];
@@ -22,6 +23,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                 const p1: Player = waitingPlayers.shift()!;
                 const p2: Player = waitingPlayers.shift()!;
 
+                fastify.rooms.createRoom(p1.id, p2.id);
                 const TmpRoomID: string = createRoomID(p1.id, p2.id);
 
                 p1.ws.send(TmpRoomID);
@@ -79,9 +81,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
     });
 }
 
-function createRoomID(p1: number, p2: number): string {
-    return p1 > p2 ? `${p2}-${p1}` : `${p1}-${p2}`;
-}
+
 
 function createTRoomID(p1: number, p2: number, p3: number, p4: number): string {
     const N = [p1, p2, p3, p4];

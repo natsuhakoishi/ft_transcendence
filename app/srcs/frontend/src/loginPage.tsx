@@ -134,7 +134,9 @@ export function LoginPage() {
       const data = await res.json();
 
       if (res.ok)
-        navigate("/");
+      { 
+          navigate("/");
+      }
       else
         toast.error(data.message);
     } catch (err: any) {

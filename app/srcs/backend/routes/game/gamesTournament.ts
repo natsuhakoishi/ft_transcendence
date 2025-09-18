@@ -7,8 +7,10 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             const data: TData = request.body as TData;
 
             console.log("/tournament/gameplay(post): receive message from player", data);
-    
+
             return { status: "ok", received: data };
         });
+
+        
 
 }

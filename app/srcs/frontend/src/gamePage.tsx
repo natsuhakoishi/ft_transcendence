@@ -2,7 +2,7 @@ import React from "react";
 import type { GameData } from "../../backend/share/type/gameData.ts";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { initGameState } from "./utils.ts";
-import type { GameState, Paddle } from "../../backend/share/type/gameState.ts";
+import type { Ball, GameState, Paddle } from "../../backend/share/type/gameState.ts";
 
 export function GamePage() {
     const navigate = useNavigate();
@@ -21,21 +21,15 @@ export function GamePage() {
         }
         const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
 
-        const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
-        const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
-        const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
-        const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
-
         //init default position and board size
-        const gameState: GameState = initGameState(boardWidth, boardHeight, paddlesHeight, paddlesWidth);
+        const gameState: GameState = initGameState();
 
-        console.log(gameState);
+        // console.log(gameState);
 
         let gameData: GameData = {
             roomId: RoomID!,
             playerId: parseInt(PlayerID!),
             keyPress: "null",
-            gameState: gameState
         }
 
         if (gameData.keyPress === "null")
@@ -71,15 +65,19 @@ export function GamePage() {
             else if (type === "game_over_offline")
             {
                 console.log("/gamePage: game over offline");
+                setTimeout(()=>{
+                    ws.close();
+                }, 1000*10);
                 //TODO: render ending
             }
             else if (type === "trespassing")
             {
                 console.log("/gamePage trespassing 凸^u^凸");
-                //TODO: trespassing page
+                //TODO: trespassing page / popup
+                navigate("/");
                 setTimeout(()=>{
                     ws.close();
-                }, 1000*10);
+                }, 1000);
             }
         };
 
@@ -134,16 +132,16 @@ function draw(gameState: GameState): void {
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
 
     const color = "black";
-    drawBall(gameState, ctx, color);
+    drawBall(gameState.ball, ctx, color);
 
     drawPaddles(gameState.leftPaddle, ctx, color);
     drawPaddles(gameState.rightPaddle, ctx, color);
 }
 
-function drawBall(gameState: GameState, ctx: CanvasRenderingContext2D, color: string): void {
+function drawBall(ball: Ball, ctx: CanvasRenderingContext2D, color: string): void {
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(gameState.ball.x, gameState.ball.y, gameState.ball.radius, 0, Math.PI*2);
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
     ctx.fill();
 }
 

@@ -2,7 +2,8 @@
 
 interface ImportMetaEnv {
   readonly VITE_GAMEPLAY_ROUTE: string;
-  readonly VITE_GAMEMATCHING_ROUTE: string;
+  readonly VITE_GAME_MATCHING_ROUTE: string;
+  readonly VITE_GAME_TOURNAMENT_MATCHING_ROUTE: string;
   readonly VITE_GAMEPLAY_HTTP_ROUTE: string;
   readonly VITE_PATH_GAMEPLAY: string;
   readonly VITE_PATH_404NOTFOUND: string;

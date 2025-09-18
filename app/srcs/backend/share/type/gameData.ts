@@ -5,7 +5,6 @@ export interface GameData {
 
     playerId: number;
     keyPress: string;
-    gameState: GameState;
 }
 
 export interface TData {
