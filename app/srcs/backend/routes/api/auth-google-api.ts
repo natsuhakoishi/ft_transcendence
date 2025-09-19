@@ -34,7 +34,7 @@ const authGoogleApi: FastifyPluginAsync = async (fastify: any) => {
 				secure: true,
 				sameSite: "lax",
 				maxAge: 2 * 60 * 60
-			}).send({ email: userData.email, name: user.username });
+			}).redirect("https://localhost:5173/");
 		}
 		catch (error)
 		{
