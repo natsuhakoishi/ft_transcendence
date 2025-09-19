@@ -58,3 +58,8 @@ export function initGameState(): GameState {
 export function createRoomID(p1: number, p2: number): string {
     return p1 > p2 ? `${p2}-${p1}` : `${p1}-${p2}`;
 }
+
+export function createTRoomID(playerID: [number, number, number, number]): string {
+    playerID.sort();
+    return `${playerID[0]}-${playerID[1]}-${playerID[2]}-${playerID[3]}`;
+}

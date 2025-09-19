@@ -1,5 +1,3 @@
-import type { GameState } from "./gameState.ts";
-
 export interface GameData {
     roomId: string;
 

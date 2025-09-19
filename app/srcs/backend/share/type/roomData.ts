@@ -2,17 +2,6 @@ import { createRoomID, initGameState } from "../../routes/game/gameUtils.ts";
 import type { GameState } from "./gameState.ts";
 import fp from "fastify-plugin";
 
-export default fp(async (fastify) => {
-  const rooms = new RoomManager();
-  fastify.decorate("rooms", rooms);
-});
-
-declare module "fastify" {
-  interface FastifyInstance {
-    rooms: RoomManager;
-  }
-}
-
 export interface Player {
     id: number;
     ws: any;
@@ -26,10 +15,11 @@ export class Room {
     private players: Set<Player>;
     private gameState: GameState;
 
-    constructor(_p1ID: number, _p2ID: number) {
+    constructor(playerID: [number, number]) {
         console.log("class room: constructor called");
-        this.p1ID = _p1ID;
-        this.p2ID = _p2ID;
+        playerID.sort();
+        this.p1ID = playerID[0];
+        this.p2ID = playerID[1];
         this.id = createRoomID(this.p1ID, this.p2ID);
         this.players = new Set();
         this.gameState = initGameState();
@@ -72,14 +62,14 @@ export class Room {
     }
 
     getP1ID(): number {        
-        return parseInt(this.id.split("-")[0], 10);
+        return this.p1ID;
     }
 
     getP2ID(): number {
-        return parseInt(this.id.split("-")[1], 10);
+        return this.p2ID;
     }
 
-    private setScore(playerId: number): any {
+    private setScore(playerId: number): void {
         const pos: string = this.id.indexOf(playerId.toString()) === 0 ? "left" : "right";
         if (pos === "left") {
             this.gameState.score.p1Score = 3;
@@ -108,7 +98,7 @@ export class RoomManager {
         console.log("called rooms");
         const roomID: string = createRoomID(p1ID, p2ID);
         if (!this.rooms.has(roomID))
-            this.rooms.set(roomID, new Room(p1ID, p2ID));
+            this.rooms.set(roomID, new Room([p1ID, p2ID]));
     }
 
     getRoom(roomID: string): Room | null {
@@ -136,4 +126,15 @@ export class RoomManager {
             console.log("Rooms list: ", i++);
         });
     }
+}
+
+export default fp(async (fastify) => {
+  const rooms = new RoomManager();
+  fastify.decorate("rooms", rooms);
+});
+
+declare module "fastify" {
+  interface FastifyInstance {
+    rooms: RoomManager;
+  }
 }

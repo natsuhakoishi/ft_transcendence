@@ -3,14 +3,14 @@ import type { TData } from "../../share/type/gameData.ts";
 
 const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
 
-        fastify.post("/tournament/gameplay", async (request, reply) => {
-            const data: TData = request.body as TData;
+    fastify.get("/tournament/gameplay", { websocket: true }, (connection: any, req) => {
 
-            console.log("/tournament/gameplay(post): receive message from player", data);
+            console.log("/tournament/gameplay(get): receive message from player", data);
 
-            return { status: "ok", received: data };
+
         });
 
         
+
 
 }
