@@ -12,7 +12,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 	// register
 	fastify.post('/register', { schema: registerSchema }, async (req: any, res: any) => {
 		const { username, email, password } = req.body as any;
-		if (await getUserByUsername(username))
+		if (await getUserByUsername(username))	
 			return res.status(400).send({ message: 'Warning: Username already taken.' });
 		if (await getUserByEmail(email))
 			return res.status(400).send({ message: 'Warning: Email already registered.' });
@@ -26,7 +26,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 		const sent = await sendOTP(email);
 		if (!sent)
 			return res.status(500).send({ message: 'Error: Failed to send OTP, please enter valid email address' });
-		res.send({ message: 'OTP sent successfully, please check email' });
+		res.send({ message: 'OTP sent successfully, please check email', requireOTP: true });
 	});
 
 	// login
