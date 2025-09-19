@@ -1,7 +1,7 @@
 import React from "react";
 import type { GameData } from "../../backend/share/type/gameData.ts";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { initGameState } from "./utils.ts";
+import { apiFetchPrivate, initGameState } from "./utils.ts";
 import type { Ball, GameState, Paddle } from "../../backend/share/type/gameState.ts";
 
 export function GamePage() {
@@ -9,103 +9,114 @@ export function GamePage() {
     console.log("GamePage");
     const [ queryParams ] = useSearchParams();
     const RoomID: string | null = queryParams.get("ROOMID");
-    const PlayerID: string | null = queryParams.get("PLAYERID");
 
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
-        console.log("gamePage: useEffect");
-        if (!RoomID || !PlayerID)
-        {
-            console.log("gamePage: missing roomID / playerID");
-            navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
-        }
-        const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
+        (async () => {
+            console.log("gamePage: useEffect");
 
-        //init default position and board size
-        const gameState: GameState = initGameState();
-
-        // console.log(gameState);
-
-        let gameData: GameData = {
-            roomId: RoomID!,
-            playerId: parseInt(PlayerID!),
-            keyPress: "null",
-        }
-
-        if (gameData.keyPress === "null")
-            draw(gameState);
-
-        ws.onmessage = (msg) => {
-            // console.log("/gamePage: rev msg");
-            const parse: {type : string, gameState: GameState} = JSON.parse(msg.data);
-
-            const type: string = parse.type;
-            // console.log("/gamePage: ", parse.gameState);
-            if (type === "render")
-                draw(parse.gameState);
-            else if (type === "start")
+            let PlayerID: string;
+            try {
+                const data = await apiFetchPrivate("me", { method: "GET" });
+                PlayerID = data.id;
+            }
+            catch (e) {
+                console.log("Matching: fetch error: ", e);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+            }
+            if (!RoomID)
             {
-                //TODO: render countdown animation
-                console.log("/gamePage: start");
-                setTimeout( () => {}, 2000);
+                console.log("gamePage: missing roomID");
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
             }
-            else if (type === "goal")
-            {
-                console.log("/gamePage: goal");
-                //TODO: render goal animation
+            const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
+    
+            //init default position and board size
+            const gameState: GameState = initGameState();
+    
+            // console.log(gameState);
+    
+            let gameData: GameData = {
+                roomId: RoomID!,
+                playerId: parseInt(PlayerID!),
+                keyPress: "null",
             }
-            else if (type === "game_over")
-            {
-                console.log("/gamePage: game over");
-                setTimeout(()=>{
-                    ws.close();
-                }, 1000*10);
-                //TODO: render ending
-            }
-            else if (type === "game_over_offline")
-            {
-                console.log("/gamePage: game over offline");
-                setTimeout(()=>{
-                    ws.close();
-                }, 1000*10);
-                //TODO: render ending
-            }
-            else if (type === "trespassing")
-            {
-                console.log("/gamePage trespassing 凸^u^凸");
-                //TODO: trespassing page / popup
-                navigate("/");
-                setTimeout(()=>{
-                    ws.close();
-                }, 1000);
-            }
-        };
+    
+            if (gameData.keyPress === "null")
+                draw(gameState);
+    
+            ws.onmessage = (msg) => {
+                // console.log("/gamePage: rev msg");
+                const parse: {type : string, gameState: GameState} = JSON.parse(msg.data);
+    
+                const type: string = parse.type;
+                // console.log("/gamePage: ", parse.gameState);
+                if (type === "render")
+                    draw(parse.gameState);
+                else if (type === "start")
+                {
+                    //TODO: render countdown animation
+                    console.log("/gamePage: start");
+                    setTimeout( () => {}, 2000);
+                }
+                else if (type === "goal")
+                {
+                    console.log("/gamePage: goal");
+                    //TODO: render goal animation
+                }
+                else if (type === "game_over")
+                {
+                    console.log("/gamePage: game over");
+                    setTimeout(()=>{
+                        ws.close();
+                    }, 1000*10);
+                    //TODO: render ending
+                }
+                else if (type === "game_over_offline")
+                {
+                    console.log("/gamePage: game over offline");
+                    setTimeout(()=>{
+                        ws.close();
+                    }, 1000*10);
+                    //TODO: render ending
+                }
+                else if (type === "trespassing")
+                {
+                    console.log("/gamePage trespassing 凸^u^凸");
+                    //TODO: trespassing page / popup
+                    navigate("/");
+                    setTimeout(()=>{
+                        ws.close();
+                    }, 1000);
+                }
+            };
+    
+            let confirmGame: boolean = false;
+            document.addEventListener("keydown", (e) => {
+                if (confirmGame && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
+                    console.log("gamePage: up");
+                    gameData.keyPress = "up";
+                    ws.send(JSON.stringify(gameData));
+                }
+                else if (confirmGame && (e.key === "s" || e.key === "S" || e.key === "ArrowDown")) {
+                    console.log("gamePage: down");
+                    gameData.keyPress = "down";
+                    ws.send(JSON.stringify(gameData));
+                }
+                else if (e.key === "Enter" && !confirmGame)
+                {
+                    confirmGame = true;
+                    console.log("gamePage:" + e.key);
+                    gameData.keyPress = "Enter";
+                    ws.send(JSON.stringify(gameData));
+                }
+            });
 
-        let confirmGame: boolean = false;
-        document.addEventListener("keydown", (e) => {
-            if (confirmGame && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
-                console.log("gamePage: up");
-                gameData.keyPress = "up";
-                ws.send(JSON.stringify(gameData));
-            }
-            else if (confirmGame && (e.key === "s" || e.key === "S" || e.key === "ArrowDown")) {
-                console.log("gamePage: down");
-                gameData.keyPress = "down";
-                ws.send(JSON.stringify(gameData));
-            }
-            else if (e.key === "Enter" && !confirmGame)
-            {
-                confirmGame = true;
-                console.log("gamePage:" + e.key);
-                gameData.keyPress = "Enter";
-                ws.send(JSON.stringify(gameData));
-            }
-        });
-
-        return () => { //when user press 'back button'
-            console.log("GamePage: closing ws");
-            ws.close();
-        };
+            return () => { //when user press 'back button'
+                console.log("GamePage: closing ws");
+                ws.close();
+            };
+        })();
     }, []);
 
     return (

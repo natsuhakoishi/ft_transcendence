@@ -41,8 +41,7 @@ export function Matching() {
             navigate({
                 pathname: import.meta.env.VITE_PATH_GAMEPLAY,
                 search: new URLSearchParams({
-                    ROOMID: RoomId,
-                    PLAYERID: playerID.toString()
+                    ROOMID: RoomId
                 }).toString(),
             });
 
@@ -95,8 +94,7 @@ export function TMatching() {
             navigate({
                 pathname: import.meta.env.VITE_PATH_GAMEPLAY,
                 search: new URLSearchParams({
-                    ROOMID: RoomId,
-                    PLAYERID: playerID.toString()
+                    ROOMID: RoomId
                 }).toString(),
             });
 
