@@ -1,13 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import type { GameData } from "../../backend/share/type/gameData.ts";
-import { apiFetchPrivate, initGameData } from "./utils.ts";
+import { apiFetchPrivate } from "./utils.ts";
 
-const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
-const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
-const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
-const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
-
+// const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
+// const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
+// const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
+// const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
 
 export function Matching() {
     const navigate = useNavigate();
@@ -72,8 +70,7 @@ export function TMatching() {
         ws.onopen = () => {
             (async () => {
                 try {
-                    const res = await apiFetchPrivate("me", { method: "GET" });
-                    const data = await res.json();
+                    const data = await apiFetchPrivate("me", { method: "GET" });
                     playerID = data.id;
                     console.log(playerID);
                     ws.send(playerID.toString());
@@ -92,7 +89,8 @@ export function TMatching() {
             const RoomId: string = event.data;
 
             navigate({
-                pathname: import.meta.env.VITE_PATH_GAMEPLAY,
+                // pathname: import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY,
+                pathname: "/game/tournament",
                 search: new URLSearchParams({
                     ROOMID: RoomId
                 }).toString(),
@@ -108,7 +106,7 @@ export function TMatching() {
 
     return (
         <div className="container bg-blue-500">
-          <h1 className="text-5xl decoration-cyan-800">Matching...</h1>
+          <h1 className="text-5xl decoration-cyan-800">Tournament Matching...</h1>
       </div>
     );
 }

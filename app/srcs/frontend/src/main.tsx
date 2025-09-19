@@ -3,40 +3,13 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./input.css";
-import { Matching } from "./matching";
+import { TMatching } from "./matching";
 import { GamePage } from "./gamePage";
 import NotFound from "./NotFound";
 import { LoginPage } from "./loginPage";
 import { MainPage } from "./mainPage";
-
-function ModeSelectPage() {
-  // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
-  const [page, setPage] = useState("select");
-
-  return (
-    <div className="container bg-blue-500">
-      {page === "select" ? (
-        <div className="container bg-blue-500">
-          <h1 className="text-5xl decoration-cyan-800">Select a mode</h1>
-          <div className="container bg-green-200">
-            <button type="button" onClick={() => setPage("Matching")}>AI</button> 
-                                              {/* TODO: change correct page */}
-          </div>
-          <div className="container bg-green-200">
-            <button type="button" onClick={() => setPage("Matching")}>1v1</button>
-          </div>
-          <div className="container bg-green-200">
-            <button type="button" onClick={() => setPage("Matching")}>Tournament</button>
-                                              {/* TODO: change correct page */}
-          </div>
-
-        </div>
-      ) : (
-        <Matching />
-      )}
-    </div>
-  );
-}
+import { TournamentGamePage } from "./TournamentGamePage";
+import { ModeSelectPage } from "./modeSelect";
 
 function App() {
   return (
@@ -48,6 +21,8 @@ function App() {
         <Route path="/game" >
           <Route path="modeSelect" element={<ModeSelectPage />} />
           <Route path="gameplay" element={<GamePage />} />
+          <Route path="tournament" element={<TournamentGamePage />} />
+          <Route path="tournamentMatching" element={<TMatching />} />
         </Route>
         <Route path="*" element={<NotFound />} />
         <Route path="/404" element={<NotFound />} />

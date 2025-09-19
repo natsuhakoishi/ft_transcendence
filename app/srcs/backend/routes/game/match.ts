@@ -60,7 +60,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
 
                 const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
 
-                fastify.tournamentRooms.createRoom([p1.id, p2.id, p3.id, p4.id]);
+                fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
 
                 p1.ws.send(roomID);
                 p2.ws.send(roomID);

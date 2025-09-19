@@ -4,16 +4,21 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiFetchPrivate, initGameState } from "./utils.ts";
 import type { Ball, GameState, Paddle } from "../../backend/share/type/gameState.ts";
 
-export function GamePage() {
+export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () => void}) {
     const navigate = useNavigate();
     console.log("GamePage");
     const [ queryParams ] = useSearchParams();
-    const RoomID: string | null = queryParams.get("ROOMID");
+    const RoomID: string | null = _roomID ?? queryParams.get("ROOMID");
 
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
         (async () => {
             console.log("gamePage: useEffect");
+            
+            if (!RoomID) {
+                console.log("gamePage: missing roomID");
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
+            }
 
             let PlayerID: string;
             try {
@@ -24,11 +29,7 @@ export function GamePage() {
                 console.log("Matching: fetch error: ", e);
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
-            if (!RoomID)
-            {
-                console.log("gamePage: missing roomID");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
-            }
+
             const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
     
             //init default position and board size
@@ -69,15 +70,17 @@ export function GamePage() {
                     console.log("/gamePage: game over");
                     setTimeout(()=>{
                         ws.close();
-                    }, 1000*10);
+                        onExit?.();
+                    }, 1000*50);
                     //TODO: render ending
                 }
                 else if (type === "game_over_offline")
                 {
                     console.log("/gamePage: game over offline");
                     setTimeout(()=>{
+                        onExit?.();
                         ws.close();
-                    }, 1000*10);
+                    }, 1000*50);
                     //TODO: render ending
                 }
                 else if (type === "trespassing")
@@ -117,7 +120,7 @@ export function GamePage() {
                 ws.close();
             };
         })();
-    }, []);
+    }, [onExit]);
 
     return (
         <div className="container">
