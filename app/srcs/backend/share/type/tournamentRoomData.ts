@@ -1,6 +1,7 @@
 import { createTRoomID } from "../../routes/game/gameUtils.ts";
 import type { Player } from "./roomData.ts";
 import { Room } from "./roomData.ts";
+import fp from "fastify-plugin";
 
 export interface Matches {
     type: null | "started" | "ended";
@@ -83,4 +84,53 @@ export class TRoom {
             [arr[2], arr[3]],
         ];
     }
+
+    getPlayerID(): [number, number, number, number] {
+        return [this.p1ID, this.p2ID, this.p3ID, this.p4ID];
+    }
+}
+
+export class TRoomManager {
+    private rooms: Map<string, TRoom>;
+
+    constructor() {
+        this.rooms = new Map();
+    }
+
+    createTRoom(playerID: [number, number, number, number]): void {
+        const roomID: string = createTRoomID(playerID);
+        if (!this.rooms.has(roomID))
+            this.rooms.set(roomID, new TRoom(playerID));
+    }
+
+    getRoom(roomID: string): TRoom | null {
+        if (this.rooms.has(roomID))
+            return this.rooms.get(roomID)!;
+        return null;
+    }
+
+    getRoomByPlayerID(id: number): TRoom | null {
+        for (const room of this.rooms.values()) {
+            if (room.getPlayerID().includes(id))
+                return room;
+        }
+        return null;
+    }
+
+    removeRoom(roomID: string): void {
+        if (this.rooms.has(roomID))
+            this.rooms.delete(roomID);
+    }
+}
+
+
+export default fp(async (fastify) => {
+  const TournamentRooms = new TRoomManager();
+  fastify.decorate("tournamentRooms", TournamentRooms);
+});
+
+declare module "fastify" {
+  interface FastifyInstance {
+    TournamentRooms: TRoomManager;
+  }
 }

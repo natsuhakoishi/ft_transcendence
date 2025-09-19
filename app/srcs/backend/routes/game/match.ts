@@ -60,13 +60,15 @@ const match: FastifyPluginAsync = async(fastify: any) => {
 
                 const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
 
+                fastify.tournamentRooms.createRoom([p1.id, p2.id, p3.id, p4.id]);
+
                 p1.ws.send(roomID);
                 p2.ws.send(roomID);
                 p3.ws.send(roomID);
                 p4.ws.send(roomID);
 
-                console.log("/gamematching: tmp room id: " + roomID);
-                console.log(`/gamematching: Matched players: ${p1.id} vs ${p2.id} vs ${p3.id} vs ${p4.id}`);
+                console.log("/TMatching: tmp room id: " + roomID);
+                console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
             }
         });
 

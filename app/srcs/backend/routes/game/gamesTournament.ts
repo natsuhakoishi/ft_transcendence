@@ -2,15 +2,21 @@ import type { FastifyPluginAsync } from "fastify";
 import type { TData } from "../../share/type/gameData.ts";
 
 const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
+    fastify.get("/gameplay", { websocket: true }, (connection: any, req) => {
+        const ws = connection;
+        console.log("/gameplay: connected");
 
-    fastify.get("/tournament/gameplay", { websocket: true }, (connection: any, req) => {
+        ws.on("message", (msg) => {
+            console.log("/tournament/gameplay(get): receive message from player", msg);
 
-            console.log("/tournament/gameplay(get): receive message from player", data);
-
+            
 
         });
 
-        
 
 
+
+        });
 }
+
+export default gamesTournament;

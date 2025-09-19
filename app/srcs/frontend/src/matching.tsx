@@ -20,8 +20,7 @@ export function Matching() {
         ws.onopen = () => {
             (async () => {
                 try {
-                    const res = await apiFetchPrivate("me", { method: "GET" });
-                    const data = await res.json();
+                    const data = await apiFetchPrivate("me", { method: "GET" });
                     playerID = data.id;
                     console.log(playerID);
                     ws.send(playerID.toString());
@@ -37,9 +36,7 @@ export function Matching() {
         ws.onmessage = async (event) => {
             console.log("server: " + event.data);
 
-            const data: GameData = initGameData(event.data, Number(playerID), boardWidth, boardHeight, paddlesHeight, paddlesWidth);
-
-            const RoomId: string = data.roomId;
+            const RoomId: string = event.data;
 
             navigate({
                 pathname: import.meta.env.VITE_PATH_GAMEPLAY,
@@ -93,30 +90,7 @@ export function TMatching() {
         ws.onmessage = async (event) => {
             console.log("server: " + event.data);
 
-            const data: GameData = initGameData(event.data, Number(playerID), boardWidth, boardHeight, paddlesHeight, paddlesWidth);
-
-            const RoomId: string = data.roomId;
-
-            try {
-                const response = await fetch(import.meta.env.VITE_GAME_TOURNAMENT_MATCHING_ROUTE, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    console.error("HTTP error: ", response.status);
-                    navigate("/"); //TODO: redirect to [?] page
-                    return ;
-                }
-                else
-                    console.log("game data sent");
-
-            } catch {
-                console.log("fetch error");
-            }
+            const RoomId: string = event.data;
 
             navigate({
                 pathname: import.meta.env.VITE_PATH_GAMEPLAY,

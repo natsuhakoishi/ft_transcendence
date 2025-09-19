@@ -23,8 +23,10 @@ import authGoogleApi from './routes/api/auth-google-api.ts';
 //game
 import websocketPlugin from "@fastify/websocket";
 import roomManagerPlugin from "./share/type/roomData.ts"
+import TournamentRoomManagerPlugin from "./share/type/tournamentRoomData.ts"
 import match from './routes/game/match.ts';
 import games from './routes/game/games.ts';
+import gamesTournament from './routes/game/gamesTournament.ts';
 
 dotenv.config();
 
@@ -117,9 +119,11 @@ async function initServer()
 
 	// game
 	fastify.register(roomManagerPlugin);
+	fastify.register(TournamentRoomManagerPlugin);
 	await fastify.register(websocketPlugin);
 	await fastify.register(match, {prefix: '/game'});
 	await fastify.register(games, {prefix: "/game"});
+	await fastify.register(gamesTournament, {prefix: "/game/tournament"});
 
 	await fastify.register(async (privateApiRoutes: any) => {
 		await privateApiRoutes.register(jwtPlugin);
