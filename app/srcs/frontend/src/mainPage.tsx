@@ -33,8 +33,7 @@ export function MainPage() {
       try
       {
         const start = Date.now();
-        const res = await apiFetchPrivate("profile", { method: "POST", body: "{}" });
-        const data = await res.json();
+        const data = await apiFetchPrivate("profile", { method: "POST", body: "{}" });
         setUserData(data);
         // console.log(data);
 

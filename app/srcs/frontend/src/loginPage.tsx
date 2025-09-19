@@ -61,8 +61,8 @@ const OTPModal = ({ verifyRef, onVerify }: { verifyRef: React.RefObject<VerifyBo
     </div>
   );
 }
-//memo have to use certain like onKeyDown to prevent user from type non digit
-//todo dismiss button -> should able to submit new OTP to same / diff email
+//feat have to use certain like onKeyDown to prevent user from type non digit
+//feat dismiss button -> should able to submit new OTP to same / diff email
 
 const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -112,17 +112,12 @@ export function LoginPage() {
       const res = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
       const data = await res.json();
 
-      if (res.ok)
-      {
-        toast.success(data.message);
-        if (data.requireOTP)
-          setShowOTP(true);
-      }
-      else
-        toast.error(data.message);
+      toast.success(data.message);
+      if (data.requireOTP)
+        setShowOTP(true);
     } catch (err: any) {
-      console.log("Register: " + err.message);
-      toast.error("Something went wrong, try again!"); 
+      console.error("Issue: " + err.message);
+      toast.error("Error: "+ err.message);
     }
   }
 
@@ -130,8 +125,8 @@ export function LoginPage() {
     try {
       window.location.href = "https://localhost:4242/api/auth/google";
     } catch (err: any) {
-      console.log("Google Log In: " + err.message);
-      toast.error("Something went wrong, try again!");
+      console.error("Issue: " + err.message);
+      toast.error("Error: "+ err.message);
     }
   };
 
@@ -139,20 +134,15 @@ export function LoginPage() {
     try {
       toast("Submit succesful. Loading...");
       // console.log(verifyRef.current);
-      const res = await apiFetch("login", { method: "POST", body: JSON.stringify(verifyRef.current) });
-      const data = await res.json();
+      const data = await apiFetch("login", { method: "POST", body: JSON.stringify(verifyRef.current) });
 
-      if (res.ok)
-      {
-        toast.success(data.message);
-        if (data.requireOTP)
-          setShowOTP(true);
-      }
-      else
-        toast.error(data.message);
+      toast.success(data.message);
+      if (data.requireOTP)
+        setShowOTP(true);
+
     } catch (err: any) {
-      console.log("Log In: " + err.message);
-      toast.error("Something went wrong, try again!");
+      console.error("Issue: " + err.message);
+      toast.error("Error: "+ err.message);
     }
   };
 
@@ -170,18 +160,14 @@ export function LoginPage() {
         url = "otp_verify_register"
         body = { username: verifyRef.current.username, email: verifyRef.current.email, password: verifyRef.current.password, otp: verifyRef.current.otp };
       }
-      const res = await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
+      await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
 
-      if (res.ok)
-        navigate("/");
-      else
-        toast.error(data.message);
+      navigate("/");
+      //memo fetch database
     } catch (err: any) {
-      console.log(err.message);
-      toast.error("Fail to verify token!");
+      console.error("Issue: " + err.message);
+      toast.error("Error: "+ err.message);
     }
-    //todo data fetching happen here
   }
 
   return (
@@ -198,7 +184,7 @@ export function LoginPage() {
             <h2>OR</h2>
             <GoogleLogIn onClick={handleLoginGoogle} />
             <hr className="h-px min-w-70 my-3 bg-red-700 border-1 dark:bg-gray-700"></hr>
-            <button onClick={() => setMode("register")} className="border-black-300 bo  rder-2 rounded-lg p-1">Register</button>
+            <button onClick={() => setMode("register")} className="border-black-300 border-2 rounded-lg p-1">Register</button>
           </>
         )
       }
