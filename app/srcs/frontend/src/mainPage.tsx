@@ -45,9 +45,11 @@ export function MainPage() {
         else
           setLoading(false);
       } catch (err: any) {
-        toast.error(err);
-        console.error(err);
-        setLoading(false);
+        console.error("Issue: " + err.message);
+        if (err.message.includes("Failed to fetch"))
+          toast.error("Server Error");
+        else
+          toast.error("Error: "+ err.message);
       }
     }
     fetchProfile();
@@ -66,4 +68,3 @@ export function MainPage() {
     </div>
   );
 }
-//todo maybe instant fetch after login success, just hold a loading page here

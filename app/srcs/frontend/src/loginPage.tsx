@@ -14,16 +14,15 @@ const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
   };
   return (
     <>
-      <form className="flex flex-col items-center justify-center w-full gap-2 mt-5" 
-      id="register-form" onSubmit={handleSubmit}>
+      <form className="flex flex-col items-center justify-center w-full gap-2 mt-5" onSubmit={handleSubmit}>
       <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-        type="text" id="reg-username" name="username" placeholder="Enter username" required autoComplete="on"
+        type="text" name="username" placeholder="Enter username" required autoComplete="on"
       />
       <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-        type="email" id="reg-email" name="email" placeholder="Enter email address" required autoComplete="email"
+        type="email" name="email" placeholder="Enter email address" required autoComplete="email"
       />
       <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-      type="password" id="reg-password" name="password" placeholder="Enter password" required autoComplete="current-password"
+      type="password" name="password" placeholder="Enter password" required autoComplete="current-password"
       />
       <button type="submit" className="border-black-300 border-2 rounded-lg p-1">Register</button>
       </form>
@@ -74,13 +73,12 @@ const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
   };
   return (
     <>
-      <form className="flex flex-col items-center w-full gap-2 mt-2" 
-      id="login-form" onSubmit={handleSubmit}>
+      <form className="flex flex-col items-center w-full gap-2 mt-2" onSubmit={handleSubmit}>
       <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-        type="email" id="login-email" name="email" placeholder="Enter email address" required autoComplete="email"
+        type="email" name="email" placeholder="Enter email address" required autoComplete="email"
       />
       <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-      type="password" id="login-password" name="password" placeholder="Enter password" required autoComplete="current-password"
+      type="password" name="password" placeholder="Enter password" required autoComplete="current-password"
       />
       <button type="submit" className="border-black-300 border-2 rounded-lg p-1">Sign in</button>
       </form>
@@ -108,16 +106,19 @@ export function LoginPage() {
   const handleRegister = async () => {
     try {
       toast("Connecting to server...");
-      console.log(verifyRef.current);
       const res = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
       const data = await res.json();
 
       toast.success(data.message);
       if (data.requireOTP)
         setShowOTP(true);
+
     } catch (err: any) {
       console.error("Issue: " + err.message);
-      toast.error("Error: "+ err.message);
+      if (err.message.includes("Failed to fetch"))
+        toast.error("Server Error");
+      else
+        toast.error("Error: "+ err.message);
     }
   }
 
@@ -133,7 +134,6 @@ export function LoginPage() {
   const handleLogin = async () => {
     try {
       toast("Submit succesful. Loading...");
-      // console.log(verifyRef.current);
       const data = await apiFetch("login", { method: "POST", body: JSON.stringify(verifyRef.current) });
 
       toast.success(data.message);
@@ -142,7 +142,10 @@ export function LoginPage() {
 
     } catch (err: any) {
       console.error("Issue: " + err.message);
-      toast.error("Error: "+ err.message);
+      if (err.message.includes("Failed to fetch"))
+        toast.error("Server Error");
+      else
+        toast.error("Error: "+ err.message);
     }
   };
 
@@ -163,10 +166,13 @@ export function LoginPage() {
       await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
 
       navigate("/");
-      //memo fetch database
+      //memo fetch database here before redirect to /home
     } catch (err: any) {
       console.error("Issue: " + err.message);
-      toast.error("Error: "+ err.message);
+      if (err.message.includes("Failed to fetch"))
+        toast.error("Server Error");
+      else
+        toast.error("Error: "+ err.message);
     }
   }
 
@@ -193,6 +199,3 @@ export function LoginPage() {
   </>
   );
 }
-
-//todo change all net::ERR_CONNECTION_REFUSED error to "Server reject? or maybe server not up"
-//memo id can take away, no use
