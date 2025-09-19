@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 
@@ -35,12 +36,26 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
   if (!(options.body instanceof FormData))
     headers["Content-Type"] = "application/json";
-  return fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers, credentials: 'include' });
+
+  const res = await fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers, credentials: 'include' });
+  const data = await res.json();
+
+  if (!res.ok)
+    throw new Error(data.message);
+
+  return data;
 }
 
 export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
   const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
   if (!(options.body instanceof FormData))
     headers["Content-Type"] = "application/json";
-  return fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+
+  const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+  const data = await res.json();
+
+  if (!res.ok)
+    throw new Error(data.message);
+
+  return data;
 }
