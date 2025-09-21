@@ -7,10 +7,10 @@ export function handleKeyPress(room: TRoom, data: GameData, player: Player): voi
     const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
     console.log("/gameplay: handleKeyPress: " + data.keyPress);
 
-    if (!room.getState().gamingStage && room.size() < 2 && data.keyPress === "Enter") //starting game / confirm key
-    {
-        room.addPlayer(player);
-        console.log("roomID " + room.getRoomID() + ": player " + player.id.toString() + " ready! " + room.size().toString() + "/2");
-        // ws.send(JSON.stringify(room.getState()));
-    }
+    // if (!room.getState().gamingStage && room.size() < 2 && data.keyPress === "Enter") //starting game / confirm key
+    // {
+    //     room.addPlayer(player);
+    //     console.log("roomID " + room.getRoomID() + ": player " + player.id.toString() + " ready! " + room.size().toString() + "/2");
+    //     // ws.send(JSON.stringify(room.getState()));
+    // }
 }

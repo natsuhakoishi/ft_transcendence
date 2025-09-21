@@ -1,3 +1,5 @@
+import type { Matches } from "./tournamentRoomData.ts";
+
 export interface GameData {
     roomId: string;
 
@@ -6,8 +8,7 @@ export interface GameData {
 }
 
 export interface TData {
-    roomId: string;
+    round1: Matches;
+    round2?: Matches;
 
-    playerId: number;
-    keyPress: string;
 }

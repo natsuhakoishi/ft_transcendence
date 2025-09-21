@@ -1,8 +1,11 @@
 /// <reference types="vite/client" />
 
+import type { read } from "fs";
+
 interface ImportMetaEnv {
   readonly VITE_GAMEPLAY_ROUTE: string;
   readonly VITE_GAME_MATCHING_ROUTE: string;
+  readonly VITE_GAME_TOURNAMENT_GAMEPLAY_ROUTE: string
   readonly VITE_GAME_TOURNAMENT_MATCHING_ROUTE: string;
 
   readonly VITE_PATH_TOURNAMENT_GAMEPLAY: string

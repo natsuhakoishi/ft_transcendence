@@ -1,3 +1,4 @@
+import type { TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
 
 export function Trespassing(ws: any): void {
@@ -62,4 +63,36 @@ export function createRoomID(p1: number, p2: number): string {
 export function createTRoomID(playerID: [number, number, number, number]): string {
     playerID.sort();
     return `${playerID[0]}-${playerID[1]}-${playerID[2]}-${playerID[3]}`;
+}
+
+export function initTData(): TData {
+    const data: TData = {
+        round1: {
+            roomID: [],
+            type: null,
+            matches: [[], []]
+        }
+    }
+    return data;
+}
+
+export function TDataWithOutWS(_data: TData): TData {
+    const data: TData = {
+        round1: {
+            roomID: _data.round1.roomID,
+            type: _data.round1.type,
+            matches: [
+                [
+                    {id: _data.round1.matches[0][0].id},
+                    {id: _data.round1.matches[0][1].id}
+                ], 
+                [
+                    {id: _data.round1.matches[1][0].id},
+                    {id: _data.round1.matches[1][1].id}
+                ],
+            ]
+        }
+    }
+
+    return data;
 }

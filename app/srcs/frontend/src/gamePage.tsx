@@ -31,7 +31,8 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
             }
 
             const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
-    
+            // const ws = new WebSocket("wss://localhost:4242/game/tournament/gameplay");
+
             //init default position and board size
             const gameState: GameState = initGameState();
     
@@ -71,16 +72,16 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                     setTimeout(()=>{
                         ws.close();
                         onExit?.();
-                    }, 1000*50);
+                    }, 1000*5);
                     //TODO: render ending
                 }
                 else if (type === "game_over_offline")
                 {
                     console.log("/gamePage: game over offline");
                     setTimeout(()=>{
-                        onExit?.();
                         ws.close();
-                    }, 1000*50);
+                        onExit?.();
+                    }, 1000*5);
                     //TODO: render ending
                 }
                 else if (type === "trespassing")

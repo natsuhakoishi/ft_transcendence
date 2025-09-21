@@ -126,7 +126,7 @@ async function initServer()
 	await fastify.register(gamesTournament, {prefix: "/game/tournament"});
 
 	await fastify.register(async (privateApiRoutes: any) => {
-		await privateApiRoutes.register(jwtPlugin);
+	await privateApiRoutes.register(jwtPlugin);
 		await privateApiRoutes.register(userApi);
 		await privateApiRoutes.register(profileApi);
 		await privateApiRoutes.register(friendshipApi);

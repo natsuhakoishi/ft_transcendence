@@ -4,7 +4,7 @@ import fp from "fastify-plugin";
 
 export interface Player {
     id: number;
-    ws: any;
+    ws?: any;
 }
 
 export class Room {

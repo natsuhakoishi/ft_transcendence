@@ -1,11 +1,16 @@
-import { createTRoomID } from "../../routes/game/gameUtils.ts";
+import fastify from "fastify";
+import { createRoomID, createTRoomID, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
+import type { TData } from "./gameData.ts";
 import type { Player } from "./roomData.ts";
-import { Room } from "./roomData.ts";
 import fp from "fastify-plugin";
 
 export interface Matches {
+    roomID: string[];
     type: null | "started" | "ended";
-    matches: [Room | null, Room | null];
+    matches: [
+        Player[],
+        Player[]
+    ];
 }
 
 export class TRoom {
@@ -16,10 +21,12 @@ export class TRoom {
     private readonly p3ID: number;
     private readonly p4ID: number;
 
+    private data: TData;
     private players: Set<Player>;
 
-    private firstGamePlay: Matches;
-    private finalGamePlay: Matches;
+    private status: null | "round1" | "round2" | "end";
+    // private round1: Matches;
+    // private finalGamePlay: Matches;
 
     constructor (playerID: [number, number, number, number]) {
         playerID.sort();
@@ -28,49 +35,46 @@ export class TRoom {
         this.p3ID = playerID[2];
         this.p4ID = playerID[3];
         this.id = createTRoomID(playerID);
+        this.data = initTData();
         this.players = new Set();
-        this.firstGamePlay = {type: null, matches: [null, null]};
-        this.finalGamePlay = {type: null, matches: [null, null]};
+        this.status = null;
+
+        // this.round1 = {type: null, matches: [[], []]};
+        // this.finalGamePlay = {type: null, matches: [[], []]};
+    }
+
+    broadCast(_type: string): void {
+        for (const player of this.players)
+        {
+            if (player.ws.readyState === WebSocket.OPEN)
+                player.ws.send(JSON.stringify({type: _type, state: TDataWithOutWS(this.data)}));
+            else
+                console.log("TRoom: broadCast: offline: ", player.id);
+                //TODO: if offline
+                // this.gameState.playerOffline = true;
+        }
     }
 
     addPlayer(player: Player): void {
         this.players.add(player);
     }
 
-    startFirstGameplay(): void {
-        this.makeFirstGameplay();
-
+    startRound1(): void {
+        this.broadCast("startRound1");
     }
 
-    makeFirstGameplay(): void {
-        console.log("TGameplay: makeFirstGameplay");
+    makeRound1(): void {
+        console.log("TGameplay: makeRound1");
         const matches: [Player, Player][] = this.makeMatches();
         const A: Player = matches[0][0];
         const B: Player = matches[0][1];
         const C: Player = matches[1][0];
         const D: Player = matches[1][1];
 
-        const GroupA: Room = new Room([A.id, B.id]);
-        const GroupB: Room = new Room([C.id, D.id]);
-
-        this.firstGamePlay.matches = [GroupA, GroupB];
+        this.data.round1.matches = [[A, B], [C, D]];
     }
 
-    // startFinalGamePlay(): void {
-
-    // }
-
-    // makeFinalGamePlay(): void {
-    //     let A: Player;
-    //     let B: Player;
-    //     let C: Player;
-    //     let D: Player;
-    //     if (this.firstGamePlay.matches[0].getState().score.p1Score === 3)
-    //         A = 
-
-    // }
-
-    makeMatches(): [Player, Player][] {
+    private makeMatches(): [Player, Player][] {
 
         const arr = Array.from(this.players);
 
@@ -87,6 +91,18 @@ export class TRoom {
 
     getPlayerID(): [number, number, number, number] {
         return [this.p1ID, this.p2ID, this.p3ID, this.p4ID];
+    }
+
+    getStatus(): string | null {
+        return this.status;
+    }
+
+    getData(): TData {
+        return this.data;
+    }
+
+    size(): number {
+        return this.players.size;
     }
 }
 
