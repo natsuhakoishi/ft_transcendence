@@ -1,8 +1,9 @@
-import fastify from "fastify";
-import { createRoomID, createTRoomID, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
+import { createTRoomID, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
 import type { TData } from "./gameData.ts";
 import type { Player } from "./roomData.ts";
 import fp from "fastify-plugin";
+import type { DBMatchData } from "./db_MatchData.ts";
+import { getMatchByUserId } from "../../database/match.ts";
 
 export interface Matches {
     roomID: string[];
@@ -60,7 +61,50 @@ export class TRoom {
     }
 
     startRound1(): void {
-        this.broadCast("startRound1");
+        ( async () => {
+            const round1: Matches = this.data.round1;
+            round1.type = "started";
+            this.broadCast("startRound1");
+            round1.type = "ended";
+
+            const MatchData_A: DBMatchData[] = await getMatchByUserId(round1.matches[0][0].id);
+            const MatchData_B: DBMatchData[] = await getMatchByUserId(round1.matches[1][0].id);
+
+            this.makeRound2(MatchData_A, MatchData_B);
+        })();
+    }
+
+    makeRound2(A: DBMatchData[], B: DBMatchData[]): void {
+        const r1A: Player[] = this.data.round1.matches[0];
+        const r1B: Player[] = this.data.round1.matches[1];
+
+        const winner: Player[] = []; 
+        const loser: Player[] = [];
+
+        if (A[0].winner_id === r1A[0].id)
+        {
+            winner.push(r1A[0]);
+            loser.push(r1A[1]);
+        }
+        else
+        {
+            winner.push(r1A[1]);
+            loser.push(r1A[0]);
+        }
+
+        if (B[0].winner_id === r1B[0].id)
+        {
+            winner.push(r1B[0]);
+            loser.push(r1B[1]);
+        }
+        else
+        {
+            winner.push(r1B[1]);
+            loser.push(r1B[0]);
+        }
+
+        this.data.round2.matches = [winner, loser];
+        this.status = "round2";
     }
 
     makeRound1(): void {

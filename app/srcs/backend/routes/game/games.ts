@@ -34,7 +34,7 @@ const games: FastifyPluginAsync = async (fastify: any) => {
                 start(room, () => {
                     const score: GameScore = room.getState().score;
                     try {
-                        createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, false);
+                        createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
                         console.log("/gameplay: call database success");
                     }
                     catch (e) {

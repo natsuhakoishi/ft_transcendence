@@ -21,7 +21,7 @@ function Bracket({ state }: { state?: string }) {
         <div className="flex items-center justify-center">
 
             {/* Bracket container */}
-      
+
             <div className="flex gap-12">
 
                 <div className="flex flex-col gap-12 mt-22">
@@ -108,6 +108,7 @@ export function TournamentGamePage() {
                 roomId: tournamentRoomID!,
                 playerId: parseInt(playerID!),
                 keyPress: "null",
+                tournament: true
             }
 
             ws.onmessage = (msg) => {
@@ -122,11 +123,23 @@ export function TournamentGamePage() {
                     const rooms: string[] = r1.roomID[0].split("-");
                     if (rooms.includes(playerID))
                         setRoomID(r1.roomID[0]);
+                    else 
+                        setRoomID(r1.roomID[1]);
                     console.log("TournamentGamePage: roomID: " + roomID);
                     setShowGame(true);
                 }
-                // else if ()
-
+                else if (type === "startRound2")
+                {
+                    console.log("TournamentGamePage: round2");
+                    const r2: Matches = parse.state.round2;
+                    const rooms: string[] = r2.roomID[0].split("-");
+                    if (rooms.includes(playerID))
+                        setRoomID(r2.roomID[0]);
+                    else 
+                        setRoomID(r2.roomID[1]);
+                    console.log("TournamentGamePage: roomID: " + roomID);
+                    setShowGame(true);
+                }
             }
 
             let ready = false;
@@ -149,15 +162,13 @@ export function TournamentGamePage() {
         <div>
             {
                 showGame ? (
-                    <GamePage _roomID={roomID} onExit={() => setShowGame(false)} />
+                    <GamePage _roomID={roomID} onExit={() => {
+                            setShowGame(false);
+                            
+                        }
+                    } />
                 ) :
                 <Bracket />
-                // : (
-                //     <FlowPage roomID={tournamentRoomID} onStart={(id) => {
-                //         setRoomID(id);
-                //         setShowGame(true);
-                //     }} />
-                // )
             }
         </div>
     );

@@ -71,6 +71,11 @@ export function initTData(): TData {
             roomID: [],
             type: null,
             matches: [[], []]
+        },
+        round2: {
+            roomID: [],
+            type: null,
+            matches: [[], []]
         }
     }
     return data;

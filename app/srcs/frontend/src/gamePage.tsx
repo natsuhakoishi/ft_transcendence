@@ -42,8 +42,9 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                 roomId: RoomID!,
                 playerId: parseInt(PlayerID!),
                 keyPress: "null",
+                tournament: _roomID ? true : false
             }
-    
+
             if (gameData.keyPress === "null")
                 draw(gameState);
     

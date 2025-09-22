@@ -5,10 +5,12 @@ export interface GameData {
 
     playerId: number;
     keyPress: string;
+    tournament: boolean;
+    // tournamentRoomID: string;
 }
 
 export interface TData {
     round1: Matches;
-    round2?: Matches;
+    round2: Matches;
 
 }

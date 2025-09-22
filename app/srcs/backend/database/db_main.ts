@@ -30,9 +30,13 @@ async function main()
 		// await updateUsernameById(1, "labubu");
 		// const users2 = await getUserAll();
 		// console.log("All Users:", users2);
-		const match = await getMatchAll();
+		// const match = await getMatchAll();
 
-		console.log(match);
+		// console.log(match);
+
+		const data = await getMatchByUserId(1);
+
+		console.log(data);
 	}
 	catch (error)
 	{

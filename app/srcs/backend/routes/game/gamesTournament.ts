@@ -34,6 +34,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                 round1.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
                 round1.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
                 room.startRound1();
+                
             }
         });
 
