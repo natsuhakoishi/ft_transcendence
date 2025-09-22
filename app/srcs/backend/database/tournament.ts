@@ -1,10 +1,9 @@
 import { runSQLite, getSQLite, allSQLite } from "./utils.ts";
 
-export async function createTournament(name: string, host_id: number)
+export async function createTournament(host_id: number)
 {
 	await runSQLite(`
-		INSERT INTO tournaments (name, host_id) VALUES (?, ?)`,
-		name,
+		INSERT INTO tournaments (host_id) VALUES (?)`,
 		host_id
 	);
 }

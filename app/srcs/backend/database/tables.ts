@@ -60,7 +60,6 @@ export async function createTable()
 	await execSQLite(`
 		CREATE TABLE IF NOT EXISTS tournaments (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT NOT NULL,
 			host_id INTEGER NOT NULL,
 			status TEXT CHECK(status IN ('waiting', 'on-going', 'completed')) DEFAULT 'waiting',
 			start_time DATETIME,
