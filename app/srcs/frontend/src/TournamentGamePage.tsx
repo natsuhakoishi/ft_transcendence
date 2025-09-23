@@ -9,6 +9,8 @@ interface PlayerBoxProps {
   name: string;
 }
 
+
+
 const PlayerBox: React.FC<PlayerBoxProps> = ({ name }) => (
   <div className="px-3 py-2 bg-white border rounded shadow text-sm font-medium">
     {name}
@@ -79,6 +81,7 @@ export function TournamentGamePage() {
     const [showGame, setShowGame] = React.useState(false);
     const [roomID, setRoomID] = React.useState<string | undefined>(undefined);
     const [state, setState] = React.useState<null | "round1Start" | "round1End" | "round2Start" | "round2End">(null);
+    const [score, setScore] = React.useState();
     const [ queryParams ] = useSearchParams();
     const tournamentRoomID: string | null = queryParams.get("ROOMID");
 
@@ -116,7 +119,12 @@ export function TournamentGamePage() {
                 const type: string = parse.type;
                 console.log("TournamentGamePage: rev msg", parse);
 
-                if (type === "startRound1")
+                if (type === "trespassing")
+                {
+                    console.log("TournamentGamePage: Trespassing ^u^b");
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                }
+                else if (type === "startRound1")
                 {
                     console.log("TournamentGamePage: round1");
                     const r1: Matches = parse.state.round1;

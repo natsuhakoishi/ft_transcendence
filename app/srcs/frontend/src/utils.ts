@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import type { GameData } from "../../backend/share/type/gameData";
+import type { GameData, TData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 
 export function initGameState(): GameState {
@@ -62,4 +62,9 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
     throw new Error(data.message);
 
   return data;
+}
+
+export function parseScore(data: TData) {
+  
+
 }
