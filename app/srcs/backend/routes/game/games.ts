@@ -6,6 +6,8 @@ import { handleKeyPress, start } from "./gameLogic.ts";
 import type { Player } from "../../share/type/roomData.ts";
 import { createMatch } from "../../database/match.ts";
 import type { GameScore } from "../../share/type/gameState.ts";
+import { TRoom } from "../../share/type/tournamentRoomData.ts";
+import { addWinLose } from "../../database/profile.ts";
 
 const games: FastifyPluginAsync = async (fastify: any) => {
     // const rooms: RoomManager = new RoomManager();
@@ -35,7 +37,9 @@ const games: FastifyPluginAsync = async (fastify: any) => {
                     const score: GameScore = room.getState().score;
                     try {
                         createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
+                        // addWinLose(player.id, "");
                         console.log("/gameplay: call database success");
+                        fastify.TournamentRooms.getRoomByPlayerID(room.getP1ID()).updateWinnerNLoser(room.getP1ID(), score.p1Score, score.p2Score);
                     }
                     catch (e) {
                         console.log(e);

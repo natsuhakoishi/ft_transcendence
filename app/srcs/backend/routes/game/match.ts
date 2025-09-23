@@ -47,29 +47,31 @@ const match: FastifyPluginAsync = async(fastify: any) => {
         const ws = connection;
 
         ws.on("message", msg => {
-            const playerID: number = parseInt(msg.toString(), 10);
+            ( async () => {
+                const playerID: number = parseInt(msg.toString(), 10);
+    
+                waitingTPlayers.push({id: playerID, ws});
+    
+                if (waitingTPlayers.length >= 4)
+                {
+                    const p1: Player = waitingTPlayers.shift()!;
+                    const p2: Player = waitingTPlayers.shift()!;
+                    const p3: Player = waitingTPlayers.shift()!;
+                    const p4: Player = waitingTPlayers.shift()!;
+    
+                    const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
 
-            waitingTPlayers.push({id: playerID, ws});
-
-            if (waitingTPlayers.length >= 4)
-            {
-                const p1: Player = waitingTPlayers.shift()!;
-                const p2: Player = waitingTPlayers.shift()!;
-                const p3: Player = waitingTPlayers.shift()!;
-                const p4: Player = waitingTPlayers.shift()!;
-
-                const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
-
-                fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
-
-                p1.ws.send(roomID);
-                p2.ws.send(roomID);
-                p3.ws.send(roomID);
-                p4.ws.send(roomID);
-
-                console.log("/TMatching: tmp room id: " + roomID);
-                console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
-            }
+                    await fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
+    
+                    p1.ws.send(roomID);
+                    p2.ws.send(roomID);
+                    p3.ws.send(roomID);
+                    p4.ws.send(roomID);
+    
+                    console.log("/TMatching: tmp room id: " + roomID);
+                    console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
+                }
+            })()
         });
 
         ws.on("close", () => {

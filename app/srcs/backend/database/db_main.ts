@@ -34,9 +34,9 @@ async function main()
 
 		// console.log(match);
 
-		const data = await getMatchByUserId(1);
-
+		const data = await createTournament(1);
 		console.log(data);
+		console.log(await getTournamentAll());
 	}
 	catch (error)
 	{

@@ -12,5 +12,4 @@ export interface GameData {
 export interface TData {
     round1: Matches;
     round2: Matches;
-
 }

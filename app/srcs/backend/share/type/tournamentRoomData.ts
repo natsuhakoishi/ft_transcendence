@@ -3,6 +3,7 @@ import type { TData } from "./gameData.ts";
 import type { Player } from "./roomData.ts";
 import fp from "fastify-plugin";
 import type { DBMatchData } from "./db_MatchData.ts";
+import { bindMatchTournament, createTournament, joinTournament } from "../../database/tournament.ts";
 import { getMatchByUserId } from "../../database/match.ts";
 
 export interface Matches {
@@ -17,6 +18,7 @@ export interface Matches {
 export class TRoom {
 
     private readonly id: string;
+    private dbID!: number;
     private readonly p1ID: number;
     private readonly p2ID: number;
     private readonly p3ID: number;
@@ -26,9 +28,19 @@ export class TRoom {
     private players: Set<Player>;
 
     private status: null | "round1" | "round2" | "end";
-    // private round1: Matches;
-    // private finalGamePlay: Matches;
+    private r1flag: boolean;
+    private r2flag: boolean;
+    private r1winners: Player[];
+    private r1losers: Player[];
+    private r2winners: Player[];
+    private r2losers: Player[];
 
+
+    // private r1AStatus: boolean;
+    // private r1BStatus: boolean;
+
+    // private r2AStatus: boolean;
+    // private r2BStatus: boolean;
     constructor (playerID: [number, number, number, number]) {
         playerID.sort();
         this.p1ID = playerID[0];
@@ -39,9 +51,20 @@ export class TRoom {
         this.data = initTData();
         this.players = new Set();
         this.status = null;
+        this.r1flag = false;
+        this.r2flag = false;
+        this.r1winners = [];
+        this.r2winners = [];
+        this.r1losers = [];
+        this.r2losers = [];
+    }
 
-        // this.round1 = {type: null, matches: [[], []]};
-        // this.finalGamePlay = {type: null, matches: [[], []]};
+    async init(): Promise<void> {
+        this.dbID = await createTournament(this.p1ID);
+        await joinTournament(this.dbID, this.p1ID);
+        await joinTournament(this.dbID, this.p2ID);
+        await joinTournament(this.dbID, this.p3ID);
+        await joinTournament(this.dbID, this.p4ID);
     }
 
     broadCast(_type: string): void {
@@ -60,17 +83,38 @@ export class TRoom {
         this.players.add(player);
     }
 
+    // updateBoard(playerID: number): void {
+    //     ( async () => {
+    //         if (!this.r1AStatus)
+    //         {
+    //             const round1: Matches = this.data.round1;
+    //             if (round1.matches[0][0].id === playerID || round1.matches[0][1].id === playerID)
+    //             {
+    //                 this.r1AStatus = true;
+    //                 const MatchData_A: DBMatchData[] = await getMatchByUserId(round1.matches[0][0].id);
+                        
+    //             }
+    //         }
+
+    //     })()
+    // }
+
     startRound1(): void {
         ( async () => {
             const round1: Matches = this.data.round1;
+            this.status = "round1";
             round1.type = "started";
             this.broadCast("startRound1");
-            round1.type = "ended";
+            // round1.type = "ended";
 
-            const MatchData_A: DBMatchData[] = await getMatchByUserId(round1.matches[0][0].id);
-            const MatchData_B: DBMatchData[] = await getMatchByUserId(round1.matches[1][0].id);
+            // const MatchData_A: DBMatchData[] = await getMatchByUserId(round1.matches[0][0].id);
+            // const MatchData_B: DBMatchData[] = await getMatchByUserId(round1.matches[1][0].id);
 
-            this.makeRound2(MatchData_A, MatchData_B);
+            // console.log("Tournament Room: bind match id to tournament");
+            // await bindMatchTournament(this.dbID, MatchData_A[0].id);
+            // await bindMatchTournament(this.dbID, MatchData_B[0].id);
+
+            // this.makeRound2(MatchData_A, MatchData_B);
         })();
     }
 
@@ -127,14 +171,56 @@ export class TRoom {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
 
+        if (arr[0].id > arr[1].id)
+            [arr[0], arr[1]] = [arr[1], arr[0]]; //swap
+        if (arr[2].id > arr[3].id)
+            [arr[2], arr[3]] = [arr[3], arr[2]]; //swap
         return [
             [arr[0], arr[1]],
             [arr[2], arr[3]],
         ];
     }
 
+    updateWinnerNLoser(id: number, p1Score: number, p2Score: number): void {
+        if (this.status === "round1" && !this.r1flag)
+        {
+            this.r1flag = true;
+            const r1: Matches = this.data.round1;
+            this.bindMatch(id);
+            if (r1.matches[0][0].id === id || r1.matches[0][1].id === id)
+                if (p1Score > p2Score)
+                    this.addResult(this.r1losers, this.r1winners, r1.matches[0][1], r1.matches[0][0]);
+                else
+                    this.addResult(this.r1losers, this.r1winners, r1.matches[0][0], r1.matches[0][1]);
+            else
+            {
+                if (p1Score > p2Score)
+                    this.addResult(this.r1losers, this.r1winners, r1.matches[1][1], r1.matches[1][0])
+                else
+                    this.addResult(this.r1losers, this.r1winners, r1.matches[1][0], r1.matches[1][1])
+            }
+        }
+        // else 
+        // {
+
+        // }
+    }
+
+    bindMatch(id: number)
+    {
+        ( async () => {
+            const MatchData_A: DBMatchData[] = await getMatchByUserId(id);
+            await bindMatchTournament(this.dbID, MatchData_A[0].id);
+            console.log("tournament room: bind Match");
+        })()
+    }
+
     getPlayerID(): [number, number, number, number] {
         return [this.p1ID, this.p2ID, this.p3ID, this.p4ID];
+    }
+
+    getDBID() : number {
+        return this.dbID;
     }
 
     getStatus(): string | null {
@@ -143,6 +229,11 @@ export class TRoom {
 
     getData(): TData {
         return this.data;
+    }
+
+    addResult(losers: Player[], winners: Player[], loser: Player, winner: Player): void {
+        losers.push(loser);
+        winners.push(winner);
     }
 
     size(): number {
@@ -157,10 +248,15 @@ export class TRoomManager {
         this.rooms = new Map();
     }
 
-    createTRoom(playerID: [number, number, number, number]): void {
+    async createTRoom(playerID: [number, number, number, number]): Promise<void> {
         const roomID: string = createTRoomID(playerID);
         if (!this.rooms.has(roomID))
+        {
             this.rooms.set(roomID, new TRoom(playerID));
+            const room: TRoom = this.rooms.get(roomID) as TRoom;
+
+            room.init();
+        }
     }
 
     getRoom(roomID: string): TRoom | null {
