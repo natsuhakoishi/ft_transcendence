@@ -1,6 +1,5 @@
-import { useState } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./input.css";
 import { TMatching } from "./matching";
@@ -21,7 +20,7 @@ function App() {
         <Route path="/game" >
           <Route path="modeSelect" element={<ModeSelectPage />} />
           <Route path="gameplay" element={<GamePage />} />
-          <Route path="tournament" element={<TournamentGamePage />} />
+          <Route path="tournament/*" element={<TournamentGamePage />} />
           <Route path="tournamentMatching" element={<TMatching />} />
         </Route>
         <Route path="*" element={<NotFound />} />

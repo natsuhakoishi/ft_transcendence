@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import type { GameData, TData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 
@@ -27,11 +26,12 @@ export function initGameState(): GameState {
 }
 
 
-export function initGameData(_roomId: string, _playerID: number, boardWidth: number, boardHeight: number, paddlesHeight: number, paddlesWidth: number): GameData {
+export function initGameData(_roomId: string, _playerID: number): GameData {
     const data: GameData = {
                 roomId: _roomId,
                 playerId: _playerID,
                 keyPress: "//init//",
+                tournament: false
             };
     return data;
 }

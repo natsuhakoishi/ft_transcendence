@@ -1,19 +1,11 @@
 import { createTRoomID, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
 import type { TData } from "./gameData.ts";
-import type { Player } from "./roomData.ts";
 import fp from "fastify-plugin";
 import type { DBMatchData } from "./db_MatchData.ts";
 import { bindMatchTournament, createTournament, joinTournament } from "../../database/tournament.ts";
 import { getMatchByUserId } from "../../database/match.ts";
-
-export interface Matches {
-    roomID: string[];
-    type: null | "started" | "ended";
-    matches: [
-        Player[],
-        Player[]
-    ];
-}
+import type { Player } from "./Player.ts";
+import type { Matches } from "./Matches.ts";
 
 export class TRoom {
 
@@ -28,13 +20,10 @@ export class TRoom {
     private players: Set<Player>;
 
     private status: null | "round1" | "round2" | "end";
-    private r1flag: boolean;
-    private r2flag: boolean;
+    private r1flag: number;
+    private r2flag: number;
     private r1winners: Player[];
     private r1losers: Player[];
-    private r2winners: Player[];
-    private r2losers: Player[];
-
 
     // private r1AStatus: boolean;
     // private r1BStatus: boolean;
@@ -51,12 +40,12 @@ export class TRoom {
         this.data = initTData();
         this.players = new Set();
         this.status = null;
-        this.r1flag = false;
-        this.r2flag = false;
+
+        this.r1flag = 0;
         this.r1winners = [];
-        this.r2winners = [];
         this.r1losers = [];
-        this.r2losers = [];
+
+        this.r2flag = 0;
     }
 
     async init(): Promise<void> {
@@ -83,72 +72,16 @@ export class TRoom {
         this.players.add(player);
     }
 
-    // updateBoard(playerID: number): void {
-    //     ( async () => {
-    //         if (!this.r1AStatus)
-    //         {
-    //             const round1: Matches = this.data.round1;
-    //             if (round1.matches[0][0].id === playerID || round1.matches[0][1].id === playerID)
-    //             {
-    //                 this.r1AStatus = true;
-    //                 const MatchData_A: DBMatchData[] = await getMatchByUserId(round1.matches[0][0].id);
-                        
-    //             }
-    //         }
-
-    //     })()
-    // }
-
     startRound1(): void {
-        ( async () => {
-            const round1: Matches = this.data.round1;
-            this.status = "round1";
-            round1.type = "started";
-            this.broadCast("startRound1");
-            // round1.type = "ended";
-
-            // const MatchData_A: DBMatchData[] = await getMatchByUserId(round1.matches[0][0].id);
-            // const MatchData_B: DBMatchData[] = await getMatchByUserId(round1.matches[1][0].id);
-
-            // console.log("Tournament Room: bind match id to tournament");
-            // await bindMatchTournament(this.dbID, MatchData_A[0].id);
-            // await bindMatchTournament(this.dbID, MatchData_B[0].id);
-
-            // this.makeRound2(MatchData_A, MatchData_B);
-        })();
+        const round1: Matches = this.data.round1;
+        this.status = "round1";
+        this.broadCast("startRound1");
     }
 
-    makeRound2(A: DBMatchData[], B: DBMatchData[]): void {
-        const r1A: Player[] = this.data.round1.matches[0];
-        const r1B: Player[] = this.data.round1.matches[1];
-
-        const winner: Player[] = []; 
-        const loser: Player[] = [];
-
-        if (A[0].winner_id === r1A[0].id)
-        {
-            winner.push(r1A[0]);
-            loser.push(r1A[1]);
-        }
-        else
-        {
-            winner.push(r1A[1]);
-            loser.push(r1A[0]);
-        }
-
-        if (B[0].winner_id === r1B[0].id)
-        {
-            winner.push(r1B[0]);
-            loser.push(r1B[1]);
-        }
-        else
-        {
-            winner.push(r1B[1]);
-            loser.push(r1B[0]);
-        }
-
-        this.data.round2.matches = [winner, loser];
+    startRound2(): void {
+        const round2: Matches = this.data.round2;
         this.status = "round2";
+        this.broadCast("startRound2");
     }
 
     makeRound1(): void {
@@ -160,6 +93,11 @@ export class TRoom {
         const D: Player = matches[1][1];
 
         this.data.round1.matches = [[A, B], [C, D]];
+    }
+
+    makeRound2(): void {
+        // this.status = "round2";
+        this.data.round2.matches = [this.r1winners, this.r1losers];
     }
 
     private makeMatches(): [Player, Player][] {
@@ -182,9 +120,9 @@ export class TRoom {
     }
 
     updateWinnerNLoser(id: number, p1Score: number, p2Score: number): void {
-        if (this.status === "round1" && !this.r1flag)
+        if (this.status === "round1" && this.r1flag < 2)
         {
-            this.r1flag = true;
+            this.r1flag++;
             const r1: Matches = this.data.round1;
             this.bindMatch(id);
             if (r1.matches[0][0].id === id || r1.matches[0][1].id === id)
@@ -199,11 +137,17 @@ export class TRoom {
                 else
                     this.addResult(this.r1losers, this.r1winners, r1.matches[1][0], r1.matches[1][1])
             }
+            if (this.r1flag === 2)
+                this.status = "round2";
         }
-        // else 
-        // {
-
-        // }
+        else if (this.status === "round2" && this.r2flag < 2)
+        {
+            this.r2flag++;
+            this.bindMatch(id);
+            if (this.r2flag === 2)
+                this.status = "end";
+        }
+        console.log("updateWNL: ", this.r1flag, this.r2flag, this.status);
     }
 
     bindMatch(id: number)
@@ -236,8 +180,20 @@ export class TRoom {
         winners.push(winner);
     }
 
+    getR1Winners(): Player[] {
+        return this.r1winners;
+    }
+
+    getR1Losers(): Player[] {
+        return this.r1losers;
+    }
+
     size(): number {
         return this.players.size;
+    }
+
+    getr1Flag(): number {
+        return this.r1flag;
     }
 }
 
@@ -278,7 +234,6 @@ export class TRoomManager {
             this.rooms.delete(roomID);
     }
 }
-
 
 export default fp(async (fastify) => {
   const TournamentRooms = new TRoomManager();

@@ -1,11 +1,7 @@
 import { createRoomID, initGameState } from "../../routes/game/gameUtils.ts";
 import type { GameState } from "./gameState.ts";
 import fp from "fastify-plugin";
-
-export interface Player {
-    id: number;
-    ws?: any;
-}
+import type { Player } from "./Player.ts";
 
 export class Room {
 

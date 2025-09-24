@@ -1,5 +1,5 @@
 import type { GameData } from "../../share/type/gameData.ts";
-import type { Player } from "../../share/type/roomData.ts";
+import type { Player } from "../../share/type/Player.ts";
 import { TRoom } from "../../share/type/tournamentRoomData.ts";
 
 export function handleKeyPress(room: TRoom, data: GameData, player: Player): void {

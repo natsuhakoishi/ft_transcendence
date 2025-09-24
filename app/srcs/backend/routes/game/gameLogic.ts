@@ -1,6 +1,7 @@
 import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
-import type { Player, Room } from "../../share/type/roomData.ts";
+import type { Player } from "../../share/type/Player.ts";
+import { Room } from "../../share/type/roomData.ts";
 import { resetBall } from "./gameUtils.ts";
 
 export function start(room: Room, gameOver: () => void): void {

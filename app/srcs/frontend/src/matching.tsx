@@ -36,12 +36,13 @@ export function Matching() {
 
             const RoomId: string = event.data;
 
-            navigate({
-                pathname: import.meta.env.VITE_PATH_GAMEPLAY,
-                search: new URLSearchParams({
-                    ROOMID: RoomId
-                }).toString(),
-            });
+            navigate(import.meta.env.VITE_PATH_GAMEPLAY, { state: {RoomID: RoomId, isTournament: false} });
+            // navigate({
+            //     pathname: import.meta.env.VITE_PATH_GAMEPLAY,
+            //     search: new URLSearchParams({
+            //         ROOMID: RoomId
+            //     }).toString(),
+            // });
 
         };
 
@@ -88,13 +89,14 @@ export function TMatching() {
 
             const RoomId: string = event.data;
 
-            navigate({
-                // pathname: import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY,
-                pathname: "/game/tournament",
-                search: new URLSearchParams({
-                    ROOMID: RoomId
-                }).toString(),
-            });
+            navigate(import.meta.env.VITE_PATH_TOURNAMENT, { state: {tournamentRoomID: RoomId} });
+            // navigate({
+            //     // pathname: import.meta.env.VITE_PATH_TOURNAMENT,
+            //     pathname: "/game/tournament",
+            //     search: new URLSearchParams({
+            //         ROOMID: RoomId
+            //     }).toString(),
+            // });
 
         };
 

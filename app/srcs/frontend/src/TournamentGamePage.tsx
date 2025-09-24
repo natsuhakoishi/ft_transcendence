@@ -1,15 +1,14 @@
 import React from "react";
 import { GamePage } from "./gamePage";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "./utils";
 import type { GameData, TData } from "../../backend/share/type/gameData";
-import type { Matches } from "../../backend/share/type/tournamentRoomData";
+import type { Matches } from "../../backend/share/type/Matches";
+import NotFound from "./NotFound";
 
 interface PlayerBoxProps {
   name: string;
 }
-
-
 
 const PlayerBox: React.FC<PlayerBoxProps> = ({ name }) => (
   <div className="px-3 py-2 bg-white border rounded shadow text-sm font-medium">
@@ -59,31 +58,47 @@ function Bracket({ state }: { state?: string }) {
   );
 }
 
+function Loading({matches, load}: {matches?: any, load: boolean}) {
+    const p1 = "p1";
+    const p2 = "p2";
+    const p3 = "p3";
+    const p4 = "p4";
 
-// function FlowPage({ roomID, onStart }: { roomID: string | null, onStart: (roomID: string) => void })
-// {
-//     const navigate = useNavigate();
+    React.useEffect(() => {
+        console.log("Loading: useEffect");
+        console.log("Loading: ", load);
+    }, []);
 
-//     React.useEffect(() => {
-
-//     }, [onStart]);
-
-//     return (
-//         <div className="scale-200">
-//             <Bracket />
-//             {/* <h1>something here</h1> */}
-//         </div>
-//     );
-// }
+    return (
+        <div>
+            {
+                load ? (
+                    <div>
+                        <h1>Loading...</h1>
+                    </div>
+                ) : (
+                    <div>
+                        <h1>{p1},{p2},{p3},{p4}</h1>
+                    </div>
+                )
+            }
+        </div>
+    );
+}
 
 export function TournamentGamePage() {
     const navigate = useNavigate();
-    const [showGame, setShowGame] = React.useState(false);
-    const [roomID, setRoomID] = React.useState<string | undefined>(undefined);
-    const [state, setState] = React.useState<null | "round1Start" | "round1End" | "round2Start" | "round2End">(null);
-    const [score, setScore] = React.useState();
-    const [ queryParams ] = useSearchParams();
-    const tournamentRoomID: string | null = queryParams.get("ROOMID");
+    const [load, setLoad] = React.useState(true);
+    const location = useLocation();
+    const { tournamentRoomID } = (location.state || {}) as {tournamentRoomID?: string};
+    const wsRef = React.useRef<WebSocket | null>(null);
+    const gameDataRef = React.useRef<GameData>({
+                roomId: "",
+                playerId: 0,
+                keyPress: "init",
+                tournament: true,
+            });
+    let init: boolean = false;
 
     React.useEffect(() => {
         ( async () => {
@@ -93,6 +108,7 @@ export function TournamentGamePage() {
                 console.log("TournamentGamePage: Trespassing ^u^b");
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
+            // setTRoomID(tournamentRoomID);
 
             let playerID: string;
             try {
@@ -105,13 +121,19 @@ export function TournamentGamePage() {
             }
 
             console.log("TournamentGamePage", playerID!);
-            const ws = new WebSocket(import.meta.env.VITE_GAME_TOURNAMENT_GAMEPLAY_ROUTE!);
+            const ws: WebSocket = new WebSocket(import.meta.env.VITE_GAME_TOURNAMENT_GAMEPLAY_ROUTE!);
+            wsRef.current = ws;
 
-            const gameData: GameData = {
-                roomId: tournamentRoomID!,
-                playerId: parseInt(playerID!),
-                keyPress: "null",
-                tournament: true
+            gameDataRef.current.roomId = tournamentRoomID!;
+            gameDataRef.current.playerId = parseInt(playerID!);
+
+            ws.onopen = () => {
+                if (!init)
+                {
+                    console.log("TournamentGamePage: init");
+                    ws.send(JSON.stringify(gameDataRef.current));
+                    init = true;
+                }
             }
 
             ws.onmessage = (msg) => {
@@ -121,63 +143,67 @@ export function TournamentGamePage() {
 
                 if (type === "trespassing")
                 {
-                    console.log("TournamentGamePage: Trespassing ^u^b");
+                    console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
                     navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                }
+                else if (type === "update")
+                {
+                    //update leaderboard
+                    console.log("TournamentGamePage: setLoad to false");
+                    setLoad(false);
                 }
                 else if (type === "startRound1")
                 {
                     console.log("TournamentGamePage: round1");
                     const r1: Matches = parse.state.round1;
                     const rooms: string[] = r1.roomID[0].split("-");
-                    if (rooms.includes(playerID))
-                        setRoomID(r1.roomID[0]);
-                    else 
-                        setRoomID(r1.roomID[1]);
-                    console.log("TournamentGamePage: roomID: " + roomID);
-                    setShowGame(true);
+                    rooms.includes(playerID.toString()) ? 
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID} })
+                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID} });
                 }
                 else if (type === "startRound2")
                 {
                     console.log("TournamentGamePage: round2");
                     const r2: Matches = parse.state.round2;
                     const rooms: string[] = r2.roomID[0].split("-");
-                    if (rooms.includes(playerID))
-                        setRoomID(r2.roomID[0]);
-                    else 
-                        setRoomID(r2.roomID[1]);
-                    console.log("TournamentGamePage: roomID: " + roomID);
-                    setShowGame(true);
+                    rooms.includes(playerID.toString()) ?
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID} })
+                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID} });
+                }
+                else if (type === "end")
+                {
+                    console.log("TournamentGamePage: end");
+                    setLoad(false);
+                    ws.close();
                 }
             }
-
-            let ready = false;
-            document.addEventListener("keydown", (e) => {
-                if (e.key === "Enter" && !ready)
-                {
-                    ready = true;
-                    gameData.keyPress = "Enter";
-                    ws.send(JSON.stringify(gameData));
-                    console.log("TournamentGamePage: Enter");           
-                }
-            });
 
         })();
 
+        return () => { //when user press 'back button'
+            console.log("TournamentGamePage: closing ws");
+            wsRef.current?.close();
+        };
 
     }, []);
 
+    const handleGameOver = () => {
+        console.log("TournamentGamePage: handleGameOver");
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+            setLoad(true);
+            gameDataRef.current.keyPress = "over";
+            console.log("TournamentGamePage: handleGameOver: ", gameDataRef.current);
+            wsRef.current.send(JSON.stringify(gameDataRef.current));
+        }
+    }
+
     return (
-        <div>
-            {
-                showGame ? (
-                    <GamePage _roomID={roomID} onExit={() => {
-                            setShowGame(false);
-                            
-                        }
-                    } />
-                ) :
-                <Bracket />
-            }
-        </div>
+        <Routes>
+            <Route path="/" element={<Loading load={load} />} />
+            <Route
+                path="gameplay"
+                element={<GamePage onGameOver={handleGameOver} />} />
+            <Route path="*" element={<NotFound />} />
+        </Routes>
     );
 }

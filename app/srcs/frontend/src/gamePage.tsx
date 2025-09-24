@@ -1,24 +1,29 @@
 import React from "react";
 import type { GameData } from "../../backend/share/type/gameData.ts";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState } from "./utils.ts";
 import type { Ball, GameState, Paddle } from "../../backend/share/type/gameState.ts";
 
-export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () => void}) {
+export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const navigate = useNavigate();
     console.log("GamePage");
-    const [ queryParams ] = useSearchParams();
-    const RoomID: string | null = _roomID ?? queryParams.get("ROOMID");
+    const location = useLocation();
+    const { RoomID, isTournament, TROOMID } = (location.state || {}) as {
+        RoomID?: string;
+        isTournament?: boolean;
+        TROOMID?: string;
+    };
 
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
         (async () => {
             console.log("gamePage: useEffect");
-            
+
             if (!RoomID) {
                 console.log("gamePage: missing roomID");
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
             }
+            console.log("GamePage: roomid:", RoomID);
 
             let PlayerID: string;
             try {
@@ -31,7 +36,6 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
             }
 
             const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
-            // const ws = new WebSocket("wss://localhost:4242/game/tournament/gameplay");
 
             //init default position and board size
             const gameState: GameState = initGameState();
@@ -42,12 +46,12 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                 roomId: RoomID!,
                 playerId: parseInt(PlayerID!),
                 keyPress: "null",
-                tournament: _roomID ? true : false
+                tournament: isTournament ? true : false
             }
 
             if (gameData.keyPress === "null")
                 draw(gameState);
-    
+
             ws.onmessage = (msg) => {
                 // console.log("/gamePage: rev msg");
                 const parse: {type : string, gameState: GameState} = JSON.parse(msg.data);
@@ -71,8 +75,14 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                 {
                     console.log("/gamePage: game over");
                     setTimeout(()=>{
-                        ws.close();
-                        onExit?.();
+                       ws.close();
+                        if (gameData.tournament) {
+                            console.log("/gamePage: gameOver");
+                            navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
+                            onGameOver?.();
+                            // const roomid: string[] = RoomID!.split("-");
+                            // PlayerID.toString() === roomid[0] ? onGameOver?.(gameState.score.p1Score) : onGameOver?.(gameState.score.p2Score);
+                        }
                     }, 1000*5);
                     //TODO: render ending
                 }
@@ -81,7 +91,12 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                     console.log("/gamePage: game over offline");
                     setTimeout(()=>{
                         ws.close();
-                        onExit?.();
+                        if (gameData.tournament) {
+                            navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
+                            onGameOver?.();
+                            // const roomid: string[] = RoomID!.split("-");
+                            // PlayerID.toString() === roomid[0] ? onGameOver?.(gameState.score.p1Score) : onGameOver?.(gameState.score.p2Score);
+                        }
                     }, 1000*5);
                     //TODO: render ending
                 }
@@ -95,7 +110,7 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                     }, 1000);
                 }
             };
-    
+
             let confirmGame: boolean = false;
             document.addEventListener("keydown", (e) => {
                 if (confirmGame && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
@@ -110,10 +125,13 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                 }
                 else if (e.key === "Enter" && !confirmGame)
                 {
-                    confirmGame = true;
                     console.log("gamePage:" + e.key);
                     gameData.keyPress = "Enter";
-                    ws.send(JSON.stringify(gameData));
+                    if (ws.readyState === WebSocket.OPEN)
+                    {
+                        ws.send(JSON.stringify(gameData));
+                        confirmGame = true;
+                    }
                 }
             });
 
@@ -122,7 +140,7 @@ export function GamePage({ _roomID, onExit }: { _roomID?: string, onExit?: () =>
                 ws.close();
             };
         })();
-    }, [onExit]);
+    }, []);
 
     return (
         <div className="container">

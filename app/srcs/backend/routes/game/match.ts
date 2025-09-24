@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
-import type { Player } from "../../share/type/roomData";
 import { createRoomID, createTRoomID } from "./gameUtils.ts";
+import type { Player } from "../../share/type/Player.ts";
 
 const waitingPlayers: Player[] = [];
 const waitingTPlayers: Player[] = [];

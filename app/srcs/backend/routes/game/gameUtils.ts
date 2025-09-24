@@ -69,12 +69,10 @@ export function initTData(): TData {
     const data: TData = {
         round1: {
             roomID: [],
-            type: null,
             matches: [[], []]
         },
         round2: {
             roomID: [],
-            type: null,
             matches: [[], []]
         }
     }
@@ -85,7 +83,6 @@ export function TDataWithOutWS(_data: TData): TData {
     const data: TData = {
         round1: {
             roomID: _data.round1.roomID,
-            type: _data.round1.type,
             matches: [
                 [
                     {id: _data.round1.matches[0][0].id},
@@ -94,6 +91,19 @@ export function TDataWithOutWS(_data: TData): TData {
                 [
                     {id: _data.round1.matches[1][0].id},
                     {id: _data.round1.matches[1][1].id}
+                ],
+            ]
+        },
+        round2: {
+            roomID: _data.round2.roomID,
+            matches: [
+                [
+                    {id: _data.round2.matches[0][0]?.id},
+                    {id: _data.round2.matches[0][1]?.id}
+                ],
+                [
+                    {id: _data.round2.matches[1][0]?.id},
+                    {id: _data.round2.matches[1][1]?.id}
                 ],
             ]
         }
