@@ -46,16 +46,28 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   return data;
 }
 
-export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
-  const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
-  if (!(options.body instanceof FormData))
-    headers["Content-Type"] = "application/json";
+let onUnauthorized: (() => void) | null = null;
 
-  const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
-  const data = await res.json();
-
-  if (!res.ok)
-    throw new Error(data.message);
-
-  return data;
+export function  setUnauthorized(callback: () => void) {
+  onUnauthorized = callback;
 }
+
+  export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
+    const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
+    if (!(options.body instanceof FormData))
+      headers["Content-Type"] = "application/json";
+
+    const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+    const data = await res.json();
+
+    if (res.status === 401)
+    {
+      if (onUnauthorized)
+        onUnauthorized();
+      throw { status: 401, message: "Unauthorized!" };
+    }
+    else if (!res.ok)
+      throw { status: res.status, message: data.message };
+
+    return data;
+  }

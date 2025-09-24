@@ -1,0 +1,21 @@
+export interface User {
+  user_id: number;
+  username: string;
+  email: string;
+  created_at: string;
+}
+
+export interface Profile {
+  avatar_path: string | null;
+  avatar_buffer?: string;
+  avatar_buffer_exist: boolean;
+  login_status: string;
+  win_games: number;
+  lose_games: number;
+  tournament_wins: number;
+}
+
+export interface ProfileResponse {
+  user: User;
+  profile: Profile;
+}

@@ -38,7 +38,7 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 			}));
 			return res.send({ friends: friends_detail });
 		}
-		catch (error)
+		catch (error: any)
 		{
 			res.status(401).send({ message: error.message || 'Unauthorize friendships' });
 		}
@@ -46,7 +46,7 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 
 	fastify.post('/add_friend', async (req: any, res: any) => {
 		try {
-			const user_id = req.user;
+			// const user_id = req.user;
 			const { friend_adding } = req.body as any;
 			if (req.user === friend_adding)
 				return res.status(400).send({ message: "Error: You cannot add yourself as a friend" });

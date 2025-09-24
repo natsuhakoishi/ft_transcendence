@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import { apiFetch } from "./utils";
+import { apiFetch, apiFetchPrivate } from "./utils";
 
 const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void } ) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,6 +29,7 @@ const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
     </>
   );
 }
+//feat IMP "return button" @ or actually make register an individual route better?
 
 const GoogleLogIn: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
@@ -61,7 +62,7 @@ const OTPModal = ({ verifyRef, onVerify }: { verifyRef: React.RefObject<VerifyBo
   );
 }
 //feat have to use certain like onKeyDown to prevent user from type non digit
-//feat dismiss button -> should able to submit new OTP to same / diff email
+//feat "dismiss button": user able to submit new OTP to same / diff email
 
 const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -106,8 +107,7 @@ export function LoginPage() {
   const handleRegister = async () => {
     try {
       toast("Connecting to server...");
-      const res = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
-      const data = await res.json();
+      const data = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
 
       toast.success(data.message);
       if (data.requireOTP)
@@ -118,7 +118,7 @@ export function LoginPage() {
       if (err.message.includes("Failed to fetch"))
         toast.error("Server Error");
       else
-        toast.error("Error: "+ err.message);
+        toast.error(err.message);
     }
   }
 
@@ -127,7 +127,7 @@ export function LoginPage() {
       window.location.href = "https://localhost:4242/api/auth/google";
     } catch (err: any) {
       console.error("Issue: " + err.message);
-      toast.error("Error: "+ err.message);
+      toast.error(err.message);
     }
   };
 
@@ -145,7 +145,7 @@ export function LoginPage() {
       if (err.message.includes("Failed to fetch"))
         toast.error("Server Error");
       else
-        toast.error("Error: "+ err.message);
+        toast.error(err.message);
     }
   };
 
@@ -163,16 +163,20 @@ export function LoginPage() {
         url = "otp_verify_register"
         body = { username: verifyRef.current.username, email: verifyRef.current.email, password: verifyRef.current.password, otp: verifyRef.current.otp };
       }
-      await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
-
+      const data = await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
+      console.log(data);
+      localStorage.setItem("user-id", data.id);
+      toast.success("Verified success!");
       navigate("/");
-      //memo fetch database here before redirect to /home
     } catch (err: any) {
       console.error("Issue: " + err.message);
       if (err.message.includes("Failed to fetch"))
+      {
         toast.error("Server Error");
+        console.error(err.status);
+      }
       else
-        toast.error("Error: "+ err.message);
+        toast.error(err.message);
     }
   }
 
