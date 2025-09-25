@@ -1,16 +1,17 @@
-import type { GameState } from "./gameState.ts";
+import type { Matches } from "./Matches";
+import { Player, PlayerWithProfileData } from "./Player";
 
 export interface GameData {
     roomId: string;
 
     playerId: number;
     keyPress: string;
-    gameState: GameState;
+    tournament: boolean;
 }
 
-export interface TGameData {
-    roomId: string;
-
-    playerId: number;
-    keyPress: string;
+export interface TData {
+    round1: Matches;
+    round2: Matches;
+    players: Record<string, PlayerWithProfileData>;
+    state?: "r1" | "r2";
 }

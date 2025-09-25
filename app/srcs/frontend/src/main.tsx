@@ -4,45 +4,14 @@ import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation 
 import toast, { Toaster } from "react-hot-toast";
 import type { User } from "../../backend/share/type/profile.ts"
 import "./input.css";
-import { Matching } from "./matching";
+import { TMatching } from "./matching";
 import { GamePage } from "./gamePage";
 import NotFound from "./NotFound";
 import { LoginPage } from "./loginPage";
 import { MainPage } from "./mainPage";
+import { TournamentGamePage } from "./TournamentGamePage";
+import { ModeSelectPage } from "./modeSelect";
 import { setUnauthorized, apiFetchPrivate } from "./utils";
-
-function ModeSelectPage({user} : {user: User | null}) {
-  // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
-  const [page, setPage] = useState("select");
-
-  return (
-    <>
-    <div className="container bg-blue-500">
-      {page === "select" ? (
-        <div className="flex flex-col bg-blue-500">
-          {user  ? <h1>{}</h1> : <h1>aaaaaa</h1>}
-          <br></br>
-          <h1 className="text-5xl decoration-cyan-800">Select a mode</h1>
-          <div className="container bg-green-200">
-            <button type="button" onClick={() => setPage("Matching")}>AI</button> 
-                                              {/* TODO: change correct page */}
-          </div>
-          <div className="container bg-green-200">
-            <button type="button" onClick={() => setPage("Matching")}>1v1</button>
-          </div>
-          <div className="container bg-green-200">
-            <button type="button" onClick={() => setPage("Matching")}>Tournament</button>
-                                              {/* TODO: change correct page */}
-          </div>
-
-        </div>
-      ) : (
-        <Matching />
-      )}
-    </div>
-    </>
-  );
-}
 
 export type Progress = {
   step: string;
@@ -127,6 +96,8 @@ async function loadData(
       toast.error("Error: "+ err.message);
   }
 };
+import { TournamentGamePage } from "./TournamentGamePage";
+import { ModeSelectPage } from "./modeSelect";
 
 function App() {
   const navigate = useNavigate();
@@ -156,20 +127,21 @@ function App() {
   return (
     <>
       <Toaster position="top-center" />
-      {location.pathname === "/auth" ? 
-        (<Routes>
-            <Route path="/auth" element={<LoginPage />} />
-          </Routes>
-        ) : loading ?
-        <LoadingScreen progress={progress} />
-        : (
-          <Routes>
-            <Route path="/" element={<MainPage user={user} />} />
-            <Route path="/game/gameplay" element={<GamePage />} />
-            <Route path="/game/modeSelect" element={<ModeSelectPage user={user}/>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          )}
+      {location.pathname === "/auth" ? <Routes> <Route path="/auth" element={<LoginPage />} /> </Routes> :
+      ( : loading ? <LoadingScreen progress={progress} /> :
+      (
+        <Route path="/" element={<MainPage user={user}/>} />
+        <Route path="/game" >
+          <Route path="modeSelect" element={<ModeSelectPage />} />
+          <Route path="gameplay" element={<GamePage />} />
+          <Route path="tournament/*" element={<TournamentGamePage />} />
+          <Route path="tournamentMatching" element={<TMatching />} />
+        </Route>
+      )}
+      <Routes>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/404" element={<NotFound />} />
+      </Routes>
     </>
    );
 }

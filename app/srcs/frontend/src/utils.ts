@@ -1,11 +1,15 @@
-import toast from "react-hot-toast";
-import type { GameData } from "../../backend/share/type/gameData";
+import type { GameData, TData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 
-export function initGameState(boardWidth: number, boardHeight: number, paddlesHeight: number, paddlesWidth: number): GameState {
-    const data: GameState = {
+export function initGameState(): GameState {
+  const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
+  const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
+  const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
+  const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
+  
+  const data: GameState = {
                  //init default position and board size
-                ball: { x: boardWidth / 2, y: boardHeight / 2, vx: 2, vy: 2, radius: 10},
+                ball: { x: boardWidth / 2, y: boardHeight / 2, vx: 4, vy: 4, radius: 10},
                 leftPaddle: { x: 20, y: boardHeight / 2 - paddlesHeight / 2, width: paddlesWidth, height: paddlesHeight},
                 rightPaddle: { x: boardWidth - paddlesWidth - 10, y: boardHeight / 2 - paddlesHeight / 2, width: paddlesWidth, height: paddlesHeight},
                 boardHeight: boardHeight,
@@ -22,12 +26,12 @@ export function initGameState(boardWidth: number, boardHeight: number, paddlesHe
 }
 
 
-export function initGameData(_roomId: string, _playerID: number, boardWidth: number, boardHeight: number, paddlesHeight: number, paddlesWidth: number): GameData {
+export function initGameData(_roomId: string, _playerID: number): GameData {
     const data: GameData = {
                 roomId: _roomId,
                 playerId: _playerID,
                 keyPress: "//init//",
-                gameState: initGameState(boardWidth, boardHeight, paddlesHeight, paddlesWidth)
+                tournament: false
             };
     return data;
 }

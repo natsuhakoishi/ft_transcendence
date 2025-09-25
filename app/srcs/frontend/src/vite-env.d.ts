@@ -1,11 +1,19 @@
 /// <reference types="vite/client" />
 
+// import type { read } from "fs";
+
 interface ImportMetaEnv {
   readonly VITE_GAMEPLAY_ROUTE: string;
-  readonly VITE_GAMEMATCHING_ROUTE: string;
-  readonly VITE_GAMEPLAY_HTTP_ROUTE: string;
+  readonly VITE_GAME_MATCHING_ROUTE: string;
+  readonly VITE_GAME_TOURNAMENT_GAMEPLAY_ROUTE: string;
+  readonly VITE_GAME_TOURNAMENT_MATCHING_ROUTE: string;
+
+  readonly VITE_PATH_TOURNAMENT: string;
+  readonly VITE_PATH_TOURNAMENT_GAMEPLAY: string;
+  readonly VITE_PATH_TOURNAMENT_MATCHING: string;
   readonly VITE_PATH_GAMEPLAY: string;
   readonly VITE_PATH_404NOTFOUND: string;
+
   readonly VITE_GAME_BOARD_WIDTH_PX: string;
   readonly VITE_GAME_BOARD_HEIGHT_PX: string;
   readonly VITE_GAME_PADDLES_HEIGHT_PX: string;
