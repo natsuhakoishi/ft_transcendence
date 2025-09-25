@@ -1,20 +1,25 @@
+import { createRoomID, initGameState } from "../../routes/game/gameUtils.ts";
 import type { GameState } from "./gameState.ts";
-
-export interface Player {
-    id: number;
-    ws: any;
-}
+import fp from "fastify-plugin";
+import type { Player } from "./Player.ts";
 
 export class Room {
 
     private readonly id: string;
+    private p1ID: number;
+    private p2ID: number;
     private players: Set<Player>;
     private gameState: GameState;
 
-    constructor(_id: string, _gameState: GameState) {
-        this.id = _id;
+    constructor(playerID: [number, number]) {
+        console.log("class room: constructor called");
+        playerID.sort();
+        this.p1ID = playerID[0];
+        this.p2ID = playerID[1];
+        this.id = createRoomID(this.p1ID, this.p2ID);
         this.players = new Set();
-        this.gameState = _gameState;
+        this.gameState = initGameState();
+        console.log("class room: constructor success");
     }
 
     addPlayer(player: Player): void {
@@ -52,15 +57,15 @@ export class Room {
         this.broadCast("offline");
     }
 
-    p1ID(): number {        
-        return parseInt(this.id.split("-")[0], 10);
+    getP1ID(): number {        
+        return this.p1ID;
     }
 
-    p2ID(): number {
-        return parseInt(this.id.split("-")[1], 10);
+    getP2ID(): number {
+        return this.p2ID;
     }
 
-    private setScore(playerId: number): any {
+    private setScore(playerId: number): void {
         const pos: string = this.id.indexOf(playerId.toString()) === 0 ? "left" : "right";
         if (pos === "left") {
             this.gameState.score.p1Score = 3;
@@ -80,9 +85,16 @@ export class RoomManager {
         this.rooms = new Map();
     }
 
-    createRoom(roomID: string, gameState: GameState): void {
+    // createRoom(roomID: string, gameState: GameState): void {
+    //     if (!this.rooms.has(roomID))
+    //         this.rooms.set(roomID, new Room(roomID, gameState));
+    // }
+
+    createRoom(p1ID: number, p2ID: number): void {
+        console.log("called rooms");
+        const roomID: string = createRoomID(p1ID, p2ID);
         if (!this.rooms.has(roomID))
-            this.rooms.set(roomID, new Room(roomID, gameState));
+            this.rooms.set(roomID, new Room([p1ID, p2ID]));
     }
 
     getRoom(roomID: string): Room | null {
@@ -91,32 +103,18 @@ export class RoomManager {
         return this.rooms.get(roomID)!;
     }
 
+    getRoomByPlayerID(id: number): Room | null {
+        for (const room of this.rooms.values()) {
+            if (room.getP1ID() === id || room.getP2ID() === id)
+                return room;
+        }
+        return null;
+    }
+
     removeRoom(roomID: string): void {
         console.log("/gameplay: remove room: ", roomID);
         this.rooms.delete(roomID);
     }
-
-    // removeRoom(ws: any): void {
-    //     this.rooms.forEach( room => {
-    //         if (room.hasPlayer(ws))
-    //         {
-    //             const roomID: string = room.getRoomID();
-    //             this.rooms.delete(roomID);
-    //             console.log("/gameplay(get): removePlayer: removed room")
-    //             return ;
-    //         }
-    //     })
-    // }
-
-    // removePlayer(ws: any): void {
-    //     this.rooms.forEach(room => {
-    //         if (room.hasPlayer(ws))
-    //         {
-    //             room.getState().playerOffline = true;
-    //             room.removePlayer(ws);
-    //         }
-    //     });
-    // }
 
     listRooms(): void {
         let i: number = 0;
@@ -124,4 +122,15 @@ export class RoomManager {
             console.log("Rooms list: ", i++);
         });
     }
+}
+
+export default fp(async (fastify) => {
+  const rooms = new RoomManager();
+  fastify.decorate("rooms", rooms);
+});
+
+declare module "fastify" {
+  interface FastifyInstance {
+    rooms: RoomManager;
+  }
 }

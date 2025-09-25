@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
-import type { Player } from "../../share/type/roomData";
+import { createRoomID, createTRoomID } from "./gameUtils.ts";
+import type { Player } from "../../share/type/Player.ts";
 
 const waitingPlayers: Player[] = [];
 const waitingTPlayers: Player[] = [];
@@ -22,6 +23,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                 const p1: Player = waitingPlayers.shift()!;
                 const p2: Player = waitingPlayers.shift()!;
 
+                fastify.rooms.createRoom(p1.id, p2.id);
                 const TmpRoomID: string = createRoomID(p1.id, p2.id);
 
                 p1.ws.send(TmpRoomID);
@@ -45,27 +47,31 @@ const match: FastifyPluginAsync = async(fastify: any) => {
         const ws = connection;
 
         ws.on("message", msg => {
-            const playerID: number = parseInt(msg.toString(), 10);
+            ( async () => {
+                const playerID: number = parseInt(msg.toString(), 10);
+    
+                waitingTPlayers.push({id: playerID, ws});
+    
+                if (waitingTPlayers.length >= 4)
+                {
+                    const p1: Player = waitingTPlayers.shift()!;
+                    const p2: Player = waitingTPlayers.shift()!;
+                    const p3: Player = waitingTPlayers.shift()!;
+                    const p4: Player = waitingTPlayers.shift()!;
+    
+                    const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
 
-            waitingTPlayers.push({id: playerID, ws});
-
-            if (waitingTPlayers.length >= 4)
-            {
-                const p1: Player = waitingTPlayers.shift()!;
-                const p2: Player = waitingTPlayers.shift()!;
-                const p3: Player = waitingTPlayers.shift()!;
-                const p4: Player = waitingTPlayers.shift()!;
-
-                const roomID: string = createTRoomID(p1.id, p2.id, p3.id, p4.id);
-
-                p1.ws.send(roomID);
-                p2.ws.send(roomID);
-                p3.ws.send(roomID);
-                p4.ws.send(roomID);
-
-                console.log("/gamematching: tmp room id: " + roomID);
-                console.log(`/gamematching: Matched players: ${p1.id} vs ${p2.id} vs ${p3.id} vs ${p4.id}`);
-            }
+                    await fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
+    
+                    p1.ws.send(roomID);
+                    p2.ws.send(roomID);
+                    p3.ws.send(roomID);
+                    p4.ws.send(roomID);
+    
+                    console.log("/TMatching: tmp room id: " + roomID);
+                    console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
+                }
+            })()
         });
 
         ws.on("close", () => {
@@ -79,14 +85,5 @@ const match: FastifyPluginAsync = async(fastify: any) => {
     });
 }
 
-function createRoomID(p1: number, p2: number): string {
-    return p1 > p2 ? `${p2}-${p1}` : `${p1}-${p2}`;
-}
-
-function createTRoomID(p1: number, p2: number, p3: number, p4: number): string {
-    const N = [p1, p2, p3, p4];
-    N.sort();
-    return `${N[0]}-${N[1]}-${N[2]}-${N[3]}`;
-}
 
 export default match;

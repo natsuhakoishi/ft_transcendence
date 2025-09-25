@@ -1,11 +1,15 @@
 import { runSQLite, getSQLite, allSQLite } from "./utils.ts";
 
-export async function createTournament(host_id: number)
+export async function createTournament(host_id: number): Promise<number>
 {
 	await runSQLite(`
 		INSERT INTO tournaments (host_id) VALUES (?)`,
 		host_id
 	);
+
+	const result = await runSQLite(`SELECT last_insert_rowid() as id`);
+	console.log(result);
+	return result.lastID;
 }
 
 export async function getTournamentById(tournament_id: number)
