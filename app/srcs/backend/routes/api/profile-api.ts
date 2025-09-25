@@ -7,7 +7,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { checkUsernameExist, getUserById, updatePasswordById, updateUsernameById } from "../../database/user.ts";
 import { getProfileById, setAvatarPath } from "../../database/profile.ts";
 import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
-import type { User } from '../../share/type/profile';
+import type { User } from '../../share/type/user.ts';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/profile', async (req: any, res: any) => {

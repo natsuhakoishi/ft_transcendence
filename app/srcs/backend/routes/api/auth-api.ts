@@ -90,7 +90,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			secure: true,
 			sameSite: "strict",
 			maxAge: 2 * 60 * 60
-		}).send(user.id * 42);
+		}).send({ message: "Register successful. Cookies created." });
 	});
 
 	//verify-otp-login
@@ -128,7 +128,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			secure: true,
 			sameSite: "strict",
 			maxAge: 2 * 60 * 60
-		}).send(user.id * 42);
+		}).send({ message: "Login successful. Cookies created." });
 	});
 
 	// logout
