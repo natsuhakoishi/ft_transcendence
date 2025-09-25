@@ -24,8 +24,7 @@ function LoadingScreen({ progress}: { progress: Progress }) {
   return (
     <>
       <p className="font-semibold">{progress.step}</p>
-      {progress.completed !== null &&
-        <p className="">{progress.completed} / {progress.total} </p>}
+      {progress.completed !== null && <p className="">{progress.completed} / {progress.total} </p>}
       <button type="button" className="center-0 bg-indigo-500 text-white px-4 py-2 rounded-md flex items-center justify-center" disabled>
         <svg className="size-5 animate-spin text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
           <circle cx="12" cy="4" r="1.8"></circle>
@@ -46,33 +45,29 @@ type ProgressObj<T> = {
   setter: React.Dispatch<React.SetStateAction<T | null>> | null;
 };
 
-async function loadData(
+type fetchDataProps = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setProgress: React.Dispatch<React.SetStateAction<Progress>>,
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
   setFriend: React.Dispatch<React.SetStateAction<Friend | null>>
-) {
+}
+
+async function loadData({setLoading, setProgress, setUser, setFriend} :fetchDataProps ) {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-  const progress: [
-    ProgressObj<any>,
-    ProgressObj<User>,
-    ProgressObj<Friend>,
-  ] = [
+  const progress: [ ProgressObj<any>, ProgressObj<User>, ProgressObj<Friend> ] =
+  [
     { name: "Checking User", api: () => fetch("/api/private/me", { method: "GET" }), setter: null },
     { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
     { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: setFriend }
-    // { name: "Validating Data", api: () => checkData(), setter: null }
   ]
+  
   try {
     for (let i = 0; i < progress.length; ++i)
     {
       const { name, api, setter } = progress[i];
 
       setProgress(prev => ({
-        ...prev,
-        step: name,
-        completed: prev.completed,
-      }));
+        ...prev, step: name, completed: prev.completed, }));
 
       const data = await api();
       console.info(data);
@@ -80,14 +75,13 @@ async function loadData(
         setter(data);
 
       setProgress(prev => ({
-        ...prev,
-        completed: prev.completed !== null ? prev.completed + 1 : 0,
-      }));
-      await sleep(1000);
+        ...prev, completed: prev.completed !== null ? prev.completed + 1 : 0, }));
+
+      await sleep(500);
     }
 
     setProgress({ step: "Data fetching completed", completed: null, total: null });
-    await sleep(1000);
+    await sleep(500);
     setLoading(false);
 
   } catch (err: any) {
@@ -120,7 +114,7 @@ function App() {
   //Usage: re-fetch trigger when route change / reload happen
   React.useEffect(() => {
     if (location.pathname === "/") {
-        loadData(setLoading, setProgress, setUser, setFriend);
+        loadData({setLoading, setProgress, setUser, setFriend});
     }    
   }, [location.pathname]);
 

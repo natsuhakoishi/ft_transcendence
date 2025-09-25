@@ -13,9 +13,8 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/profile', async (req: any, res: any) => {
 		try
 		{
-			const user_id = req.user;
-			const user = await getUserById(user_id);
-			const profile = await getProfileById(user_id);
+			const user = await getUserById(req.user);
+			const profile = await getProfileById(req.user);
 			if (!user || !profile)
 				return res.status(404).send({ message: 'User or Profie Not Found' });
 
