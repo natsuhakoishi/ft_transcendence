@@ -1,20 +1,15 @@
-export interface Profile {
-	f_id: number,
-	friend_username: string,
-	friend_avatar_path: string | null,
-	friend_avatar_buffer?: string,
-	friend_avatar_buffer_exist: boolean,
-	friend_login_status: string,
-	friend_win_games: number,
-	friend_lose_games: number,
-	friend_tournament_wins: number,
+import type { Profile } from "./user.ts"
+
+export interface FProfile extends Profile {
+	id: number,
+	username: string,
 }
 
-export interface Status {
-	mutual: { mutual: boolean, message: string};
+export interface Friends {
+	info: FProfile;
+	fstatus: { mutual: boolean, message: string};
 }
 
-export interface Friend {
-	info: Profile;
-	status: Status;
-}
+export type Friend =
+  | { status: "No friend hh"; friends: [] }
+  | { status: "I have friends WOw"; friends: Friends[] };
