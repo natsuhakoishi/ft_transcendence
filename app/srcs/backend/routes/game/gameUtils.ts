@@ -1,5 +1,7 @@
+import { getProfileById } from "../../database/profile.ts";
 import type { TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
+import type { PlayerWithProfileData } from "../../share/type/Player.ts";
 
 export function Trespassing(ws: any): void {
     console.log("/gameplay(ws): player trespassing");
@@ -65,21 +67,38 @@ export function createTRoomID(playerID: [number, number, number, number]): strin
     return `${playerID[0]}-${playerID[1]}-${playerID[2]}-${playerID[3]}`;
 }
 
-export function initTData(): TData {
-    const data: TData = {
-        round1: {
-            roomID: [],
-            matches: [[], []]
-        },
-        round2: {
-            roomID: [],
-            matches: [[], []]
-        }
-    }
-    return data;
+export async function initTData(playerID: [number, number, number, number]): Promise<TData> {
+        const data: TData = {
+            round1: {
+                roomID: [],
+                matches: [[], []]
+            },
+            round2: {
+                roomID: [],
+                matches: [[], []]
+            },
+            players: {
+                [playerID[0].toString()] : await getPlayerData(playerID[0]),
+                [playerID[1].toString()] : await getPlayerData(playerID[1]),
+                [playerID[2].toString()] : await getPlayerData(playerID[2]),
+                [playerID[3].toString()] : await getPlayerData(playerID[3]),
+            }
+        };
+        return data;
 }
 
-export function TDataWithOutWS(_data: TData): TData {
+async function  getPlayerData(_id: number): Promise<PlayerWithProfileData> {
+    try {
+        const data = await getProfileById(_id);
+        return {id: data.id.toString(), name: data.username, avatar: "/assets/avatars/" + data.avatar_path};
+    }
+    catch (e) {
+        console.log(e);
+        return {id: "0", name: "no",avatar: "idk"};
+    }
+}
+
+export function TDataWithOutWS(_data: TData, _state?: "r1" | "r2"): TData {
     const data: TData = {
         round1: {
             roomID: _data.round1.roomID,
@@ -106,8 +125,9 @@ export function TDataWithOutWS(_data: TData): TData {
                     {id: _data.round2.matches[1][1]?.id}
                 ],
             ]
-        }
+        },
+        players: _data.players,
+        state: _state
     }
-
     return data;
 }

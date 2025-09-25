@@ -63,8 +63,3 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 
   return data;
 }
-
-export function parseScore(data: TData) {
-  
-
-}

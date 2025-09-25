@@ -1,104 +1,100 @@
 import React from "react";
 import { GamePage } from "./gamePage";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { data, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "./utils";
 import type { GameData, TData } from "../../backend/share/type/gameData";
 import type { Matches } from "../../backend/share/type/Matches";
 import NotFound from "./NotFound";
+import type { PlayerWithProfileData } from "../../backend/share/type/Player";
 
-interface PlayerBoxProps {
-  name: string;
+interface LoadingProps {
+  leaderboard?: {
+    matches: Matches;
+    players: Record<string, PlayerWithProfileData>;
+  };
+  load: boolean;
+  playerID?: string;
 }
 
-const PlayerBox: React.FC<PlayerBoxProps> = ({ name }) => (
-  <div className="px-3 py-2 bg-white border rounded shadow text-sm font-medium">
-    {name}
-  </div>
-);
+function Loading({ leaderboard, load, playerID }: LoadingProps) {
+    if (load || !leaderboard) {
+        return (
+            <div>
+            <h1>Loading...</h1>
+            </div>
+        );
+    }
 
-function Bracket({ state }: { state?: string }) { 
+    const { matches, players } = leaderboard;
+
+    console.log("Loading: " + playerID, leaderboard, playerID);
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col gap-8">
+        {matches.matches.map((match, idx) => {
+            const [p1, p2] = match;
+            const player1 = players[p1.id.toString()];
+            const player2 = players[p2.id.toString()];
 
-            {/* Bracket container */}
-
-            <div className="flex gap-12">
-
-                <div className="flex flex-col gap-12 mt-22">
-                    <div className="flex flex-col gap-2">
-                        <PlayerBox name="3rd" />
-                    </div>
+            return (
+            <div key={idx} className="flex items-center gap-4">
+                {/* Player 1 */}
+                <div className="flex items-center gap-2">
+                <img
+                    src={player1?.avatar}
+                    alt={player1?.name}
+                    className="w-8 h-8 rounded-full border"
+                />
+                <span
+                    className={`font-medium ${
+                    player1?.id.toString() === playerID ? "text-blue-600" : ""
+                    }`}
+                >
+                    {player1?.name}
+                </span>
                 </div>
 
-                {/* Round 1 */}
-                <div className="flex flex-col gap-12">
-                    <div className="flex flex-col gap-2">
-                        <PlayerBox name="Player 1" />
-                        <PlayerBox name="Player 2" />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <PlayerBox name="Player 3" />
-                        <PlayerBox name="Player 4" />
-                    </div>
-                </div>
+                <span className="font-bold">VS</span>
 
-                {/* Round 2 */}
-                <div className="flex flex-col gap-24 justify-center">
-                    <PlayerBox name="Final A" />
-                    <PlayerBox name="Final B" />
-                </div>
-
-                {/* Final */}
-                <div className="flex flex-col justify-center">
-                    <PlayerBox name="Champion" />
+                {/* Player 2 */}
+                <div className="flex items-center gap-2">
+                <img
+                    src={player2?.avatar}
+                    alt={player2?.name}
+                    className="w-8 h-8 rounded-full border"
+                />
+                <span
+                    className={`font-medium ${
+                    player2?.id.toString() === playerID ? "text-blue-600" : ""
+                    }`}
+                >
+                    {player2?.name}
+                </span>
                 </div>
             </div>
-        </div>  
+            );
+        })}
+    </div>
   );
 }
 
-function Loading({matches, load}: {matches?: any, load: boolean}) {
-    const p1 = "p1";
-    const p2 = "p2";
-    const p3 = "p3";
-    const p4 = "p4";
-
-    React.useEffect(() => {
-        console.log("Loading: useEffect");
-        console.log("Loading: ", load);
-    }, []);
-
-    return (
-        <div>
-            {
-                load ? (
-                    <div>
-                        <h1>Loading...</h1>
-                    </div>
-                ) : (
-                    <div>
-                        <h1>{p1},{p2},{p3},{p4}</h1>
-                    </div>
-                )
-            }
-        </div>
-    );
-}
-
 export function TournamentGamePage() {
+    let init: boolean = false;
     const navigate = useNavigate();
     const [load, setLoad] = React.useState(true);
     const location = useLocation();
     const { tournamentRoomID } = (location.state || {}) as {tournamentRoomID?: string};
     const wsRef = React.useRef<WebSocket | null>(null);
     const gameDataRef = React.useRef<GameData>({
-                roomId: "",
-                playerId: 0,
-                keyPress: "init",
-                tournament: true,
-            });
-    let init: boolean = false;
+        roomId: "",
+        playerId: 0,
+        keyPress: "init",
+        tournament: true,
+    });
+    const [leaderboard, setLeaderboard] = React.useState<{
+        matches: Matches,
+        players: Record<string, PlayerWithProfileData>
+    }>();
 
     React.useEffect(() => {
         ( async () => {
@@ -148,8 +144,17 @@ export function TournamentGamePage() {
                 }
                 else if (type === "update")
                 {
-                    //update leaderboard
-                    console.log("TournamentGamePage: setLoad to false");
+                    if (parse.state.state === "r1")
+                        setLeaderboard({
+                            matches: parse.state.round1,
+                            players: parse.state.players,
+                        });
+                    else
+                        setLeaderboard({
+                            matches: parse.state.round2,
+                            players: parse.state.players,
+                        });
+                    console.log("TournamentGamePage: setLoad to false", parse.state);
                     setLoad(false);
                 }
                 else if (type === "startRound1")
@@ -199,7 +204,7 @@ export function TournamentGamePage() {
 
     return (
         <Routes>
-            <Route path="/" element={<Loading load={load} />} />
+            <Route path="/" element={<Loading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
             <Route
                 path="gameplay"
                 element={<GamePage onGameOver={handleGameOver} />} />

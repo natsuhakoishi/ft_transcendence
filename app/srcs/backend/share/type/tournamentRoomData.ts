@@ -6,6 +6,7 @@ import { bindMatchTournament, createTournament, joinTournament } from "../../dat
 import { getMatchByUserId } from "../../database/match.ts";
 import type { Player } from "./Player.ts";
 import type { Matches } from "./Matches.ts";
+import { getProfileById } from "../../database/profile.ts";
 
 export class TRoom {
 
@@ -16,7 +17,7 @@ export class TRoom {
     private readonly p3ID: number;
     private readonly p4ID: number;
 
-    private data: TData;
+    private data!: TData;
     private players: Set<Player>;
 
     private status: null | "round1" | "round2" | "end";
@@ -31,36 +32,37 @@ export class TRoom {
     // private r2AStatus: boolean;
     // private r2BStatus: boolean;
     constructor (playerID: [number, number, number, number]) {
-        playerID.sort();
-        this.p1ID = playerID[0];
-        this.p2ID = playerID[1];
-        this.p3ID = playerID[2];
-        this.p4ID = playerID[3];
-        this.id = createTRoomID(playerID);
-        this.data = initTData();
-        this.players = new Set();
-        this.status = null;
-
-        this.r1flag = 0;
-        this.r1winners = [];
-        this.r1losers = [];
-
-        this.r2flag = 0;
+            playerID.sort();
+            this.p1ID = playerID[0];
+            this.p2ID = playerID[1];
+            this.p3ID = playerID[2];
+            this.p4ID = playerID[3];
+            this.id = createTRoomID(playerID);
+            this.players = new Set();
+            this.status = null;
+            this.r1flag = 0;
+            this.r1winners = [];
+            this.r1losers = [];
+    
+            this.r2flag = 0;
     }
 
     async init(): Promise<void> {
+        this.data = await initTData([this.p1ID, this.p2ID, this.p3ID, this.p4ID]);
         this.dbID = await createTournament(this.p1ID);
         await joinTournament(this.dbID, this.p1ID);
         await joinTournament(this.dbID, this.p2ID);
         await joinTournament(this.dbID, this.p3ID);
         await joinTournament(this.dbID, this.p4ID);
+
+        // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.data);
     }
 
-    broadCast(_type: string): void {
+    broadCast(_type: string, state?: "r1" | "r2"): void {
         for (const player of this.players)
         {
             if (player.ws.readyState === WebSocket.OPEN)
-                player.ws.send(JSON.stringify({type: _type, state: TDataWithOutWS(this.data)}));
+                player.ws.send(JSON.stringify({type: _type, state: TDataWithOutWS(this.data, state)}));
             else
                 console.log("TRoom: broadCast: offline: ", player.id);
                 //TODO: if offline
@@ -69,7 +71,7 @@ export class TRoom {
     }
 
     addPlayer(player: Player): void {
-        this.players.add(player);
+            this.players.add(player);
     }
 
     startRound1(): void {
@@ -96,7 +98,6 @@ export class TRoom {
     }
 
     makeRound2(): void {
-        // this.status = "round2";
         this.data.round2.matches = [this.r1winners, this.r1losers];
     }
 

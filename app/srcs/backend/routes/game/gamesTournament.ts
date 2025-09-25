@@ -19,7 +19,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             const room: TRoom | null = fastify.tournamentRooms.getRoomByPlayerID(data.playerId);
             if (!room)
             {
-                ws.send(JSON.stringify({ type: "trespassing", data: initTData()}));
+                ws.send(JSON.stringify({ type: "trespassing", data: initTData([0,0,0,0])}));
                 return ;
             }
             if (data.keyPress === "init" && room.size() < 4)
@@ -38,7 +38,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                     round1.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
                     round1.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
 
-                    room.broadCast("update");
+                    room.broadCast("update", "r1");
                     setTimeout(() => {
                         room.startRound1();
                     }, 1000 * 3);
@@ -58,7 +58,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                         fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id);
 
                         setTimeout(() => {
-                            room.broadCast("update");
+                            room.broadCast("update", "r2");
                             setTimeout(() => {
                                 room.startRound2();
                             }, 1000 * 5);

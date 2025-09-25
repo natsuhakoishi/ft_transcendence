@@ -80,8 +80,6 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                             console.log("/gamePage: gameOver");
                             navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
                             onGameOver?.();
-                            // const roomid: string[] = RoomID!.split("-");
-                            // PlayerID.toString() === roomid[0] ? onGameOver?.(gameState.score.p1Score) : onGameOver?.(gameState.score.p2Score);
                         }
                     }, 1000*5);
                     //TODO: render ending
