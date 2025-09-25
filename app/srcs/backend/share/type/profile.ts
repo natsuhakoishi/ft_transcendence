@@ -1,4 +1,4 @@
-export interface User {
+export interface Account {
   user_id: number;
   username: string;
   email: string;
@@ -15,7 +15,7 @@ export interface Profile {
   tournament_wins: number;
 }
 
-export interface ProfileResponse {
-  user: User;
+export interface User {
+  acc: Account;
   profile: Profile;
 }

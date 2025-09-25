@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
-import { apiFetch, apiFetchPrivate } from "./utils";
+import toast from "react-hot-toast";
+import { apiFetch } from "./utils";
 
 const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void } ) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,7 +29,7 @@ const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
     </>
   );
 }
-//feat IMP "return button" @ or actually make register an individual route better?
+//feat IMP "return button"
 
 const GoogleLogIn: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
@@ -163,11 +163,11 @@ export function LoginPage() {
         url = "otp_verify_register"
         body = { username: verifyRef.current.username, email: verifyRef.current.email, password: verifyRef.current.password, otp: verifyRef.current.otp };
       }
-      const data = await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
-      console.log(data);
-      localStorage.setItem("user-id", data.id);
+
+      await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
       toast.success("Verified success!");
       navigate("/");
+
     } catch (err: any) {
       console.error("Issue: " + err.message);
       if (err.message.includes("Failed to fetch"))

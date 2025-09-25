@@ -7,7 +7,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { checkUsernameExist, getUserById, updatePasswordById, updateUsernameById } from "../../database/user.ts";
 import { getProfileById, setAvatarPath } from "../../database/profile.ts";
 import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
-import type { ProfileResponse } from '../../share/type/profile';
+import type { User } from '../../share/type/profile';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/profile', async (req: any, res: any) => {
@@ -19,9 +19,9 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			if (!user || !profile)
 				return res.status(404).send({ message: 'User or Profie Not Found' });
 
-			const response: ProfileResponse =
+			const response: User =
 			{
-				user:
+				acc:
 				{
 					user_id: user.id,
 					username: user.username,

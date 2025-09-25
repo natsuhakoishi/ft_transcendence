@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import type { User } from "../../backend/share/type/profile.ts"
 import "./input.css";
 import { Matching } from "./matching";
 import { GamePage } from "./gamePage";
 import NotFound from "./NotFound";
 import { LoginPage } from "./loginPage";
 import { MainPage } from "./mainPage";
-import { setUnauthorized } from "./utils";
-import type { ProfileResponse } from "../../backend/share/type/profile.ts"
+import { setUnauthorized, apiFetchPrivate } from "./utils";
 
-function ModeSelectPage({user} : {user: ProfileResponse | null}) {
+function ModeSelectPage({user} : {user: User | null}) {
   // const [page, setPage] = useState<"Match" | "Matching" | "GamePage">("Match");
   const [page, setPage] = useState("select");
 
-  console.log(user?.user.username);
   return (
     <>
     <div className="container bg-blue-500">
       {page === "select" ? (
         <div className="flex flex-col bg-blue-500">
-          {user  ? <h1>{user.user.email}</h1> : <h1>aaaaaa</h1>}
+          {user  ? <h1>{}</h1> : <h1>aaaaaa</h1>}
           <br></br>
           <h1 className="text-5xl decoration-cyan-800">Select a mode</h1>
           <div className="container bg-green-200">
@@ -45,8 +44,94 @@ function ModeSelectPage({user} : {user: ProfileResponse | null}) {
   );
 }
 
+export type Progress = {
+  step: string;
+  completed: number | null;
+  total: number | null;
+};
+
+function LoadingScreen({ progress}: { progress: Progress }) {
+  return (
+    <>
+      <p className="font-semibold">{progress.step}</p>
+      {progress.completed !== null &&
+        <p className="">{progress.completed} / {progress.total} </p>}
+      <button type="button" className="center-0 bg-indigo-500 text-white px-4 py-2 rounded-md flex items-center justify-center" disabled>
+        <svg className="size-5 animate-spin text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+          <circle cx="12" cy="4" r="1.8"></circle>
+          <circle cx="19" cy="8" r="1.8"></circle>
+          <circle cx="19" cy="16" r="1.8"></circle>
+          <circle cx="12" cy="20" r="1.8"></circle>
+          <circle cx="5" cy="16" r="1.8"></circle>
+          <circle cx="5" cy="8" r="1.8"></circle>
+        </svg>
+      </button>
+    </>
+  );
+}
+
+type ProgressObj<T> = {
+  name: string;
+  api: () => Promise<T>;
+  setter: React.Dispatch<React.SetStateAction<T | null>> | null;
+};
+
+async function loadData(
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setProgress: React.Dispatch<React.SetStateAction<Progress>>,
+  setUser: React.Dispatch<React.SetStateAction<User | null>>
+) {
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const progress: [
+    ProgressObj<any>,
+    ProgressObj<User>,
+    // ProgressObj<void>,
+  ] = [
+    { name: "Checking User", api: () => fetch("/api/private/me", { method: "GET" }), setter: null },
+    { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
+    // { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: null }
+    // { name: "Validating Data", api: () => checkData(), setter: null }
+  ]
+  try {
+    for (let i = 0; i < progress.length; ++i)
+    {
+      const { name, api, setter } = progress[i];
+
+      setProgress(prev => ({
+        ...prev,
+        step: name,
+        completed: prev.completed,
+      }));
+
+      const data = await api();
+      console.info(data);
+      if (setter)
+        setter(data);
+
+      setProgress(prev => ({
+        ...prev,
+        completed: prev.completed !== null ? prev.completed + 1 : 0,
+      }));
+      await sleep(1000);
+    }
+
+    setProgress({ step: "Data fetching completed", completed: null, total: null });
+    await sleep(1000);
+    setLoading(false);
+
+  } catch (err: any) {
+    console.error("Issue: " + err.message);
+    if (err.message.includes("Failed to fetch"))
+      toast.error("Server Error");
+    else
+      toast.error("Error: "+ err.message);
+  }
+};
+
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     setUnauthorized(() => {
       toast.error("Session expired. Log in again!");
@@ -55,27 +140,38 @@ function App() {
       }, 3000);
     });
   }, []);
-
-  const [user, setUser] = useState<ProfileResponse | null>(null);
+  
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState<Progress>({ step: "Loading", completed: null, total: 3 });
+  const [user, setUser] = useState<User | null>(null);
   // const [friend, setFriend] = useState<ProfileResponse | null>(null);
+
+  //Usage: re-fetch trigger when route change / reload happen
+  useEffect(() => {
+    if (location.pathname === "/" || location.pathname === "/game/modeSelect") {
+        loadData(setLoading, setProgress, setUser);
+    }    
+  }, [location.pathname]);
 
   return (
     <>
       <Toaster position="top-center" />
-      <Routes>
-        <Route path="/auth" element={<LoginPage />} />
-        <Route path="/" element={<MainPage 
-          setUser={setUser} user={user}
-        />} />
-        <Route path="/game" >
-          <Route path="modeSelect" element={<ModeSelectPage user={user}/>} />
-          <Route path="gameplay" element={<GamePage />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/404" element={<NotFound />} />
-      </Routes>
+      {location.pathname === "/auth" ? 
+        (<Routes>
+            <Route path="/auth" element={<LoginPage />} />
+          </Routes>
+        ) : loading ?
+        <LoadingScreen progress={progress} />
+        : (
+          <Routes>
+            <Route path="/" element={<MainPage user={user} />} />
+            <Route path="/game/gameplay" element={<GamePage />} />
+            <Route path="/game/modeSelect" element={<ModeSelectPage user={user}/>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          )}
     </>
-  );
+   );
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
