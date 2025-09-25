@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type JSX } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { apiFetch } from "./utils";
@@ -29,7 +29,7 @@ const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
     </>
   );
 }
-//feat IMP "return button"
+//feat! "return button"
 
 const GoogleLogIn: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (

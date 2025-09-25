@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import type { User } from "../../backend/share/type/profile.ts"
 import "./input.css";
-import { TMatching } from "./matching";
-import { GamePage } from "./gamePage";
-import NotFound from "./NotFound";
+import type { User } from "../../backend/share/type/user.ts"
 import { LoginPage } from "./loginPage";
 import { MainPage } from "./mainPage";
-import { TournamentGamePage } from "./TournamentGamePage";
 import { ModeSelectPage } from "./modeSelect";
+import { TMatching } from "./matching";
+import { GamePage } from "./gamePage";
+import { TournamentGamePage } from "./TournamentGamePage";
+import NotFound from "./NotFound";
 import { setUnauthorized, apiFetchPrivate } from "./utils";
 
 export type Progress = {
@@ -96,14 +96,12 @@ async function loadData(
       toast.error("Error: "+ err.message);
   }
 };
-import { TournamentGamePage } from "./TournamentGamePage";
-import { ModeSelectPage } from "./modeSelect";
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     setUnauthorized(() => {
       toast.error("Session expired. Log in again!");
       setTimeout(() => {
@@ -112,14 +110,14 @@ function App() {
     });
   }, []);
   
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState<Progress>({ step: "Loading", completed: null, total: 3 });
-  const [user, setUser] = useState<User | null>(null);
-  // const [friend, setFriend] = useState<ProfileResponse | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 3 });
+  const [user, setUser] = React.useState<User | null>(null);
+  // const [friend, setFriend] = React.useState<ProfileResponse | null>(null);
 
   //Usage: re-fetch trigger when route change / reload happen
-  useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "/game/modeSelect") {
+  React.useEffect(() => {
+    if (location.pathname === "/") {
         loadData(setLoading, setProgress, setUser);
     }    
   }, [location.pathname]);
@@ -128,20 +126,23 @@ function App() {
     <>
       <Toaster position="top-center" />
       {location.pathname === "/auth" ? <Routes> <Route path="/auth" element={<LoginPage />} /> </Routes> :
-      ( : loading ? <LoadingScreen progress={progress} /> :
-      (
-        <Route path="/" element={<MainPage user={user}/>} />
-        <Route path="/game" >
-          <Route path="modeSelect" element={<ModeSelectPage />} />
-          <Route path="gameplay" element={<GamePage />} />
-          <Route path="tournament/*" element={<TournamentGamePage />} />
-          <Route path="tournamentMatching" element={<TMatching />} />
-        </Route>
+       (loading ? <LoadingScreen progress={progress} /> :
+        (
+          <>
+          <Routes>
+          <Route path="/" element={<MainPage user={user}/>} />
+          <Route path="/game" >
+            <Route path="modeSelect" element={<ModeSelectPage />} />
+            <Route path="gameplay" element={<GamePage />} />
+            <Route path="tournament/*" element={<TournamentGamePage />} />
+            <Route path="tournamentMatching" element={<TMatching />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+          <Route path="/404" element={<NotFound />} />
+          </Routes>
+          </>
+        )
       )}
-      <Routes>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/404" element={<NotFound />} />
-      </Routes>
     </>
    );
 }
