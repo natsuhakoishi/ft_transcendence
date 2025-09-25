@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation 
 import toast, { Toaster } from "react-hot-toast";
 import "./input.css";
 import type { User } from "../../backend/share/type/user.ts"
+import type { Friend } from "../../backend/share/type/friend.ts"
 import { LoginPage } from "./loginPage";
 import { MainPage } from "./mainPage";
 import { ModeSelectPage } from "./modeSelect";
@@ -48,17 +49,18 @@ type ProgressObj<T> = {
 async function loadData(
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setProgress: React.Dispatch<React.SetStateAction<Progress>>,
-  setUser: React.Dispatch<React.SetStateAction<User | null>>
+  setUser: React.Dispatch<React.SetStateAction<User | null>>,
+  setFriend: React.Dispatch<React.SetStateAction<Friend | null>>
 ) {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const progress: [
     ProgressObj<any>,
     ProgressObj<User>,
-    // ProgressObj<void>,
+    ProgressObj<Friend>,
   ] = [
     { name: "Checking User", api: () => fetch("/api/private/me", { method: "GET" }), setter: null },
     { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
-    // { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: null }
+    { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: setFriend }
     // { name: "Validating Data", api: () => checkData(), setter: null }
   ]
   try {
@@ -113,12 +115,12 @@ function App() {
   const [loading, setLoading] = React.useState(true);
   const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 3 });
   const [user, setUser] = React.useState<User | null>(null);
-  // const [friend, setFriend] = React.useState<ProfileResponse | null>(null);
+  const [friend, setFriend] = React.useState<Friend | null>(null);
 
   //Usage: re-fetch trigger when route change / reload happen
   React.useEffect(() => {
     if (location.pathname === "/") {
-        loadData(setLoading, setProgress, setUser);
+        loadData(setLoading, setProgress, setUser, setFriend);
     }    
   }, [location.pathname]);
 
@@ -130,7 +132,7 @@ function App() {
         (
           <>
           <Routes>
-          <Route path="/" element={<MainPage user={user}/>} />
+          <Route path="/" element={<MainPage user={user} friend={friend}/>} />
           <Route path="/game" >
             <Route path="modeSelect" element={<ModeSelectPage />} />
             <Route path="gameplay" element={<GamePage />} />
