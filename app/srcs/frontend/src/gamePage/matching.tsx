@@ -109,8 +109,11 @@ export function TMatching() {
     }, []);
 
     return (
+        <>
         <div className="container bg-blue-500">
-          <h1 className="text-5xl decoration-cyan-800">Tournament Matching...</h1>
-      </div>
+            <h1 className="text-5xl decoration-cyan-800">Tournament Matching...</h1>
+        </div>
+        <button type="submit" className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={() => navigate("/")}>Cancel</button>
+        </>
     );
 }
