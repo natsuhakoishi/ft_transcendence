@@ -6,16 +6,17 @@ import { handleKeyPress, start } from "./gameLogic.ts";
 import { createMatch } from "../../database/match.ts";
 import type { GameScore } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
+import { addWinLose } from "../../database/profile.ts";
 
 const games: FastifyPluginAsync = async (fastify: any) => {
     // const rooms: RoomManager = new RoomManager();
 
-    fastify.get("/gameplay", { websocket: true }, (connection: any, req) => {
+    fastify.get("/gameplay", { websocket: true }, (connection: any, req: any) => {
         const ws = connection;
 
         console.log("/gameplay: connected");
 
-        ws.on("message", (msg) => {
+        ws.on("message", (msg: any) => {
             console.log("/gameplay: received message from player");
 
             const data: GameData = JSON.parse(msg.toString());
@@ -35,7 +36,6 @@ const games: FastifyPluginAsync = async (fastify: any) => {
                     const score: GameScore = room.getState().score;
                     try {
                         createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
-                        // addWinLose(player.id, "");
                         console.log("/gameplay: call database success");
                         if (data.tournament)
                             fastify.tournamentRooms.getRoomByPlayerID(room.getP1ID()).updateWinnerNLoser(room.getP1ID(), score.p1Score, score.p2Score);
