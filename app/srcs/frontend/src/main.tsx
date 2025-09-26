@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import "./input.css";
-import { LoginPage } from "./loginPage";
-import { Home } from "./home";
-import { TMatching } from "./matching";
-import { GamePage } from "./gamePage";
-import { TournamentGamePage } from "./TournamentGamePage";
-import NotFound from "./NotFound";
+import "./style.css";
+import { LoginPage } from "./otherPage/loginPage";
+import { Home } from "./homePage/home";
+import { TMatching } from "./gamePage/matching";
+import { GamePage } from "./gamePage/gamePage";
+import { TournamentGamePage } from "./gamePage/TournamentGamePage";
+import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
 
 function App() {

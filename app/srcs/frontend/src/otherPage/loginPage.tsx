@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { apiFetch } from "./utils";
+import { apiFetch } from "../utils";
 
 const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void } ) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -101,7 +101,7 @@ export function LoginPage() {
   const verifyRef = useRef<VerifyBody>({ email: "", otp: "" });
 
   useEffect(() => {
-    document.title = mode === "login" ? "Login" : "Register";
+    document.title = mode === "login" ? "KLBQ | Login" : "KLBQ | Register";
   }, [mode]);
 
   const handleRegister = async () => {

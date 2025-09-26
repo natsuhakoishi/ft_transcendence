@@ -1,8 +1,8 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { apiFetchPrivate } from "./utils.ts";
-import type { User } from "../../backend/share/type/user.ts";
-import type { Friend } from "../../backend/share/type/friend.ts";
+import { apiFetchPrivate } from "../utils.ts";
+import type { User } from "../../../backend/share/type/user.ts";
+import type { Friend } from "../../../backend/share/type/friend.ts";
 
 export type Progress = {
   step: string;
@@ -61,7 +61,7 @@ export async function loadData({setLoading, setProgress, setUser, setFriend} :fe
         ...prev, step: name, completed: prev.completed, }));
 
       const data = await api();
-      // console.info(data);
+      console.info(data);
       if (i === 1) who = data.acc.username;
       if (setter)
         setter(data);

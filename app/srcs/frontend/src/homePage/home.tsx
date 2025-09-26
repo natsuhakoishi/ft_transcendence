@@ -1,10 +1,10 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { useNavigate } from "react-router-dom";
-import type { User } from "../../backend/share/type/user.ts";
-import type { Friend } from "../../backend/share/type/friend.ts";
-import { loadData, LoadingScreen, type Progress } from "./home_load"
-import { Matching } from "./matching";
+import { replace, useNavigate } from "react-router-dom";
+import type { User } from "../../../backend/share/type/user.ts";
+import type { Friend } from "../../../backend/share/type/friend.ts";
+import { loadData, LoadingScreen, type Progress } from "./home_load.tsx"
+import { Matching } from "../gamePage/matching.tsx";
 
 export function Home() {
   const navigate = useNavigate();
@@ -15,14 +15,14 @@ export function Home() {
   const [friend, setFriend] = React.useState<Friend | null>(null);
   
   React.useEffect(() => {
-  	// document.title += " | Main Menu";
+  	document.title = "KLBQ | Main Menu";
     loadData({setLoading, setProgress, setUser, setFriend});
   }, []);
 
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
-      (match === true ? <Matching /> :
+      (match === true ? <Matching setMatch={setMatch} /> :
         (<div className="grid grid-cols-[1fr_2fr_1fr] h-screen w-screen">
 
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
