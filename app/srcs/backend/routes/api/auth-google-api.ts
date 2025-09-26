@@ -36,7 +36,7 @@ const authGoogleApi: FastifyPluginAsync = async (fastify: any) => {
 				maxAge: 2 * 60 * 60
 			}).redirect("https://localhost:5173/");
 		}
-		catch (error)
+		catch (error: any)
 		{
 			fastify.log.error(error);
 			return res.status(500).send({ message: 'Google OAuth callback failed', error: error.message });

@@ -1,3 +1,4 @@
+import { addWinLose } from "./profile.ts";
 import { runSQLite, allSQLite, getSQLite } from "./utils.ts";
 
 export async function createMatch(player1_id: number, player2_id: number, player1_score: number, player2_score: number, tournament_flag: boolean = false)
@@ -17,6 +18,19 @@ export async function createMatch(player1_id: number, player2_id: number, player
 		winner_id,
 		tournament_flag
 	);
+
+	if (tournament_flag)
+		return ;
+	if (winner_id === player1_id)
+	{
+		addWinLose(player1_id, "win_games");
+		addWinLose(player2_id, "lose_games");
+	}
+	else
+	{
+		addWinLose(player2_id, "win_games");
+		addWinLose(player1_id, "lose_games");
+	}
 }
 
 export async function getMatchById(match_id: number)

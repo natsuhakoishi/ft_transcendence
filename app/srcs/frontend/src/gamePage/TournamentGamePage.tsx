@@ -1,11 +1,11 @@
 import React from "react";
 import { GamePage } from "./gamePage";
 import { data, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate } from "./utils";
-import type { GameData, TData } from "../../backend/share/type/gameData";
-import type { Matches } from "../../backend/share/type/Matches";
-import NotFound from "./NotFound";
-import type { PlayerWithProfileData } from "../../backend/share/type/Player";
+import { apiFetchPrivate } from "../utils";
+import type { GameData, TData } from "../../../backend/share/type/gameData";
+import type { Matches } from "../../../backend/share/type/Matches";
+import NotFound from "../otherPage/NotFound";
+import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 
 interface LoadingProps {
   leaderboard?: {

@@ -1,31 +1,11 @@
+@tailwind utilities;
+@import "tailwindcss/preflight";
 @import "tailwindcss";
 
 body {
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* background-color: #f0f0f0; */
-}
-
-#pic1 {
-    width: 150px;
-    height: auto;
-    margin-bottom: -60px;
-}
-
-#gameArea {
-    display: flex;
-    /* justify-content: space-between; */
-    align-items: center;
-    gap: 20px;
-}
-
-#gameBoard {
-    /* background: #93eecb; */
-    border: 2px solid black;
-    border-radius: 8px;
 }
