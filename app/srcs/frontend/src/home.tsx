@@ -1,9 +1,10 @@
 import React from "react";
 import toast from "react-hot-toast"
-import {  Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { User } from "../../backend/share/type/user.ts";
 import type { Friend } from "../../backend/share/type/friend.ts";
 import { apiFetchPrivate } from "./utils.ts";
+import { Matching } from "./matching";
 
 type Progress = {
   step: string;
@@ -14,7 +15,7 @@ type Progress = {
 function LoadingScreen({ progress}: { progress: Progress }) {
   return (
     <>
-      <p className="font-semibold">{progress.step}</p>
+      <p className="font-semibold font-serif">{progress.step}</p>
       {progress.completed !== null && <p className="">{progress.completed} / {progress.total} </p>}
       <button type="button" className="center-0 bg-indigo-500 text-white px-4 py-2 rounded-md flex items-center justify-center" disabled>
         <svg className="size-5 animate-spin text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -87,32 +88,57 @@ async function loadData({setLoading, setProgress, setUser, setFriend} :fetchData
   }
 };
 
-export function MainPage() {
-  const [loading, setLoading] = React.useState(true);
+export function Home() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = React.useState<boolean>(true);
   const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 3 });
+  const [match, setMatch] = React.useState<boolean>(false);
   const [user, setUser] = React.useState<User | null>(null);
   const [friend, setFriend] = React.useState<Friend | null>(null);
   
   React.useEffect(() => {
-  	document.title = "Main Menu";
+  	// document.title += " | Main Menu";
     loadData({setLoading, setProgress, setUser, setFriend});
   }, []);
 
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
-    (<div className="">
-      <h1>{friend?.status}</h1>
-      <button className="absolute top-0 left-0 bg-blue-500 w-30 p-2">{user?.acc.username}</button>
-      <button className="absolute bottom-0 left-0 bg-blue-500 w-30 p-2">Friends</button>
-      <span className="absolute bottom-0 middle-0 ">Credits</span>
-      <button className="absolute bottom-0 right-0 bg-blue-500 w-30 p-2">Match History</button>
-      <span className="absolute top-0 right-0 p-2 font-semibold">Version</span>
-      <button className="container bg-green-300">
-        <Link to="/game/modeSelect">Mode Select</Link>
-      </button>
-    </div>
-    )}
+      (match === true ? <Matching /> :
+        (<div className="grid grid-cols-[1fr_2fr_1fr] h-screen w-screen">
+
+          <div className="column-start-1 row-span-3 flex flex-col justify-between">
+            <button className="bg-blue-500 w-30 p-2">{user?.acc.username}</button>
+            <button className="bg-blue-500 w-30 p-2">Friends</button>
+          </div>
+
+          <div className="column-start-2 row-span-3 flex flex-col items-center">
+            <div className="flex-1" />
+            <div className="bg-[#A0EAFF]/75 w-[90%] h-1/2">
+              <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center">
+                <button className="row-span-2 w-full h-full bg-sky-500"
+                 onClick={() => navigate(import.meta.env.VITE_PATH_TOURNAMENT_MATCHING)}>Tournament</button>
+
+                <button className="bg-gray-300 h-2/3 w-2/3"
+                 onClick={() => setMatch(true)}>1 vs 1</button>
+
+                <button className="bg-gray-300 h-2/3 w-2/3"
+                 >AI Match</button>
+              </div>
+            </div>
+            <div className="flex-1" />
+
+            <span className="">Credits</span>
+          </div>
+
+          <div className="column-start-3 row-span-3 flex flex-col items-end justify-between">
+            <span className="p-2 font-semibold">Version</span>
+            <button className=" bg-blue-500 w-30 p-2">Match History</button>
+          </div>
+
+        </div>
+      ))
+    }
     </>
   );
 }

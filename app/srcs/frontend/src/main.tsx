@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "./input.css";
 import { LoginPage } from "./loginPage";
-import { MainPage } from "./mainPage";
+import { Home } from "./home";
 import { TMatching } from "./matching";
 import { GamePage } from "./gamePage";
 import { TournamentGamePage } from "./TournamentGamePage";
@@ -28,7 +28,11 @@ function App() {
       <Toaster position="top-center" />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" >
+          <Route index element={<Home />} />
+          {/* <Route path="/friend" /> */}
+          {/* <Route path="/profile" /> */}
+        </Route>
         <Route path="/game" >
           <Route path="gameplay" element={<GamePage />} />
           <Route path="tournament/*" element={<TournamentGamePage />} />
