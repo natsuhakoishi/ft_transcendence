@@ -28,21 +28,21 @@
 <body>
   <h1>ft_klbq Authentication & Profile</h1>
 
-    <!-- Google 登入 -->
-  <h2>🔑 Google Login</h2>
-  <button id="google-login-btn">Login with Google</button>
+  <!-- Google 登入 -->
+  <!-- <h2>🔑 Google Login</h2>
+  <button id="google-login-btn">Login with Google</button> -->
 
   <!-- 註冊 -->
-  <h2>Register</h2>
+  <!-- <h2>Register</h2>
   <form id="register-form">
     <input type="text" id="reg-username" placeholder="Username" required />
     <input type="email" id="reg-email" placeholder="Email" required />
     <input type="password" id="reg-password" placeholder="Password" required />
     <button type="submit">Register</button>
-  </form>
+  </form> -->
 
   <!-- 登入 -->
-  <h2>Login</h2>
+  <!-- <h2>Login</h2>
   <form id="login-form">
     <input type="email" id="login-email" placeholder="Email" required />
     <input type="password" id="login-password" placeholder="Password" required />
@@ -53,7 +53,7 @@
   <form id="otp-form">
     <input type="text" id="otp-code" placeholder="Enter OTP" required />
     <button type="submit">Verify OTP</button>
-  </form>
+  </form> -->
 
   <!-- 登出 -->
   <h2>Logout</h2>
@@ -100,10 +100,10 @@
   </form>
 
     <!-- Match 測試 -->
-  <h2>🎮 Match Test</h2>
+  <!-- <h2>🎮 Match Test</h2> -->
 
   <!-- 建立比賽 -->
-  <form id="create-match-form">
+  <!-- <form id="create-match-form">
     <input type="number" id="player1-id" placeholder="Player1 ID" required />
     <input type="number" id="player2-id" placeholder="Player2 ID" required />
     <input type="number" id="player1-score" placeholder="Player1 Score" required />
@@ -112,65 +112,65 @@
       <input type="checkbox" id="tournament-flag" /> Tournament Match
     </label>
     <button type="submit">➕ Create Match</button>
-  </form>
+  </form> -->
 
   <!-- 查詢自己對局 -->
-  <button id="my-matches-btn">📜 Get My Matches</button>
-  <pre id="my-matches">No matches yet.</pre>
+  <!-- <button id="my-matches-btn">📜 Get My Matches</button>
+  <pre id="my-matches">No matches yet.</pre> -->
 
     <!-- Tournament 測試 -->
-  <h2>🏆 Tournament Test</h2>
+  <!-- <h2>🏆 Tournament Test</h2> -->
 
   <!-- 建立比賽 -->
-  <form id="create-tournament-form">
+  <!-- <form id="create-tournament-form">
     <input type="text" id="tournament-name" placeholder="Tournament Name" required />
     <button type="submit">➕ Create Tournament</button>
-  </form>
+  </form> -->
 
   <!-- 加入比賽 -->
-  <form id="join-tournament-form">
+  <!-- <form id="join-tournament-form">
     <input type="number" id="join-tournament-id" placeholder="Tournament ID" required />
     <button type="submit">👥 Join Tournament</button>
-  </form>
+  </form> -->
 
   <!-- 查詢全部 -->
-  <button id="all-tournaments-btn">📜 Get All Tournaments</button>
-  <pre id="all-tournaments">No tournaments yet.</pre>
+  <!-- <button id="all-tournaments-btn">📜 Get All Tournaments</button>
+  <pre id="all-tournaments">No tournaments yet.</pre> -->
 
   <!-- 查詢單一賽事 -->
-  <form id="get-tournament-form">
+  <!-- <form id="get-tournament-form">
     <input type="number" id="get-tournament-id" placeholder="Tournament ID" required />
     <button type="submit">🔎 Get Tournament</button>
   </form>
-  <pre id="tournament-info">No data yet.</pre>
+  <pre id="tournament-info">No data yet.</pre> -->
 
   <!-- 查詢參賽者 -->
-  <form id="get-participants-form">
+  <!-- <form id="get-participants-form">
     <input type="number" id="participants-tournament-id" placeholder="Tournament ID" required />
     <button type="submit">👥 Get Participants</button>
   </form>
-  <pre id="participants-info">No data yet.</pre>
+  <pre id="participants-info">No data yet.</pre> -->
 
   <!-- 查詢對局 -->
-  <form id="get-matches-form">
+  <!-- <form id="get-matches-form">
     <input type="number" id="matches-tournament-id" placeholder="Tournament ID" required />
     <button type="submit">🎮 Get Matches</button>
   </form>
-  <pre id="matches-info">No data yet.</pre>
+  <pre id="matches-info">No data yet.</pre> -->
 
   <!-- 查詢排行榜 -->
-  <form id="get-leaderboard-form">
+  <!-- <form id="get-leaderboard-form">
     <input type="number" id="leaderboard-tournament-id" placeholder="Tournament ID" required />
     <button type="submit">🏅 Get Leaderboard</button>
   </form>
-  <pre id="leaderboard-info">No data yet.</pre>
+  <pre id="leaderboard-info">No data yet.</pre> -->
 
   <!-- 綁定比賽 -->
-  <form id="bind-match-form">
+  <!-- <form id="bind-match-form">
   <input type="number" id="bind-tournament-id" placeholder="Tournament ID" required />
   <input type="number" id="bind-match-id" placeholder="Match ID" required />
   <button type="submit">🔗 Bind Match</button>
-  </form>
+  </form> -->
 
 
   <!-- 系統訊息 -->
@@ -185,10 +185,10 @@
     const friendProfile = document.getElementById("friend-profile");
 
     // ==== 工具函式 ====
-    function log(msg, isError=false) {
-      output.innerHTML = `<span class="${isError ? 'error':'success'}">${msg}</span>`;
-    }
-    function getToken() { return localStorage.getItem("token"); }
+    // function log(msg, isError=false) {
+    //   output.innerHTML = `<span class="${isError ? 'error':'success'}">${msg}</span>`;
+    // }
+    // function getToken() { return localStorage.getItem("token"); }
     function showUser(userData) {
       if (!userData || typeof userData === "string") {
         userInfo.textContent = userData || "Not logged in.";
@@ -199,25 +199,25 @@
       avatarPreview.src = `https://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
     }
 
-    async function apiFetch(endpoint, options={}) {
-      const token = getToken();
-      const headers = options.headers || {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-      if (!(options.body instanceof FormData)) {
-        headers["Content-Type"] = "application/json";
-      }
-      return fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers });
-    }
+    // async function apiFetch(endpoint, options={}) {
+    //   const token = getToken();
+    //   const headers = options.headers || {};
+    //   if (token) headers["Authorization"] = `Bearer ${token}`;
+    //   if (!(options.body instanceof FormData)) {
+    //     headers["Content-Type"] = "application/json";
+    //   }
+    //   return fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers });
+    // }
 
-    async function apiFetchPr(endpoint, options={}) {
-      const token = getToken();
-      const headers = options.headers || {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-      if (!(options.body instanceof FormData)) {
-        headers["Content-Type"] = "application/json";
-      }
-      return fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers });
-    }
+    // async function apiFetchPr(endpoint, options={}) {
+    //   const token = getToken();
+    //   const headers = options.headers || {};
+    //   if (token) headers["Authorization"] = `Bearer ${token}`;
+    //   if (!(options.body instanceof FormData)) {
+    //     headers["Content-Type"] = "application/json";
+    //   }
+    //   return fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers });
+    // }
 
     // ==== Profile ====
     async function fetchProfile() {
@@ -261,93 +261,93 @@
 
     // ==== Register/Login/Logout ====
         // ==== Google Login ====
-    document.getElementById("google-login-btn").addEventListener("click", () => {
-      // 直接導向 Fastify 提供的 Google OAuth redirect
-      window.location.href = "https://localhost:4242/api/auth/google";
-    });
+    // document.getElementById("google-login-btn").addEventListener("click", () => {
+    //   // 直接導向 Fastify 提供的 Google OAuth redirect
+    //   window.location.href = "https://localhost:4242/api/auth/google";
+    // });
 
     // 如果 Google callback 把 token 放在 URL (例如 /?token=xxx)
-    window.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get("token");
-      if (token) {
-        localStorage.setItem("token", token);
-        log("✅ Google Login successful!");
-        fetchProfile();
-        fetchFriends();
-        // 清掉網址上的 query
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    });
+    // window.addEventListener("DOMContentLoaded", () => {
+    //   const params = new URLSearchParams(window.location.search);
+    //   const token = params.get("token");
+    //   if (token) {
+    //     localStorage.setItem("token", token);
+    //     log("✅ Google Login successful!");
+    //     fetchProfile();
+    //     fetchFriends();
+    //     // 清掉網址上的 query
+    //     window.history.replaceState({}, document.title, window.location.pathname);
+    //   }
+    // });
 
  // ==== Register ====
-    document.getElementById("register-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = {
-        username: document.getElementById("reg-username").value,
-        email: document.getElementById("reg-email").value,
-        password: document.getElementById("reg-password").value,
-      };
-      const res = await apiFetch("register", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      if (res.ok) {
-        log("✅ " + data.message);
-        localStorage.setItem("otp_email", body.email);
-        localStorage.setItem("otp_flow", "register"); // 記錄流程
-      } else {
-        log("❌ " + data.message, true);
-      }
-    });
+    // document.getElementById("register-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = {
+    //     username: document.getElementById("reg-username").value,
+    //     email: document.getElementById("reg-email").value,
+    //     password: document.getElementById("reg-password").value,
+    //   };
+    //   const res = await apiFetch("register", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   if (res.ok) {
+    //     log("✅ " + data.message);
+    //     localStorage.setItem("otp_email", body.email);
+    //     localStorage.setItem("otp_flow", "register"); // 記錄流程
+    //   } else {
+    //     log("❌ " + data.message, true);
+    //   }
+    // });
 
     // ==== Login ====
-    document.getElementById("login-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = {
-        email: document.getElementById("login-email").value,
-        password: document.getElementById("login-password").value,
-      };
-      const res = await apiFetch("login", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      if (res.ok) {
-        log("✅ OTP sent! Check your email.");
-        localStorage.setItem("otp_email", body.email);
-        localStorage.setItem("otp_flow", "login"); // 記錄流程
-      } else {
-        log("❌ " + data.message, true);
-      }
-    });
+    // document.getElementById("login-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = {
+    //     email: document.getElementById("login-email").value,
+    //     password: document.getElementById("login-password").value,
+    //   };
+    //   const res = await apiFetch("login", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   if (res.ok) {
+    //     log("✅ OTP sent! Check your email.");
+    //     localStorage.setItem("otp_email", body.email);
+    //     localStorage.setItem("otp_flow", "login"); // 記錄流程
+    //   } else {
+    //     log("❌ " + data.message, true);
+    //   }
+    // });
 
-    document.getElementById("otp-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const email = localStorage.getItem("otp_email");
-      const otp = document.getElementById("otp-code").value;
-      const flow = localStorage.getItem("otp_flow");
+    // document.getElementById("otp-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const email = localStorage.getItem("otp_email");
+    //   const otp = document.getElementById("otp-code").value;
+    //   const flow = localStorage.getItem("otp_flow");
 
-      if (!email || !flow) return log("⚠️ No OTP request in progress.", true);
+    //   if (!email || !flow) return log("⚠️ No OTP request in progress.", true);
 
-      const endpoint = flow === "register" ? "otp_verify_register" : "otp_verify_login";
-      const res = await apiFetch(endpoint, {
-        method: "POST",
-        body: JSON.stringify({ email, otp })
-      });
-      const data = await res.json();
+    //   const endpoint = flow === "register" ? "otp_verify_register" : "otp_verify_login";
+    //   const res = await apiFetch(endpoint, {
+    //     method: "POST",
+    //     body: JSON.stringify({ email, otp })
+    //   });
+    //   const data = await res.json();
 
-      if (res.ok) {
-        // ✅ 不論是註冊還是登入，兩邊都會回傳 token
-        localStorage.setItem("token", data.token);
-        log("✅ OTP verified, login successful!");
-        fetchProfile();
-        fetchFriends();
+    //   if (res.ok) {
+    //     // ✅ 不論是註冊還是登入，兩邊都會回傳 token
+    //     localStorage.setItem("token", data.token);
+    //     log("✅ OTP verified, login successful!");
+    //     fetchProfile();
+    //     fetchFriends();
 
-        // 清掉暫存
-        localStorage.removeItem("otp_email");
-        localStorage.removeItem("otp_flow");
-      } else {
-        log("❌ " + data.message, true);
-      }
-    });
+    //     // 清掉暫存
+    //     localStorage.removeItem("otp_email");
+    //     localStorage.removeItem("otp_flow");
+    //   } else {
+    //     log("❌ " + data.message, true);
+    //   }
+    // });
 
-
+    // ==== Log Out ----
     document.getElementById("logout-btn").addEventListener("click", async () => {
       const res = await apiFetch("logout", { method: "POST", body: JSON.stringify({}) });
       const data = await res.json();
@@ -411,107 +411,106 @@
     });
 
     // ==== 初始化 ====
-    window.addEventListener("DOMContentLoaded", () => { fetchProfile(); fetchFriends(); });
+    // window.addEventListener("DOMContentLoaded", () => { fetchProfile(); fetchFriends(); });
 
         // ==== Matches ====
-    document.getElementById("create-match-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = {
-        player1_id: parseInt(document.getElementById("player1-id").value),
-        player2_id: parseInt(document.getElementById("player2-id").value),
-        player1_score: parseInt(document.getElementById("player1-score").value),
-        player2_score: parseInt(document.getElementById("player2-score").value),
-        tournament_flag: document.getElementById("tournament-flag").checked,
-      };
-      const res = await apiFetchPr("match", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      log(res.ok ? "✅ " + (data.message || "Match created.") : "❌ " + data.message, !res.ok);
-    });
+    // document.getElementById("create-match-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = {
+    //     player1_id: parseInt(document.getElementById("player1-id").value),
+    //     player2_id: parseInt(document.getElementById("player2-id").value),
+    //     player1_score: parseInt(document.getElementById("player1-score").value),
+    //     player2_score: parseInt(document.getElementById("player2-score").value),
+    //     tournament_flag: document.getElementById("tournament-flag").checked,
+    //   };
+    //   const res = await apiFetchPr("match", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ " + (data.message || "Match created.") : "❌ " + data.message, !res.ok);
+    // });
 
-    document.getElementById("my-matches-btn").addEventListener("click", async () => {
-      const res = await apiFetchPr("match/me", { method: "GET" });
-      const data = await res.json();
-      document.getElementById("my-matches").textContent = res.ok
-        ? JSON.stringify(data, null, 2)
-        : "❌ " + data.message;
-    });
+    // document.getElementById("my-matches-btn").addEventListener("click", async () => {
+    //   const res = await apiFetchPr("match/me", { method: "GET" });
+    //   const data = await res.json();
+    //   document.getElementById("my-matches").textContent = res.ok
+    //     ? JSON.stringify(data, null, 2)
+    //     : "❌ " + data.message;
+    // });
 
         // ==== Tournament ====
-    document.getElementById("create-tournament-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = { name: document.getElementById("tournament-name").value };
-      const res = await apiFetchPr("tournament", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
-    });
+    // document.getElementById("create-tournament-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = { name: document.getElementById("tournament-name").value };
+    //   const res = await apiFetchPr("tournament", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    // });
 
-    document.getElementById("join-tournament-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = { tournament_id: parseInt(document.getElementById("join-tournament-id").value) };
-      const res = await apiFetchPr("tournament/join", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
-    });
+    // document.getElementById("join-tournament-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = { tournament_id: parseInt(document.getElementById("join-tournament-id").value) };
+    //   const res = await apiFetchPr("tournament/join", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    // });
 
-    document.getElementById("all-tournaments-btn").addEventListener("click", async () => {
-      const res = await apiFetch("tournament", { method: "GET" });
-      const data = await res.json();
-      document.getElementById("all-tournaments").textContent = res.ok
-        ? JSON.stringify(data, null, 2)
-        : "❌ " + data.message;
-    });
+    // document.getElementById("all-tournaments-btn").addEventListener("click", async () => {
+    //   const res = await apiFetch("tournament", { method: "GET" });
+    //   const data = await res.json();
+    //   document.getElementById("all-tournaments").textContent = res.ok
+    //     ? JSON.stringify(data, null, 2)
+    //     : "❌ " + data.message;
+    // });
 
-    document.getElementById("get-tournament-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const id = parseInt(document.getElementById("get-tournament-id").value);
-      const res = await apiFetch(`tournament/${id}`, { method: "GET" });
-      const data = await res.json();
-      document.getElementById("tournament-info").textContent = res.ok
-        ? JSON.stringify(data, null, 2)
-        : "❌ " + data.message;
-    });
+    // document.getElementById("get-tournament-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const id = parseInt(document.getElementById("get-tournament-id").value);
+    //   const res = await apiFetch(`tournament/${id}`, { method: "GET" });
+    //   const data = await res.json();
+    //   document.getElementById("tournament-info").textContent = res.ok
+    //     ? JSON.stringify(data, null, 2)
+    //     : "❌ " + data.message;
+    // });
 
-    document.getElementById("get-participants-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const id = parseInt(document.getElementById("participants-tournament-id").value);
-      const res = await apiFetch(`tournament/${id}/participants`, { method: "GET" });
-      const data = await res.json();
-      document.getElementById("participants-info").textContent = res.ok
-        ? JSON.stringify(data, null, 2)
-        : "❌ " + data.message;
-    });
+    // document.getElementById("get-participants-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const id = parseInt(document.getElementById("participants-tournament-id").value);
+    //   const res = await apiFetch(`tournament/${id}/participants`, { method: "GET" });
+    //   const data = await res.json();
+    //   document.getElementById("participants-info").textContent = res.ok
+    //     ? JSON.stringify(data, null, 2)
+    //     : "❌ " + data.message;
+    // });
 
-    document.getElementById("get-matches-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const id = parseInt(document.getElementById("matches-tournament-id").value);
-      const res = await apiFetch(`tournament/${id}/matches`, { method: "GET" });
-      const data = await res.json();
-      document.getElementById("matches-info").textContent = res.ok
-        ? JSON.stringify(data, null, 2)
-        : "❌ " + data.message;
-    });
+    // document.getElementById("get-matches-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const id = parseInt(document.getElementById("matches-tournament-id").value);
+    //   const res = await apiFetch(`tournament/${id}/matches`, { method: "GET" });
+    //   const data = await res.json();
+    //   document.getElementById("matches-info").textContent = res.ok
+    //     ? JSON.stringify(data, null, 2)
+    //     : "❌ " + data.message;
+    // });
 
-    document.getElementById("get-leaderboard-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const id = parseInt(document.getElementById("leaderboard-tournament-id").value);
-      const res = await apiFetch(`tournament/${id}/leaderboard`, { method: "GET" });
-      const data = await res.json();
-      document.getElementById("leaderboard-info").textContent = res.ok
-        ? JSON.stringify(data, null, 2)
-        : "❌ " + data.message;
-    });
+    // document.getElementById("get-leaderboard-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const id = parseInt(document.getElementById("leaderboard-tournament-id").value);
+    //   const res = await apiFetch(`tournament/${id}/leaderboard`, { method: "GET" });
+    //   const data = await res.json();
+    //   document.getElementById("leaderboard-info").textContent = res.ok
+    //     ? JSON.stringify(data, null, 2)
+    //     : "❌ " + data.message;
+    // });
 
-    document.getElementById("bind-match-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = {
-      tournament_id: parseInt(document.getElementById("bind-tournament-id").value),
-      match_id: parseInt(document.getElementById("bind-match-id").value),
-      };
-      const res = await apiFetchPr("tournament/bind_match", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
-    });
-
+    // document.getElementById("bind-match-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = {
+    //   tournament_id: parseInt(document.getElementById("bind-tournament-id").value),
+    //   match_id: parseInt(document.getElementById("bind-match-id").value),
+    //   };
+    //   const res = await apiFetchPr("tournament/bind_match", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    // });
 
   </script>
 </body>

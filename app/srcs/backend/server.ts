@@ -135,10 +135,10 @@ async function initServer()
 	}, { prefix: '/api/private' });
 
 // Feat: print received cookie for every request
-  fastify.addHook('onRequest', (req, res, done) => {
-    console.log('Cookies received:', req.cookies);
-    done();
-  });
+//   fastify.addHook('onRequest', (req, res, done) => {
+//     console.log('Cookies received:', req.cookies);
+//     done();
+//   });
 
 	return fastify;
 }

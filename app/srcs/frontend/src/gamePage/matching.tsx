@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { apiFetchPrivate } from "./utils.ts";
+import { apiFetchPrivate } from "../utils.ts";
 
 // const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
 // const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
 // const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
 // const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
 
-export function Matching() {
+export function Matching({setMatch} : {setMatch: React.Dispatch<React.SetStateAction<boolean>>}) {
     const navigate = useNavigate();
 
     React.useEffect( () => {
@@ -53,10 +53,12 @@ export function Matching() {
     }, []);
 
     return (
-        <div className="container bg-blue-500">
-          <h1 className="text-5xl decoration-cyan-800">Matching...</h1>
-      </div>
-
+        <>
+        <div className=" bg-blue-500">
+            <h1 className="text-5xl decoration-cyan-800">Matching...</h1>
+        </div>
+        <button type="submit" className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 " onClick={() => setMatch(false)}>Cancel</button>
+        </>
     );
 }
 
@@ -107,8 +109,11 @@ export function TMatching() {
     }, []);
 
     return (
+        <>
         <div className="container bg-blue-500">
-          <h1 className="text-5xl decoration-cyan-800">Tournament Matching...</h1>
-      </div>
+            <h1 className="text-5xl decoration-cyan-800">Tournament Matching...</h1>
+        </div>
+        <button type="submit" className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={() => navigate("/")}>Cancel</button>
+        </>
     );
 }

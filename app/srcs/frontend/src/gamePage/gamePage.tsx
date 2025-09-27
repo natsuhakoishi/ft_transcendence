@@ -1,25 +1,8 @@
 import React from "react";
-import type { GameData } from "../../backend/share/type/gameData.ts";
+import type { GameData } from "../../../backend/share/type/gameData.ts";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate, initGameState } from "./utils.ts";
-import type { Ball, GameScore, GameState, Paddle } from "../../backend/share/type/gameState.ts";
-
-export function GameplayResult() {
-    const location = useLocation();
-    const { score, tournamentScore} = (location.state || {}) as {
-        score: GameScore;
-        tournamentScore?: number;
-    };
-
-
-
-    return (
-        <div>
-            <h1>Result Page</h1>
-        </div>
-    )
-
-}
+import { apiFetchPrivate, initGameState } from "../utils.ts";
+import type { Ball, GameState, Paddle } from "../../../backend/share/type/gameState.ts";
 
 export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const navigate = useNavigate();

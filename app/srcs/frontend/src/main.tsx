@@ -1,24 +1,39 @@
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import "./input.css";
-import { TMatching } from "./matching";
-import { GamePage } from "./gamePage";
-import NotFound from "./NotFound";
-import { LoginPage } from "./loginPage";
-import { MainPage } from "./mainPage";
-import { TournamentGamePage } from "./TournamentGamePage";
-import { ModeSelectPage } from "./modeSelect";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import "./style.css";
+import { LoginPage } from "./otherPage/loginPage";
+import { Home } from "./homePage/home";
+import { TMatching } from "./gamePage/matching";
+import { GamePage } from "./gamePage/gamePage";
+import { TournamentGamePage } from "./gamePage/TournamentGamePage";
+import NotFound from "./otherPage/NotFound";
+import { setUnauthorized } from "./utils";
 
 function App() {
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    setUnauthorized(() => {
+      toast.error("Session expired. Log in again!");
+      setTimeout(() => {
+        navigate("/auth");
+      }, 3000);
+    });
+  }, []);
+
   return (
     <>
       <Toaster position="top-center" />
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<MainPage />} />
+        <Route path="/auth" element={<LoginPage />} />
+        <Route path="/" >
+          <Route index element={<Home />} />
+          {/* <Route path="/friend" /> */}
+          {/* <Route path="/profile" /> */}
+        </Route>
         <Route path="/game" >
-          <Route path="modeSelect" element={<ModeSelectPage />} />
           <Route path="gameplay" element={<GamePage />} />
           <Route path="tournament/*" element={<TournamentGamePage />} />
           <Route path="tournamentMatching" element={<TMatching />} />
@@ -27,7 +42,7 @@ function App() {
         <Route path="/404" element={<NotFound />} />
       </Routes>
     </>
-  );
+   );
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
