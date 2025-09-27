@@ -6,6 +6,7 @@ import type { GameData, TData } from "../../backend/share/type/gameData";
 import type { Matches } from "../../backend/share/type/Matches";
 import NotFound from "./NotFound";
 import type { PlayerWithProfileData } from "../../backend/share/type/Player";
+import { LoadingScreen } from "./mainPage";
 
 interface LoadingProps {
   leaderboard?: {
@@ -17,13 +18,8 @@ interface LoadingProps {
 }
 
 function Loading({ leaderboard, load, playerID }: LoadingProps) {
-    if (load || !leaderboard) {
-        return (
-            <div>
-            <h1>Loading...</h1>
-            </div>
-        );
-    }
+    if (load || !leaderboard)
+        return <LoadingScreen />
 
     const { matches, players } = leaderboard;
 
@@ -33,15 +29,15 @@ function Loading({ leaderboard, load, playerID }: LoadingProps) {
         <div className="flex flex-col gap-8">
         {matches.matches.map((match, idx) => {
             const [p1, p2] = match;
-            const player1 = players[p1.id.toString()];
-            const player2 = players[p2.id.toString()];
+            const player1: PlayerWithProfileData = players[p1.id.toString()];
+            const player2: PlayerWithProfileData = players[p2.id.toString()];
 
             return (
             <div key={idx} className="flex items-center gap-4">
                 {/* Player 1 */}
                 <div className="flex items-center gap-2">
                 <img
-                    src={player1?.avatar}
+                    src={import.meta.env.VITE_AVATAR_ROUTE + player1?.avatar}
                     alt={player1?.name}
                     className="w-8 h-8 rounded-full border"
                 />
@@ -59,7 +55,7 @@ function Loading({ leaderboard, load, playerID }: LoadingProps) {
                 {/* Player 2 */}
                 <div className="flex items-center gap-2">
                 <img
-                    src={player2?.avatar}
+                    src={import.meta.env.VITE_AVATAR_ROUTE + player2?.avatar}
                     alt={player2?.name}
                     className="w-8 h-8 rounded-full border"
                 />

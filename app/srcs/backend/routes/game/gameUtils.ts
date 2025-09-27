@@ -90,7 +90,7 @@ export async function initTData(playerID: [number, number, number, number]): Pro
 async function  getPlayerData(_id: number): Promise<PlayerWithProfileData> {
     try {
         const data = await getProfileById(_id);
-        return {id: data.id.toString(), name: data.username, avatar: "https://localhost:4242/avatars/" + data.avatar_path};
+        return {id: data.id.toString(), name: data.username, avatar: data.avatar_path};
     }
     catch (e) {
         console.log(e);
