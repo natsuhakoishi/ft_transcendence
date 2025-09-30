@@ -1,15 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/loginPage";
-import { Home } from "./homePage/home";
+import { Home, HomeData } from "./homePage/home";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";
 import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
+import { FriendPage } from "./homePage/home_friend";
+import { ProfilePage } from "./homePage/home_profile";
 
 function App() {
   const navigate = useNavigate();
@@ -28,10 +30,10 @@ function App() {
       <Toaster position="top-center" />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
-        <Route path="/" >
+        <Route path="/" element={<HomeData />}>
           <Route index element={<Home />} />
-          {/* <Route path="/friend" /> */}
-          {/* <Route path="/profile" /> */}
+          <Route path="/friends" element={<FriendPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
         <Route path="/game" >
           <Route path="gameplay" element={<GamePage />} />
