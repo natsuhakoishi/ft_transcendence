@@ -49,6 +49,7 @@ export function Home() {
       (match === true ? <Matching setMatch={setMatch} /> :
         (<div className="grid grid-cols-[1fr_2fr_1fr] h-screen w-screen">
 
+          {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
             <div className="flex gap-2 mx-1 my-1">
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-95 transition-transform"
@@ -60,6 +61,7 @@ export function Home() {
             <button className="bg-blue-500 w-30 p-2" onClick={() => navigate(import.meta.env.VITE_PATH_FRIEND)}>Friends</button>
           </div>
 
+          {/*Center part*/}
           <div className="column-start-2 row-span-3 flex flex-col items-center">
             <div className="flex-1" />
             <div className="bg-[#A0EAFF]/75 w-[90%] h-1/2">
@@ -75,10 +77,10 @@ export function Home() {
               </div>
             </div>
             <div className="flex-1" />
-
             <span className="">Credits</span>
           </div>
 
+          {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end justify-between">
             <span className="p-2 font-semibold">Version</span>
             <button className=" bg-blue-500 w-30 p-2">Match History</button>  

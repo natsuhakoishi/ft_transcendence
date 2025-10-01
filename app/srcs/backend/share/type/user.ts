@@ -2,6 +2,7 @@ export interface Account {
   user_id: number;
   username: string;
   email: string;
+  google_login: boolean,
   created_at: string;
 }
 

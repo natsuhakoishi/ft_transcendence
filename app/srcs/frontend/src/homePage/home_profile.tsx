@@ -3,7 +3,7 @@ import toast from "react-hot-toast"
 import { apiFetch, apiFetchPrivate } from "../utils";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import type { User } from "../../../backend/share/type/user";
-import { MenuProfile } from "./home_profile_option.";
+import { MenuOption } from "./home_profile_option.";
 
 const handleLogOut = async (navigate: (path: string) => void) => {
   try {
@@ -21,8 +21,8 @@ const handleLogOut = async (navigate: (path: string) => void) => {
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const [mode, setMode] = React.useState<"Profile" | "Option">("Profile");
-  const { user } = useOutletContext<{user: User | null}>();
+  const [mode, setMode] = React.useState<"Profile" | "Option">("Option");
+  const { user } = useOutletContext< {user: User | null} >();
 
   React.useEffect(() => {
     document.title = "KLBQ | Profile";
@@ -30,7 +30,7 @@ export function ProfilePage() {
 
 	return (
 		<>
-		<div className="w-screen h-screen bg-gradient-to-b from-[#daade083] via-[#daade08d] to-[#f07bffb8] bg-[#A0EAFF] flex flex-col gap-2">
+		<div className="w-screen h-screen bg-gradient-to-b from-[#dbd1dc83] via-[#daade08d] to-[#f07bffb8] bg-[#A0EAFF] flex flex-col gap-2">
 
       <div className="flex gap-5 mt-15 ml-5">
         <button className={`border-2 p-1 transition ${mode === "Profile" && "text-white border-white"}`}
