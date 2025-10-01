@@ -10,6 +10,7 @@ import { GamePage } from "./gamePage/gamePage";
 import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
+import { Loading } from "./gamePage/LoadingPage";
 
 function App() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ function App() {
           {/* <Route path="/profile" /> */}
         </Route>
         <Route path="/game" >
+          <Route path="loading" element={<Loading />} />
           <Route path="gameplay" element={<GamePage />} />
           <Route path="tournament/*" element={<TournamentGamePage />} />
           <Route path="tournamentMatching" element={<TMatching />} />

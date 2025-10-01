@@ -22,7 +22,7 @@ export function Home() {
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
-      (match === true ? <Matching setMatch={setMatch} /> :
+      (match === true ? <Matching again={false} setMatch={setMatch} /> :
         (<div className="grid grid-cols-[1fr_2fr_1fr] h-screen w-screen">
 
           <div className="column-start-1 row-span-3 flex flex-col justify-between">

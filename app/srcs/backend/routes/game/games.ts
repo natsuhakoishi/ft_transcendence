@@ -6,7 +6,6 @@ import { handleKeyPress, start } from "./gameLogic.ts";
 import { createMatch } from "../../database/match.ts";
 import type { GameScore } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
-import { addWinLose } from "../../database/profile.ts";
 
 const games: FastifyPluginAsync = async (fastify: any) => {
     // const rooms: RoomManager = new RoomManager();

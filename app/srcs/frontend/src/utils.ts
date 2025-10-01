@@ -25,7 +25,6 @@ export function initGameState(): GameState {
     return data;
 }
 
-
 export function initGameData(_roomId: string, _playerID: number): GameData {
     const data: GameData = {
                 roomId: _roomId,

@@ -89,12 +89,16 @@ function end(room: Room, gameOver: () => void): void {
 
 export function handleKeyPress(room: Room, data: GameData, player: Player): void {
 
-    const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
+    // const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
+    const id: string[] = data.roomId.split("-");
+    const pos: string = data.playerId.toString() === id[0] ? "left" : "right";
+
     console.log("/gameplay: handleKeyPress: " + data.keyPress);
 
     if (!room.getState().gamingStage && room.size() < 2 && data.keyPress === "Enter") //starting game / confirm key
     {
         room.addPlayer(player);
+
         console.log("roomID " + room.getRoomID() + ": player " + player.id.toString() + " ready! " + room.size().toString() + "/2");
         // ws.send(JSON.stringify(room.getState()));
     }

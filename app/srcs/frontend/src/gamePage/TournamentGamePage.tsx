@@ -1,77 +1,12 @@
 import React from "react";
 import { GamePage } from "./gamePage";
-import { data, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "../utils";
 import type { GameData, TData } from "../../../backend/share/type/gameData";
 import type { Matches } from "../../../backend/share/type/Matches";
 import NotFound from "../otherPage/NotFound";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
-
-interface LoadingProps {
-  leaderboard?: {
-    matches: Matches;
-    players: Record<string, PlayerWithProfileData>;
-  };
-  load: boolean;
-  playerID?: string;
-}
-
-function Loading({ leaderboard, load, playerID }: LoadingProps) {
-    if (load || !leaderboard)
-        return <LoadingScreen />
-
-    const { matches, players } = leaderboard;
-
-    console.log("Loading: " + playerID, leaderboard, playerID);
-
-    return (
-        <div className="flex flex-col gap-8">
-        {matches.matches.map((match, idx) => {
-            const [p1, p2] = match;
-            const player1: PlayerWithProfileData = players[p1.id.toString()];
-            const player2: PlayerWithProfileData = players[p2.id.toString()];
-
-            return (
-            <div key={idx} className="flex items-center gap-4">
-                {/* Player 1 */}
-                <div className="flex items-center gap-2">
-                <img
-                    src={import.meta.env.VITE_AVATAR_ROUTE + player1?.avatar}
-                    alt={player1?.name}
-                    className="w-8 h-8 rounded-full border"
-                />
-                <span
-                    className={`font-medium ${
-                    player1?.id.toString() === playerID ? "text-blue-600" : ""
-                    }`}
-                >
-                    {player1?.name}
-                </span>
-                </div>
-
-                <span className="font-bold">VS</span>
-
-                {/* Player 2 */}
-                <div className="flex items-center gap-2">
-                <img
-                    src={import.meta.env.VITE_AVATAR_ROUTE + player2?.avatar}
-                    alt={player2?.name}
-                    className="w-8 h-8 rounded-full border"
-                />
-                <span
-                    className={`font-medium ${
-                    player2?.id.toString() === playerID ? "text-blue-600" : ""
-                    }`}
-                >
-                    {player2?.name}
-                </span>
-                </div>
-            </div>
-            );
-        })}
-    </div>
-  );
-}
+import { TournamentLoading } from "./TournamentLoadingPage";
 
 export function TournamentGamePage() {
     let init: boolean = false;
@@ -199,7 +134,7 @@ export function TournamentGamePage() {
 
     return (
         <Routes>
-            <Route path="/" element={<Loading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
+            <Route path="/" element={<TournamentLoading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
             <Route
                 path="gameplay"
                 element={<GamePage onGameOver={handleGameOver} />} />

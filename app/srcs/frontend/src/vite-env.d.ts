@@ -13,6 +13,7 @@ interface ImportMetaEnv {
   readonly VITE_PATH_TOURNAMENT_GAMEPLAY: string;
   readonly VITE_PATH_TOURNAMENT_MATCHING: string;
   readonly VITE_PATH_GAMEPLAY: string;
+  readonly VITE_PATH_GAMEPLAY_LOADING: string;
   readonly VITE_PATH_404NOTFOUND: string;
 
   readonly VITE_GAME_BOARD_WIDTH_PX: string;
