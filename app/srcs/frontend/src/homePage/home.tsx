@@ -52,7 +52,7 @@ export function Home() {
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
             <div className="flex gap-2 mx-1 my-1">
-              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-95 transition-transform"
+              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-90 transition-transform"
                 onClick={() => navigate(import.meta.env.VITE_PATH_PROFILE)}>
                 <img className="w-full h-full object-cover bg-[#A1CAA8]" />
               </button>

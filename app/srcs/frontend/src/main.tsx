@@ -11,7 +11,7 @@ import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
 import { FriendPage } from "./homePage/home_friend";
-import { ProfilePage } from "./homePage/home_profile";
+import { ProfilePage } from "./homePage/profile";
 
 function App() {
   const navigate = useNavigate();

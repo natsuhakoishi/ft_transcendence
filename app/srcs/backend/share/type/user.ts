@@ -13,6 +13,8 @@ export interface Profile {
   login_status: number;
   win_games: number;
   lose_games: number;
+  total_game: number;
+  win_rate: number;
   tournament_wins: number;
 }
 

@@ -36,6 +36,8 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 					login_status: profile.login_status,
 					win_games: profile.win_games,
 					lose_games: profile.lose_games,
+					total_game: profile.matches_total,
+					win_rate: Math.floor(profile.win_games / profile.matches_total * 100),
 					tournament_wins: profile.tournament_wins
 				}
 			}

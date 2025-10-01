@@ -105,7 +105,7 @@ export function MenuOption({ user } : {user : User | null }) {
   const [preview, setPreview] = useState<string>("");
   const [previewName, setPreviewName] = useState<string>("");
   const avatarPath = user?.profile?.avatar_path || 'default.webp';
-  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${avatarPath}?t=${Date.now()}`; 
+  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${avatarPath}?t=${Date.now()}`;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const pickAvatar = () => { fileInputRef.current?.click(); }
 
@@ -115,7 +115,7 @@ export function MenuOption({ user } : {user : User | null }) {
 
   return (  
     <>
-    <div className="mb-10 inset-0 w-screen h-[50%] gap-2 bg-[#D6D8D2]/40 backdrop-blur-sm flex justify-start">
+    <div className="mb-10 inset-0 w-screen h-[50%] shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/40 backdrop-blur-md flex justify-start">
 
       <div className="w-[25%] h-full gap-2 flex flex-col justify-center items-center">
         <span>{previewName}</span>
