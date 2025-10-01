@@ -40,6 +40,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
 
                     room.broadCast("update", "r1");
                     setTimeout(() => {
+                        room.broadCast("update", "r1");
                         room.startRound1();
                     }, 1000 * 3);
                 }

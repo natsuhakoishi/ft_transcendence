@@ -8,7 +8,6 @@ import { LoadingScreen } from "../homePage/home_load.tsx";
 import { Score } from "./Score.tsx";
 import { Player } from "./player.tsx";
 import { Result } from "./ResultPage.tsx";
-import { Countdown } from "./countdown.tsx";
 import { Banner } from "./banner.tsx";
 
 export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
@@ -17,9 +16,9 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const location = useLocation();
     const [ Load , setLoad ] = React.useState(true);
     const [ result , setResult ] = React.useState(false);
-    const [ playerID, setPlayerID ] = React.useState<string | null>(null);
+    const [ playerID, setPlayerID ] = React.useState<number | null>(null);
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
-    const [ countdown, setCountdown ] = React.useState(true);
+    // const [ countdown, setCountdown ] = React.useState(true);
     const [ start, setStart ] = React.useState(false);
     // const [ key, setKey ] = React.useState(false);
     const key = React.useRef<boolean>(false);
@@ -40,6 +39,14 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     setTimeout(() => {
         setLoad(false);
     }, 1000 * 0.8);
+
+    useEffect(() => {
+        console.log("player: ", playerID);
+        console.log("playersData: ", playersData);
+        console.log("me: ", playerID === playersData?.Players[0].id);
+        console.log("me: ", playerID === playersData?.Players[1].id);
+
+    }, [playerID]);
 
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
@@ -73,8 +80,10 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 const data = await apiFetchPrivate("me", { method: "GET" });
                 gameData.playerId = data.id;
                 setPlayerID(data.id);
+                console.log("/GamePage: playersData: ", playersData);
+                console.log("/GamePage: gameData: ", gameData);
                 console.log("/GamePage: PlayerID: ", data, playerID, playersData?.Players[0].id, playersData?.Players[1].id);
-                console.log("/GamePage: PlayerID: ", parseInt(playerID!) === playersData?.Players[0].id);
+                console.log("/GamePage: PlayerID: ", playerID === playersData?.Players[0].id);
             }
             catch (e) {
                 console.log("Matching: fetch error: ", e);
@@ -138,7 +147,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         }
                         else
                             setResult(true);
-                    }, 1000*5);
+                    }, 1000*2);
                     //TODO: render ending
                 }
                 else if (type === "trespassing")
@@ -195,7 +204,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             </div>
 
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result score={score} playersData={playersData} me={parseInt(playerID!) === playersData?.Players[0].id} />
+                <Result score={score} playersData={playersData} me={playerID === playersData?.Players[0].id} />
             </div>
 
             {/* whole Game's stuff */}
@@ -205,7 +214,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 <div className="flex items-center justify-between w-full px-10">
 
                     {/* Player 1 */}
-                    <Player player={playersData?.Players[0]} me={parseInt(playerID!) === playersData?.Players[0].id} />
+                    <Player player={playersData?.Players[0]} me={playerID === playersData?.Players[0].id} />
 
                     <div className="flex flex-col items-center"> {/* Pong game's board */}
                         <Score score={score}></Score>
@@ -226,7 +235,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     </div>
 
                     {/* Player 2 */}
-                    <Player player={playersData?.Players[1]} me={parseInt(playerID!) === playersData?.Players[1].id} />
+                    <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
                 </div>
 
             </div>

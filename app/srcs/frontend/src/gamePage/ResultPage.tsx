@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { Player } from "./player";
@@ -32,6 +32,19 @@ export function Result({ score, playersData, me }: { score: GameScore, playersDa
 
                 </div>
                 )}
+        </>
+    );
+}
+
+export function TournamentResultPage() {
+    const location = useLocation();
+    const { roomID } = (location.state || {}) as { roomID: string };
+
+    //TODO: use API to get leaderboard
+
+    return (
+        <>        
+        
         </>
     );
 }

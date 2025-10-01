@@ -28,7 +28,11 @@ const games: FastifyPluginAsync = async (fastify: any) => {
                 Trespassing(ws);
                 return ;
             }
-            handleKeyPress(room, data, player);
+            handleKeyPress(room, data, player, () => {
+                room.mandatoryWin();
+                room.broadCast("timeout");
+                fastify.rooms.removeRoom(room.getRoomID());
+            });
 
             if (room.size() === 2 && !room.getState().gamingStage)
                 start(room, () => {

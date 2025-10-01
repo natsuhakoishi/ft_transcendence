@@ -1,7 +1,7 @@
 import { getProfileById } from "../../database/profile.ts";
 import type { TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
-import type { PlayerWithProfileData } from "../../share/type/Player.ts";
+import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
 
 export function Trespassing(ws: any): void {
     console.log("/gameplay(ws): player trespassing");
@@ -90,44 +90,59 @@ export async function initTData(playerID: [number, number, number, number]): Pro
 async function  getPlayerData(_id: number): Promise<PlayerWithProfileData> {
     try {
         const data = await getProfileById(_id);
-        return {id: data.id.toString(), name: data.username, avatar: data.avatar_path};
+        return {id: data.id, name: data.username, avatar: data.avatar_path};
     }
     catch (e) {
         console.log(e);
-        return {id: "0", name: "no",avatar: "idk"};
+        return {id: 0, name: "no",avatar: "idk"};
     }
 }
 
 export function TDataWithOutWS(_data: TData, _state?: "r1" | "r2"): TData {
+    const sortPlayer = (match: Player[]): Player[] => {
+        if (match[0].id > match[1].id)
+            return [match[1], match[0]];
+        return match;
+    };
+
     const data: TData = {
         round1: {
             roomID: _data.round1.roomID,
             matches: [
-                [
-                    {id: _data.round1.matches[0][0].id},
-                    {id: _data.round1.matches[0][1].id}
-                ], 
-                [
-                    {id: _data.round1.matches[1][0].id},
-                    {id: _data.round1.matches[1][1].id}
-                ],
+                sortPlayer(
+                    [
+                        {id: _data.round1.matches[0][0].id},
+                        {id: _data.round1.matches[0][1].id}
+                    ]
+                ),
+                sortPlayer(
+                    [
+                        {id: _data.round1.matches[1][0].id},
+                        {id: _data.round1.matches[1][1].id}
+                    ]
+                ),
             ]
         },
         round2: {
             roomID: _data.round2.roomID,
             matches: [
-                [
-                    {id: _data.round2.matches[0][0]?.id},
-                    {id: _data.round2.matches[0][1]?.id}
-                ],
-                [
-                    {id: _data.round2.matches[1][0]?.id},
-                    {id: _data.round2.matches[1][1]?.id}
-                ],
+                sortPlayer(
+                    [
+                        {id: _data.round2.matches[0][0]?.id},
+                        {id: _data.round2.matches[0][1]?.id}
+                    ]
+                ),
+                sortPlayer(
+                    [
+                        {id: _data.round2.matches[1][0]?.id},
+                        {id: _data.round2.matches[1][1]?.id}
+                    ]
+                ),
             ]
         },
         players: _data.players,
         state: _state
     }
+
     return data;
 }

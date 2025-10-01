@@ -69,7 +69,7 @@ export function Matching({again, setMatch} : {again: boolean, setMatch?: React.D
             type="submit"
             className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 "
             onClick={() => {
-                again ? navigate("/") : setMatch(false)
+                again ? navigate("/") : setMatch?.(false)
             }}
             >Cancel</button>
         </>

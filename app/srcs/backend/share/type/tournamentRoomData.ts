@@ -59,6 +59,9 @@ export class TRoom {
     }
 
     broadCast(_type: string, state?: "r1" | "r2"): void {
+        const tmp = TDataWithOutWS(this.data, state);
+        console.log("broadCast sent: ", {r1p1: tmp.round1.matches[0], r1p2: tmp.round1.matches[1]} 
+            , {r2p1: tmp.round2.matches[0], r2p2: tmp.round2.matches[1]});
         for (const player of this.players)
         {
             if (player.ws.readyState === WebSocket.OPEN)

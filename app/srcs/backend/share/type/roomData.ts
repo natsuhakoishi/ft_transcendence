@@ -50,11 +50,13 @@ export class Room {
     }
 
     mandatoryWin(): void {
-        for (const player of this.players) {
+        if (this.players.size === 0) {
+            this.setScore(this.p1ID);
+            return ;
+        }
+        for (const player of this.players)
             if (player.ws.readyState === WebSocket.OPEN)
                 this.setScore(player.id);
-        }
-        this.broadCast("offline");
     }
 
     getP1ID(): number {        

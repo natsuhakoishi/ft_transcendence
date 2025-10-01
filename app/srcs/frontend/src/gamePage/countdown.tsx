@@ -17,7 +17,6 @@ export function Countdown({
         {
             console.log("cd: Timeout");
             timeout();
-            // close();
             return ;
         }
 

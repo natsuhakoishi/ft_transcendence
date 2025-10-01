@@ -1,12 +1,19 @@
 import React from "react";
 import { GamePage } from "./gamePage";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { data, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "../utils";
 import type { GameData, TData } from "../../../backend/share/type/gameData";
-import type { Matches } from "../../../backend/share/type/Matches";
+import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matches";
 import NotFound from "../otherPage/NotFound";
-import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
+import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
+
+function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
+    const p1: Player = match[0];
+    const p2: Player = match[1];
+
+    return {roomID: roomID, Players: [players[p1.id], players[p2.id]]};
+}
 
 export function TournamentGamePage() {
     let init: boolean = false;
@@ -23,7 +30,7 @@ export function TournamentGamePage() {
     });
     const [leaderboard, setLeaderboard] = React.useState<{
         matches: Matches,
-        players: Record<string, PlayerWithProfileData>
+        players: Record<string, PlayerWithProfileData> //id : PlayerData
     }>();
 
     React.useEffect(() => {
@@ -92,9 +99,10 @@ export function TournamentGamePage() {
                     console.log("TournamentGamePage: round1");
                     const r1: Matches = parse.state.round1;
                     const rooms: string[] = r1.roomID[0].split("-");
-                    rooms.includes(playerID.toString()) ? 
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID} })
-                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID} });
+                    console.log("TournamentGamePage: DBCHECK:", leaderboard);
+                    rooms.includes(playerID.toString()) ?
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])} })
+                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])} });
                 }
                 else if (type === "startRound2")
                 {
@@ -102,8 +110,8 @@ export function TournamentGamePage() {
                     const r2: Matches = parse.state.round2;
                     const rooms: string[] = r2.roomID[0].split("-");
                     rooms.includes(playerID.toString()) ?
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID} })
-                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID} });
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[0], parse.state.players, r2.matches[0])} })
+                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[1], parse.state.players, r2.matches[1])} });
                 }
                 else if (type === "end")
                 {
