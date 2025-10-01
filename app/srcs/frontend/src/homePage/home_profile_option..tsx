@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast"
-import { apiFetch, apiFetchPrivate } from "../utils";
+import { apiFetchPrivate } from "../utils";
 import type { User } from "../../../backend/share/type/user";
 
-const submitUsername = async (event: React.FormEvent<HTMLFormElement>, setPreviewName: React.Dispatch<React.SetStateAction<string>>) => {
+const submitUsername = async (
+  event: React.FormEvent<HTMLFormElement>,
+  setPreviewName: React.Dispatch<React.SetStateAction<string>>,
+  setToggle: React.Dispatch<React.SetStateAction<Mode>>
+) => {
   event.preventDefault();
   const form = event.currentTarget;
   const input = form.elements.namedItem("username") as HTMLInputElement;
@@ -14,6 +18,7 @@ const submitUsername = async (event: React.FormEvent<HTMLFormElement>, setPrevie
   try {
     await apiFetchPrivate("update_username", { method: "POST", body: JSON.stringify({ username: value}) });
     setPreviewName(value);
+    setToggle("");
     toast.success("Update username successfully.");
   } catch (err: any) {
     console.error("Issue: " + err.message);
@@ -24,7 +29,11 @@ const submitUsername = async (event: React.FormEvent<HTMLFormElement>, setPrevie
   }
 }
 
-const submitPassword = async (event: React.FormEvent<HTMLFormElement>, user: User | null, setPassword: React.Dispatch<React.SetStateAction<boolean>>) => {
+const submitPassword = async (
+  event: React.FormEvent<HTMLFormElement>,
+  user: User | null,
+  setToggle: React.Dispatch<React.SetStateAction<Mode>>
+) => {
   event.preventDefault();
   if (user?.acc.google_login) return toast.error("This feature not available for Google User");
   const form = event.currentTarget;
@@ -34,7 +43,7 @@ const submitPassword = async (event: React.FormEvent<HTMLFormElement>, user: Use
 
   try {
     const data = await apiFetchPrivate("update_password", { method: "POST", body: JSON.stringify({ old_password, new_password}) });
-    setPassword(false);
+    setToggle("");
     toast.success(data.message);
   } catch (err: any) {
     console.error("Issue: " + err.message);
@@ -58,7 +67,7 @@ const avatarDelete = async (setPreview: React.Dispatch<React.SetStateAction<stri
       toast.error(err.message);
   }
 }
-
+  
 const avatarUpdate = async (event: React.ChangeEvent<HTMLInputElement>, setPreview: React.Dispatch<React.SetStateAction<string>>) => {
   const file = event.target.files?.[0];
   if (!file) return;
@@ -89,15 +98,16 @@ const avatarUpdate = async (event: React.ChangeEvent<HTMLInputElement>, setPrevi
   }
 };
 
+type Mode = "upAvatar" | "upPass" | "upName" | "dltAvatar" | "";
+
 export function MenuOption({ user } : {user : User | null }) {
+  const [toggle, setToggle] = useState<Mode>("");
   const [preview, setPreview] = useState<string>("");
   const [previewName, setPreviewName] = useState<string>("");
   const avatarPath = user?.profile?.avatar_path || 'default.webp';
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${avatarPath}?t=${Date.now()}`; 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const pickAvatar = () => { fileInputRef.current?.click(); }
-  const [username, setUsername] = useState<boolean>(false);
-  const [password, setPassword] = useState<boolean>(false);
 
   React.useEffect(() => {
     setPreviewName(user?.acc.username ?? "Loading..");
@@ -112,29 +122,29 @@ export function MenuOption({ user } : {user : User | null }) {
         <button className="aspect-square h-1/2 rounded-full overflow-clip border-2 border-gray-300 disable">
           <img className="w-full h-full object-cover" src={preview || avatarURL} />
         </button>
-        <button type="button" className="w-[35%] border-2 p-0.5 text-xs" onClick={() => avatarDelete(setPreview)}>Delete Avatar</button>
+        <button type="button" className="w-[35%] border-2 p-0.5 text-xs" onClick={() => {avatarDelete(setPreview), setToggle("dltAvatar")}}>Delete Avatar</button>
       </div>
 
       <div className="flex flex-col gap-2 justify-center align-middle">
-        <button type="button" className="border-2 p-1" onClick={pickAvatar}>Update Avatar</button>
+        <button type="button" className="border-2 p-1" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>Update Avatar</button>
         <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(event) => avatarUpdate(event, setPreview)}/>
         {/*feat: cancel & apply*/}
-        <button type="button" className="border-2 p-1" onClick={() => {setPassword(false); setUsername(true);}}>Update Username</button>
-        <button className="border-2 p-1" onClick={() => {setPassword(true); setUsername(false);}}>Update Password</button>
+        <button type="button" className="border-2 p-1" onClick={() => setToggle("upName")}>Update Username</button>
+        <button className="border-2 p-1" onClick={() => setToggle("upPass")}>Update Password</button>
       </div>
 
-      {username &&
-      (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName)}>
+      {toggle === "upName" &&
+      (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName, setToggle)}>
         <input type="username" name="username" placeholder="Enter new username" autoComplete="off" required
           className="border rounded h-8 text-sm"
         />
         <button type="submit" className="rounded">✔</button>
-        <button type="button" onClick={() => setUsername(false)} className="text-sm rounded">✖</button>
+        <button type="button" onClick={() => setToggle("")} className="text-sm rounded">✖</button>
       </form>)
       }
 
-      {password &&
-      (<form className="flex gap-1 items-center" onSubmit={(event) => submitPassword(event, user, setPassword)}>
+      {toggle === "upPass" &&
+      (<form className="flex gap-1 items-center" onSubmit={(event) => submitPassword(event, user, setToggle)}>
         <input type="password" name="old_password" placeholder="Enter old password" autoComplete="off" required
           className="border rounded h-8 text-sm"
         />
@@ -142,7 +152,7 @@ export function MenuOption({ user } : {user : User | null }) {
           className="border rounded h-8 text-sm"
         />
         <button type="submit" className="rounded">✔</button>
-        <button type="button" onClick={() => setPassword(false)} className="text-sm rounded">✖</button>
+        <button type="button" onClick={() => setToggle("")} className="text-sm rounded">✖</button>
       </form>)
       }
     </div>
