@@ -26,7 +26,7 @@ function MenuProfile( { user } : { user: User | null } ) {
 
   return (
     <>
-    <div className="mb-10 inset-0 w-screen h-[50%] shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/40 backdrop-blur-md flex justify-start">
+    <div className="mb-10 mt-1 inset-0 w-screen h-[50%] shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/40 backdrop-blur-md flex justify-start">
 
     {/* Upper section - Avatar, Username, Online Status, User Id */}
     <div className="flex flex-col mt-5">
@@ -88,12 +88,12 @@ export function ProfilePage() {
 
 	return (
 		<>
-		<div className="w-screen h-screen flex flex-col gap-2 bg-cover bg-center
+		<div className="w-screen h-screen gap-2 flex flex-col bg-cover bg-center
       bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/dark.jpg')] bg-blend-overlay"
     >
 
       {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}
-      <div className="flex gap-5 mt-15 ml-5">
+      <div className="flex gap-5 mt-10 ml-5">
         <button className={`border-2 p-1 transition ${menu === "Profile" ? "text-sky-200 border-sky-200" : "text-[#E5EBF7] border-[#E5EBF7]"}`}
           onClick={() => setMenu("Profile")}>Profile</button>
         <button className={`border-2 p-1 transition ${menu === "Option" ? "text-sky-200 border-sky-200" : "text-[#E5EBF7] border-[#E5EBF7]"}`} 

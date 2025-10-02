@@ -54,7 +54,7 @@ export function Home() {
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
       (match === true ? <Matching setMatch={setMatch} /> :
-        (<div className="grid grid-cols-[1fr_2fr_1fr] h-screen w-screen">
+        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr]">
 
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
