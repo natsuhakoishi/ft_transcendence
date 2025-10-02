@@ -1,3 +1,4 @@
+@tailwind utilities;
 @import "tailwindcss/preflight";
 @import "tailwindcss";
 
@@ -16,6 +17,6 @@ body {
 }
 
 /* visualize boundaries */
-/* * {  
+/* * {
   outline: 1px solid red;
 } */
