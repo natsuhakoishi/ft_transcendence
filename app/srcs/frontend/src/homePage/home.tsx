@@ -5,20 +5,26 @@ import type { User } from "../../../backend/share/type/user.ts";
 import type { Friend } from "../../../backend/share/type/friend.ts";
 import { loadData, LoadingScreen, type Progress } from "./home_load.tsx"
 import { Matching } from "../gamePage/matching.tsx";
-import { FriendPage } from "./home_friend.tsx";
+import { FriendPage } from "./friend.tsx";
 
-export function HomeData() {
+export function FetchData() {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 3 });
   const [user, setUser] = React.useState<User | null>(null);
   const [friend, setFriend] = React.useState<Friend | null>(null);
 
   React.useEffect(() => {
+    console.log("fetching..");
+    loadData({ setLoading, setProgress, setUser, setFriend });
+  }, []);
+
+  const refetchData = React.useCallback(() => {
+    console.log("refetch..");
     loadData({ setLoading, setProgress, setUser, setFriend });
   }, []);
 
   return (
-    <Outlet context={{ user, friend, loading, progress }} />
+    <Outlet context={{ user, friend, loading, progress, refetchData}} />
   );
 }
 

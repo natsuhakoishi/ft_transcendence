@@ -80,8 +80,8 @@ function MenuProfile( { user } : { user: User | null } ) {
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const [mode, setMode] = React.useState<"Profile" | "Option">("Profile");
-  const { user } = useOutletContext< {user: User | null} >();
+  const [menu, setMenu] = React.useState<"Profile" | "Option">("Profile");
+  const { user, refetchData } = useOutletContext<{user: User | null, refetchData: () => void}>();
 
   React.useEffect(() => {
     document.title = "KLBQ | Profile";
@@ -93,16 +93,18 @@ export function ProfilePage() {
       bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/dark.jpg')] bg-blend-overlay"
     >
 
+      {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}
       <div className="flex gap-5 mt-15 ml-5">
-        <button className={`border-2 p-1 transition ${mode === "Profile" ? "text-sky-200 border-sky-200" : "text-[#E5EBF7] border-[#E5EBF7]"}`}
-          onClick={() => setMode("Profile")}>Profile</button>
-        <button className={`border-2 p-1 transition ${mode === "Option" ? "text-sky-200 border-sky-200" : "text-[#E5EBF7] border-[#E5EBF7]"}`} 
-          onClick={() => setMode("Option")}>Option</button>
+        <button className={`border-2 p-1 transition ${menu === "Profile" ? "text-sky-200 border-sky-200" : "text-[#E5EBF7] border-[#E5EBF7]"}`}
+          onClick={() => setMenu("Profile")}>Profile</button>
+        <button className={`border-2 p-1 transition ${menu === "Option" ? "text-sky-200 border-sky-200" : "text-[#E5EBF7] border-[#E5EBF7]"}`} 
+          onClick={() => setMenu("Option")}>Option</button>
         <button className="text-white border-white bg-[#f199c4] border-2 p-1" onClick={() => handleLogOut(navigate)}>Log Out</button>
       </div>
 
-      {mode === "Profile" ? <MenuProfile user={user} /> : <MenuOption user={user}/>}
+      {menu === "Profile" ? <MenuProfile user={user} /> : <MenuOption user={user} refetch={refetchData}/>}
 
+      {/* Action Button - Back */}
       <div className="flex flex-1 items-center justify-center">
         <button className="relative bottom-5 center-0 w-20 aspect-square border-2 border-white rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
           <img src="/pic/chira_改.png" className="drop-shadow-lg w-full h-full object-cover"/>  
@@ -113,5 +115,4 @@ export function ProfilePage() {
 	);
 }
 
-//todo implement re-fetch behind the stage, especially when update avatar & username, else cant sync between profile and option
-//  filter saturate-[300%] - neon light vibe  
+//  filter saturate-[300%] - neon light vibe

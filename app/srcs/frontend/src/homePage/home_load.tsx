@@ -60,7 +60,7 @@ export async function loadData({setLoading, setProgress, setUser, setFriend} :fe
         ...prev, step: name, completed: prev.completed, }));
 
       const data = await api();
-      console.info(data);
+      // console.info(data);
       if (setter)
         setter(data);
 

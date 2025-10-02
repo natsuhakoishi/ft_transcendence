@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import toast from "react-hot-toast"
 import { apiFetchPrivate } from "../utils";
 import type { User } from "../../../backend/share/type/user";
+import { FetchData } from "./home";
 
 const submitUsername = async (
   event: React.FormEvent<HTMLFormElement>,
   setPreviewName: React.Dispatch<React.SetStateAction<string>>,
-  setToggle: React.Dispatch<React.SetStateAction<Mode>>
+  setToggle: React.Dispatch<React.SetStateAction<Mode>>,
+  refetch: () => void
 ) => {
   event.preventDefault();
   const form = event.currentTarget;
@@ -19,6 +21,7 @@ const submitUsername = async (
     await apiFetchPrivate("update_username", { method: "POST", body: JSON.stringify({ username: value}) });
     setPreviewName(value);
     setToggle("");
+    refetch();
     toast.success("Update username successfully.");
   } catch (err: any) {
     console.error("Issue: " + err.message);
@@ -54,9 +57,10 @@ const submitPassword = async (
   }
 }
 
-const avatarDelete = async (setPreview: React.Dispatch<React.SetStateAction<string>>) => {
+const avatarDelete = async (setPreview: React.Dispatch<React.SetStateAction<string>>, refetch: () => void) => {
   try {
     await apiFetchPrivate("delete_avatar", { method: "POST", body: JSON.stringify({}) });
+    refetch()
     setPreview(`${import.meta.env.VITE_API_AVATAR}/default.webp?t=${Date.now()}`);
     toast.success("Avatar delete succesfully.");
   } catch (err: any) {
@@ -68,7 +72,11 @@ const avatarDelete = async (setPreview: React.Dispatch<React.SetStateAction<stri
   }
 }
   
-const avatarUpdate = async (event: React.ChangeEvent<HTMLInputElement>, setPreview: React.Dispatch<React.SetStateAction<string>>) => {
+const avatarUpdate = async (
+  event: React.ChangeEvent<HTMLInputElement>,
+  setPreview: React.Dispatch<React.SetStateAction<string>>,
+  refetch: () => void
+) => {
   const file = event.target.files?.[0];
   if (!file) return;
 
@@ -91,6 +99,7 @@ const avatarUpdate = async (event: React.ChangeEvent<HTMLInputElement>, setPrevi
     const formData = new FormData();
     formData.append("avatar", file);
     await apiFetchPrivate("upload_avatar", { method: "POST", body: formData });
+    refetch();
     toast.success("Update avatar successfully.");
   } catch (err: any) {
     console.error("Issue: " + err.message);
@@ -100,7 +109,7 @@ const avatarUpdate = async (event: React.ChangeEvent<HTMLInputElement>, setPrevi
 
 type Mode = "upAvatar" | "upPass" | "upName" | "dltAvatar" | "";
 
-export function MenuOption({ user } : {user : User | null }) {
+export function MenuOption({ user, refetch } : {user : User | null , refetch: () => void}) {
   const [toggle, setToggle] = useState<Mode>("");
   const [preview, setPreview] = useState<string>("");
   const [previewName, setPreviewName] = useState<string>("");
@@ -119,22 +128,22 @@ export function MenuOption({ user } : {user : User | null }) {
 
       <div className="w-[25%] h-full gap-2 flex flex-col justify-center items-center">
         <span>{previewName}</span>
-        <button className="aspect-square h-1/2 rounded-full overflow-clip border-2 border-gray-300 disable">
+        <button className="aspect-square h-1/2 rounded-full overflow-clip border-2 border-gray-300 disable" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={preview || avatarURL} />
         </button>
-        <button type="button" className="w-[35%] border-2 p-0.5 text-xs" onClick={() => {avatarDelete(setPreview), setToggle("dltAvatar")}}>Delete Avatar</button>
+        <button type="button" className="w-[35%] border-2 p-0.5 text-xs" onClick={() => {avatarDelete(setPreview, refetch), setToggle("dltAvatar")}}>Delete Avatar</button>
       </div>
 
       <div className="flex flex-col gap-2 justify-center align-middle">
         <button type="button" className="border-2 p-1" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>Update Avatar</button>
-        <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(event) => avatarUpdate(event, setPreview)}/>
+        <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(event) => avatarUpdate(event, setPreview, refetch)}/>
         {/*feat: cancel & apply*/}
         <button type="button" className="border-2 p-1" onClick={() => setToggle("upName")}>Update Username</button>
         <button className="border-2 p-1" onClick={() => setToggle("upPass")}>Update Password</button>
       </div>
 
       {toggle === "upName" &&
-      (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName, setToggle)}>
+      (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName, setToggle, refetch)}>
         <input type="username" name="username" placeholder="Enter new username" autoComplete="off" required
           className="border rounded h-8 text-sm"
         />
