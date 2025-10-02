@@ -40,7 +40,7 @@ export function Home() {
   const { user, loading, progress } = useOutletContext<SharedData>();
   const [match, setMatch] = React.useState<boolean>(false);
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
-  
+
   React.useEffect(() => {
   	document.title = "KLBQ | Main Menu";
   }, []);
@@ -90,7 +90,7 @@ export function Home() {
           {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end justify-between">
             <span className="p-2 font-semibold">Version</span>
-            <button className=" bg-blue-500 w-30 p-2">Match History</button>  
+            <button className="bg-blue-500 w-30 p-2">Match History</button>
           </div>
 
         </div>
