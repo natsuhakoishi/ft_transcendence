@@ -7,6 +7,7 @@ import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matc
 import NotFound from "../otherPage/NotFound";
 import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
+import { TournamentResultPage } from "./ResultPage";
 
 function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
     const p1: Player = match[0];
@@ -39,7 +40,8 @@ export function TournamentGamePage() {
             if (!tournamentRoomID)
             {
                 console.log("TournamentGamePage: Trespassing ^u^b");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "A"}});
             }
             // setTRoomID(tournamentRoomID);
 
@@ -50,7 +52,8 @@ export function TournamentGamePage() {
             }
             catch (e) {
                 console.log("FlowPage: trespassing");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "B"}});
+                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
 
             console.log("TournamentGamePage", playerID!);
@@ -77,7 +80,8 @@ export function TournamentGamePage() {
                 if (type === "trespassing")
                 {
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "C"}});
+                    // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
                 else if (type === "update")
                 {
@@ -99,7 +103,6 @@ export function TournamentGamePage() {
                     console.log("TournamentGamePage: round1");
                     const r1: Matches = parse.state.round1;
                     const rooms: string[] = r1.roomID[0].split("-");
-                    console.log("TournamentGamePage: DBCHECK:", leaderboard);
                     rooms.includes(playerID.toString()) ?
                         navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])} })
                         : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])} });
@@ -116,8 +119,13 @@ export function TournamentGamePage() {
                 else if (type === "end")
                 {
                     console.log("TournamentGamePage: end");
-                    setLoad(false);
-                    ws.close();
+                    // wsRef.current?.close();
+                    console.log("TournamentGamePage: leaderboard: ", parse);
+                    setTimeout(() => {
+                        console.log("TournamentGamePage: to:", import.meta.env.VITE_PATH_TOURNAMENT_RESULT);
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}});
+                    }, 1000 * 4);
+                    // setLoad(false);
                 }
             }
 
@@ -146,7 +154,8 @@ export function TournamentGamePage() {
             <Route
                 path="gameplay"
                 element={<GamePage onGameOver={handleGameOver} />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="result" element={<TournamentResultPage />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
     );
 }

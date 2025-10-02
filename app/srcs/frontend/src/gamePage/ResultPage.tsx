@@ -4,6 +4,8 @@ import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { Player } from "./player";
 import React from "react";
 import { Matching } from "./matching";
+import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData";
+import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 
 export function Result({ score, playersData, me }: { score: GameScore, playersData?: MatchPlayersData, me: boolean}) {
     const [ again, setAgain ] = React.useState(false);
@@ -22,13 +24,8 @@ export function Result({ score, playersData, me }: { score: GameScore, playersDa
                         <Player player={score.p1Score < score.p2Score ? playersData?.Players[0] : playersData?.Players[1]} me={me}  />
                     </div>
 
-                    <div className="absolute bottom-6 left-100 text-black px-6 py-3 rounded">
-                        <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={() => setAgain(true)}>New Game</button>
-                    </div>
-
-                    <div className="absolute bottom-6 right-100 text-black px-6 py-3 rounded">
-                        <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={() => navigate("/")}>Home</button>
-                    </div>
+                    <AgainButton callback={() => setAgain(true)} />
+                    <HomeButton callback={() => navigate("/")} />
 
                 </div>
                 )}
@@ -36,15 +33,51 @@ export function Result({ score, playersData, me }: { score: GameScore, playersDa
     );
 }
 
+function HomeButton({ callback }: {callback: () => void}) {
+    return (
+        <div className="absolute bottom-6 right-100 text-black px-6 py-3 rounded">
+            <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={callback}>Home</button>
+        </div>
+    );
+}
+
+function AgainButton({ callback }: {callback: () => void}) {
+    return (
+        <div className="absolute bottom-6 left-100 text-black px-6 py-3 rounded">
+            <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={callback}>New Game</button>
+        </div>
+    );
+}
+
+function Rank({rank, player, me}: {rank: string, player: PlayerWithProfileData, me: boolean}) {
+    return (
+        <div>
+            <h1 className="text-4xl text-black-500 font-bold mb-2">{rank}</h1>
+            <Player player={player} me={me} />
+        </div>
+    );
+}
+
 export function TournamentResultPage() {
     const location = useLocation();
-    const { roomID } = (location.state || {}) as { roomID: string };
+    const navigate = useNavigate();
+    const { leaderboard, playerID } = (location.state || {}) as { leaderboard: Leaderboard, playerID: number };
 
-    //TODO: use API to get leaderboard
+    React.useEffect(() => {
+        console.log("TournamentResult: useEffect");
+        if (!leaderboard || !playerID)
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}});
+            // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+        console.log("TOurnamentResult: ", leaderboard);
+    }, []);
 
     return (
-        <>        
-        
-        </>
+        <div className="flex">
+            <Rank rank="First" player={leaderboard.first} me={leaderboard.first.id === playerID} />
+            <Rank rank="Second" player={leaderboard.second} me={leaderboard.second.id === playerID} />
+            <Rank rank="Third" player={leaderboard.third} me={leaderboard.third.id === playerID} />
+            <Rank rank="Last" player={leaderboard.last} me={leaderboard.last.id === playerID} />
+            <HomeButton callback={() => navigate("/")} />
+        </div>
     );
 }

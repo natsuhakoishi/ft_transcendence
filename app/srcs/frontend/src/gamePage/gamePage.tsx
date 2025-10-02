@@ -40,14 +40,6 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         setLoad(false);
     }, 1000 * 0.8);
 
-    useEffect(() => {
-        console.log("player: ", playerID);
-        console.log("playersData: ", playersData);
-        console.log("me: ", playerID === playersData?.Players[0].id);
-        console.log("me: ", playerID === playersData?.Players[1].id);
-
-    }, [playerID]);
-
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
         (async () => {
@@ -55,7 +47,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
 
             if (!RoomID) {
                 console.log("gamePage: missing roomID");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "E"}});
+                // navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
             }
             console.log("GamePage: roomid:", RoomID);
 
@@ -87,7 +80,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             }
             catch (e) {
                 console.log("Matching: fetch error: ", e);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "D"}});
+                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
             // console.log(gameState);
 
@@ -134,7 +128,6 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         else
                             setResult(true);
                     }, 1000*2);
-                    //TODO: render ending
                 }
                 else if (type === "game_over_offline")
                 {

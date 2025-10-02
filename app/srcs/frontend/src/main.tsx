@@ -11,6 +11,7 @@ import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
 import { Loading } from "./gamePage/LoadingPage";
+import { TournamentResultPage } from "./gamePage/ResultPage";
 
 function App() {
   const navigate = useNavigate();

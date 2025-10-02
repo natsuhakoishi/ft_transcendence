@@ -19,6 +19,9 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             const room: TRoom | null = fastify.tournamentRooms.getRoomByPlayerID(data.playerId);
             if (!room)
             {
+                if (data.keyPress === "over")
+                    return ;
+                console.log("/tournament/gameplay: trespassing");
                 ws.send(JSON.stringify({ type: "trespassing", data: initTData([0,0,0,0])}));
                 return ;
             }

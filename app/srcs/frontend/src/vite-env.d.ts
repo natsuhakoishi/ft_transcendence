@@ -11,6 +11,7 @@ interface ImportMetaEnv {
 
   readonly VITE_PATH_TOURNAMENT: string;
   readonly VITE_PATH_TOURNAMENT_GAMEPLAY: string;
+  readonly VITE_PATH_TOURNAMENT_RESULT: string;
   readonly VITE_PATH_TOURNAMENT_MATCHING: string;
   readonly VITE_PATH_GAMEPLAY: string;
   readonly VITE_PATH_GAMEPLAY_LOADING: string;

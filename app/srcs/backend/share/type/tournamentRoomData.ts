@@ -1,12 +1,19 @@
-import { createTRoomID, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
+import { createTRoomID, initLeaderboard, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
 import type { TData } from "./gameData.ts";
 import fp from "fastify-plugin";
 import type { DBMatchData } from "./db_MatchData.ts";
-import { bindMatchTournament, createTournament, joinTournament } from "../../database/tournament.ts";
+import { bindMatchTournament, createTournament, getTournamentLeaderboard, joinTournament } from "../../database/tournament.ts";
 import { getMatchByUserId } from "../../database/match.ts";
-import type { Player } from "./Player.ts";
+import type { Player, PlayerWithProfileData } from "./Player.ts";
 import type { Matches } from "./Matches.ts";
-import { getProfileById } from "../../database/profile.ts";
+import { addWinLose, setLoginStatus } from "../../database/profile.ts";
+
+export interface Leaderboard {
+    first: PlayerWithProfileData;
+    second: PlayerWithProfileData;
+    third: PlayerWithProfileData;
+    last: PlayerWithProfileData;
+}
 
 export class TRoom {
 
@@ -26,6 +33,8 @@ export class TRoom {
     private r1winners: Player[];
     private r1losers: Player[];
 
+    private leaderboard: Leaderboard;
+
     // private r1AStatus: boolean;
     // private r1BStatus: boolean;
 
@@ -43,25 +52,27 @@ export class TRoom {
             this.r1flag = 0;
             this.r1winners = [];
             this.r1losers = [];
-    
+            this.leaderboard = initLeaderboard();
+
             this.r2flag = 0;
     }
 
     async init(): Promise<void> {
         this.data = await initTData([this.p1ID, this.p2ID, this.p3ID, this.p4ID]);
+        console.log("init: ", this.data);
         this.dbID = await createTournament(this.p1ID);
         await joinTournament(this.dbID, this.p1ID);
         await joinTournament(this.dbID, this.p2ID);
         await joinTournament(this.dbID, this.p3ID);
         await joinTournament(this.dbID, this.p4ID);
 
-        // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.data);
     }
 
     broadCast(_type: string, state?: "r1" | "r2"): void {
         const tmp = TDataWithOutWS(this.data, state);
-        console.log("broadCast sent: ", {r1p1: tmp.round1.matches[0], r1p2: tmp.round1.matches[1]} 
-            , {r2p1: tmp.round2.matches[0], r2p2: tmp.round2.matches[1]});
+        console.log("broadCast sent: ", tmp, tmp.leaderboard, {first: tmp.leaderboard?.first, second: tmp.leaderboard?.second});
+        // console.log("broadCast sent: ", {r1p1: tmp.round1.matches[0], r1p2: tmp.round1.matches[1]} 
+        //     , {r2p1: tmp.round2.matches[0], r2p2: tmp.round2.matches[1]});
         for (const player of this.players)
         {
             if (player.ws.readyState === WebSocket.OPEN)
@@ -135,29 +146,50 @@ export class TRoom {
                 else
                     this.addResult(this.r1losers, this.r1winners, r1.matches[0][0], r1.matches[0][1]);
             else
-            {
                 if (p1Score > p2Score)
                     this.addResult(this.r1losers, this.r1winners, r1.matches[1][1], r1.matches[1][0])
                 else
                     this.addResult(this.r1losers, this.r1winners, r1.matches[1][0], r1.matches[1][1])
-            }
             if (this.r1flag === 2)
                 this.status = "round2";
         }
         else if (this.status === "round2" && this.r2flag < 2)
         {
             this.r2flag++;
+            const r2: Matches = this.data.round2;
             this.bindMatch(id);
+            if (r2.matches[0][0].id === id || r2.matches[0][1].id === id) 
+                if (p1Score > p2Score)
+                    this.setLeaderboard("first", "second", r2.matches[0][0], r2.matches[0][1]);
+                else
+                    this.setLeaderboard("first", "second", r2.matches[0][1], r2.matches[0][0]);
+            else
+                if (p1Score > p2Score)
+                    this.setLeaderboard("third", "last", r2.matches[1][0], r2.matches[1][1]);
+                else
+                    this.setLeaderboard("third", "last", r2.matches[1][1], r2.matches[1][0]);
+
             if (this.r2flag === 2)
+            {
+                this.data.leaderboard = this.leaderboard;
+                console.log("updateWNL: ", this.data.leaderboard, {first: this.leaderboard.first, second: this.leaderboard.second});
+                addWinLose(this.leaderboard.first.id, "tournament_wins");
                 this.status = "end";
+            }
         }
         console.log("updateWNL: ", this.r1flag, this.r2flag, this.status);
+    }
+
+    setLeaderboard(a: keyof Leaderboard, b: keyof Leaderboard, winner: Player, loser: Player) {
+        this.leaderboard[a] = this.data.players[winner.id.toString()];
+        this.leaderboard[b] = this.data.players[loser.id.toString()];
     }
 
     bindMatch(id: number)
     {
         ( async () => {
             const MatchData_A: DBMatchData[] = await getMatchByUserId(id);
+            // await console.log(MatchData_A);
             await bindMatchTournament(this.dbID, MatchData_A[0].id);
             console.log("tournament room: bind Match");
         })()
@@ -236,6 +268,7 @@ export class TRoomManager {
     removeRoom(roomID: string): void {
         if (this.rooms.has(roomID))
             this.rooms.delete(roomID);
+        console.log("TournamentRoomManager: delete room: " + roomID + ", size: ", this.rooms.size);
     }
 }
 

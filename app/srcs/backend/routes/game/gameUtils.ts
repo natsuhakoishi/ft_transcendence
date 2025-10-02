@@ -1,7 +1,9 @@
 import { getProfileById } from "../../database/profile.ts";
+import type { Profile } from "../../share/type/db_ProfileData.ts";
 import type { TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
 import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
+import type { Leaderboard } from "../../share/type/tournamentRoomData.ts";
 
 export function Trespassing(ws: any): void {
     console.log("/gameplay(ws): player trespassing");
@@ -68,28 +70,29 @@ export function createTRoomID(playerID: [number, number, number, number]): strin
 }
 
 export async function initTData(playerID: [number, number, number, number]): Promise<TData> {
-        const data: TData = {
-            round1: {
-                roomID: [],
-                matches: [[], []]
-            },
-            round2: {
-                roomID: [],
-                matches: [[], []]
-            },
-            players: {
-                [playerID[0].toString()] : await getPlayerData(playerID[0]),
-                [playerID[1].toString()] : await getPlayerData(playerID[1]),
-                [playerID[2].toString()] : await getPlayerData(playerID[2]),
-                [playerID[3].toString()] : await getPlayerData(playerID[3]),
-            }
-        };
-        return data;
+    const data: TData = {
+        round1: {
+            roomID: [],
+            matches: [[], []]
+        },
+        round2: {
+            roomID: [],
+            matches: [[], []]
+        },
+        players: {
+            [playerID[0].toString()] : await getPlayerData(playerID[0]),
+            [playerID[1].toString()] : await getPlayerData(playerID[1]),
+            [playerID[2].toString()] : await getPlayerData(playerID[2]),
+            [playerID[3].toString()] : await getPlayerData(playerID[3]),
+        },
+        leaderboard: initLeaderboard()
+    };
+    return data;
 }
 
 async function  getPlayerData(_id: number): Promise<PlayerWithProfileData> {
     try {
-        const data = await getProfileById(_id);
+        const data: Profile = await getProfileById(_id);
         return {id: data.id, name: data.username, avatar: data.avatar_path};
     }
     catch (e) {
@@ -141,8 +144,18 @@ export function TDataWithOutWS(_data: TData, _state?: "r1" | "r2"): TData {
             ]
         },
         players: _data.players,
-        state: _state
+        state: _state,
+        leaderboard: _data.leaderboard
     }
 
     return data;
+}
+
+export function initLeaderboard(): Leaderboard {
+    return {
+        first: {id: 0},
+        second: {id: 0},
+        third: {id: 0},
+        last: {id: 0}
+    };
 }

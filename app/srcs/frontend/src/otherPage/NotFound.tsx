@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function NotFound() {
-    console.log("404 Not found");
     const navigate = useNavigate(); 
-
+    const location = useLocation();
+    const { msg } = ( location.state || {} ) as { msg: string};
+    console.log("404 Not found", msg);
+    
     useEffect( ()=> {
         setTimeout(() => {
             console.log("NotFound: redirect to /");
@@ -15,6 +17,7 @@ function NotFound() {
     return (
         <div>
             <h1 className="bg-red-400">404 page Not Found</h1>
+            <h3 className="bg-red-400">{msg}</h3>
             <p>2 second redirect to login page...</p>
         </div>
     );
