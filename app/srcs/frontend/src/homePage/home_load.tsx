@@ -52,7 +52,6 @@ export async function loadData({setLoading, setProgress, setUser, setFriend} :fe
   ]
   
   try {
-    let who: string = "";
     for (let i = 0; i < progress.length; ++i)
     {
       const { name, api, setter } = progress[i];
@@ -61,8 +60,7 @@ export async function loadData({setLoading, setProgress, setUser, setFriend} :fe
         ...prev, step: name, completed: prev.completed, }));
 
       const data = await api();
-      console.info(data);
-      if (i === 1) who = data.acc.username;
+      // console.info(data);
       if (setter)
         setter(data);
 
@@ -75,7 +73,6 @@ export async function loadData({setLoading, setProgress, setUser, setFriend} :fe
     setProgress({ step: "Data fetching completed", completed: null, total: null });
     await sleep(500);
     setLoading(false);
-    toast.success("Welcome back, " + who + ".");
 
   } catch (err: any) {
     console.error("Issue: " + err.message);

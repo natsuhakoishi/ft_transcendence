@@ -26,7 +26,7 @@
   </style>
 </head>
 <body>
-  <h1>ft_klbq Authentication & Profile</h1>
+  <!-- <h1>ft_klbq Authentication & Profile</h1> -->
 
   <!-- Google 登入 -->
   <!-- <h2>🔑 Google Login</h2>
@@ -56,21 +56,21 @@
   </form> -->
 
   <!-- 登出 -->
-  <h2>Logout</h2>
-  <button id="logout-btn">Logout</button>
+  <!-- <h2>Logout</h2>
+  <button id="logout-btn">Logout</button> -->
 
   <!-- 頭像管理 -->
-  <h2>Avatar Management</h2>
+  <!-- <h2>Avatar Management</h2>
   <form id="upload-form">
     <input type="file" id="avatar-file" accept="image/*" />
     <button type="submit">Upload Avatar</button>
   </form>
   <button id="delete-avatar-btn">Delete Avatar</button>
-  <img id="avatar-preview" src="https://localhost:4242/avatars/default.webp" alt="Avatar Preview" />
+  <img id="avatar-preview" src="https://localhost:4242/avatars/default.webp" alt="Avatar Preview" /> -->
 
   <!-- 使用者資料 -->
-  <h2>👤 User Info</h2>
-  <pre id="user-info">Not logged in.</pre>
+  <!-- <h2>👤 User Info</h2>
+  <pre id="user-info">Not logged in.</pre> -->
 
   <!-- 好友管理 -->
   <h2>👥 Friends</h2>
@@ -85,19 +85,19 @@
   <pre id="friend-profile">Click a friend to see profile.</pre>
 
   <!-- 修改使用者名稱 -->
-  <h2>✏️ Update Username</h2>
+  <!-- <h2>✏️ Update Username</h2>
   <form id="update-username-form">
     <input type="text" id="new-username" placeholder="New Username" required />
     <button type="submit">Update Username</button>
-  </form>
+  </form> -->
 
   <!-- 修改密碼 -->
-  <h2>🔑 Update Password</h2>
+  <!-- <h2>🔑 Update Password</h2>
   <form id="update-password-form">
     <input type="password" id="old-password" placeholder="Old Password" required />
     <input type="password" id="new-password" placeholder="New Password" required />
     <button type="submit">Update Password</button>
-  </form>
+  </form> -->
 
     <!-- Match 測試 -->
   <!-- <h2>🎮 Match Test</h2> -->
@@ -174,8 +174,8 @@
 
 
   <!-- 系統訊息 -->
-  <h2>🔧 System Messages</h2>
-  <div id="output"></div>
+  <!-- <h2>🔧 System Messages</h2>
+  <div id="output"></div> -->
 
   <script>
     const output = document.getElementById("output");
@@ -189,15 +189,15 @@
     //   output.innerHTML = `<span class="${isError ? 'error':'success'}">${msg}</span>`;
     // }
     // function getToken() { return localStorage.getItem("token"); }
-    function showUser(userData) {
-      if (!userData || typeof userData === "string") {
-        userInfo.textContent = userData || "Not logged in.";
-        return;
-      }
-      userInfo.textContent = JSON.stringify(userData, null, 2);
-      const avatarPath = userData.profile?.avatar_path || 'default.webp';
-      avatarPreview.src = `https://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
-    }
+    // function showUser(userData) {
+    //   if (!userData || typeof userData === "string") {
+    //     userInfo.textContent = userData || "Not logged in.";
+    //     return;
+    //   }
+    //   userInfo.textContent = JSON.stringify(userData, null, 2);
+    //   const avatarPath = userData.profile?.avatar_path || 'default.webp';
+    //   avatarPreview.src = `https://localhost:4242/avatars/${avatarPath}?t=${Date.now()}`;
+    // }
 
     // async function apiFetch(endpoint, options={}) {
     //   const token = getToken();
@@ -220,11 +220,11 @@
     // }
 
     // ==== Profile ====
-    async function fetchProfile() {
-      const res = await apiFetchPr("profile", { method: "POST", body: "{}" });
-      const data = await res.json();
-      showUser(res.ok ? data : "❌ " + data.message);
-    }
+    // async function fetchProfile() {
+    //   const res = await apiFetchPr("profile", { method: "POST", body: "{}" });
+    //   const data = await res.json();
+    //   showUser(res.ok ? data : "❌ " + data.message);
+    // }
 
     // ==== Friends ====
     async function fetchFriends() {
@@ -348,45 +348,45 @@
     // });
 
     // ==== Log Out ----
-    document.getElementById("logout-btn").addEventListener("click", async () => {
-      const res = await apiFetch("logout", { method: "POST", body: JSON.stringify({}) });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.removeItem("token");
-        log("✅ Logged out.");
-        showUser("Not logged in."); friendsList.textContent = "No friends yet.";
-        friendProfile.textContent = "Click a friend to see profile.";
-      } else log("❌ " + data.message, true);
-    });
+    // document.getElementById("logout-btn").addEventListener("click", async () => {
+    //   const res = await apiFetch("logout", { method: "POST", body: JSON.stringify({}) });
+    //   const data = await res.json();
+    //   if (res.ok) {
+    //     localStorage.removeItem("token");
+    //     log("✅ Logged out.");
+    //     showUser("Not logged in."); friendsList.textContent = "No friends yet.";
+    //     friendProfile.textContent = "Click a friend to see profile.";
+    //   } else log("❌ " + data.message, true);
+    // });
 
     // ==== Avatar ====
-    document.getElementById("avatar-file").addEventListener("change", e => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = ev => avatarPreview.src = ev.target.result;
-        reader.readAsDataURL(file);
-      }
-    });
+    // document.getElementById("avatar-file").addEventListener("change", e => {
+    //   const file = e.target.files[0];
+    //   if (file) {
+    //     const reader = new FileReader();
+    //     reader.onload = ev => avatarPreview.src = ev.target.result;
+    //     reader.readAsDataURL(file);
+    //   }
+    // });
 
-    document.getElementById("upload-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const file = document.getElementById("avatar-file").files[0];
-      if (!file) return log("⚠️ Please select a file.", true);
-      const formData = new FormData(); formData.append("file", file);
-      const res = await apiFetchPr("upload_avatar", { method: "POST", body: formData });
-      const data = await res.json();
-      log(res.ok ? "✅ Avatar uploaded." : "❌ " + data.message, !res.ok);
-      fetchProfile();
-    });
+    // document.getElementById("upload-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const file = document.getElementById("avatar-file").files[0];
+    //   if (!file) return log("⚠️ Please select a file.", true);
+    //   const formData = new FormData(); formData.append("file", file);
+    //   const res = await apiFetchPr("upload_avatar", { method: "POST", body: formData });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ Avatar uploaded." : "❌ " + data.message, !res.ok);
+    //   fetchProfile();
+    // });
 
-    document.getElementById("delete-avatar-btn").addEventListener("click", async () => {
-      const res = await apiFetchPr("delete_avatar", { method: "POST" });
-      const data = await res.json();
-      log(res.ok ? "✅ Avatar deleted." : "❌ " + data.message, !res.ok);
-      if (res.ok) avatarPreview.src = `httpss://localhost:4242/avatars/default.webp?t=${Date.now()}`;
-      fetchProfile();
-    });
+    // document.getElementById("delete-avatar-btn").addEventListener("click", async () => {
+    //   const res = await apiFetchPr("delete_avatar", { method: "POST" });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ Avatar deleted." : "❌ " + data.message, !res.ok);
+    //   if (res.ok) avatarPreview.src = `httpss://localhost:4242/avatars/default.webp?t=${Date.now()}`;
+    //   fetchProfile();
+    // });
 
     // ==== Update Username ====
     document.getElementById("update-username-form").addEventListener("submit", async e => {

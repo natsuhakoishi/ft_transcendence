@@ -65,7 +65,7 @@ if (!BACKEND_PORT)
 async function initServer()
 {
 	const cert_dirname = path.dirname(fileURLToPath(import.meta.url));
-	const cert_path = path.join(cert_dirname, '..', '..', 'certs');
+	const cert_path = path.join(cert_dirname, 'certs');
 	if (!fs.existsSync(cert_path))
 	{
 		console.error('Error: certs path not found');
@@ -111,7 +111,7 @@ async function initServer()
 	const avatars_path = path.join(dir_name, 'assets/avatars');
 	await fastify.register(fastifyStatic, { root: avatars_path, prefix: '/avatars/' });
 
-	await fastify.register(jwt, { secret: JWT_SECRET });
+	await fastify.register(jwt, { secret: JWT_SECRET,  cookie: { cookieName: "cookiesToken", signed: false } });
 
 	await fastify.register(authApi, { prefix: '/api' });
 	await fastify.register(authGoogleApi, { prefix: '/api' });

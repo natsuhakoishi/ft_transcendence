@@ -8,4 +8,15 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    /* background-image: url('/pic/zw_sanify_relief.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525); */
 }
+
+/* visualize boundaries */
+/* * {
+  outline: 1px solid red;
+} */

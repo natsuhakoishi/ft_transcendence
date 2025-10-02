@@ -18,6 +18,10 @@ interface ImportMetaEnv {
   readonly VITE_GAME_BOARD_HEIGHT_PX: string;
   readonly VITE_GAME_PADDLES_HEIGHT_PX: string;
   readonly VITE_GAME_PADDLES_WIDTH_PX: string;
+
+  readonly VITE_PATH_FRIEND: string;
+  readonly VITE_PATH_PROFILE: string;
+  readonly VITE_API_AVATAR: string;
 }
 
 interface ImportMeta {

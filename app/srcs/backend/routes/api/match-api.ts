@@ -23,12 +23,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			const user_id = req.user;
 			const user_matches = await getMatchByUserId(user_id);
 
-			const matches_total = user_matches.length;
-			const win_games = user_matches.filter((match: any) => match.winner_id == user_id).length;
-			const lose_games = matches_total - win_games;
-			const win_rate = Math.floor(win_games / matches_total * 100);
-
-			const obj = { user_id, user_matches, win_games, lose_games, matches_total, win_rate };
+			const obj = { user_id, user_matches };
 
 			res.send({ obj });
 		}

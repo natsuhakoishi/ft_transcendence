@@ -1,4 +1,4 @@
-import type { GameData, TData } from "../../backend/share/type/gameData";
+import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 
 export function initGameState(): GameState {
@@ -6,7 +6,7 @@ export function initGameState(): GameState {
   const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
   const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
   const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
-  
+
   const data: GameState = {
                  //init default position and board size
                 ball: { x: boardWidth / 2, y: boardHeight / 2, vx: 4, vy: 4, radius: 10},
@@ -56,22 +56,22 @@ export function  setUnauthorized(callback: () => void) {
   onUnauthorized = callback;
 }
 
-  export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
-    const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
-    if (!(options.body instanceof FormData))
-      headers["Content-Type"] = "application/json";
+export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
+  const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
+  if (!(options.body instanceof FormData))
+    headers["Content-Type"] = "application/json";
 
-    const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
-    const data = await res.json();
+  const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+  const data = await res.json();
 
-    if (res.status === 401)
-    {
-      if (onUnauthorized)
-        onUnauthorized();
-      throw { status: 401, message: "Unauthorized!" };
-    }
-    else if (!res.ok)
-      throw { status: res.status, message: data.message };
-
-    return data;
+  if (res.status === 401)
+  {
+    if (onUnauthorized)
+      onUnauthorized();
+    throw { status: 401, message: "Unauthorized!" };
   }
+  else if (!res.ok)
+    throw { status: res.status, message: data.message };
+
+  return data;
+}
