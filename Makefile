@@ -2,6 +2,8 @@ DC := ./docker-compose.yml
 
 all: re
 
+# dev: ngsetup up
+
 build:
 	sudo docker compose -f $(DC) build
 
@@ -9,7 +11,7 @@ up:
 	sudo docker compose -f $(DC) up -d
 
 down:
-	sudo sudo docker compose -f $(DC) down
+	sudo docker compose -f $(DC) down
 
 ps:
 	sudo docker ps
@@ -19,12 +21,15 @@ clean:
 
 dbclean:
 	rm -rf ./database/*
-	find ./app/srcs/backend/assets/avatars -type f ! -name 'default.*' -delete
+	find ./app/srcs/backend/assets/avatars -type f ! -name 'default.*' -delete\
+
+ngsetup:
+	chmod -x ./app/scripts/ngrok.sh
 
 ngclean:
 	pkill ngrok
 
-fclean:
+fclean: dbclean
 	sudo docker stop $(shell sudo docker ps -qa) 2>/dev/null || true
 	sudo docker rm $(shell sudo docker ps -qa) 2>/dev/null || true
 	sudo docker rmi $(shell sudo docker images -qa) 2>/dev/null || true

@@ -65,7 +65,7 @@ if (!BACKEND_PORT)
 async function initServer()
 {
 	const cert_dirname = path.dirname(fileURLToPath(import.meta.url));
-	const cert_path = path.join(cert_dirname, '..', '..', 'certs');
+	const cert_path = path.join(cert_dirname, 'certs');
 	if (!fs.existsSync(cert_path))
 	{
 		console.error('Error: certs path not found');

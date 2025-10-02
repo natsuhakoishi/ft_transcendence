@@ -10,7 +10,8 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const PEM_PASS = process.env.PEM_PASS; 
+const PEM_PASS = process.env.PEM_PASS;
+const NGROK_HOST = process.env.NGROK_URL ? process.env.NGROK_URL.replace(/^https?:\/\//, '') : undefined;
 
 export default defineConfig({
   plugins: [
@@ -18,11 +19,11 @@ export default defineConfig({
   ],
   server: {
     https: {
-      key: fs.readFileSync(path.resolve(__dirname, '../../certs/backend-ssl.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, '../../certs/backend-ssl.crt')),
+      key: fs.readFileSync(path.resolve(__dirname, 'certs/backend-ssl.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'certs/backend-ssl.crt')),
       passphrase: PEM_PASS
     },
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 5173,
   },
 })
