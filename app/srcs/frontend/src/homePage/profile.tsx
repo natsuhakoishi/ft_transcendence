@@ -20,8 +20,7 @@ const handleLogOut = async (navigate: (path: string) => void) => {
 }
 
 function MenuProfile( { user } : { user: User | null } ) {
-  const avatarPath = user?.profile?.avatar_path || 'default.webp';
-  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${avatarPath}?t=${Date.now()}`;
+  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile?.avatar_path}?t=${Date.now()}`;
   const { win_games = 0, lose_games = 0, tournament_wins = 0, total_game = 0, win_rate = 0.0 } = user?.profile || {};
   const displayDash = (num: number) => (num === 0 ? "-" : num);
 

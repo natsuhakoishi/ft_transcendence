@@ -39,6 +39,7 @@ export function Home() {
   const navigate = useNavigate();
   const { user, loading, progress } = useOutletContext<SharedData>();
   const [match, setMatch] = React.useState<boolean>(false);
+  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
   
   React.useEffect(() => {
   	document.title = "KLBQ | Main Menu";
@@ -60,9 +61,9 @@ export function Home() {
             <div className="flex gap-2 mx-1 my-1">
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-90 transition-transform"
                 onClick={() => navigate(import.meta.env.VITE_PATH_PROFILE)}>
-                <img className="w-full h-full object-cover bg-[#A1CAA8]" />
+                <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
-              <h2 className="my-1 font-mono text-blue-900">{user?.acc.username}</h2>
+              <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
             </div>
             <button className="bg-blue-500 w-30 p-2" onClick={() => navigate(import.meta.env.VITE_PATH_FRIEND)}>Friends</button>
           </div>

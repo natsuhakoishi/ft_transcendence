@@ -168,3 +168,7 @@ export function MenuOption({ user, refetch } : {user : User | null , refetch: ()
     </>
   );
 }
+
+//todo ofc you didnt forget to proper style the button the button and the buttons right
+//todo not forgetting the font & text also
+//todo ofc you not forget to tweak the styling back to smth fit dark theme right
