@@ -56,22 +56,22 @@ export function  setUnauthorized(callback: () => void) {
 	onUnauthorized = callback;
 }
 
-export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
-	const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
-	if (!(options.body instanceof FormData))
-		headers["Content-Type"] = "application/json";
+  export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
+    const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
+    if (!(options.body instanceof FormData))
+      headers["Content-Type"] = "application/json";
 
-	const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
-	const data = await res.json();
+    const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+    const data = await res.json();
 
-	if (res.status === 401)
-	{
-		if (onUnauthorized)
-		onUnauthorized();
-		throw { status: 401, message: "Unauthorized!" };
-	}
-	else if (!res.ok)
-		throw { status: res.status, message: data.message };
+    if (res.status === 401)
+    {
+      if (onUnauthorized)
+        onUnauthorized();
+      throw { status: 401, message: "Unauthorized!" };
+    }
+    else if (!res.ok)
+      throw { status: res.status, message: data.message };
 
-	return data;
-}
+    return data;
+  }

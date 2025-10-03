@@ -4,12 +4,14 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/loginPage";
-import { Home } from "./homePage/home";
+import { Home, FetchData } from "./homePage/home";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";
 import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
+import { FriendPage } from "./homePage/friend";
+import { ProfilePage } from "./homePage/profile";
 import { Loading } from "./gamePage/LoadingPage";
 import { TournamentResultPage } from "./gamePage/ResultPage";
 
@@ -21,7 +23,7 @@ function App() {
       toast.error("Session expired. Log in again!");
       setTimeout(() => {
         navigate("/auth");
-      }, 3000);
+      }, 1000 * 2);
     });
   }, []);
 
@@ -30,10 +32,10 @@ function App() {
       <Toaster position="top-center" />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
-        <Route path="/" >
+        <Route path="/" element={<FetchData />}>
           <Route index element={<Home />} />
-          {/* <Route path="/friend" /> */}
-          {/* <Route path="/profile" /> */}
+          <Route path="/friends" element={<FriendPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
         <Route path="/game" >
           <Route path="loading" element={<Loading />} />
