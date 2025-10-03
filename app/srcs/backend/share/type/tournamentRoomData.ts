@@ -92,6 +92,7 @@ export class TRoom {
         const round1: Matches = this.data.round1;
         this.status = "round1";
         this.broadCast("startRound1");
+        
     }
 
     startRound2(): void {

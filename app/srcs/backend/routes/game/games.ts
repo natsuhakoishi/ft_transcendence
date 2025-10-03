@@ -30,8 +30,14 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             }
             handleKeyPress(room, data, player, () => {
                 room.mandatoryWin();
+                console.log("/gameplay: timeout");
                 room.broadCast("timeout");
-                fastify.rooms.removeRoom(room.getRoomID());
+
+                setTimeout(() => {
+                    setTimeout(() => {
+                        fastify.rooms.removeRoom(room.getRoomID());
+                    }, 1000 * 2);
+                }, 1000 * 3);
             });
 
             if (room.size() === 2 && !room.getState().gamingStage)

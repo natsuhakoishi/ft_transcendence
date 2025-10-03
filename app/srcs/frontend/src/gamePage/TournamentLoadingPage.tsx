@@ -1,6 +1,7 @@
 import type { Matches } from "../../../backend/share/type/Matches";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { LoadingScreen } from "../homePage/home_load";
+import { Player } from "./player";
 
 export interface LoadingProps {
     leaderboard?: {
@@ -29,7 +30,12 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
             return (
             <div key={idx} className="flex items-center gap-4">
                 {/* Player 1 */}
-                <div className="flex items-center gap-2">
+                <div className="flex gap-8 items-center">
+                    <Player player={player1} me={player1?.id.toString() === playerID} />
+                    <h1 className="font-bold text-5xl">VS</h1>
+                    <Player player={player2} me={player2?.id.toString() === playerID} />
+                </div>
+                {/* <div className="flex items-center gap-2">
                 <img
                     src={import.meta.env.VITE_AVATAR_ROUTE + player1?.avatar}
                     alt={player1?.name}
@@ -42,12 +48,12 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
                 >
                     {player1?.name}
                 </span>
-                </div>
+                </div> */}
 
-                <span className="font-bold">VS</span>
+                {/* <span className="font-bold">VS</span> */}
 
                 {/* Player 2 */}
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                 <img
                     src={import.meta.env.VITE_AVATAR_ROUTE + player2?.avatar}
                     alt={player2?.name}
@@ -60,7 +66,7 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
                 >
                     {player2?.name}
                 </span>
-                </div>
+                </div> */}
             </div>
             );
         })}

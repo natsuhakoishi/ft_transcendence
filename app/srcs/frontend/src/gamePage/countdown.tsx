@@ -10,22 +10,33 @@ export function Countdown({
         describe: string}) {
 
     const [ second, setSecond ] = React.useState<number>(start);
+    const timer = React.useRef<NodeJS.Timeout | null>(null);
 
     React.useEffect( () => {
-        console.log("cd: useEffect");
-        if (second <= 0)
+        if (second === 0)
         {
             console.log("cd: Timeout");
             timeout();
+            if (timer.current) {
+                clearInterval(timer.current);
+                timer.current = null;
+            }
             return ;
         }
+    }, [second]);
 
-        const timer = setInterval(() => {
+    React.useEffect( () => {
+        console.log("cd: useEffect");
+
+        timer.current = setInterval(() => {
             setSecond((prev) => prev - 1)
             console.log("cd: ", second);
         }, 1000);
 
-        return () => clearInterval(timer);    
+        return () => {
+            if (timer.current)
+                clearInterval(timer.current);    
+        }
     }, [])
 
     return (

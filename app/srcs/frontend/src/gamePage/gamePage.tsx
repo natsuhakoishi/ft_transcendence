@@ -90,7 +90,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 const parse: {type : string, gameState: GameState} = JSON.parse(msg.data);
     
                 const type: string = parse.type;
-                // console.log("/gamePage: ", parse.gameState);
+                console.log("/gamePage: type: ", type);
                 setScore(parse.gameState.score);
                 if (type === "render")
                 {
@@ -129,7 +129,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                             setResult(true);
                     }, 1000*2);
                 }
-                else if (type === "game_over_offline")
+                else if (type === "game_over_offline" || type === "timeout")
                 {
                     console.log("/gamePage: game over offline");
                     ws.close();
@@ -182,6 +182,12 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 }
             });
 
+            document.addEventListener("keyup", (e) => {
+                console.log("gamePage: stop");
+                gameData.keyPress = "stop";
+                ws.send(JSON.stringify(gameData));
+            });
+
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
                 ws.close();
@@ -213,10 +219,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         <Score score={score}></Score>
 
                         {/* Countdown */}
-                        {/* <div className={`${!Load && !confirm && !start ? "visible" : "invisible"}`}> */}
                         <Banner confirm={confirm} start={start} ready={ready} gameData={gameData} ws={ws} />
-                            {/* <Countdown start={10} gameData={gameData} ws={ws} close={() => setCountdown(false)} /> */}
-                        {/* </div> */}
                         <canvas
                             id="gameBoard"
                             className={`w-[${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}px]

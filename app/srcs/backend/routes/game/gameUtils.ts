@@ -1,4 +1,5 @@
 import { getProfileById } from "../../database/profile.ts";
+import { GAME_BOARD_HEIGHT_PX, GAME_BOARD_WIDTH_PX, GAME_PADDLES_HEIGHT_PX, GAME_PADDLES_MARGIN_PX, GAME_PADDLES_WIDTH_PX } from "../../server.ts";
 import type { Profile } from "../../share/type/db_ProfileData.ts";
 import type { TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
@@ -11,43 +12,35 @@ export function Trespassing(ws: any): void {
 }
 
 export function resetBall(state: GameState): void {
-    const boardWidth: number = 900;
-    const boardHeight: number = 500;
-    const paddlesWidth: number = 10;
-    const paddlesHeight: number = 200;
+    const boardWidth: number = parseInt(GAME_BOARD_WIDTH_PX!);
+    const boardHeight: number = parseInt(GAME_BOARD_HEIGHT_PX!);;
+    const paddlesHeight: number = parseInt(GAME_PADDLES_HEIGHT_PX!);
+    const paddlesWidth: number = parseInt(GAME_PADDLES_WIDTH_PX!);
+    const paddlesMargin: number = parseInt(GAME_PADDLES_MARGIN_PX!);
 
     state.ball.x = boardWidth / 2;
     state.ball.y = boardHeight / 2;
     state.ball.vx = 4;
     state.ball.vy = 4;
     state.ball.radius = 10;
-    state.leftPaddle.x = 20;
+    state.leftPaddle.x = paddlesMargin;
     state.leftPaddle.y = boardHeight / 2 - paddlesHeight / 2;
-    state.rightPaddle.x = boardWidth - paddlesWidth - 10;
+    state.rightPaddle.x = boardWidth - paddlesWidth - paddlesMargin;
     state.rightPaddle.y = boardHeight / 2 - paddlesHeight / 2;
-
-    // state.ball.x = 450;
-    // state.ball.y = 250;
-    // state.ball.vx = 4;
-    // state.ball.vy = 4;
-    // state.ball.radius = 10;
-    // state.leftPaddle.x = 20;
-    // state.leftPaddle.y = 150
-    // state.rightPaddle.x = 880;
-    // state.rightPaddle.y = 150;
 }
 
 export function initGameState(): GameState {
-    const boardWidth: number = 900;
-    const boardHeight: number = 500;
-    const paddlesHeight: number = 200;
-    const paddlesWidth: number = 10;
+    const boardWidth: number = parseInt(GAME_BOARD_WIDTH_PX!);
+    const boardHeight: number = parseInt(GAME_BOARD_HEIGHT_PX!);;
+    const paddlesHeight: number = parseInt(GAME_PADDLES_HEIGHT_PX!);
+    const paddlesWidth: number = parseInt(GAME_PADDLES_WIDTH_PX!);
+    const paddlesMargin: number = parseInt(GAME_PADDLES_MARGIN_PX!);
 
     const data: GameState = {
                  //init default position and board size
                 ball: { x: boardWidth / 2, y: boardHeight / 2, vx: 4, vy: 4, radius: 10},
-                leftPaddle: { x: 20, y: boardHeight / 2 - paddlesHeight / 2, width: paddlesWidth, height: paddlesHeight},
-                rightPaddle: { x: boardWidth - paddlesWidth - 10, y: boardHeight / 2 - paddlesHeight / 2, width: paddlesWidth, height: paddlesHeight},
+                leftPaddle: { x: paddlesMargin, y: boardHeight / 2 - paddlesHeight / 2, vy: 0, width: paddlesWidth, height: paddlesHeight},
+                rightPaddle: { x: boardWidth - paddlesWidth - paddlesMargin, y: boardHeight / 2 - paddlesHeight / 2, vy: 0, width: paddlesWidth, height: paddlesHeight},
                 boardHeight: boardHeight,
                 boardWidth: boardWidth,
                 gamingStage: false,

@@ -14,7 +14,7 @@ export function Banner({
     if (!gameData || !ws)
             return ;
 
-    console.log("Banner: ", confirm, start, ready);
+    // console.log("Banner: ", confirm, start, ready);
 
     return (
         <>

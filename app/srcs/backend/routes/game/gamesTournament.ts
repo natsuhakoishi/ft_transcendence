@@ -4,6 +4,7 @@ import type { TRoom } from "../../share/type/tournamentRoomData.ts";
 import { createRoomID, initTData } from "./gameUtils.ts";
 import type { Matches } from "../../share/type/Matches.ts";
 import type { Player } from "../../share/type/Player.ts";
+import { setTournamentStatus } from "../../database/tournament.ts";
 
 const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
     fastify.get("/gameplay", { websocket: true }, (connection: any, req) => {
@@ -45,6 +46,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                     setTimeout(() => {
                         room.broadCast("update", "r1");
                         room.startRound1();
+                        setTournamentStatus(room.getDBID(), "on-going");
                     }, 1000 * 3);
                 }
                 else if (room.getStatus() === "round2" && data.keyPress === "over")
@@ -73,6 +75,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                 {
                     console.log("tournament/gameplay: end");
                     room.broadCast("end");
+                    setTournamentStatus(room.getDBID(), "completed");
                     fastify.tournamentRooms.removeRoom(data.roomId);
                     //TODO: send result / leaderboard to players
                 }

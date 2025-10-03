@@ -1,10 +1,9 @@
 import React from "react";
 import { GamePage } from "./gamePage";
-import { data, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "../utils";
 import type { GameData, TData } from "../../../backend/share/type/gameData";
 import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matches";
-import NotFound from "../otherPage/NotFound";
 import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
 import { TournamentResultPage } from "./ResultPage";
@@ -119,13 +118,11 @@ export function TournamentGamePage() {
                 else if (type === "end")
                 {
                     console.log("TournamentGamePage: end");
-                    // wsRef.current?.close();
                     console.log("TournamentGamePage: leaderboard: ", parse);
                     setTimeout(() => {
                         console.log("TournamentGamePage: to:", import.meta.env.VITE_PATH_TOURNAMENT_RESULT);
                         navigate(import.meta.env.VITE_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}});
                     }, 1000 * 4);
-                    // setLoad(false);
                 }
             }
 
