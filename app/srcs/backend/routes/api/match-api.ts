@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import { createMatch, getMatchByUserId } from "../../database/match.ts";
+import type { MatchMeResponse } from '../../share/type/history.ts';
 
 const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.post('/match', async (req: any, res: any) => {
@@ -20,12 +21,36 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.get('/match/me', async (req: any, res: any) => {
 		try
 		{
-			const user_id = req.user;
-			const user_matches = await getMatchByUserId(user_id);
+			const result = await getMatchByUserId(req.user);
 
-			const obj = { user_id, user_matches };
+			const response : MatchMeResponse =
+			{
+				user_id: req.user,
+				user_matches: result.map((match: any) => (
+				{
+					match_id: match.id,
+					game_time: match.game_time,
+					winner_id: match.winner_id,
+					player1:
+					{
+						user_id: match.player1_id,
+						username: match.player1_username,
+						score: match.player1_score,
+					},
+					player2:
+					{
+						user_id: match.player2_id,
+						username: match.player2_username,
+						score: match.player2_score,
+					},
+					tournament:
+					{
+						id: match.tournament_id,
+					},
+				})),
+			};
 
-			res.send({ obj });
+			res.send(response);
 		}
 		catch (error)
 			{

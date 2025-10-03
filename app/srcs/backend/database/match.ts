@@ -48,10 +48,12 @@ export async function getMatchByUserId(user_id: number)
 	return allSQLite(`
 		SELECT matches.*,
 			user1.username AS player1_username,
-			user2.username AS player2_username
+			user2.username AS player2_username,
+			tournament_matches.tournament_id
 		FROM matches
 		JOIN users AS user1 ON matches.player1_id = user1.id
 		JOIN users AS user2 ON matches.player2_id = user2.id
+		LEFT JOIN tournament_matches ON matches.id = tournament_matches.match_id
 		WHERE matches.player1_id = ? OR matches.player2_id = ?
 		ORDER BY matches.game_time DESC`,
 		[user_id, user_id]
