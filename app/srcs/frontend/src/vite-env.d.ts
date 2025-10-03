@@ -19,9 +19,12 @@ interface ImportMetaEnv {
   readonly VITE_GAME_PADDLES_HEIGHT_PX: string;
   readonly VITE_GAME_PADDLES_WIDTH_PX: string;
 
-  readonly VITE_PATH_FRIEND: string;
-  readonly VITE_PATH_PROFILE: string;
+  readonly VITE_API_GOOGLE_AUTH: string;
   readonly VITE_API_AVATAR: string;
+  readonly VITE_API_FETCH: string;
+  readonly VITE_API_PRI_FETCH: string;
+
+  readonly VITE_VERSION: string;
 }
 
 interface ImportMeta {

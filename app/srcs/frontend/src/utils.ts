@@ -41,7 +41,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   if (!(options.body instanceof FormData))
     headers["Content-Type"] = "application/json";
 
-  const res = await fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers, credentials: 'include' });
+  const res = await fetch(`${import.meta.env.VITE_API_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
   const data = await res.json();
 
   if (!res.ok)
@@ -61,7 +61,7 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
   if (!(options.body instanceof FormData))
     headers["Content-Type"] = "application/json";
 
-  const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
+  const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
   const data = await res.json();
 
   if (res.status === 401)

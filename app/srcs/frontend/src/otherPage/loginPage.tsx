@@ -124,7 +124,7 @@ export function LoginPage() {
 
   const handleLoginGoogle = async () => {
     try {
-      window.location.href = "https://localhost:4242/api/auth/google";
+      window.location.href = import.meta.env.VITE_API_GOOGLE_AUTH;
     } catch (err: any) {
       console.error("Issue: " + err.message);
       toast.error(err.message);

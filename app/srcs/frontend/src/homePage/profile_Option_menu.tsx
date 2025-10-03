@@ -38,7 +38,7 @@ const submitPassword = async (
   setToggle: React.Dispatch<React.SetStateAction<Mode>>
 ) => {
   event.preventDefault();
-  if (user?.acc.google_login) return toast.error("This feature not available for Google User");
+  if (user?.acc.google_login) return toast.error("This feature not available for Google User"), setToggle("");
   const form = event.currentTarget;
   const new_password = (form.elements.namedItem("new_password") as HTMLInputElement).value;
   const old_password = (form.elements.namedItem("old_password") as HTMLInputElement)?.value;
