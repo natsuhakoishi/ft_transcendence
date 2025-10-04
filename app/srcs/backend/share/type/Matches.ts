@@ -1,4 +1,4 @@
-import type { Player } from "./Player.ts";
+import type { Player, PlayerWithProfileData } from "./Player.ts";
 
 export interface Matches {
     roomID: string[];
@@ -6,4 +6,9 @@ export interface Matches {
         Player[],
         Player[]
     ];
+}
+
+export interface MatchPlayersData {
+    roomID: string;
+    Players: PlayerWithProfileData[];
 }

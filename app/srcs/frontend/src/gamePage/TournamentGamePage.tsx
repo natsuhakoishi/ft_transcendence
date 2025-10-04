@@ -1,81 +1,19 @@
 import React from "react";
 import { GamePage } from "./gamePage";
-import { data, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "../utils";
 import type { GameData, TData } from "../../../backend/share/type/gameData";
-import type { Matches } from "../../../backend/share/type/Matches";
-import NotFound from "../otherPage/NotFound";
-import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
+import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matches";
+import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
+import { TournamentLoading } from "./TournamentLoadingPage";
+import { TournamentResultPage } from "./ResultPage";
+import toast from "react-hot-toast";
 
-interface LoadingProps {
-  leaderboard?: {
-    matches: Matches;
-    players: Record<string, PlayerWithProfileData>;
-  };
-  load: boolean;
-  playerID?: string;
-}
+function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
+    const p1: Player = match[0];
+    const p2: Player = match[1];
 
-function Loading({ leaderboard, load, playerID }: LoadingProps) {
-    if (load || !leaderboard) {
-        return (
-            <div>
-            <h1>Loading...</h1>
-            </div>
-        );
-    }
-
-    const { matches, players } = leaderboard;
-
-    console.log("Loading: " + playerID, leaderboard, playerID);
-
-    return (
-        <div className="flex flex-col gap-8">
-        {matches.matches.map((match, idx) => {
-            const [p1, p2] = match;
-            const player1 = players[p1.id.toString()];
-            const player2 = players[p2.id.toString()];
-
-            return (
-            <div key={idx} className="flex items-center gap-4">
-                {/* Player 1 */}
-                <div className="flex items-center gap-2">
-                <img
-                    src={player1?.avatar}
-                    alt={player1?.name}
-                    className="w-8 h-8 rounded-full border"
-                />
-                <span
-                    className={`font-medium ${
-                    player1?.id.toString() === playerID ? "text-blue-600" : ""
-                    }`}
-                >
-                    {player1?.name}
-                </span>
-                </div>
-
-                <span className="font-bold">VS</span>
-
-                {/* Player 2 */}
-                <div className="flex items-center gap-2">
-                <img
-                    src={player2?.avatar}
-                    alt={player2?.name}
-                    className="w-8 h-8 rounded-full border"
-                />
-                <span
-                    className={`font-medium ${
-                    player2?.id.toString() === playerID ? "text-blue-600" : ""
-                    }`}
-                >
-                    {player2?.name}
-                </span>
-                </div>
-            </div>
-            );
-        })}
-    </div>
-  );
+    return {roomID: roomID, Players: [players[p1.id], players[p2.id]]};
 }
 
 export function TournamentGamePage() {
@@ -93,7 +31,7 @@ export function TournamentGamePage() {
     });
     const [leaderboard, setLeaderboard] = React.useState<{
         matches: Matches,
-        players: Record<string, PlayerWithProfileData>
+        players: Record<string, PlayerWithProfileData> //id : PlayerData
     }>();
 
     React.useEffect(() => {
@@ -102,7 +40,8 @@ export function TournamentGamePage() {
             if (!tournamentRoomID)
             {
                 console.log("TournamentGamePage: Trespassing ^u^b");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "A"}});
             }
             // setTRoomID(tournamentRoomID);
 
@@ -113,7 +52,8 @@ export function TournamentGamePage() {
             }
             catch (e) {
                 console.log("FlowPage: trespassing");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "B"}});
+                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
 
             console.log("TournamentGamePage", playerID!);
@@ -140,7 +80,8 @@ export function TournamentGamePage() {
                 if (type === "trespassing")
                 {
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "C"}});
+                    // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
                 else if (type === "update")
                 {
@@ -162,9 +103,9 @@ export function TournamentGamePage() {
                     console.log("TournamentGamePage: round1");
                     const r1: Matches = parse.state.round1;
                     const rooms: string[] = r1.roomID[0].split("-");
-                    rooms.includes(playerID.toString()) ? 
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID} })
-                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID} });
+                    rooms.includes(playerID.toString()) ?
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])} })
+                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])} });
                 }
                 else if (type === "startRound2")
                 {
@@ -172,14 +113,25 @@ export function TournamentGamePage() {
                     const r2: Matches = parse.state.round2;
                     const rooms: string[] = r2.roomID[0].split("-");
                     rooms.includes(playerID.toString()) ?
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID} })
-                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID} });
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[0], parse.state.players, r2.matches[0])} })
+                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[1], parse.state.players, r2.matches[1])} });
                 }
                 else if (type === "end")
                 {
                     console.log("TournamentGamePage: end");
-                    setLoad(false);
-                    ws.close();
+                    console.log("TournamentGamePage: leaderboard: ", parse);
+                    setTimeout(() => {
+                        console.log("TournamentGamePage: to:", import.meta.env.VITE_PATH_TOURNAMENT_RESULT);
+                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}});
+                    }, 1000 * 4);
+                }
+                else if (type === "offline")
+                {
+                    console.log("TournamentGamePage: player offline");
+                    toast.error("Opponent offline");
+                    toast.error("Tournament cancel");
+                    console.log("TournamentGamePage: redirect to home");
+                    navigate("/");
                 }
             }
 
@@ -188,6 +140,13 @@ export function TournamentGamePage() {
         return () => { //when user press 'back button'
             console.log("TournamentGamePage: closing ws");
             wsRef.current?.close();
+            wsRef.current = null;
+            gameDataRef.current = {
+                roomId: "",
+                playerId: 0,
+                keyPress: "init",
+                tournament: true,
+            };
         };
 
     }, []);
@@ -204,11 +163,12 @@ export function TournamentGamePage() {
 
     return (
         <Routes>
-            <Route path="/" element={<Loading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
+            <Route path="/" element={<TournamentLoading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
             <Route
                 path="gameplay"
                 element={<GamePage onGameOver={handleGameOver} />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="result" element={<TournamentResultPage />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
     );
 }

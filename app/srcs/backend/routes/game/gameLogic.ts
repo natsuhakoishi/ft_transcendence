@@ -89,43 +89,62 @@ function end(room: Room, gameOver: () => void): void {
 
 export function handleKeyPress(room: Room, data: GameData, player: Player): void {
 
-    const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
+    // const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
+    const id: string[] = data.roomId.split("-");
+    const pos: string = data.playerId.toString() === id[0] ? "left" : "right";
+
     console.log("/gameplay: handleKeyPress: " + data.keyPress);
 
-    if (!room.getState().gamingStage && room.size() < 2 && data.keyPress === "Enter") //starting game / confirm key
+    if (!room.getState().gamingStage && room.size() < 2 && room.getConfirm() < 2 && data.keyPress === "Hi")
+        room.addPlayer(player, data.tournament);
+    else if (data.keyPress === "Enter") //starting game / confirm key
     {
-        room.addPlayer(player);
+        room.addConfirm(data.playerId);
+
         console.log("roomID " + room.getRoomID() + ": player " + player.id.toString() + " ready! " + room.size().toString() + "/2");
         // ws.send(JSON.stringify(room.getState()));
     }
     else if (room.getState().gamingStage)
     {
+        const keypress = data.keyPress;
         if (pos === "right")
         {
-            if (data.keyPress === "up")
-                room.getState().rightPaddle.y -= 10;
-            else if (data.keyPress === "down")
-                room.getState().rightPaddle.y += 10;
+            if (keypress === "up")
+                room.getState().rightPaddle.vy = -10;
+            else if (keypress === "down")
+                room.getState().rightPaddle.vy = 10;
+            else if (keypress === "stop")
+                room.getState().rightPaddle.vy = 0;
         }
         else if (pos === "left")
         {
-            if (data.keyPress === "up") {
-                room.getState().leftPaddle.y -= 10;
-                console.log("/gameplay: left: up");
-            }
-            else if (data.keyPress === "down")
-            {
-                room.getState().leftPaddle.y += 10;
-                console.log("/gameplay: left: down");
-            }
+            if (keypress === "up")
+                room.getState().leftPaddle.vy = -10;
+            else if (keypress === "down")
+                room.getState().leftPaddle.vy = 10;
+            else if (keypress === "stop")
+                room.getState().leftPaddle.vy = 0;
         }
     }
+}
+
+function handleBoundary(paddle: Paddle, boardHeight: number): void {
+    if (paddle.y < 0)
+        paddle.y = 0;
+    else if (paddle.y + paddle.height > boardHeight)
+        paddle.y = boardHeight - paddle.height;
 }
 
 function gameLoop(gameState: GameState): void {
     const ball: Ball = gameState.ball;
     const leftPaddle: Paddle = gameState.leftPaddle;
     const rightPaddle: Paddle = gameState.rightPaddle;
+
+    leftPaddle.y += leftPaddle.vy;
+    rightPaddle.y += rightPaddle.vy;
+
+    handleBoundary(leftPaddle, gameState.boardHeight);
+    handleBoundary(rightPaddle, gameState.boardHeight);
 
     ball.x += ball.vx;
     ball.y += ball.vy;
@@ -137,6 +156,14 @@ function gameLoop(gameState: GameState): void {
     //check ball is touch paddles
     checkLeftPaddle(leftPaddle, ball);
     checkRightPaddle(rightPaddle, ball);
+    limitMaxSpeed(ball, 12);
+}
+
+function limitMaxSpeed(ball: Ball, max: number): void {
+    if (Math.abs(ball.vx) > max)
+        ball.vx = (ball.vx > 0 ? 1 : -1) * max;
+    if (Math.abs(ball.vy) > max)
+        ball.vy = (ball.vy > 0 ? 1 : -1) * max;
 }
 
 function checkLeftPaddle(Paddle: Paddle, ball: Ball): void {
@@ -145,7 +172,11 @@ function checkLeftPaddle(Paddle: Paddle, ball: Ball): void {
         ball.y >= Paddle.y && 
         ball.y <= Paddle.y + Paddle.height
     )
+    {
         ball.vx = Math.abs(ball.vx); //turn right
+        ball.vy *= 1.2;
+        ball.vx *= 1.2;
+    }
 }
 
 function checkRightPaddle(Paddle: Paddle, ball: Ball): void {
@@ -154,5 +185,9 @@ function checkRightPaddle(Paddle: Paddle, ball: Ball): void {
         ball.y >= Paddle.y && 
         ball.y <= Paddle.y + Paddle.height
     )
+    {
         ball.vx = -Math.abs(ball.vx); //turn left
+        ball.vy *= 1.2;
+        ball.vx *= 1.2;
+    }
 }

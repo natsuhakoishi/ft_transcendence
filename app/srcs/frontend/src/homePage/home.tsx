@@ -55,7 +55,7 @@ export function Home() {
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
-      (match === true ? <Matching setMatch={setMatch} /> :
+      (match === true ? <Matching again={false} setMatch={setMatch} /> :
         (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-blend-overlay"
           style={{
           backgroundImage: "linear-gradient(to bottom, #6FB7FFcc, #daade0ac, #A79BFFcc), url('/pic/test2.jpg')"

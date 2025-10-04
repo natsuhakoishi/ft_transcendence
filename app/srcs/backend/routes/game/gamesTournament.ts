@@ -4,6 +4,7 @@ import type { TRoom } from "../../share/type/tournamentRoomData.ts";
 import { createRoomID, initTData } from "./gameUtils.ts";
 import type { Matches } from "../../share/type/Matches.ts";
 import type { Player } from "../../share/type/Player.ts";
+import { setTournamentStatus } from "../../database/tournament.ts";
 
 const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
     fastify.get("/gameplay", { websocket: true }, (connection: any, req) => {
@@ -19,12 +20,15 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             const room: TRoom | null = fastify.tournamentRooms.getRoomByPlayerID(data.playerId);
             if (!room)
             {
+                if (data.keyPress === "over")
+                    return ;
+                console.log("/tournament/gameplay: trespassing");
                 ws.send(JSON.stringify({ type: "trespassing", data: initTData([0,0,0,0])}));
                 return ;
             }
             if (data.keyPress === "init" && room.size() < 4)
                 room.addPlayer(player);
-
+            
             if (room.size() === 4) {
                 if (!room.getStatus())
                 {
@@ -33,14 +37,16 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                     const players: [Player[],Player[]] = room.getData().round1.matches;
                     const AGroup: Player[] = players[0];
                     const BGroup: Player[] = players[1];
-                    fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id);
-                    fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id);
+                    fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id, 15);
+                    fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id, 15);
                     round1.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
                     round1.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
 
                     room.broadCast("update", "r1");
                     setTimeout(() => {
+                        room.broadCast("update", "r1");
                         room.startRound1();
+                        setTournamentStatus(room.getDBID(), "on-going");
                     }, 1000 * 3);
                 }
                 else if (room.getStatus() === "round2" && data.keyPress === "over")
@@ -54,9 +60,10 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                         round2.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
                         round2.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
     
-                        fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id);
-                        fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id);
+                        fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id, 20);
+                        fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id, 20);
 
+                        fastify.rooms.showRooms();
                         setTimeout(() => {
                             room.broadCast("update", "r2");
                             setTimeout(() => {
@@ -69,8 +76,8 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                 {
                     console.log("tournament/gameplay: end");
                     room.broadCast("end");
+                    setTournamentStatus(room.getDBID(), "completed");
                     fastify.tournamentRooms.removeRoom(data.roomId);
-                    //TODO: send result / leaderboard to players
                 }
             }
         });

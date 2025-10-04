@@ -38,5 +38,6 @@ fclean: dbclean
 
 re: down fclean up
 
+keep: down up
 # make dbclean; npx ts-node /home/natsuhakoishi/42cp/wip/ft_klbq/app/srcs/backend/database/main.ts
 # make dbclean; npx ts-node /home/natsuhakoishi/42cp/wip/ft_klbq/app/srcs/backend/server.ts

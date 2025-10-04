@@ -8,7 +8,7 @@ export async function createTournament(host_id: number): Promise<number>
 	);
 
 	const result = await runSQLite(`SELECT last_insert_rowid() as id`);
-	console.log(result);
+	await setTournamentStatus(result.lastID, "waiting");
 	return result.lastID;
 }
 
