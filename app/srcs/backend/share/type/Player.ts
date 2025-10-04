@@ -3,8 +3,7 @@ export interface Player {
     ws?: any;
 }
 
-export interface PlayerWithProfileData {
-    id: string;
+export interface PlayerWithProfileData extends Player {
     avatar?: string;
     name?: string;
 }

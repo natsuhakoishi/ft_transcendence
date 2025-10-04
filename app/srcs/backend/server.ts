@@ -38,6 +38,20 @@ const BACKEND_PORT = process.env.BACKEND_PORT;
 export const SMTP_EMAIL = process.env.SMTP_EMAIL;
 export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
 
+export const GAME_BOARD_WIDTH_PX: string | undefined = process.env.GAME_BOARD_WIDTH_PX;
+export const GAME_BOARD_HEIGHT_PX: string | undefined = process.env.GAME_BOARD_HEIGHT_PX;
+export const GAME_PADDLES_HEIGHT_PX: string | undefined = process.env.GAME_PADDLES_HEIGHT_PX;
+export const GAME_PADDLES_WIDTH_PX: string | undefined = process.env.GAME_PADDLES_WIDTH_PX;
+export const GAME_PADDLES_MARGIN_PX: string | undefined = process.env.GAME_PADDLES_MARGIN_PX;
+
+if (!GAME_BOARD_WIDTH_PX || !GAME_BOARD_HEIGHT_PX || 
+	!GAME_PADDLES_HEIGHT_PX || !GAME_PADDLES_WIDTH_PX || 
+	!GAME_PADDLES_MARGIN_PX)
+{
+	console.error('Error: Game\'s env not found');
+	process.exit(1);
+}
+
 if (!JWT_SECRET)
 {
 	console.error('Error: JWT_SECRET not found');

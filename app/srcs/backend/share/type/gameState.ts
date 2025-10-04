@@ -1,6 +1,7 @@
 export interface Paddle {
     x: number;
     y: number;
+    vy: number;
     width: number;
     height: number;
 }

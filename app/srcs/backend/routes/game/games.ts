@@ -6,7 +6,6 @@ import { handleKeyPress, start } from "./gameLogic.ts";
 import { createMatch } from "../../database/match.ts";
 import type { GameScore } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
-import { addWinLose } from "../../database/profile.ts";
 
 const games: FastifyPluginAsync = async (fastify: any) => {
     // const rooms: RoomManager = new RoomManager();
@@ -23,15 +22,17 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             const player: Player = { id: data.playerId, ws: ws };
             console.log("/gameplay: ", data);
 
+            fastify.rooms.showRooms();
             const room: Room | null = fastify.rooms.getRoomByPlayerID(player.id);
-            console.log("/gameplay check trespassing");
+            console.log("/gameplay check trespassing", player.id, (room ? "ok" : "tps"));
             if (!room) {
-                Trespassing(ws);
+                if (data.keyPress !== "stop")
+                    Trespassing(ws);
                 return ;
             }
             handleKeyPress(room, data, player);
 
-            if (room.size() === 2 && !room.getState().gamingStage)
+            if (room.getConfirm() === 2 && !room.getState().gamingStage)
                 start(room, () => {
                     const score: GameScore = room.getState().score;
                     try {
@@ -52,7 +53,6 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             console.log("/gameplay(get): player disconnected");
         });
     });
-
 
 };
 
