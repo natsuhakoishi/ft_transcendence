@@ -5,22 +5,28 @@ interface Player {
 }
 
 interface TournamentInfo {
-  id: number | null;
+  id: number;
+  start_time: string;
   //feat expand into leaderboard(ranking)
 }
 
-interface Match {
+export interface TournamentMatch {
+  // mode: "tournament";
+  tournament: TournamentInfo;
+  matches: Match[];
+}
+
+export interface Match {
+  mode: "match" | "tournament";
   match_id: number;
   game_time: string;
   winner_id: number;
 
   player1: Player;
   player2: Player;
-
-  tournament: TournamentInfo;
 }
 
 export interface MatchMeResponse {
   user_id: number;
-  user_matches: Match[];
+  user_matches: ( | Match | TournamentMatch)[];
 }
