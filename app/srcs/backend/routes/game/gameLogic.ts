@@ -96,7 +96,7 @@ export function handleKeyPress(room: Room, data: GameData, player: Player): void
     console.log("/gameplay: handleKeyPress: " + data.keyPress);
 
     if (!room.getState().gamingStage && room.size() < 2 && room.getConfirm() < 2 && data.keyPress === "Hi")
-        room.addPlayer(player);
+        room.addPlayer(player, data.tournament);
     else if (data.keyPress === "Enter") //starting game / confirm key
     {
         room.addConfirm(data.playerId);

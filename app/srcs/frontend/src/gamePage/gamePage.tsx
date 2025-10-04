@@ -104,6 +104,10 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     setStart(true);
                     setReady(true);
 
+                    setTimeout(() => {
+                        draw(parse.gameState);
+                    }, 1000 * 1);
+
                     setTimeout( () => {
                         setReady(false);
                         console.log("/gamepage: setTimeout ", start, ready);

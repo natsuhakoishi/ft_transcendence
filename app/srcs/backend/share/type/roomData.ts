@@ -1,7 +1,8 @@
 import { createRoomID, initGameState } from "../../routes/game/gameUtils.ts";
-import type { GameState } from "./gameState.ts";
+import type { GameScore, GameState } from "./gameState.ts";
 import fp from "fastify-plugin";
 import type { Player } from "./Player.ts";
+import { createMatch } from "../../database/match.ts";
 
 export class Room {
 
@@ -11,6 +12,7 @@ export class Room {
     private players: Set<Player>;
     private gameState: GameState;
     private confirm: {p1: boolean, p2: boolean};
+    private tournament: boolean;
 
     constructor(playerID: [number, number]) {
         console.log("class room: constructor called");
@@ -21,12 +23,14 @@ export class Room {
         this.players = new Set();
         this.gameState = initGameState();
         this.confirm = {p1: false, p2: false};
+        this.tournament = false;
         console.log("class room: constructor success");
     }
 
-    addPlayer(player: Player): void {
+    addPlayer(player: Player, _tournament: boolean): void {
         // console.log("/gameplay: addPLayer(): ",player);
         this.players.add(player);
+        this.tournament = _tournament;
     }
 
     broadCast(_type: string): void {
@@ -49,6 +53,10 @@ export class Room {
 
     getRoomID(): string {
         return this.id;
+    }
+
+    getTournamentFlag(): boolean {
+        return this.tournament;
     }
 
     mandatoryWin(): void {
@@ -110,7 +118,17 @@ export class RoomManager {
             if (room && room.getConfirm() < 2)
             {
                 if (room.getConfirm() === 1)
+                {
                     room.giveConfirmPlayerWin();
+                    const score: GameScore = room.getState().score;
+                    try {
+                        createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, room.getTournamentFlag());
+                        console.log("/gameplay: call database success");
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
                 room.broadCast("timeout");
                 this.removeRoom(roomID);
             }

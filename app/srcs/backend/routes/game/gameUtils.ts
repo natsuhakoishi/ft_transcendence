@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 import { getProfileById } from "../../database/profile.ts";
 import { GAME_BOARD_HEIGHT_PX, GAME_BOARD_WIDTH_PX, GAME_PADDLES_HEIGHT_PX, GAME_PADDLES_MARGIN_PX, GAME_PADDLES_WIDTH_PX } from "../../server.ts";
 import type { Profile } from "../../share/type/db_ProfileData.ts";
@@ -20,8 +21,15 @@ export function resetBall(state: GameState): void {
 
     state.ball.x = boardWidth / 2;
     state.ball.y = boardHeight / 2;
-    state.ball.vx = 4;
+
     state.ball.vy = 4;
+    state.ball.vx = 4;
+    if (randomInt(100) % 2 === 0)
+    {
+        state.ball.vy *= -1;
+        state.ball.vx *= -1;
+    }
+
     state.ball.radius = 10;
     state.leftPaddle.x = paddlesMargin;
     state.leftPaddle.y = boardHeight / 2 - paddlesHeight / 2;
