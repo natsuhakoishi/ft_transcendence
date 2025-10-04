@@ -2,16 +2,16 @@ import type { GameData } from "../../../backend/share/type/gameData";
 import { Countdown } from "./countdown";
 
 export function Banner({
-        confirm, start, ready, gameData, ws
+        confirm, 
+        start, ready, gameData
     }: {
         confirm: boolean,
         start: boolean,
         ready: boolean,
         gameData: GameData | null,
-        ws: WebSocket | null
     }) {
 
-    if (!gameData || !ws)
+    if (!gameData)
             return ;
 
     // console.log("Banner: ", confirm, start, ready);
@@ -23,8 +23,8 @@ export function Banner({
                     <Countdown
                         start={10}
                         timeout={() => {
-                            gameData.keyPress = "timeout";
-                            ws.send(JSON.stringify(gameData));
+                            // gameData.keyPress = "timeout";
+                            // ws.send(JSON.stringify(gameData));
                         }}
                         describe="Press [Enter] to ready:" />
                 ) : !start ? (

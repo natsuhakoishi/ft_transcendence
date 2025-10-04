@@ -7,6 +7,7 @@ import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matc
 import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
 import { TournamentResultPage } from "./ResultPage";
+import toast from "react-hot-toast";
 
 function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
     const p1: Player = match[0];
@@ -124,6 +125,14 @@ export function TournamentGamePage() {
                         navigate(import.meta.env.VITE_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}});
                     }, 1000 * 4);
                 }
+                else if (type === "offline")
+                {
+                    console.log("TournamentGamePage: player offline");
+                    toast.error("Opponent offline");
+                    toast.error("Tournament cancel");
+                    console.log("TournamentGamePage: redirect to home");
+                    navigate("/");
+                }
             }
 
         })();
@@ -131,6 +140,13 @@ export function TournamentGamePage() {
         return () => { //when user press 'back button'
             console.log("TournamentGamePage: closing ws");
             wsRef.current?.close();
+            wsRef.current = null;
+            gameDataRef.current = {
+                roomId: "",
+                playerId: 0,
+                keyPress: "init",
+                tournament: true,
+            };
         };
 
     }, []);

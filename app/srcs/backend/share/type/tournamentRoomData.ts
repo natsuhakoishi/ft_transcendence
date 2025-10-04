@@ -23,18 +23,19 @@ export class TRoom {
     private readonly p2ID: number;
     private readonly p3ID: number;
     private readonly p4ID: number;
-
+    
     private data!: TData;
     private players: Set<Player>;
-
+    
     private status: null | "round1" | "round2" | "end";
     private r1flag: number;
     private r2flag: number;
     private r1winners: Player[];
     private r1losers: Player[];
-
+    
     private leaderboard: Leaderboard;
 
+    private offline: boolean = false;
     // private r1AStatus: boolean;
     // private r1BStatus: boolean;
 
@@ -68,6 +69,14 @@ export class TRoom {
 
     }
 
+    checkOffline(): boolean {
+        if (!this.offline)
+            for (const player of this.players)
+                if (player.ws.readyState !== WebSocket.OPEN)
+                    this.offline = true;
+        return this.offline;
+    }
+
     broadCast(_type: string, state?: "r1" | "r2"): void {
         const tmp = TDataWithOutWS(this.data, state);
         console.log("broadCast sent: ", tmp, tmp.leaderboard, {first: tmp.leaderboard?.first, second: tmp.leaderboard?.second});
@@ -78,7 +87,10 @@ export class TRoom {
             if (player.ws.readyState === WebSocket.OPEN)
                 player.ws.send(JSON.stringify({type: _type, state: TDataWithOutWS(this.data, state)}));
             else
+            {
                 console.log("TRoom: broadCast: offline: ", player.id);
+                this.offline = true;
+            }
                 //TODO: if offline
                 // this.gameState.playerOffline = true;
         }
@@ -247,8 +259,19 @@ export class TRoomManager {
         {
             this.rooms.set(roomID, new TRoom(playerID));
             const room: TRoom = this.rooms.get(roomID) as TRoom;
-
             room.init();
+
+            const times = setInterval(() => {
+                if (room.getStatus() === "end")
+                    clearInterval(times);
+                if (room.checkOffline())
+                {
+                    console.log("/tournament game manager: player offline");
+                    room.broadCast("offline");
+                    this.removeRoom(roomID);
+                    clearInterval(times);
+                }
+            }, 1000 * 5); //every 5 second ping each player
         }
     }
 
@@ -271,6 +294,7 @@ export class TRoomManager {
             this.rooms.delete(roomID);
         console.log("TournamentRoomManager: delete room: " + roomID + ", size: ", this.rooms.size);
     }
+
 }
 
 export default fp(async (fastify) => {

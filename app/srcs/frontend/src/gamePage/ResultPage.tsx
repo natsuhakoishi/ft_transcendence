@@ -21,7 +21,7 @@ export function Result({ score, playersData, me }: { score: GameScore, playersDa
                         <h1 className={`text-5xl font-bold mb-6`} >Winner!</h1>
                     </div>
                     <div className="flex items-center space-x-4 mb-12">
-                        <Player player={score.p1Score < score.p2Score ? playersData?.Players[0] : playersData?.Players[1]} me={me}  />
+                        <Player player={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]} me={me} spin={true}  />
                     </div>
 
                     <AgainButton callback={() => setAgain(true)} />

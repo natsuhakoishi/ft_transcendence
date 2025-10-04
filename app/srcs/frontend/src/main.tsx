@@ -13,7 +13,6 @@ import { setUnauthorized } from "./utils";
 import { FriendPage } from "./homePage/friend";
 import { ProfilePage } from "./homePage/profile";
 import { Loading } from "./gamePage/LoadingPage";
-import { TournamentResultPage } from "./gamePage/ResultPage";
 
 function App() {
   const navigate = useNavigate();

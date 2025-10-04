@@ -9,6 +9,7 @@ import { Score } from "./Score.tsx";
 import { Player } from "./player.tsx";
 import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
+import toast from "react-hot-toast";
 
 export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const navigate = useNavigate();
@@ -18,13 +19,11 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const [ result , setResult ] = React.useState(false);
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
-    // const [ countdown, setCountdown ] = React.useState(true);
     const [ start, setStart ] = React.useState(false);
-    // const [ key, setKey ] = React.useState(false);
     const key = React.useRef<boolean>(false);
+    const confirmRef = React.useRef<boolean>(false);
     const [ ready, setReady ] = React.useState(false);
     const [ confirm, setConfirm ] = React.useState(false);
-    const [ ws, setWS ] = React.useState<WebSocket | null>(null);
     const [ score, setScore ] = React.useState<GameScore>({
         p1Score: 0,
         p2Score: 0
@@ -66,7 +65,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 console.log("ws.onopen: pre rendering");
                 draw(gameState);
                 setGameData(gameData);
-                setWS(ws);
+                gameData.keyPress = "Hi";
+                ws.send(JSON.stringify(gameData));
             }
 
             try {
@@ -117,6 +117,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 }
                 else if (type === "game_over")
                 {
+                    confirmRef.current = false;
                     console.log("/gamePage: game over");
                     ws.close();
                     setTimeout(()=>{
@@ -133,24 +134,37 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 {
                     console.log("/gamePage: game over offline");
                     ws.close();
-                    setTimeout(()=>{
-                        if (gameData.tournament) {
-                            navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
-                            onGameOver?.();
-                        }
-                        else
-                            setResult(true);
-                    }, 1000*2);
+                    console.log("/gamepage: confirm", confirmRef.current);
+                    if (confirmRef.current)
+                    {
+                        confirmRef.current = false;
+                        toast.error("Opponent disconnected");
+                        setTimeout(()=>{
+                            if (gameData.tournament) {
+                                navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
+                                onGameOver?.();
+                            }
+                            else
+                                setResult(true);
+                        }, 1000*2);
+                    }
+                    else
+                    {
+                        toast.error("Timeout");
+                        toast.error("Back to home");
+                        navigate("/");
+                    }
                     //TODO: render ending
                 }
                 else if (type === "trespassing")
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
                     //TODO: trespassing page / popup
+                    toast.error("Trespassing!");
                     navigate("/");
-                    setTimeout(()=>{
-                        ws.close();
-                    }, 1000);
+                    // setTimeout(()=>{
+                    //     ws.close();
+                    // }, 1000);
                 }
             };
 
@@ -164,7 +178,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown")) {
                     console.log("gamePage: down");
                     gameData.keyPress = "down";
-                    ws.send(JSON.stringify(gameData));
+                    if (ws.readyState === WebSocket.OPEN)
+                        ws.send(JSON.stringify(gameData));
                 }
                 else if (e.key === "Enter" && !confirmGame)
                 {
@@ -177,19 +192,23 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                             ws.send(JSON.stringify(gameData));
                             confirmGame = true;
                             setConfirm(true);
+                            confirmRef.current = true;
                         }
                     }
                 }
             });
 
-            document.addEventListener("keyup", (e) => {
+            document.addEventListener("keyup", () => {
                 console.log("gamePage: stop");
                 gameData.keyPress = "stop";
-                ws.send(JSON.stringify(gameData));
+                if (ws.readyState === WebSocket.OPEN)
+                    ws.send(JSON.stringify(gameData));
             });
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
+                key.current = false;
+                confirmRef.current = false;
                 ws.close();
             };
         })();
@@ -207,7 +226,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             </div>
 
             {/* whole Game's stuff */}
-            <div className={`container flex flex-col items-center justify-center ${Load || result ? "invisible" : "visible"}`}>
+            <div className={`container gap-12 flex flex-col items-center justify-center ${Load || result ? "invisible" : "visible"}`}>
 
                 {/* players data, pong game's board */}
                 <div className="flex items-center justify-between w-full px-10">
@@ -219,7 +238,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         <Score score={score}></Score>
 
                         {/* Countdown */}
-                        <Banner confirm={confirm} start={start} ready={ready} gameData={gameData} ws={ws} />
+                        <Banner confirm={confirm} start={start} ready={ready} gameData={gameData} />
+                        {/* <Banner confirm={confirm.current} start={start} ready={ready} gameData={gameData} /> */}
                         <canvas
                             id="gameBoard"
                             className={`w-[${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}px]

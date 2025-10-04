@@ -28,7 +28,7 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             }
             if (data.keyPress === "init" && room.size() < 4)
                 room.addPlayer(player);
-
+            
             if (room.size() === 4) {
                 if (!room.getStatus())
                 {
@@ -37,8 +37,8 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                     const players: [Player[],Player[]] = room.getData().round1.matches;
                     const AGroup: Player[] = players[0];
                     const BGroup: Player[] = players[1];
-                    fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id);
-                    fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id);
+                    fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id, 15);
+                    fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id, 15);
                     round1.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
                     round1.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
 
@@ -60,9 +60,10 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                         round2.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
                         round2.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
     
-                        fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id);
-                        fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id);
+                        fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id, 20);
+                        fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id, 20);
 
+                        fastify.rooms.showRooms();
                         setTimeout(() => {
                             room.broadCast("update", "r2");
                             setTimeout(() => {
@@ -77,7 +78,6 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
                     room.broadCast("end");
                     setTournamentStatus(room.getDBID(), "completed");
                     fastify.tournamentRooms.removeRoom(data.roomId);
-                    //TODO: send result / leaderboard to players
                 }
             }
         });

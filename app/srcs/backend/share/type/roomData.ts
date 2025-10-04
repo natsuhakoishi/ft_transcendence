@@ -10,6 +10,7 @@ export class Room {
     private p2ID: number;
     private players: Set<Player>;
     private gameState: GameState;
+    private confirm: {p1: boolean, p2: boolean};
 
     constructor(playerID: [number, number]) {
         console.log("class room: constructor called");
@@ -19,6 +20,7 @@ export class Room {
         this.id = createRoomID(this.p1ID, this.p2ID);
         this.players = new Set();
         this.gameState = initGameState();
+        this.confirm = {p1: false, p2: false};
         console.log("class room: constructor success");
     }
 
@@ -50,10 +52,6 @@ export class Room {
     }
 
     mandatoryWin(): void {
-        if (this.players.size === 0) {
-            this.setScore(this.p1ID);
-            return ;
-        }
         for (const player of this.players)
             if (player.ws.readyState === WebSocket.OPEN)
                 this.setScore(player.id);
@@ -67,9 +65,23 @@ export class Room {
         return this.p2ID;
     }
 
+    addConfirm(id: number): void {
+        if (id === this.p1ID)
+            this.confirm.p1 = true;
+        else if (id === this.p2ID)
+            this.confirm.p2 = true;
+    }
+
+    getConfirm(): number {
+        return (this.confirm.p1 ? 1 : 0) + (this.confirm.p2 ? 1 : 0);
+    }
+
+    giveConfirmPlayerWin(): void {
+        this.confirm.p1 ? this.setScore(this.p1ID) : this.setScore(this.p2ID);
+    }
+
     private setScore(playerId: number): void {
-        const pos: string = this.id.indexOf(playerId.toString()) === 0 ? "left" : "right";
-        if (pos === "left") {
+        if (playerId === this.p1ID) {
             this.gameState.score.p1Score = 3;
             this.gameState.score.p2Score = 0;
         }
@@ -87,16 +99,22 @@ export class RoomManager {
         this.rooms = new Map();
     }
 
-    // createRoom(roomID: string, gameState: GameState): void {
-    //     if (!this.rooms.has(roomID))
-    //         this.rooms.set(roomID, new Room(roomID, gameState));
-    // }
-
-    createRoom(p1ID: number, p2ID: number): void {
+                                            //tournament offset: number of second
+    createRoom(p1ID: number, p2ID: number, tournamentOffset?: number): void {
         console.log("called rooms");
         const roomID: string = createRoomID(p1ID, p2ID);
         if (!this.rooms.has(roomID))
             this.rooms.set(roomID, new Room([p1ID, p2ID]));
+        setTimeout(() => {
+            const room: Room | undefined = this.rooms.get(roomID);
+            if (room && room.getConfirm() < 2)
+            {
+                if (room.getConfirm() === 1)
+                    room.giveConfirmPlayerWin();
+                room.broadCast("timeout");
+                this.removeRoom(roomID);
+            }
+        }, (tournamentOffset ? 1000 * tournamentOffset : 1000 * 13));
     }
 
     getRoom(roomID: string): Room | null {
@@ -123,6 +141,13 @@ export class RoomManager {
         this.rooms.forEach((element) => {
             console.log("Rooms list: ", i++);
         });
+    }
+
+    showRooms(): void {
+        console.log("show room: size:", this.rooms.size);
+        for (const room of this.rooms.values()) {
+            console.log("show room: ", room.getRoomID());
+        }
     }
 }
 

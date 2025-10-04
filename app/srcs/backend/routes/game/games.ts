@@ -22,25 +22,17 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             const player: Player = { id: data.playerId, ws: ws };
             console.log("/gameplay: ", data);
 
+            fastify.rooms.showRooms();
             const room: Room | null = fastify.rooms.getRoomByPlayerID(player.id);
-            console.log("/gameplay check trespassing");
+            console.log("/gameplay check trespassing", player.id, (room ? "ok" : "tps"));
             if (!room) {
-                Trespassing(ws);
+                if (data.keyPress !== "stop")
+                    Trespassing(ws);
                 return ;
             }
-            handleKeyPress(room, data, player, () => {
-                room.mandatoryWin();
-                console.log("/gameplay: timeout");
-                room.broadCast("timeout");
+            handleKeyPress(room, data, player);
 
-                setTimeout(() => {
-                    setTimeout(() => {
-                        fastify.rooms.removeRoom(room.getRoomID());
-                    }, 1000 * 2);
-                }, 1000 * 3);
-            });
-
-            if (room.size() === 2 && !room.getState().gamingStage)
+            if (room.getConfirm() === 2 && !room.getState().gamingStage)
                 start(room, () => {
                     const score: GameScore = room.getState().score;
                     try {
@@ -61,7 +53,6 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             console.log("/gameplay(get): player disconnected");
         });
     });
-
 
 };
 
