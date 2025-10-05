@@ -23,7 +23,6 @@ export interface GameState {
     ball: Ball
 
     rightPaddle: Paddle;
-
     leftPaddle: Paddle;
 
     boardHeight: number;

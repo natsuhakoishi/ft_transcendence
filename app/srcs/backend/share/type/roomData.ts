@@ -150,22 +150,14 @@ export class RoomManager {
     }
 
     removeRoom(roomID: string): void {
-        console.log("/gameplay: remove room: ", roomID);
+        console.log("/roomManager: remove room: ", roomID);
         this.rooms.delete(roomID);
-    }
-
-    listRooms(): void {
-        let i: number = 0;
-        this.rooms.forEach((element) => {
-            console.log("Rooms list: ", i++);
-        });
     }
 
     showRooms(): void {
         console.log("show room: size:", this.rooms.size);
-        for (const room of this.rooms.values()) {
+        for (const room of this.rooms.values())
             console.log("show room: ", room.getRoomID());
-        }
     }
 }
 
