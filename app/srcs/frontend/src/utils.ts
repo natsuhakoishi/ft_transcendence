@@ -41,8 +41,8 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 	if (!(options.body instanceof FormData))
 		headers["Content-Type"] = "application/json";
 
-	const res = await fetch(`https://localhost:4242/api/${endpoint}`, { ...options, headers, credentials: 'include' });
-	const data = await res.json();
+  const res = await fetch(`${import.meta.env.VITE_API_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
+  const data = await res.json();
 
 	if (!res.ok)
 		throw new Error(data.message);
@@ -61,8 +61,8 @@ export function  setUnauthorized(callback: () => void) {
     if (!(options.body instanceof FormData))
       headers["Content-Type"] = "application/json";
 
-    const res = await fetch(`https://localhost:4242/api/private/${endpoint}`, { ...options, headers, credentials: 'include' });
-    const data = await res.json();
+  const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
+  const data = await res.json();
 
     if (res.status === 401)
     {

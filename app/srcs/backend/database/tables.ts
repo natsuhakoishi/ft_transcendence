@@ -33,7 +33,7 @@ export async function createTable()
 			lose_games INTEGER DEFAULT 0,
 			tournament_wins INTEGER DEFAULT 0,
 			FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
-			FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+			FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE ON UPDATE CASCADE
 		);
 	`);
 

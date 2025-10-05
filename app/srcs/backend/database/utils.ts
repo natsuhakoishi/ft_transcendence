@@ -11,8 +11,15 @@ if (!fs.existsSync(db_path))
 export const db = new sqlite3.Database(path.join(db_path, "klbq.db"), (error) => {
 	if (error)
 		console.error("Error: Failure: DB open");
-	else
+	else {
 		console.log("Connected to SQLite DB");
+		db.exec("PRAGMA foreign_keys = ON;", (err) => {
+			if (err)
+				console.error("Failed to enable foreign keys:", err);
+			else
+				console.log("Foreign keys enabled ✓");
+		});
+	}
 });
 
 export function execSQLite(sql:string): Promise<void>

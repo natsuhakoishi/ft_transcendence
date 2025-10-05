@@ -42,11 +42,11 @@ type fetchDataProps = {
   setFriend: React.Dispatch<React.SetStateAction<Friend | null>>
 }
 
-export async function loadData({setLoading, setProgress, setUser, setFriend} :fetchDataProps ) {
+export async function loadData({setLoading, setProgress, setUser, setFriend} : fetchDataProps ) {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const progress: [ ProgressObj<any>, ProgressObj<User>, ProgressObj<Friend> ] =
   [
-    { name: "Checking User", api: () => fetch("/api/private/me", { method: "GET" }), setter: null },
+    { name: "Checking User", api: () => apiFetchPrivate("me", { method: "GET" }), setter: null },
     { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
     { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: setFriend }
   ]

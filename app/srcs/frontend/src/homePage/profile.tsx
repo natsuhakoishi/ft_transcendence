@@ -88,9 +88,12 @@ export function ProfilePage() {
 
 	return (
 		<>
-		<div className="w-screen h-screen gap-2 flex flex-col bg-cover bg-center
-      bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/dark.jpg')] bg-blend-overlay"
+    <div className="w-screen h-screen gap-2 flex flex-col bg-cover bg-center bg-blend-overlay"
+      style={{
+      backgroundImage: " url('/pic/test.png')"
+      }}
     >
+    {/*bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/dark.jpg')] bg-blend-overlay*/}
 
       {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}
       <div className="flex gap-5 mt-10 ml-5">

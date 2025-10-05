@@ -11,6 +11,7 @@ import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
 import { FriendPage } from "./homePage/friend";
+import { HistoryPage } from "./homePage/history";
 import { ProfilePage } from "./homePage/profile";
 import { Loading } from "./gamePage/LoadingPage";
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/" element={<FetchData />}>
           <Route index element={<Home />} />
           <Route path="/friends" element={<FriendPage />} />
+          <Route path="/match_history" element={<HistoryPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
         <Route path="/game" >

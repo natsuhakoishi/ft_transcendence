@@ -42,30 +42,35 @@ export function Home() {
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
 
   React.useEffect(() => {
-  	document.title = "KLBQ | Main Menu";
+  	document.title = "KLBQ | Home";
+    console.log(import.meta.env.GAME_VERSION);
   }, []);
 
   React.useEffect(() => {
     if (user && !loading)
       toast.success("Welcome back, " + user.acc.username + ".");
   }, [user, loading]);
+  //todo modify so it only show up after comfirm with login session, /me
 
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
       (match === true ? <Matching again={false} setMatch={setMatch} /> :
-        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr]">
-
+        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-blend-overlay"
+          style={{
+          backgroundImage: "linear-gradient(to bottom, #6FB7FFcc, #daade0ac, #A79BFFcc), url('/pic/test2.jpg')"
+          }}
+        >
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
             <div className="flex gap-2 mx-1 my-1">
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-90 transition-transform"
-                onClick={() => navigate(import.meta.env.VITE_PATH_PROFILE)}>
+                onClick={() => navigate("/profile")}>
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
               <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
             </div>
-            <button className="bg-blue-500 w-30 p-2" onClick={() => navigate(import.meta.env.VITE_PATH_FRIEND)}>Friends</button>
+            <button className="bg-blue-500 w-30 p-2" onClick={() => navigate("/friends")}>Friends</button>
           </div>
 
           {/*Center part*/}
@@ -89,8 +94,8 @@ export function Home() {
 
           {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end justify-between">
-            <span className="p-2 font-semibold">Version</span>
-            <button className="bg-blue-500 w-30 p-2">Match History</button>
+            <span className="p-2 font-semibold">Version {import.meta.env.VITE_VERSION}</span>
+            <button className="absolute bottom-2 right-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>Match History</button>
           </div>
 
         </div>
