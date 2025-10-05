@@ -49,13 +49,13 @@ function MenuProfile( { user } : { user: User | null } ) {
         {/* First row */}
         <div className="flex gap-3 text-xl">
           <span>Won</span>
-          <span className="font-inter font-bold leading-[150%] text-[#EFE66A]
+          <span className="font-inter font-bold leading-[150%] text-golden
             [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]">{displayDash(win_games)}</span>
           <span>Lose</span>
-          <span className="font-inter font-bold leading-[150%] text-[#E9E9E7]
+          <span className="font-inter font-bold leading-[150%] text-silver
             [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">{displayDash(lose_games)}</span>
           <span className="ml-3 row-span-2">Tournament</span>
-          <span className="font-inter font-bold leading-[150%] text-[#EFE66A]
+          <span className="font-inter font-bold leading-[150%] text-golden
             [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]">{displayDash(tournament_wins)}</span>
         </div>
 
@@ -64,7 +64,7 @@ function MenuProfile( { user } : { user: User | null } ) {
           <span className="font-bold">Total Matches</span>
           <span className="font-inter font-bold leading-[150%] text-[#E5EBF7]">{displayDash(total_game)}</span>
           <span className="font-bold">Win Rate</span>
-          <span className="font-inter font-bold leading-[150%] text-[#E9E9E7]
+          <span className="font-inter font-bold leading-[150%] text-silver
             [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">{!win_rate ? "-" : `${win_rate}%`}</span>
         </div>
 
