@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import { initGameState } from "../../routes/game/gameUtils";
+import { initGameState } from "../../routes/game/gameUtils.ts";
 import type { GameState } from "./gameState.ts";
 import type { Player } from "./Player.ts";
 
@@ -7,13 +7,14 @@ export class AIRoom {
     private id: number;
     private confirm: boolean;
     private gameState: GameState;
-    private player!: Player;
+    private player: Player;
 
     constructor(_id: number) {
         console.log("AIroom: create room", _id);
         this.id = _id;
         this.confirm = false;
         this.gameState = initGameState();
+        this.player = {id: 0, ws: null};
     }
 
     getID(): number {
@@ -56,16 +57,17 @@ export class AIRoomManager {
     }
 
     createRoom(id: number) {
-        if (this.rooms.has(id))
+        if (!this.rooms.has(id))
             this.rooms.set(id, new AIRoom(id));
         const room: AIRoom | undefined = this.rooms.get(id);
-        {
+        if (room)
             setTimeout(() => {
                 if (room && !room.getConfirm())
+                {
                     room.broadCast("timeout");
-            this.deleteRoom(id);
+                    this.deleteRoom(id);
+                }
             }, 1000 * 13);
-        }
     }
 
     deleteRoom(id: number): void {

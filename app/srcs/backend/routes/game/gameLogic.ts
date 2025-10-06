@@ -30,8 +30,8 @@ export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
         room.broadCast("render");
         gameLoop(state);
 
-        if (room instanceof AIRoom)
-            AILogic(room);
+        // if (room instanceof AIRoom)
+        //     AILogic(room);
         if (state.ball.x <= 0)
         {
             state.score.p2Score++;
@@ -100,7 +100,7 @@ export function handleKeyPress(room: Room, data: GameData, player: Player): void
 
     console.log("/gameplay: handleKeyPress: " + keypress);
 
-    if (!room.getState().gamingStage && room.size() < 2 && room.getConfirm() < 2 && data.keyPress === "Hi")
+    if (!room.getState().gamingStage && room.size() < 2 && room.getConfirm() < 2 && data.keyPress === "init")
         room.addPlayer(player, data.tournament);
     else if (keypress === "Enter") //starting game / confirm key
     {

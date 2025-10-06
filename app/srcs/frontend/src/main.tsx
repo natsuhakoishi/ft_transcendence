@@ -14,6 +14,7 @@ import { FriendPage } from "./homePage/friend";
 import { HistoryPage } from "./homePage/history";
 import { ProfilePage } from "./homePage/profile";
 import { Loading } from "./gamePage/LoadingPage";
+import { AIGamePage } from "./gamePage/AIGamePage";
 
 function App() {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ function App() {
           <Route path="gameplay" element={<GamePage />} />
           <Route path="tournament/*" element={<TournamentGamePage />} />
           <Route path="tournamentMatching" element={<TMatching />} />
+          <Route path="AI/gameplay" element={<AIGamePage />}/>
         </Route>
         <Route path="*" element={<NotFound />} />
         <Route path="/404" element={<NotFound />} />

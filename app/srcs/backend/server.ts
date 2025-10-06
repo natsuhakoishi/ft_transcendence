@@ -22,9 +22,9 @@ import authGoogleApi from './routes/api/auth-google-api.ts';
 
 //game
 import websocketPlugin from "@fastify/websocket";
+import AIRoomManagerPlugin from "./share/type/AIroomData.ts"
 import roomManagerPlugin from "./share/type/roomData.ts"
 import TournamentRoomManagerPlugin from "./share/type/tournamentRoomData.ts"
-import AIRoomManagerPlugin from "./share/type/AIroomData.ts"
 import match from './routes/game/match.ts';
 import games from './routes/game/games.ts';
 import gamesTournament from './routes/game/gamesTournament.ts';

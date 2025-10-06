@@ -1,5 +1,7 @@
 import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
+import type { PlayerWithProfileData } from "../../backend/share/type/Player";
+import type { User } from "../../backend/share/type/user";
 
 export function initGameState(): GameState {
 	const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
@@ -56,22 +58,44 @@ export function  setUnauthorized(callback: () => void) {
 	onUnauthorized = callback;
 }
 
-  export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
-    const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
-    if (!(options.body instanceof FormData))
-      headers["Content-Type"] = "application/json";
+export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
+	const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
+	if (!(options.body instanceof FormData))
+		headers["Content-Type"] = "application/json";
 
-  const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
-  const data = await res.json();
+	const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
+	const data = await res.json();
 
-    if (res.status === 401)
-    {
-      if (onUnauthorized)
-        onUnauthorized();
-      throw { status: 401, message: "Unauthorized!" };
-    }
-    else if (!res.ok)
-      throw { status: res.status, message: data.message };
+	if (res.status === 401)
+	{
+		if (onUnauthorized)
+		onUnauthorized();
+		throw { status: 401, message: "Unauthorized!" };
+	}
+	else if (!res.ok)
+		throw { status: res.status, message: data.message };
 
-    return data;
-  }
+	return data;
+}
+
+export async function sendProfile(ws: WebSocket, callback: () => void): Promise<void> {
+	try {
+		const data: User = await apiFetchPrivate("profile", { method: "POST", body: "{}" });
+
+		const id: number = data.acc.user_id;
+		const avatar: string = data.profile.avatar_path!;
+		const name: string = data.acc.username;
+
+		const PlayerData: PlayerWithProfileData = {
+			id: id,
+			name: name,
+			avatar: avatar
+		};
+		ws.send(JSON.stringify(PlayerData));
+		console.log("sent data", PlayerData);
+	}
+	catch (e) {
+		console.log("Matching: fetch error: ", e);
+		callback();
+	}
+}

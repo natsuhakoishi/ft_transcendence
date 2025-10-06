@@ -43,7 +43,6 @@ export function TournamentGamePage() {
                 // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "A"}});
             }
-            // setTRoomID(tournamentRoomID);
 
             let playerID: string;
             try {
@@ -57,7 +56,7 @@ export function TournamentGamePage() {
             }
 
             console.log("TournamentGamePage", playerID!);
-            const ws: WebSocket = new WebSocket(import.meta.env.VITE_GAME_TOURNAMENT_GAMEPLAY_ROUTE!);
+            const ws: WebSocket = new WebSocket(import.meta.env.VITE_GAME_API_TOURNAMENT_GAMEPLAY!);
             wsRef.current = ws;
 
             gameDataRef.current.roomId = tournamentRoomID!;
@@ -104,8 +103,8 @@ export function TournamentGamePage() {
                     const r1: Matches = parse.state.round1;
                     const rooms: string[] = r1.roomID[0].split("-");
                     rooms.includes(playerID.toString()) ?
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])} })
-                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])} });
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])} })
+                        : navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])} });
                 }
                 else if (type === "startRound2")
                 {
@@ -113,16 +112,16 @@ export function TournamentGamePage() {
                     const r2: Matches = parse.state.round2;
                     const rooms: string[] = r2.roomID[0].split("-");
                     rooms.includes(playerID.toString()) ?
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[0], parse.state.players, r2.matches[0])} })
-                        : navigate(import.meta.env.VITE_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[1], parse.state.players, r2.matches[1])} });
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[0], parse.state.players, r2.matches[0])} })
+                        : navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[1], parse.state.players, r2.matches[1])} });
                 }
                 else if (type === "end")
                 {
                     console.log("TournamentGamePage: end");
                     console.log("TournamentGamePage: leaderboard: ", parse);
                     setTimeout(() => {
-                        console.log("TournamentGamePage: to:", import.meta.env.VITE_PATH_TOURNAMENT_RESULT);
-                        navigate(import.meta.env.VITE_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}});
+                        console.log("TournamentGamePage: to:", import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT);
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}});
                     }, 1000 * 4);
                 }
                 else if (type === "offline")

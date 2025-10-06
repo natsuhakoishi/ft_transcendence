@@ -1,22 +1,36 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { GameData } from "../../share/type/gameData.ts";
-import type { Player } from "../../share/type/Player.ts";
-import { AIRoom } from "../../share/type/AIroomData.ts";
+import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
+import type { AIRoom, AIRoomManager } from "../../share/type/AIroomData.ts";
 import { handleKeyPressAI} from "./AIGameLogic.ts";
 import { start } from "./gameLogic.ts";
+import type { MatchPlayersData } from "../../share/type/Matches.ts";
+import { initGameState } from "./gameUtils.ts";
 
 const AI: FastifyPluginAsync = async (fastify: any) => {
-    // const rooms: RoomManager = new RoomManager();
+    const AIrooms: AIRoomManager = fastify.AIrooms;
 
     fastify.get("/matching", { websocket: true }, (connection: any, req: any) => {
         const ws = connection;
 
         ws.on("message", (msg: any) => {
-            const {id}: {id: number} = JSON.parse(msg.toString());
+            (async () => {
+                const playerProfile: PlayerWithProfileData = JSON.parse(msg.toString());
+                console.log("/game/AI/matching: ", playerProfile);
 
-            fastify.AIRooms.createRoom(id);
+                AIrooms.createRoom(playerProfile.id);
+
+                const matchPlayersData: MatchPlayersData = {
+                    roomID: "",
+                    Players: [
+                        {id: playerProfile.id, avatar: playerProfile.avatar, name: playerProfile.name},
+                        {id: 0, avatar: "default.webp", name: "Ai chan"}
+                    ]
+                };
+
+                ws.send(JSON.stringify(matchPlayersData));
+            })()
         });
-
     });
 
     fastify.get("/gameplay", { websocket: true }, (connection: any, req: any) => {
@@ -27,13 +41,18 @@ const AI: FastifyPluginAsync = async (fastify: any) => {
 
             const player: Player = {id: parse.playerId, ws: ws};
 
-            const room: AIRoom = fastify.AIRooms.getRoom(parse.playerId);
-
+            console.log("/game/AI/gameplay: ", parse);
+            const room: AIRoom | null = fastify.AIrooms.getRoom(parse.playerId);
+            if (!room)
+            {
+                ws.send("trespassing", JSON.stringify(initGameState()));
+                return ;
+            }
             console.log("AI: keypress ", parse.keyPress);
             handleKeyPressAI(parse.keyPress, room, player);
 
-            if (room.getConfirm())
-                start(room, () => fastify.AIRooms.deleteRoom(player.id));
+            if (room.getConfirm() && !room.getState().gamingStage)
+                start(room, () => fastify.AIrooms.deleteRoom(player.id));
         })
 
         ws.on("close", () =>

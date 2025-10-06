@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import type { GameData } from "../../../backend/share/type/gameData.ts";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState } from "../utils.ts";
@@ -17,9 +17,10 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const location = useLocation();
     const [ Load , setLoad ] = React.useState(true);
     const [ result , setResult ] = React.useState(false);
+    const [ start, setStart ] = React.useState(false);
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
-    const [ start, setStart ] = React.useState(false);
+
     const key = React.useRef<boolean>(false);
     const confirmRef = React.useRef<boolean>(false);
     const [ ready, setReady ] = React.useState(false);
@@ -51,9 +52,9 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             }
             console.log("GamePage: roomid:", RoomID);
 
-            const ws = new WebSocket(import.meta.env.VITE_GAMEPLAY_ROUTE!);
+            const ws = new WebSocket(import.meta.env.VITE_GAME_API_GAMEPLAY!);
 
-            let gameData: GameData = {
+            const gameData: GameData = {
                 roomId: RoomID!,
                 playerId: 0,
                 keyPress: "null",
@@ -65,7 +66,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 console.log("ws.onopen: pre rendering");
                 draw(gameState);
                 setGameData(gameData);
-                gameData.keyPress = "Hi";
+                gameData.keyPress = "init";
                 ws.send(JSON.stringify(gameData));
             }
 
@@ -163,12 +164,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 else if (type === "trespassing")
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
-                    //TODO: trespassing page / popup
                     toast.error("Trespassing!");
                     navigate("/");
-                    // setTimeout(()=>{
-                    //     ws.close();
-                    // }, 1000);
                 }
             };
 
@@ -226,7 +223,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             </div>
 
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result score={score} playersData={playersData} me={playerID === playersData?.Players[0].id} />
+                <Result score={score} playersData={playersData} me={playerID === playersData?.Players[0].id} AI={false} />
             </div>
 
             {/* whole Game's stuff */}
@@ -263,7 +260,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     )
 }
 
-function draw(gameState: GameState): void {
+export function draw(gameState: GameState): void {
     if (!gameState) {
         console.log("gamePage: returned");
         return ;

@@ -19,7 +19,7 @@ export function Loading() {
 
     setTimeout(() => {
         console.log("Loading: to Gameplay");
-        navigate(import.meta.env.VITE_PATH_GAMEPLAY, { state: {RoomID: playersData.roomID, isTournament: false, playersData: playersData} });
+        navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, { state: {RoomID: playersData.roomID, isTournament: false, playersData: playersData} });
     }, 1000 * 2);
 
     return (
