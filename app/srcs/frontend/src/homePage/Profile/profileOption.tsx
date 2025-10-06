@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast"
-import { apiFetchPrivate } from "../utils";
-import type { User } from "../../../backend/share/type/user";
-import { FetchData } from "./home";
+import { apiFetchPrivate } from "../../utils";
+import type { User } from "../../../../backend/share/type/user";
 
 const submitUsername = async (
   event: React.FormEvent<HTMLFormElement>,

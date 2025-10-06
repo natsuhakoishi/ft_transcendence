@@ -1,9 +1,9 @@
 import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { apiFetch } from "../utils";
-import type { User } from "../../../backend/share/type/user";
-import { MenuOption } from "./profile_Option_menu";
+import { apiFetch } from "../../utils.ts";
+import type { User } from "../../../../backend/share/type/user";
+import { MenuOption } from "./profileOption";
 
 const handleLogOut = async (navigate: (path: string) => void) => {
   try {

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState } from "../utils.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
-import { LoadingScreen } from "../homePage/home_load.tsx";
+import { LoadingScreen } from "../homePage/loadData.tsx";
 import { Score } from "./Score.tsx";
 import { Player } from "./player.tsx";
 import { Result } from "./ResultPage.tsx";

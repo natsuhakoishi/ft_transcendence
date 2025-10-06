@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { apiFetchPrivate } from "../utils";
-import type { User } from "../../../backend/share/type/user";
-import type { MatchMeResponse, Match, TournamentMatch } from "../../../backend/share/type/history";
+import { apiFetchPrivate } from "../../utils";
+import type { User } from "../../../../backend/share/type/user";
+import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backend/share/type/history";
 import { DateTime, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./historyUtils";
 
 function Tournament ({ won, entries } : { won: boolean, entries: TournamentMatch }) {

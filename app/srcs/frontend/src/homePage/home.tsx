@@ -3,7 +3,7 @@ import toast from "react-hot-toast"
 import { replace, useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import type { User } from "../../../backend/share/type/user.ts";
 import type { Friend } from "../../../backend/share/type/friend.ts";
-import { loadData, LoadingScreen, type Progress } from "./home_load.tsx"
+import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
 import { Matching } from "../gamePage/matching.tsx";
 import { FriendPage } from "./friend.tsx";
 
