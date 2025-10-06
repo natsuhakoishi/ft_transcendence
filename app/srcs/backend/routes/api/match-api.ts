@@ -1,6 +1,7 @@
 import type { FastifyPluginAsync } from "fastify";
 import { createMatch, getMatchByUserId } from "../../database/match.ts";
 import type { MatchMeResponse, Match, TournamentMatch } from '../../share/type/history.ts';
+import { getTournamentLeaderboard } from "../../database/tournament.ts";
 
 const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.post('/match', async (req: any, res: any) => {
@@ -43,9 +44,10 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					let tournamentEntry = tournament.get(match.tournament_id);
 					if (!tournamentEntry)
 					{
+						const leaderboard = await getTournamentLeaderboard(match.tournament_id);
 						tournamentEntry = {
 							// mode: "tournament",
-							tournament: { id: match.tournament_id, start_time: match.game_time },
+							tournament: { id: match.tournament_id, start_time: match.game_time, twinner_id: leaderboard[0].id },
 							matches: [],
 						};
 						tournament.set(match.tournament_id, tournamentEntry);
