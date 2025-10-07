@@ -1,32 +1,39 @@
+import { AIRoom } from "../../share/type/AIroomData.ts";
 import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
 import { Room } from "../../share/type/roomData.ts";
+import { AILogic } from "./AIGameLogic.ts";
 import { resetBall } from "./gameUtils.ts";
 
-export function start(room: Room, gameOver: () => void): void {
+export function start(room: Room | AIRoom, gameOver: () => void): void {
     room.getState().gamingStage = true;
     console.log("/gameplay: start");
 
     startRound(room, gameOver);
 }
 
-function startRound(room: Room, gameOver: () => void): void {
+function startRound(room: Room | AIRoom, gameOver: () => void): void {
     resetBall(room.getState());
 
     room.broadCast("start");
 
-    //score counting
     setTimeout(() => {
         runLoop(room, gameOver);
     }, 2000);
 }
 
-function runLoop(room: Room, gameOver: () => void): void {
+export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
+    let runtime: number = 0;
     const intervalId = setInterval( () => {
+        runtime += 16;
 
         const state: GameState = room.getState();
         room.broadCast("render");
+
+        if (room instanceof AIRoom)
+            AILogic(room, runtime);
+
         gameLoop(state);
 
         if (state.ball.x <= 0)
@@ -45,7 +52,7 @@ function runLoop(room: Room, gameOver: () => void): void {
     }, 16); //16ms ~60fps
 }
 
-function handleGoal(room: Room, gameOver: () => void): void {
+function handleGoal(room: Room | AIRoom, gameOver: () => void): void {
 
     room.broadCast("goal");
     
@@ -68,7 +75,7 @@ function handleGoal(room: Room, gameOver: () => void): void {
     startRound(room, gameOver);
 }
 
-function end(room: Room, gameOver: () => void): void {
+function end(room: Room | AIRoom, gameOver: () => void): void {
     const state: GameState = room.getState();
 
     state.gamingStage = false;
@@ -76,7 +83,8 @@ function end(room: Room, gameOver: () => void): void {
     if (state.playerOffline)
     {
         console.log("/gameplay: player offline");
-        room.mandatoryWin();
+        if (room instanceof Room)
+            room.mandatoryWin();
         room.broadCast("game_over_offline");
     }
     else
@@ -92,12 +100,13 @@ export function handleKeyPress(room: Room, data: GameData, player: Player): void
     // const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
     const id: string[] = data.roomId.split("-");
     const pos: string = data.playerId.toString() === id[0] ? "left" : "right";
+    const keypress = data.keyPress;
 
-    console.log("/gameplay: handleKeyPress: " + data.keyPress);
+    console.log("/gameplay: handleKeyPress: " + keypress);
 
-    if (!room.getState().gamingStage && room.size() < 2 && room.getConfirm() < 2 && data.keyPress === "Hi")
+    if (!room.getState().gamingStage && room.size() < 2 && room.getConfirm() < 2 && data.keyPress === "init")
         room.addPlayer(player, data.tournament);
-    else if (data.keyPress === "Enter") //starting game / confirm key
+    else if (keypress === "Enter") //starting game / confirm key
     {
         room.addConfirm(data.playerId);
 
@@ -105,27 +114,28 @@ export function handleKeyPress(room: Room, data: GameData, player: Player): void
         // ws.send(JSON.stringify(room.getState()));
     }
     else if (room.getState().gamingStage)
-    {
-        const keypress = data.keyPress;
+        keyLogic(room, keypress, pos);
+}
+
+export function keyLogic(room: Room | AIRoom, keyPress: string, pos: string) {
         if (pos === "right")
         {
-            if (keypress === "up")
+            if (keyPress === "up")
                 room.getState().rightPaddle.vy = -10;
-            else if (keypress === "down")
+            else if (keyPress === "down")
                 room.getState().rightPaddle.vy = 10;
-            else if (keypress === "stop")
+            else if (keyPress === "stop")
                 room.getState().rightPaddle.vy = 0;
         }
         else if (pos === "left")
         {
-            if (keypress === "up")
+            if (keyPress === "up")
                 room.getState().leftPaddle.vy = -10;
-            else if (keypress === "down")
+            else if (keyPress === "down")
                 room.getState().leftPaddle.vy = 10;
-            else if (keypress === "stop")
+            else if (keyPress === "stop")
                 room.getState().leftPaddle.vy = 0;
         }
-    }
 }
 
 function handleBoundary(paddle: Paddle, boardHeight: number): void {

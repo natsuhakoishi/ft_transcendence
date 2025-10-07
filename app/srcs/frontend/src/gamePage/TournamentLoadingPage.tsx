@@ -37,7 +37,7 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
                 </div>
                 {/* <div className="flex items-center gap-2">
                 <img
-                    src={import.meta.env.VITE_AVATAR_ROUTE + player1?.avatar}
+                    src={import.meta.env.VITE_API_AVATAR + player1?.avatar}
                     alt={player1?.name}
                     className="w-8 h-8 rounded-full border"
                 />
@@ -55,7 +55,7 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
                 {/* Player 2 */}
                 {/* <div className="flex items-center gap-2">
                 <img
-                    src={import.meta.env.VITE_AVATAR_ROUTE + player2?.avatar}
+                    src={import.meta.env.VITE_API_AVATAR + player2?.avatar}
                     alt={player2?.name}
                     className="w-8 h-8 rounded-full border"
                 />

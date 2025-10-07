@@ -7,14 +7,14 @@ import { Matching } from "./matching";
 import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 
-export function Result({ score, playersData, me }: { score: GameScore, playersData?: MatchPlayersData, me: boolean}) {
+export function Result({ score, playersData, me, AI }: { score: GameScore, playersData?: MatchPlayersData, me: boolean, AI: boolean}) {
     const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
 
     return (
         <>
             {
-                again ? <Matching again={true} /> : (
+                again ? <Matching again={true} AI={AI} /> : (
                 <div className="relative flex flex-col items-center justify-center w-full h-screen bg-black-500"  >
 
                     <div className="flex" >

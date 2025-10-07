@@ -5,7 +5,6 @@ import type { User } from "../../../backend/share/type/user.ts";
 import type { Friend } from "../../../backend/share/type/friend.ts";
 import { loadData, LoadingScreen, type Progress } from "./home_load.tsx"
 import { Matching } from "../gamePage/matching.tsx";
-import { FriendPage } from "./friend.tsx";
 
 export function FetchData() {
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -39,6 +38,7 @@ export function Home() {
   const navigate = useNavigate();
   const { user, loading, progress } = useOutletContext<SharedData>();
   const [match, setMatch] = React.useState<boolean>(false);
+  const [ AI, setAI ] = React.useState(false);
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
 
   React.useEffect(() => {
@@ -55,7 +55,7 @@ export function Home() {
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
-      (match === true ? <Matching again={false} setMatch={setMatch} /> :
+      (match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
         (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-blend-overlay"
           style={{
           backgroundImage: "linear-gradient(to bottom, #6FB7FFcc, #daade0ac, #A79BFFcc), url('/pic/test2.jpg')"
@@ -79,12 +79,20 @@ export function Home() {
             <div className="bg-[#A0EAFF]/75 w-[90%] h-1/2">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center">
                 <button className="row-span-2 w-full h-full bg-sky-500"
-                 onClick={() => navigate(import.meta.env.VITE_PATH_TOURNAMENT_MATCHING)}>Tournament</button>
+                 onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}>Tournament</button>
 
                 <button className="bg-gray-300 h-2/3 w-2/3"
-                 onClick={() => setMatch(true)}>1 vs 1</button>
+                 onClick={() => {
+                   setMatch(true);
+                   setAI(false);
+                  }}
+                  >1 vs 1</button>
 
                 <button className="bg-gray-300 h-2/3 w-2/3"
+                 onClick={() => {
+                   setMatch(true);
+                   setAI(true);
+                  }}
                  >AI Match</button>
               </div>
             </div>

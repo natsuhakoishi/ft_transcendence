@@ -5,7 +5,7 @@ export function Player({ player, me, spin}: { player?: PlayerWithProfileData, me
     return (
         <div className="flex flex-col items-center">
             <img
-                src={import.meta.env.VITE_AVATAR_ROUTE + player?.avatar}
+                src={import.meta.env.VITE_API_AVATAR + player?.avatar}
                 alt={player?.name}
                 className={`rounded-full border ${spin ? "animate-spin" : ""}`}
                 // className="rounded-full border"
