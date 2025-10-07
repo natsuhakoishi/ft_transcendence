@@ -81,7 +81,7 @@ export function AIGamePage() {
 
                 setTimeout( () => {
                     setReady(false);
-                    console.log("/gamepage: setTimeout ", start, ready);
+                    console.log("/AI gamePage: setTimeout ", start, ready);
                 }, 2000);
             }
             else if (type === "goal")
@@ -93,37 +93,44 @@ export function AIGamePage() {
             else if (type === "game_over")
             {
                 confirmRef.current = false;
-                console.log("/gamePage: game over");
+                console.log("/AI gamePage: game over");
                 ws.close();
                 setTimeout(()=>{
                     setResult(true);
                 }, 1000*2);
             }
+            else if (type === "timeout")
+            {
+                console.log("/AI gamepage timeout")
+                toast.error("Timeout");
+                toast.error("Back to home");
+                navigate("/");
+            }
             else if (type === "trespassing")
             {
-                console.log("/gamePage trespassing 凸^u^凸");
+                console.log("/AI gamePage trespassing 凸^u^凸");
                 toast.error("Trespassing!");
                 navigate("/");
             }
         }
 
         let confirmGame: boolean = false;
-        document.addEventListener("keydown", (e) => {
+        const keydown = (e: KeyboardEvent) => {
             if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
-                console.log("gamePage: up");
+                console.log("/AI gamePage: up");
                 gameData.keyPress = "up";
                 ws.send(JSON.stringify(gameData));
             }
             else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown")) {
-                console.log("gamePage: down");
+                console.log("/AI gamePage: down");
                 gameData.keyPress = "down";
                 if (ws.readyState === WebSocket.OPEN)
                     ws.send(JSON.stringify(gameData));
             }
             else if (e.key === "Enter" && !confirmGame)
             {
-                console.log("gamePage:" + e.key);
-                console.log("gamePage:", confirmGame);
+                console.log("/AI gamePage:" + e.key);
+                console.log("/AI gamePage:", confirmGame);
                 if (gameData.playerId) {
                     gameData.keyPress = "Enter";
                     if (ws.readyState === WebSocket.OPEN)
@@ -135,21 +142,25 @@ export function AIGamePage() {
                     }
                 }
             }
+        };
 
-        });
-
-        document.addEventListener("keyup", () => {
+        const keyup = () => {
             console.log("AI gamePage: stop");
             gameData.keyPress = "stop";
             if (ws.readyState === WebSocket.OPEN)
                 ws.send(JSON.stringify(gameData));
-        });
+        };
+
+        document.addEventListener("keydown", keydown);
+        document.addEventListener("keyup", keyup);
 
         return () => { //when user press 'back button'
             console.log("AI GamePage: closing ws");
             key.current = false;
             confirmRef.current = false;
             ws.close();
+            document.removeEventListener("keydown", keydown);
+            document.removeEventListener("keyup", keyup);
         };
     }, []);
 
@@ -160,8 +171,9 @@ export function AIGamePage() {
                 <LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />
             </div>
 
+            {/* Result Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result score={score} playersData={playersData} me={true} AI={true} />
+                <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} />
             </div>
 
             {/* whole Game's stuff */}

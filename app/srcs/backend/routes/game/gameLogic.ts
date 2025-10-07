@@ -3,6 +3,7 @@ import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
 import { Room } from "../../share/type/roomData.ts";
+import { AILogic } from "./AIGameLogic.ts";
 import { resetBall } from "./gameUtils.ts";
 
 export function start(room: Room | AIRoom, gameOver: () => void): void {
@@ -17,21 +18,24 @@ function startRound(room: Room | AIRoom, gameOver: () => void): void {
 
     room.broadCast("start");
 
-    //score counting
     setTimeout(() => {
         runLoop(room, gameOver);
     }, 2000);
 }
 
 export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
+    let runtime: number = 0;
     const intervalId = setInterval( () => {
+        runtime += 16;
 
         const state: GameState = room.getState();
         room.broadCast("render");
+
+        if (room instanceof AIRoom)
+            AILogic(room, runtime);
+
         gameLoop(state);
 
-        // if (room instanceof AIRoom)
-        //     AILogic(room);
         if (state.ball.x <= 0)
         {
             state.score.p2Score++;

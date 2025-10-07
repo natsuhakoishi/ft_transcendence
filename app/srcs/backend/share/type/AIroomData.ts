@@ -30,7 +30,7 @@ export class AIRoom {
     }
 
     broadCast(_type: string): void {
-        if (this.player.ws.readyState === WebSocket.OPEN)
+        if (this.player.ws && this.player.ws.readyState === WebSocket.OPEN)
             this.player.ws.send(JSON.stringify({type: _type, gameState: this.gameState}));
         else
             this.gameState.playerOffline = true;
@@ -64,6 +64,7 @@ export class AIRoomManager {
             setTimeout(() => {
                 if (room && !room.getConfirm())
                 {
+                    console.log("AI RoomManager: timeout");
                     room.broadCast("timeout");
                     this.deleteRoom(id);
                 }

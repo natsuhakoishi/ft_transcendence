@@ -36,7 +36,7 @@ export function Matching({again, setMatch, AI} : {
                 console.log("/Matching: ", data);
                 
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data} });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false} });
             };
     
             return () => { //when user press 'back button'
@@ -57,10 +57,12 @@ export function Matching({again, setMatch, AI} : {
 
             ws.onmessage = async (event) => {
                 const data: MatchPlayersData = JSON.parse(event.data);
-                console.log("server: ", data);
+                const playerID = await apiFetchPrivate("me", { method: "GET" });
+                console.log("AI Matching: ", data);
 
-                console.log("AI matching: to", import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY);
-                navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
+                console.log("AI matching: to", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true} });
+                // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
             };
 
         }
@@ -69,7 +71,7 @@ export function Matching({again, setMatch, AI} : {
     return (
         <>
         <div className=" bg-blue-500">
-            <h1 className="text-5xl decoration-cyan-800">Matching...</h1>
+            <h1 className="text-5xl decoration-cyan-800">{AI ? "Calling AI chan..." : "Matching..."}</h1>
         </div>
         <button
             type="submit"

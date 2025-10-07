@@ -170,7 +170,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             };
 
             let confirmGame: boolean = false;
-            document.addEventListener("keydown", (e) => {
+
+            const keydown = (e: KeyboardEvent) => {
                 if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
                     console.log("gamePage: up");
                     gameData.keyPress = "up";
@@ -197,20 +198,25 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         }
                     }
                 }
-            });
+            };
 
-            document.addEventListener("keyup", () => {
+            const keyup = () => {
                 console.log("gamePage: stop");
                 gameData.keyPress = "stop";
                 if (ws.readyState === WebSocket.OPEN)
                     ws.send(JSON.stringify(gameData));
-            });
+            };
+
+            document.addEventListener("keydown", keydown);
+            document.addEventListener("keyup", keyup);
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
                 key.current = false;
                 confirmRef.current = false;
                 ws.close();
+                document.removeEventListener("keydown", keydown);
+                document.removeEventListener("keyup", keyup);
             };
         })();
     }, []);
@@ -222,6 +228,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 <LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />
             </div>
 
+            {/* Result Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
                 <Result score={score} playersData={playersData} me={playerID === playersData?.Players[0].id} AI={false} />
             </div>

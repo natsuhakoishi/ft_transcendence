@@ -45,7 +45,8 @@ const AI: FastifyPluginAsync = async (fastify: any) => {
             const room: AIRoom | null = fastify.AIrooms.getRoom(parse.playerId);
             if (!room)
             {
-                ws.send("trespassing", JSON.stringify(initGameState()));
+                console.log("/game/AI/gameplay: trespassing", player.id);
+                ws.send(JSON.stringify({type: "trespassing", gameState: initGameState()}));
                 return ;
             }
             console.log("AI: keypress ", parse.keyPress);
