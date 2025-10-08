@@ -206,8 +206,14 @@ export function HistoryPage() {
 
         {/* Left side: History Matches; exactly 5 rows */}
         <section>
-        {!matches ?
-          <div className="flex flex-col justify-center items-center font-extrabold text-gray-300">No history yet...</div> :
+        { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
+          (<>
+            <div className="flex items-center w-full h-full font-semibold">
+              <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
+                <p>No history yet</p>
+              </div>
+            </div>
+          </>) :
           <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />}
         </section>
 
