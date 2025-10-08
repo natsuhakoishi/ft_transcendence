@@ -389,26 +389,26 @@
     // });
 
     // ==== Update Username ====
-    document.getElementById("update-username-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = { username: document.getElementById("new-username").value };
-      const res = await apiFetchPr("update_username", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
-      if (res.ok) fetchProfile();
-    });
+    // document.getElementById("update-username-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = { username: document.getElementById("new-username").value };
+    //   const res = await apiFetchPr("update_username", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    //   if (res.ok) fetchProfile();
+    // });
 
     // ==== Update Password (含舊密碼驗證) ====
-    document.getElementById("update-password-form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const body = {
-        old_password: document.getElementById("old-password").value,
-        new_password: document.getElementById("new-password").value,
-      };
-      const res = await apiFetchPr("update_password", { method: "POST", body: JSON.stringify(body) });
-      const data = await res.json();
-      log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
-    });
+    // document.getElementById("update-password-form").addEventListener("submit", async e => {
+    //   e.preventDefault();
+    //   const body = {
+    //     old_password: document.getElementById("old-password").value,
+    //     new_password: document.getElementById("new-password").value,
+    //   };
+    //   const res = await apiFetchPr("update_password", { method: "POST", body: JSON.stringify(body) });
+    //   const data = await res.json();
+    //   log(res.ok ? "✅ " + data.message : "❌ " + data.message, !res.ok);
+    // });
 
     // ==== 初始化 ====
     // window.addEventListener("DOMContentLoaded", () => { fetchProfile(); fetchFriends(); });

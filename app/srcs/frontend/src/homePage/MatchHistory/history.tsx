@@ -78,7 +78,7 @@ function getBanner(tour : boolean) {
     `bg-gradient-to-r from-[#6F698B]/85 via-[#C3AEAD]/85 to-[#C3AEAD]/90`
   );
 }
-
+``
 const HistoryRow = ({ match, user_id, onTournamentClick } : { 
   match: Match | TournamentMatch, user_id: number,
   onTournamentClick: (match: TournamentMatch) => void; }
@@ -150,14 +150,13 @@ function ExpandTourModal({ children, onClose, }: {
 
   return (
   <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
-    <div className="col-start-1 flex items-center p-2">
-      <div ref={modalRef}
-        className="bg-[#1f3735]/95 backdrop-blur-sm 
-          border border-[#9DD6AD]/40 shadow-xl rounded-lg 
-          p-5 w-full overflow-auto 
-          transition-transform duration-300 ease-out">
+    <div className="col-start-1 flex items-center p-2 ">
+      <div ref={modalRef} className="
+        bg-[#1f3735]/80 backdrop-blur-sm 
+          border border-[#9DD6AD]/40 shadow-xl rounded-lg
+          p-5 w-full h-[50%] overflow-ellipsis ">
         {children}
-        <p className="text-white/40 text-sm mt-2 text-center"> Click anywhere to close. </p>
+        <p className="text-white/40 text-sm mt-2 text-center"> Click anywhere to close </p>
       </div>
     </div>
   </div>
