@@ -27,7 +27,7 @@ function Tournament ({ won, entries } : { won: boolean, entries: TournamentMatch
 
       <div className="flex justify-start items-center">
         <button className="w-13 aspect-square overflow-hidden disable" tabIndex={-1}>
-          <img src="/pic/trophy.png" className="drop-shadow-lg w-full h-full object-cover"/>
+          <img src="/pic/icons/trophy.png" className="drop-shadow-lg w-full h-full object-cover"/>
         </button>
         <span className="font-bold p-2 text-center">Tournament</span>
       </div>
@@ -103,7 +103,7 @@ const HistoryRow = ({ match, user_id, onTournamentClick } : {
     >
 
     {/* light falloff on bottom  */}
-    <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-[#000]/70 to-transparent pointer-events-none" />
+    {/* <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-[#000]/70 to-transparent pointer-events-none" /> */}
     {/* glowing border */}
     <div className="absolute inset-0 rounded-lg ring-1 ring-indigo-300/60 hover:ring-indigo-400/70 transition-all duration-300 pointer-events-none" />
     {/* Trigger Conditional Render betw Tournament & 1vs1 */}
@@ -194,7 +194,7 @@ export function HistoryPage() {
     <>
     <div className="w-screen h-screen grid grid-cols-[1fr_15%] bg-cover bg-center bg-blend-overlay"
       style={{
-        backgroundImage: " url('/pic/green.jpg')"
+        backgroundImage: " url('/pic/historyP.jpg')"
       }}
     >
         {/* Tournament Modal */}
@@ -220,7 +220,7 @@ export function HistoryPage() {
         {/* Right side: User's profile; as addition visual */}
         <section className="flex flex-col bg-[#1f3735] justify-center items-end gap-">
           <button className="relative bottom-0 w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
-            <img src="/pic/chira_改.png" className="drop-shadow-lg w-full h-full object-cover"/>  
+            <img src="/pic/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
           </button>
           <button className="relative bottom-0 w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => {console.log(matches)}}>
             <img src="/pic/heng.png" className="drop-shadow-lg w-full h-full object-cover"/>  

@@ -36,11 +36,9 @@ export async function checkFriendMutual(user1_id: number, user2_id: number)
 
 	const found = rows[0].c;
 	if (found === 2)
-		// return true;
-		return { mutual: true, message: `User ${user1_id} and User ${user2_id} are mutual friends` };
+		return { mutual: true };
 	else
-		// return false;
-		return { mutual: false, message: `Not mutual friends` };
+		return { mutual: false };
 }
 
 export async function getFriendshipsAll()

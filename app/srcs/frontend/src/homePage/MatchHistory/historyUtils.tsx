@@ -1,8 +1,8 @@
 export function WinStatus ({ won } : { won :boolean }) {
   return (
-    <span className={`${won && "text-golden"} relative text-silver font-semibold text-lg`} 
+    <span className={` relative font-semibold text-lg ${won ? 'text-golden' : 'text-silver'}`} 
       style={{ textShadow: won ?
-        '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(255,215,0,0.8)'  :
+        '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(255,255,255,0.7)' :
         '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(192,192,192,0.8)', }}>
         {won ? "Won" : "Lose"}
     </span>
@@ -13,7 +13,7 @@ export function DateTime ({date,time} : { date :string, time :string}) {
   return (
     <section className="relative flex flex-col items-center justify-center font-semibold text-lg text-silver">
       <span>{date}</span>
-      <span>{time}</span>
+      <span className="text-sm">{time}</span>
     </section>
   );
 }
