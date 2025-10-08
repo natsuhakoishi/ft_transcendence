@@ -4,10 +4,10 @@ interface Player {
   score: number;
 }
 
-interface TournamentInfo {
+export interface TournamentInfo {
   id: number;
   start_time: string;
-  twinner_id: number;
+  t_winner_id: number;
 }
 
 export interface TournamentMatch {

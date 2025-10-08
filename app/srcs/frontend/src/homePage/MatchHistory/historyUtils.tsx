@@ -24,17 +24,17 @@ export function ScoreBoard({ P1, P2, won }: { P1: number; P2: number; won: boole
   const player2Color = won ? 'text-silver' : 'text-golden';
 
   return (
-    <div className="relative flex gap-1 font-inter font-bold leading-[150%]" style={{ textShadow }}>
-      <span className={player1Color}>{P1}</span>
-        <span>:</span>
-      <span className={player2Color}>{P2}</span>
+    <div className="relative flex gap-1 font-bold">
+      <span className={`font-inter leading-[150%] ${player1Color}`} style={{ textShadow }}>{P1}</span>
+        <span className="">:</span>
+      <span className={`font-inter leading-[150%] ${player2Color}`} style={{ textShadow }}>{P2}</span>
     </div>
   );
 }
 
 export const Versus = () => {
   return (
-    <p className="font-semibold">vs</p>
+    <p className="mx-2 font-semibold">vs</p>
   );
 }
 

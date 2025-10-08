@@ -47,7 +47,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 						const leaderboard = await getTournamentLeaderboard(match.tournament_id);
 						tournamentEntry = {
 							// mode: "tournament",
-							tournament: { id: match.tournament_id, start_time: match.game_time, twinner_id: leaderboard[0].id },
+							tournament: { id: match.tournament_id, start_time: match.game_time, t_winner_id: leaderboard[0].id },
 							matches: [],
 						};
 						tournament.set(match.tournament_id, tournamentEntry);
