@@ -11,8 +11,8 @@ import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
 import { setUnauthorized } from "./utils";
 import { FriendPage } from "./homePage/friend";
-import { HistoryPage } from "./homePage/history";
-import { ProfilePage } from "./homePage/profile";
+import { HistoryPage } from "./homePage/MatchHistory/history";
+import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 

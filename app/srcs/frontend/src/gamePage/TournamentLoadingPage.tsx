@@ -1,6 +1,6 @@
 import type { Matches } from "../../../backend/share/type/Matches";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
-import { LoadingScreen } from "../homePage/home_load";
+import { LoadingScreen } from "../homePage/loadData";
 import { Player } from "./player";
 
 export interface LoadingProps {

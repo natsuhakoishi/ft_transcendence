@@ -4,10 +4,10 @@ interface Player {
   score: number;
 }
 
-interface TournamentInfo {
+export interface TournamentInfo {
   id: number;
   start_time: string;
-  //feat expand into leaderboard(ranking)
+  t_winner_id: number;
 }
 
 export interface TournamentMatch {

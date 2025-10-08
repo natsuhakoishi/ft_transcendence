@@ -3,7 +3,7 @@ import toast from "react-hot-toast"
 import { replace, useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import type { User } from "../../../backend/share/type/user.ts";
 import type { Friend } from "../../../backend/share/type/friend.ts";
-import { loadData, LoadingScreen, type Progress } from "./home_load.tsx"
+import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
 import { Matching } from "../gamePage/matching.tsx";
 
 export function FetchData() {
@@ -63,14 +63,14 @@ export function Home() {
         >
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
-            <div className="flex gap-2 mx-1 my-1">
+            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 font-bold">
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-90 transition-transform"
                 onClick={() => navigate("/profile")}>
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
               <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
             </div>
-            <button className="bg-blue-500 w-30 p-2" onClick={() => navigate("/friends")}>Friends</button>
+            <button className="absolute p-1 bottom-2 left-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>Friends</button>
           </div>
 
           {/*Center part*/}
@@ -103,7 +103,7 @@ export function Home() {
           {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end justify-between">
             <span className="p-2 font-semibold">Version {import.meta.env.VITE_VERSION}</span>
-            <button className="absolute bottom-2 right-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>Match History</button>
+            <button className="absolute bottom-2 right-4 p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>Match History</button>
           </div>
 
         </div>
