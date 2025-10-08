@@ -50,6 +50,8 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 			const { friend_adding } = req.body as any;
 			if (req.user === friend_adding)
 				return res.status(400).send({ message: "Error: You cannot add yourself as a friend" });
+			// else if (!isNumeric(friend_adding))
+			// 	return res.status(400).send({ message: "Error: ID have to be numeric value" });
 			if (friend_adding < 1)
 				return res.status(400).send({ message: "Error: Invalid ID" });
 			await addFriendbyId(req.user, friend_adding);

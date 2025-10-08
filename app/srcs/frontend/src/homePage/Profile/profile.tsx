@@ -90,10 +90,10 @@ export function ProfilePage() {
 		<>
     <div className="w-screen h-screen gap-2 flex flex-col bg-cover bg-center bg-blend-overlay"
       style={{
-      backgroundImage: " url('/pic/test.png')"
+      backgroundImage: " url('/pic/profileP.png')"
       }}
     >
-    {/*bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/dark.jpg')] bg-blend-overlay*/}
+    {/*bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/profileP.png')] bg-blend-overlay*/}
 
       {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}
       <div className="flex gap-5 mt-10 ml-5">
@@ -109,7 +109,7 @@ export function ProfilePage() {
       {/* Action Button - Back */}
       <div className="flex flex-1 items-center justify-center">
         <button className="relative bottom-5 center-0 w-20 aspect-square border-2 border-white rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
-          <img src="/pic/chira_改.png" className="drop-shadow-lg w-full h-full object-cover"/>  
+          <img src="/pic/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
         </button>
 		  </div>
 		</div>
