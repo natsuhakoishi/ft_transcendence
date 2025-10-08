@@ -2,7 +2,6 @@ import React from "react";
 import toast from "react-hot-toast"
 import { apiFetchPrivate } from "../utils.ts";
 import type { User } from "../../../backend/share/type/user.ts";
-import type { Friend } from "../../../backend/share/type/friend.ts";
 
 export type Progress = {
   step: string;
@@ -12,11 +11,11 @@ export type Progress = {
 
 export function LoadingScreen({ progress}: { progress: Progress }) {
   return (
-    <>
-      <p className="font-semibold font-serif">{progress.step}</p>
+    <div className="flex flex-col justify-center items-center">
+      <p className="font-semibold font-serif italic">{progress.step}</p>
       {progress.completed !== null && <p className="">{progress.completed} / {progress.total} </p>}
-      <button type="button" className="center-0 bg-indigo-500 text-white px-4 py-2 rounded-md flex items-center justify-center" disabled>
-        <svg className="size-5 animate-spin text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+      <button type="button" className="px-4 py-2 flex items-center justify-center" disabled>
+        <svg className="size-5 animate-spin text-black" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="4" r="1.8"></circle>
           <circle cx="19" cy="8" r="1.8"></circle>
           <circle cx="19" cy="16" r="1.8"></circle>
@@ -25,7 +24,7 @@ export function LoadingScreen({ progress}: { progress: Progress }) {
           <circle cx="5" cy="8" r="1.8"></circle>
         </svg>
       </button>
-    </>
+    </div>
   );
 }
 
@@ -39,16 +38,16 @@ type fetchDataProps = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setProgress: React.Dispatch<React.SetStateAction<Progress>>,
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
-  setFriend: React.Dispatch<React.SetStateAction<Friend | null>>
+  // setFriend: React.Dispatch<React.SetStateAction<Friends | null>>
 }
 
-export async function loadData({setLoading, setProgress, setUser, setFriend} : fetchDataProps ) {
+export async function loadData({ setLoading, setProgress, setUser }: fetchDataProps ) {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-  const progress: [ ProgressObj<any>, ProgressObj<User>, ProgressObj<Friend> ] =
+  const progress: [ ProgressObj<any>, ProgressObj<User> ] =
   [
     { name: "Checking User", api: () => apiFetchPrivate("me", { method: "GET" }), setter: null },
     { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
-    { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: setFriend }
+    // { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: setFriend }
   ]
   
   try {
