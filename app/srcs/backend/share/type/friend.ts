@@ -7,9 +7,9 @@ export interface FProfile extends Profile {
 
 export interface Friends {
 	info: FProfile;
-	fstatus: { mutual: boolean, message: string};
+	fstatus: { mutual: boolean };
 }
 
-export type Friend =
-  | { status: "No friend hh"; friends: [] }
-  | { status: "I have friends WOw"; friends: Friends[] };
+// export interface Friend {
+// 	friends: Friends[];
+// } 

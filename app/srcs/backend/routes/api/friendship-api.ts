@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
-import type { Friend, Friends } from "../../share/type/friend.ts";
+import type { Friends } from "../../share/type/friend.ts";
 import { getUserById } from "../../database/user.ts";
 import { addFriendbyId, checkFriendMutual, deleteFriendbyId, getFriendshipsById } from "../../database/friendship.ts";
 import { getProfileById } from "../../database/profile.ts";
@@ -14,7 +14,7 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 			if (!user)
 				return res.status(404).send({ message: 'User not found'});
 			else if (!friends || friends.length === 0)
-				return res.send({ status: "No friend hh", friends: [] });
+				return res.send({ friends: [] });
 
 			const friends_detail = await Promise.all(friends.map(async (f: any) => {
 				const friend_profile = await getProfileById(f.friend_id);
@@ -36,7 +36,8 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 					fstatus: friend_mutual 
 				} as Friends
 			}));
-			return res.send({ status: "I have friends WOw", friends: friends_detail });
+
+			return res.send({ friends: friends_detail });
 		}
 		catch (error: any)
 		{
