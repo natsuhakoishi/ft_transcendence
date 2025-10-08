@@ -88,19 +88,43 @@ function FriendProfile({ setFModal, FProfile, handleFDelete, fetchFriends }: {
   handleFDelete: (id: number, fetch: () => void) => void,
   fetchFriends: () => void,
 }) {
+  const [showConfirm, setShowConfirm] = React.useState<boolean>(false);
+
+  const confirmDelete = () => {
+    handleFDelete(FProfile.info.id, fetchFriends);
+    setFModal(false);
+  };
+
   return (
-  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50 gap-1">
-    <div className="bg-[#FFCDB6] rounded-xl p-5 w-80 max-w-[90%] relative overflow-y-auto">
-      <button onClick={() => setFModal(false)} className="absolute top-2 right-2">✕</button>
-      <img src={`${import.meta.env.VITE_API_AVATAR}${FProfile.info.avatar_path}`} className="w-24 h-24 rounded-full border-1 mx-auto"/>
-      <h2 className="text-center text-lg font-bold mt-2">{FProfile.info.username}</h2>
-      <p className="text-center text-xs italic">id: {FProfile.info.id}</p>
-      <p className="">Win: {FProfile.info.win_games} Lose: {FProfile.info.lose_games}</p>
-      <p>Tournament Win: {FProfile.info.tournament_wins}</p>
-      <p>Friendship: {FProfile.fstatus.mutual ? "Mutual Friend" : "Friend"}</p>
-    </div>
-    <button className="border p-1 bg-red-200 rounded-full hover" onClick={() => handleFDelete(FProfile.info.id, fetchFriends)}
-      >X</button>
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50 gap-1" onClick={() => setFModal(false)}>
+
+      <div className="bg-[#FFCDB6] rounded-xl p-5 w-80 max-w-[90%] relative overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <img src={`${import.meta.env.VITE_API_AVATAR}${FProfile.info.avatar_path}`} className="w-24 h-24 rounded-full border-1 mx-auto"/>
+        <h2 className="text-center text-lg font-bold mt-2">{FProfile.info.username}</h2>
+        <p className="text-center text-xs italic">id: {FProfile.info.id}</p>
+        <p className="">Win: {FProfile.info.win_games} Lose: {FProfile.info.lose_games}</p>
+        <p>Tournament Win: {FProfile.info.tournament_wins}</p>
+        <p>Friendship: {FProfile.fstatus.mutual ? "Mutual Friend" : "Friend"}</p>
+      </div>
+      <div onClick={(e) => e.stopPropagation()}>
+        <button className="p-0.5 w-8 rounded-full bg-[#ED4967] hover hover:brightness-90 transition" onClick={() => setShowConfirm(true)}
+        >✘</button>
+      </div>
+
+      {showConfirm && (
+        <div className="fixed inset-0 z-60 flex flex-col items-center justify-center bg-black/40 p-4" onClick={() => setShowConfirm(false)}>
+          <div className="bg-[#FFCDB6] rounded-2xl p-5 w-72 max-w-[90%]" onClick={(e) => e.stopPropagation()}>
+            <p className="text-center font-semibold mb-2">Sure delete this friend?</p>
+            <div className="flex gap-2">
+              <button className="flex-1 p-2 bg-[#ED4967] text-white rounded-full hover:brightness-90 transition"
+                onClick={confirmDelete}>Delete</button>
+              <button className="flex-1 p-2 bg-[#F9F8F6] rounded-full hover:brightness-90 transition"
+                onClick={() => setShowConfirm(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+
   </div>
   );
 }
