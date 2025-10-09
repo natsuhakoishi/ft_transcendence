@@ -92,18 +92,15 @@ export async function getTournamentLeaderboard(tournament_id: number)
 {
 	return allSQLite(`
 		SELECT
-			users.id, users.username,
-			profiles.win_games, profiles.lose_games, profiles.tournament_wins,
-			SUM(CASE WHEN matches.winner_id = users.id THEN 1 ELSE 0 END) AS match_wins,
-			COUNT(matches.id) AS matches_played
+			users.id,
+			users.username,
+			profiles.avatar_path,
+			rank
 		FROM tournament_participants
 		JOIN users ON tournament_participants.user_id = users.id
 		JOIN profiles ON users.id = profiles.id
-		LEFT JOIN tournament_matches ON tournament_matches.tournament_id = tournament_participants.tournament_id
-		LEFT JOIN matches ON matches.id = tournament_matches.match_id AND (matches.player1_id = users.id OR matches.player2_id = users.id)
 		WHERE tournament_participants.tournament_id = ?
-		GROUP BY users.id
-		ORDER BY match_wins DESC
+		ORDER BY tournament_participants.rank ASC
 		`,
 		[tournament_id]
 	);

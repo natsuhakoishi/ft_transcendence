@@ -18,7 +18,7 @@ function ExpandTour ({ entries, user_id} : {
   );
 }
 
-function Tournament ({ won, entries } : { won: boolean, entries: TournamentMatch }) {
+function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch }) {
   const [date, time] = entries.tournament.start_time.split(" ");
 
   return (
@@ -33,11 +33,10 @@ function Tournament ({ won, entries } : { won: boolean, entries: TournamentMatch
       </div>
 
       <section className="flex items-center justify-between gap-0.5 mb-6">
-        <PlayerInfo name={entries.matches[0].player1.username} /> <Versus />
-        <PlayerInfo name={entries.matches[0].player1.username} /> <Versus />
-        <PlayerInfo name={entries.matches[0].player1.username} /> <Versus />
-        <PlayerInfo name={entries.matches[0].player1.username} />
-        {/* todo update as actual tournament participant*/}
+        <PlayerInfo pInfo={entries.tournament.first} /> <Versus />
+        <PlayerInfo pInfo={entries.tournament.second} /> <Versus />
+        <PlayerInfo pInfo={entries.tournament.third} /> <Versus />
+        <PlayerInfo pInfo={entries.tournament.last} />
       </section>
 
       <DateTime date={date} time={time} />
@@ -48,7 +47,7 @@ function Tournament ({ won, entries } : { won: boolean, entries: TournamentMatch
   );
 }
 
-function Match ({won, match, isTour } : { won: boolean, match: Match , isTour: boolean }) {
+function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: boolean }) {
   const [date, time] = match.game_time.split(" ");
 
   return (
@@ -58,8 +57,8 @@ function Match ({won, match, isTour } : { won: boolean, match: Match , isTour: b
       <span className="font-bold p-2">{isTour ? "Tournament Match" : "1 vs 1"}</span>
 
       <section className="flex items-center justify-between gap-0.5 mb-6">
-        <PlayerInfo name={match.player1.username} /> <Versus />
-        <PlayerInfo name={match.player2.username} />
+        <PlayerInfo pInfo={match.player1} /> <Versus />
+        <PlayerInfo pInfo={match.player2} />
       </section>
 
       <ScoreBoard P1={match.player1.score} P2={match.player2.score} won={won} />
@@ -78,16 +77,22 @@ function getBanner(tour : boolean) {
     `bg-gradient-to-r from-[#6F698B]/85 via-[#C3AEAD]/85 to-[#C3AEAD]/90`
   );
 }
-``
+
+export type Winner = 1 | 2 | 3 | 4 | false | true;
+
 const HistoryRow = ({ match, user_id, onTournamentClick } : { 
   match: Match | TournamentMatch, user_id: number,
   onTournamentClick: (match: TournamentMatch) => void; }
 ) => {
   const isTour = "tournament" in match;
   const isTourM = "mode" in match && match.mode === "tournament";
-  let isWinner = false;
-  if (isTour)
-    isWinner = match.tournament.t_winner_id === user_id;
+  let isWinner: Winner = false;
+  if (isTour) {
+    const ranking = [match.tournament.first.id, match.tournament.second.id, match.tournament.third.id, match.tournament.last.id];
+    const rankIndex = ranking.indexOf(user_id);
+    if (rankIndex !== -1)
+      isWinner = (rankIndex + 1) as Winner;
+  }
   else
     isWinner = match.winner_id === user_id;
 

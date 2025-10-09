@@ -25,11 +25,13 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			const matches = await getMatchByUserId(req.user);
 			const toMatch = (match: any): Match => ({
 				mode: match.tournament_id ? "tournament" : "match",
-				match_id: match.id, game_time: match.game_time, winner_id: match.winner_id,
+				match_id: match.id,
+				game_time: match.game_time,
+				winner_id: match.winner_id,
 				player1: {
-					user_id: match.player1_id, username: match.player1_username, score: match.player1_score, },
+					user_id: match.player1_id, username: match.player1_username, score: match.player1_score, avatar_path: match.player1_avatar_path },
 				player2: {
-					user_id: match.player2_id, username: match.player2_username, score: match.player2_score, },
+					user_id: match.player2_id, username: match.player2_username, score: match.player2_score, avatar_path: match.player2_avatar_path},
 			});
 
 			const user_matches: MatchMeResponse["user_matches"] = [];
@@ -47,7 +49,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 						const leaderboard = await getTournamentLeaderboard(match.tournament_id);
 						tournamentEntry = {
 							// mode: "tournament",
-							tournament: { id: match.tournament_id, start_time: match.game_time, t_winner_id: leaderboard[0].id },
+							tournament: { id: match.tournament_id, start_time: match.game_time, first: leaderboard[0], second: leaderboard[1], third: leaderboard[2], last: leaderboard[3] },
 							matches: [],
 						};
 						tournament.set(match.tournament_id, tournamentEntry);

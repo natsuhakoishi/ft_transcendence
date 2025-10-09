@@ -1,13 +1,15 @@
-interface Player {
+import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData";
+
+export interface Player {
   user_id: number;
   username: string;
   score: number;
+  avatar_path: string;
 }
 
-export interface TournamentInfo {
+export interface TournamentInfo extends Leaderboard  {
   id: number;
   start_time: string;
-  t_winner_id: number;
 }
 
 export interface TournamentMatch {
