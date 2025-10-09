@@ -72,6 +72,7 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
     setProgress({ step: "Finished", completed: null, total: null });
     await sleep(500);
     setLoading(false);
+    console.log("User data fetched");
 
   } catch (err: any) {
     console.error("Issue: " + err.message);

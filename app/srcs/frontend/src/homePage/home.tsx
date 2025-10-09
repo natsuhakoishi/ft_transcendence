@@ -6,19 +6,19 @@ import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
 import { Matching } from "../gamePage/matching.tsx";
 
 export function FetchData() {
+  const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 2 });
-  const [user, setUser] = React.useState<User | null>(null);
 
   React.useEffect(() => {
-    console.log("fetching..");
+    console.log("Fetching data...");
     setTimeout(() => {
       loadData({ setLoading, setProgress, setUser });
     }, 500);
   }, []);
 
   const refetchData = React.useCallback(() => {
-    console.log("refetch..");
+    console.log("Refetch triggered");
     setTimeout(() => {
       loadData({ setLoading, setProgress, setUser });
     }, 500);
@@ -44,14 +44,12 @@ export function Home() {
 
   React.useEffect(() => {
   	document.title = "KLBQ | Home";
-    console.log(import.meta.env.GAME_VERSION);
   }, []);
 
   React.useEffect(() => {
     if (user && !loading)
       toast.success("Welcome back, " + user.acc.username + ".");
   }, [user, loading]);
-  //todo modify so it only show up after comfirm with login session, /me
 
   return (
     <>

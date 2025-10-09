@@ -65,7 +65,7 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 
 	const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
 	const data = await res.json();
-
+	
 	if (res.status === 401)
 	{
 		if (onUnauthorized)

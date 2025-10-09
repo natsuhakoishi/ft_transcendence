@@ -2,8 +2,19 @@ import { getSQLite, runSQLite, allSQLite } from "./utils.ts";
 
 export async function addFriendbyId(user_id: number, friend_id: number)
 {
-	if (user_id === friend_id)
-		throw new Error("Error: User unable to add themself");
+	const total = await allSQLite(
+		`SELECT COUNT(*) AS count FROM friendships WHERE user_id = ?`,
+		[user_id]
+	);
+	if (total[0].count >= 10)
+		throw new Error("Error: You can only have up to 10 friends.");
+
+	const alreadyFriend = await allSQLite(
+		`SELECT 1 FROM friendships WHERE user_id = ? AND friend_id = ?`,
+		[user_id, friend_id]
+	);
+	if (alreadyFriend.length > 0)
+		throw new Error("Error: This friend is already added.");
 
 	await runSQLite(`
 		INSERT INTO friendships (user_id, friend_id) VALUES (?, ?)`,
@@ -13,7 +24,7 @@ export async function addFriendbyId(user_id: number, friend_id: number)
 
 export async function deleteFriendbyId(user_id: number, friend_id: number)
 {
-	if (user_id === friend_id)
+	if (user_id === Number(friend_id))
 		throw new Error("Error: User unable to delete themself");
 
 	const res = await runSQLite(`
