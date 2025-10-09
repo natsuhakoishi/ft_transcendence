@@ -38,6 +38,7 @@ export function AIGamePage() {
     }, 1000 * 0.8);
 
     React.useEffect(() => {
+        document.title = "AI Game";
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_AI_GAMEPLAY);
 
         const gameData: GameData = {
@@ -104,13 +105,13 @@ export function AIGamePage() {
                 console.log("/AI gamepage timeout")
                 toast.error("Timeout");
                 toast.error("Back to home");
-                navigate("/");
+                navigate("/", { replace: true });
             }
             else if (type === "trespassing")
             {
                 console.log("/AI gamePage trespassing 凸^u^凸");
                 toast.error("Trespassing!");
-                navigate("/");
+                navigate("/", { replace: true });
             }
         }
 

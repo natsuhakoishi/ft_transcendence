@@ -36,7 +36,7 @@ export function Matching({again, setMatch, AI} : {
                 console.log("/Matching: ", data);
                 
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false} });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
             };
     
             return () => { //when user press 'back button'

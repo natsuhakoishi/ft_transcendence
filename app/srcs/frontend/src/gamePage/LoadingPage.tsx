@@ -1,3 +1,4 @@
+import React from "react";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
@@ -18,14 +19,18 @@ export function Loading() {
 
     console.log("Loading: ", playerID);
 
-    setTimeout(() => {
+    React.useEffect(() => {
+        document.title = "Loading";
         console.log("Loading: to Gameplay", AI);
-        if (AI)
-            navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: playersData} });
-        else
-            navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, { state: {RoomID: playersData.roomID, isTournament: false, playersData: playersData} });
+        const timer = setTimeout(() => {
+            if (AI)
+                navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: playersData}, replace: true });
+            else
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, { state: {RoomID: playersData.roomID, isTournament: false, playersData: playersData}, replace: true });
+        }, 1000 * 2);
 
-    }, 1000 * 2);
+    return () => clearTimeout(timer);
+    }, []);
 
     return (
         <div className="flex gap-8 items-center">
