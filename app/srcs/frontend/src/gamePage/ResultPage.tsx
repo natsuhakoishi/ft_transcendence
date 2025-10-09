@@ -6,6 +6,7 @@ import React from "react";
 import { Matching } from "./matching";
 import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
+import { apiFetchPrivate } from "../utils";
 
 export function Result({ score, playersData, me, AI }: { score: GameScore, playersData?: MatchPlayersData, me: boolean, AI: boolean}) {
     const [ again, setAgain ] = React.useState(false);
@@ -69,6 +70,17 @@ export function TournamentResultPage() {
             navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}});
             // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
         console.log("TOurnamentResult: ", leaderboard);
+
+        const updateRanks = async () => {
+            try {
+                await apiFetchPrivate("tournament/update_ranking", { method: "POST", body: JSON.stringify({ tournament_id, leaderboard }) });
+                console.log("tournament leaderboard updated.");
+            } catch (err: any) {
+                console.error("Error updating tournament ranks:", err);
+            }
+        };
+        updateRanks();
+
     }, []);
 
     return (

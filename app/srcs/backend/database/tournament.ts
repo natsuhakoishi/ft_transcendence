@@ -109,6 +109,16 @@ export async function getTournamentLeaderboard(tournament_id: number)
 	);
 }
 
+export async function updateTournamentRank(tournament_id: number, new_rank: number, user_id: number)
+{
+	await runSQLite(
+		`UPDATE tournament_participants 
+		SET rank = ? 
+		WHERE tournament_id = ? AND user_id = ?`,
+		new_rank, tournament_id, user_id
+	);
+}
+
 export async function setTournamentStatus(tournament_id: number, status: 'waiting' | 'on-going' | 'completed')
 {
 	await runSQLite(`UPDATE tournaments SET status = ? WHERE id = ?`, status, tournament_id);
