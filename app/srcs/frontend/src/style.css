@@ -2,17 +2,13 @@
 @import "tailwindcss";
 @import "tailwindcss/preflight";
 
-@theme {
-  --color-golden: #EFE66A;
-  --color-silver: #E9E9E7;
-}
-
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    min-width: 100vw;
     /* background-image: url('/pic/zw_sanify_relief.jpg');
     background-size: cover;
     background-position: center;
@@ -20,6 +16,17 @@ body {
     color: white;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
     font-weight: bold; */
+}
+
+@theme {  
+  --color-golden: #EFE66A;
+  --color-silver: #E9E9E7;
+  --color-online: #43A25A;
+  --color-offline: #82838B;
+}
+
+.hover {
+  @apply cursor-pointer transition-transform ease-in-out duration-100;
 }
 
 /* visualize boundaries */
