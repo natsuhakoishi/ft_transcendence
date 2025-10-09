@@ -1,6 +1,6 @@
 import type { Matches } from "./Matches";
-import { Player, PlayerWithProfileData } from "./Player";
-import { Leaderboard } from "./tournamentRoomData";
+import type { Player, PlayerWithProfileData } from "./Player";
+import type { Leaderboard } from "./tournamentRoomData";
 
 export interface GameData {
     roomId: string;
@@ -16,4 +16,5 @@ export interface TData {
     players: Record<string, PlayerWithProfileData>;
     state?: "r1" | "r2";
     leaderboard?: Leaderboard;
+    tournament_id?: number;
 }
