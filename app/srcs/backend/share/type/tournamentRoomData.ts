@@ -184,6 +184,7 @@ export class TRoom {
 
             if (this.r2flag === 2)
             {
+                this.data.tournament_id = this.dbID;
                 this.data.leaderboard = this.leaderboard;
                 console.log("updateWNL: ", this.data.leaderboard, {first: this.leaderboard.first, second: this.leaderboard.second});
                 addWinLose(this.leaderboard.first.id, "tournament_wins");

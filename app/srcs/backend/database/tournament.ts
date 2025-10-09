@@ -25,7 +25,7 @@ export async function getTournamentAll()
 export async function joinTournament(tournament_id: number, user_id: number)
 {
 	await runSQLite(`
-		INSERT OR IGNORE INTO tournament_participants (tournament_id, user_id) VALUES (?, ?)`,
+		INSERT OR IGNORE INTO tournament_participants (tournament_id, user_id, rank) VALUES (?, ?, 0)`,
 		tournament_id,
 		user_id
 	);

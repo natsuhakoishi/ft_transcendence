@@ -61,12 +61,12 @@ function Rank({rank, player, me}: {rank: string, player: PlayerWithProfileData, 
 export function TournamentResultPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { leaderboard, playerID } = (location.state || {}) as { leaderboard: Leaderboard, playerID: number };
+    const { tournament_id, leaderboard, playerID } = (location.state || {}) as { tournament_id: number, leaderboard: Leaderboard, playerID: number };
 
     React.useEffect(() => {
         console.log("TournamentResult: useEffect");
-        if (!leaderboard || !playerID)
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}});
+        if (!leaderboard || !playerID || !tournament_id)
+            navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}});
             // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
         console.log("TOurnamentResult: ", leaderboard);
     }, []);
