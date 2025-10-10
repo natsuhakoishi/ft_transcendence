@@ -23,7 +23,7 @@ function App() {
     setUnauthorized(() => {
       toast.error("Session expired. Log in again!");
       setTimeout(() => {
-        navigate("/auth");
+        navigate("/auth", { replace: true });
       }, 1000 * 2);
     });
   }, []);

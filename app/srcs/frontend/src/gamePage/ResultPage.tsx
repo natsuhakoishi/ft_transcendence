@@ -12,6 +12,10 @@ export function Result({ score, playersData, me, AI }: { score: GameScore, playe
     const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
 
+    React.useEffect(() => {
+        document.title = "Result";
+    }, []);
+
     return (
         <>
             {
@@ -26,7 +30,7 @@ export function Result({ score, playersData, me, AI }: { score: GameScore, playe
                     </div>
 
                     <AgainButton callback={() => setAgain(true)} />
-                    <HomeButton callback={() => navigate("/")} />
+                    <HomeButton callback={() => navigate("/", { replace: true })} />
 
                 </div>
                 )}
@@ -65,9 +69,10 @@ export function TournamentResultPage() {
     const { tournament_id, leaderboard, playerID } = (location.state || {}) as { tournament_id: number, leaderboard: Leaderboard, playerID: number };
 
     React.useEffect(() => {
+        document.title = "Result";
         console.log("TournamentResult: useEffect");
         if (!leaderboard || !playerID || !tournament_id)
-            navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}});
+            navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}, replace: true});
             // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
         console.log("TOurnamentResult: ", leaderboard);
 
@@ -89,7 +94,7 @@ export function TournamentResultPage() {
             <Rank rank="Second" player={leaderboard.second} me={leaderboard.second.id === playerID} />
             <Rank rank="Third" player={leaderboard.third} me={leaderboard.third.id === playerID} />
             <Rank rank="Last" player={leaderboard.last} me={leaderboard.last.id === playerID} />
-            <HomeButton callback={() => navigate("/")} />
+            <HomeButton callback={() => navigate("/", { replace: true })} />
         </div>
     );
 }

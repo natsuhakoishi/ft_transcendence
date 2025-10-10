@@ -1,6 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { replace, useNavigate, Outlet, useOutletContext } from "react-router-dom";
+import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import type { User } from "../../../backend/share/type/user.ts";
 import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
 import { Matching } from "../gamePage/matching.tsx";

@@ -11,7 +11,7 @@ import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
 import toast from "react-hot-toast";
 
-export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
+export function GamePage({ onGameOver, tour }: { onGameOver?: () => void, tour?: boolean}) {
     const navigate = useNavigate();
     console.log("GamePage");
     const location = useLocation();
@@ -36,18 +36,23 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         playersData?: MatchPlayersData;
     };
 
-    setTimeout(() => {
-        setLoad(false);
-    }, 1000 * 0.8);
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoad(false);
+        }, 1000 * 0.8);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
+        document.title = tour ? "Tournament: In Game..." : "Game";
         (async () => {
             console.log("gamePage: useEffect");
 
             if (!RoomID) {
                 console.log("gamePage: missing roomID");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "E"}});
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "E"}, replace: true});
                 // navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
             }
             console.log("GamePage: roomid:", RoomID);
@@ -81,7 +86,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             }
             catch (e) {
                 console.log("Matching: fetch error: ", e);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "D"}});
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "D"}, replace: true});
                 // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
             // console.log(gameState);
@@ -128,7 +133,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     setTimeout(()=>{
                         if (gameData.tournament) {
                             console.log("/gamePage: gameOver");
-                            navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
+                            navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }, replace: true});
                             onGameOver?.();
                         }
                         else
@@ -146,7 +151,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         toast.error("Opponent disconnected");
                         setTimeout(()=>{
                             if (gameData.tournament) {
-                                navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }});
+                                navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }, replace: true});
                                 onGameOver?.();
                             }
                             else
@@ -157,7 +162,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     {
                         toast.error("Timeout");
                         toast.error("Back to home");
-                        navigate("/");
+                        navigate("/", { replace: true });
                     }
                     //TODO: render ending
                 }
@@ -165,7 +170,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
                     toast.error("Trespassing!");
-                    navigate("/");
+                    navigate("/", { replace: true });
                 }
             };
 

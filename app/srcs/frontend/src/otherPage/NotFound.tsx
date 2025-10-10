@@ -8,10 +8,13 @@ function NotFound() {
     console.log("404 Not found", msg);
     
     useEffect( ()=> {
-        setTimeout(() => {
+        document.title = "404";
+        const timer = setTimeout(() => {
             console.log("NotFound: redirect to /");
-            navigate("/");
-        }, 1000 * 2); //2s to login
+            navigate("/", { replace: true });
+        }, 1000 * 2);
+
+        return () => clearTimeout(timer);
     }, []);
 
     return (

@@ -35,13 +35,14 @@ export function TournamentGamePage() {
     }>();
 
     React.useEffect(() => {
+        document.title = "Tournament";
         ( async () => {
             console.log("TournamentGamePage: useEffect");
             if (!tournamentRoomID)
             {
                 console.log("TournamentGamePage: Trespassing ^u^b");
                 // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "A"}});
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "A"}, replace: true});
             }
 
             let playerID: string;
@@ -51,7 +52,7 @@ export function TournamentGamePage() {
             }
             catch (e) {
                 console.log("FlowPage: trespassing");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "B"}});
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "B"}, replace: true});
                 // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
 
@@ -79,7 +80,7 @@ export function TournamentGamePage() {
                 if (type === "trespassing")
                 {
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "C"}});
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "C"}, replace: true});
                     // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
                 else if (type === "update")
@@ -103,8 +104,8 @@ export function TournamentGamePage() {
                     const r1: Matches = parse.state.round1;
                     const rooms: string[] = r1.roomID[0].split("-");
                     rooms.includes(playerID.toString()) ?
-                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])} })
-                        : navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])} });
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[0], parse.state.players, r1.matches[0])}, replace: true })
+                        : navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r1.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r1.roomID[1], parse.state.players, r1.matches[1])}, replace: true });
                 }
                 else if (type === "startRound2")
                 {
@@ -112,8 +113,8 @@ export function TournamentGamePage() {
                     const r2: Matches = parse.state.round2;
                     const rooms: string[] = r2.roomID[0].split("-");
                     rooms.includes(playerID.toString()) ?
-                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[0], parse.state.players, r2.matches[0])} })
-                        : navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[1], parse.state.players, r2.matches[1])} });
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[0], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[0], parse.state.players, r2.matches[0])}, replace: true })
+                        : navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_GAMEPLAY, { state: {RoomID: r2.roomID[1], isTournament: true, TROOMID: tournamentRoomID, playersData: createMAtchPlayersData(r2.roomID[1], parse.state.players, r2.matches[1])}, replace: true });
                 }
                 else if (type === "end")
                 {
@@ -121,8 +122,9 @@ export function TournamentGamePage() {
                     console.log("TournamentGamePage: leaderboard: ", parse);
                     setTimeout(() => {
                         console.log("TournamentGamePage: to:", import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT);
-                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT, { state: {tournament_id: parse.state.tournament_id, leaderboard: parse.state.leaderboard, playerID: playerID}});
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT, { state: {tournament_id: parse.state.tournament_id, leaderboard: parse.state.leaderboard, playerID: playerID}, replace: true});
                     }, 1000 * 4);
+                    //TODO possible to return to game page if hit "back" while navigating
                 }
                 else if (type === "offline")
                 {
@@ -130,7 +132,7 @@ export function TournamentGamePage() {
                     toast.error("Opponent offline");
                     toast.error("Tournament cancel");
                     console.log("TournamentGamePage: redirect to home");
-                    navigate("/");
+                    navigate("/", { replace: true });
                 }
             }
 
@@ -165,7 +167,7 @@ export function TournamentGamePage() {
             <Route path="/" element={<TournamentLoading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
             <Route
                 path="gameplay"
-                element={<GamePage onGameOver={handleGameOver} />} />
+                element={<GamePage onGameOver={handleGameOver} tour={true} />} />
             <Route path="result" element={<TournamentResultPage />} />
             {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>

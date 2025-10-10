@@ -25,7 +25,7 @@ export function Matching({again, setMatch, AI} : {
                 (async () => {
                     await sendProfile(ws, () => {
                         // navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "G"}});
-                        navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                        navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                     })
                 })()
             };
@@ -36,7 +36,10 @@ export function Matching({again, setMatch, AI} : {
                 console.log("/Matching: ", data);
                 
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
+                if (!again)
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false} });
+                else
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
             };
     
             return () => { //when user press 'back button'
@@ -52,7 +55,7 @@ export function Matching({again, setMatch, AI} : {
             ws.onopen = () => {
                 (async () =>
                     await sendProfile(ws, () =>
-                        navigate(import.meta.env.VITE_PATH_404NOTFOUND)))();
+                        navigate(import.meta.env.VITE_PATH_404NOTFOUND, { replace: true})))();
             };
 
             ws.onmessage = async (event) => {
@@ -61,7 +64,10 @@ export function Matching({again, setMatch, AI} : {
                 console.log("AI Matching: ", data);
 
                 console.log("AI matching: to", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true} });
+                if (!again)
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true} });
+                else
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true });
                 // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
             };
 
@@ -77,7 +83,7 @@ export function Matching({again, setMatch, AI} : {
             type="submit"
             className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 "
             onClick={() => {
-                again ? navigate("/") : setMatch?.(false)
+                again ? navigate("/", { replace: true }) : setMatch?.(false)
             }}
             >Cancel</button>
         </>
@@ -103,7 +109,7 @@ export function TMatching() {
                 }
                 catch (e) {
                     console.log("TMatching: fetch error: ", e);
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "H"}});
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "H"}, replace: true});
                     // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
             })();
@@ -114,7 +120,7 @@ export function TMatching() {
 
             const RoomId: string = event.data;
 
-            navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT, { state: {tournamentRoomID: RoomId} });
+            navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT, { state: {tournamentRoomID: RoomId}, replace: true });
         };
 
         return () => { //when user press 'back button'
