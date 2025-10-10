@@ -92,10 +92,13 @@
 			"stat_win_rate": "Win Rate"
 		},
 
-		"msg_unauthorized": "Session expired. Log in again!",
-		"msg_userNotFound": "User not found. Log in again!",
-		"msg_serverErr": "Server error. Attempt to connect again",
-		"msg_serverErr_fail": "Attempt failed! Log in again."
+		"error":
+		{
+			"msg_unauthorized": "Session expired. Log in again!",
+			"msg_userNotFound": "User not found. Log in again!",
+			"msg_serverErr": "Server error. Attempt to connect again",
+			"msg_serverErr_fail": "Attempt failed! Log in again."
+		}
 	}
 
 }

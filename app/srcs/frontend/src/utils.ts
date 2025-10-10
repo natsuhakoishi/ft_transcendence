@@ -1,7 +1,9 @@
+import toast from "react-hot-toast";
 import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 import type { PlayerWithProfileData } from "../../backend/share/type/Player";
 import type { User } from "../../backend/share/type/user";
+import { getGlobalErrorHandler } from "./hook";
 
 export function initGameState(): GameState {
 	const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
@@ -38,24 +40,46 @@ export function initGameData(_roomId: string, _playerID: number): GameData {
     return data;
 }
 
+function handleApiError(err: any) {
+  console.error(`API Error: ${err.message}`, `[Status:${err.status}]`);
+
+  const toastKey = err.status; // use status field (number or route-specific)
+//   const toastMessage = dictionary[lang][toastKey] || err.message || 'Something went wrong';
+
+//   toast.error(toastMessage);
+//   toast.error(err.message || "something wrong");
+}
+
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 	const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
 	if (!(options.body instanceof FormData))
 		headers["Content-Type"] = "application/json";
 
-  const res = await fetch(`${import.meta.env.VITE_API_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
-  const data = await res.json();
+  	try
+	{
+		const res = await fetch(`${import.meta.env.VITE_API_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
+		let data: any = {};
+		data = await res.json();
 
-	if (!res.ok)
-		throw new Error(data.message);
+		if (!res.ok) {
+			if (res.status === 401) getGlobalErrorHandler("401")();
+			if (res.status === 404) getGlobalErrorHandler("USER_NOT_FOUND")();
 
-	return data;
-}
+			throw { status: res.status, message: data.message };
+		}
 
-let onUnauthorized: (() => void) | null = null;
+		return data;
 
-export function  setUnauthorized(callback: () => void) {
-	onUnauthorized = callback;
+	} catch (err: any) {
+		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
+		{
+      		console.error('Server/network error\n', err);
+			getGlobalErrorHandler("NETWORK_ERROR")();
+      		throw { status: 0, message: 'Cannot connect to server. Please try later.' };
+    	}
+		handleApiError(err);
+		throw err;
+	}
 }
 
 export async function apiFetchPrivate(endpoint: string, options: RequestInit = {}) {
@@ -63,19 +87,31 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 	if (!(options.body instanceof FormData))
 		headers["Content-Type"] = "application/json";
 
-	const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
-	const data = await res.json();
-	
-	if (res.status === 401)
+	try
 	{
-		if (onUnauthorized)
-		onUnauthorized();
-		throw { status: 401, message: "Unauthorized!" };
-	}
-	else if (!res.ok)
-		throw { status: res.status, message: data.message };
+		const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}${endpoint}`, { ...options, headers, credentials: 'include' });
+		let data: any = {};
+		data = await res.json();
 
-	return data;
+		if (!res.ok) {
+			if (res.status === 401) getGlobalErrorHandler("401")();
+			if (res.status === 404) getGlobalErrorHandler("USER_NOT_FOUND")();
+
+			throw { status: res.status, message: data.message };
+		}
+
+		return data;
+
+	} catch (err: any) {
+		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
+		{
+      		console.error('Server/network error\n', err);
+			getGlobalErrorHandler("NETWORK_ERROR")();
+      		throw { status: 0, message: 'Cannot connect to server. Please try later.' };
+    	}
+		handleApiError(err);
+		throw err;
+	}
 }
 
 export async function sendProfile(ws: WebSocket, callback: () => void): Promise<void> {
