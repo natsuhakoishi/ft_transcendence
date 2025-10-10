@@ -55,9 +55,9 @@ export function Home() {
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
       (match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
-        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-blend-overlay"
+        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-blend-overlay overflow-hidden"
           style={{
-          backgroundImage: "linear-gradient(to bottom, #6FB7FFcc, #daade0ac, #A79BFFcc), url('/pic/homeP.jpg')"
+          backgroundImage: "url('/pic/homeP.jpg')"
           }}
         >
           {/*Left part*/}
