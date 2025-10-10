@@ -72,8 +72,7 @@ export function TournamentResultPage() {
         document.title = "Result";
         console.log("TournamentResult: useEffect");
         if (!leaderboard || !playerID || !tournament_id)
-            navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "F"}, replace: true});
-            // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+            navigate(import.meta.env.VITE_PATH_404NOTFOUND);
         console.log("TOurnamentResult: ", leaderboard);
 
         const updateRanks = async () => {

@@ -41,8 +41,7 @@ export function TournamentGamePage() {
             if (!tournamentRoomID)
             {
                 console.log("TournamentGamePage: Trespassing ^u^b");
-                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "A"}, replace: true});
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
 
             let playerID: string;
@@ -52,8 +51,7 @@ export function TournamentGamePage() {
             }
             catch (e) {
                 console.log("FlowPage: trespassing");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "B"}, replace: true});
-                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
 
             console.log("TournamentGamePage", playerID!);
@@ -80,8 +78,7 @@ export function TournamentGamePage() {
                 if (type === "trespassing")
                 {
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "C"}, replace: true});
-                    // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
                 else if (type === "update")
                 {
@@ -167,7 +164,7 @@ export function TournamentGamePage() {
             <Route path="/" element={<TournamentLoading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
             <Route
                 path="gameplay"
-                element={<GamePage onGameOver={handleGameOver} tour={true} />} />
+                element={<GamePage onGameOver={handleGameOver} />} />
             <Route path="result" element={<TournamentResultPage />} />
             {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>

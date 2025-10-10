@@ -109,8 +109,7 @@ export function TMatching() {
                 }
                 catch (e) {
                     console.log("TMatching: fetch error: ", e);
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "H"}, replace: true});
-                    // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
             })();
         };

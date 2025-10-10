@@ -11,7 +11,7 @@ import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
 import toast from "react-hot-toast";
 
-export function GamePage({ onGameOver, tour }: { onGameOver?: () => void, tour?: boolean}) {
+export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const navigate = useNavigate();
     console.log("GamePage");
     const location = useLocation();
@@ -46,14 +46,13 @@ export function GamePage({ onGameOver, tour }: { onGameOver?: () => void, tour?:
 
     //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
-        document.title = tour ? "Tournament: In Game..." : "Game";
+        document.title = isTournament ? "Tournament: In Game..." : "Game";
         (async () => {
             console.log("gamePage: useEffect");
 
             if (!RoomID) {
                 console.log("gamePage: missing roomID");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "E"}, replace: true});
-                // navigate(import.meta.env.VITE_PATH_404NOTFOUND); //TODO: create room not found react function or redirect to main page
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
             console.log("GamePage: roomid:", RoomID);
 
@@ -86,8 +85,7 @@ export function GamePage({ onGameOver, tour }: { onGameOver?: () => void, tour?:
             }
             catch (e) {
                 console.log("Matching: fetch error: ", e);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "D"}, replace: true});
-                // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
             }
             // console.log(gameState);
 
