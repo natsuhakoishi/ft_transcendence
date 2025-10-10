@@ -1,35 +1,36 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { replace, useNavigate, Outlet, useOutletContext } from "react-router-dom";
+import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import type { User } from "../../../backend/share/type/user.ts";
-import type { Friend } from "../../../backend/share/type/friend.ts";
 import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
 import { Matching } from "../gamePage/matching.tsx";
 
 export function FetchData() {
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 3 });
   const [user, setUser] = React.useState<User | null>(null);
-  const [friend, setFriend] = React.useState<Friend | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 2 });
 
   React.useEffect(() => {
-    console.log("fetching..");
-    loadData({ setLoading, setProgress, setUser, setFriend });
+    console.log("Fetching data...");
+    setTimeout(() => {
+      loadData({ setLoading, setProgress, setUser });
+    }, 500);
   }, []);
 
   const refetchData = React.useCallback(() => {
-    console.log("refetch..");
-    loadData({ setLoading, setProgress, setUser, setFriend });
+    console.log("Refetch triggered");
+    setTimeout(() => {
+      loadData({ setLoading, setProgress, setUser });
+    }, 500);
   }, []);
 
   return (
-    <Outlet context={{ user, friend, loading, progress, refetchData}} />
+    <Outlet context={{ user, loading, progress, refetchData}} />
   );
 }
 
 export type SharedData = {
   user: User | null;
-  friend: Friend | null;
   loading: boolean;
   progress: Progress;
 };
@@ -43,14 +44,12 @@ export function Home() {
 
   React.useEffect(() => {
   	document.title = "KLBQ | Home";
-    console.log(import.meta.env.GAME_VERSION);
   }, []);
 
   React.useEffect(() => {
     if (user && !loading)
       toast.success("Welcome back, " + user.acc.username + ".");
   }, [user, loading]);
-  //todo modify so it only show up after comfirm with login session, /me
 
   return (
     <>

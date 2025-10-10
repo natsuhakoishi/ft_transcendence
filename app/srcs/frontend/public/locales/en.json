@@ -1,0 +1,101 @@
+{
+	"_comment": "CONSIDERED ADD FOR CERTAIN STATUS",
+	"_comment": "REUSED COMPONENTS FIRST THEN PAGES",
+
+	"loading":
+	{
+		"_comment": "PROVIDED FOR THE LOADING COMPONENTS",
+		"step_start": "Loading",
+		"step_complete": "Finished",
+		"step_checkUser": "Checking User",
+		"step_fetchUser": "Fetching User Data"
+	},
+
+	"auth":
+	{
+		"title_login": "KLBQ | Login",
+		"title_register": "KLBQ | Register",
+
+		"_comment": "SHARED BETW REGISTER AND LOGIN FORM",
+		"form_one": "Enter email address",
+		"form_two": "Enter password",
+		"form_three": "Enter username",
+
+		"btn_signIn": "Sign in",
+		"btn_Google": "Sign in with Google",
+		"msg_or": "OR",
+		"btn_register": "Register"
+	},
+
+	"home":
+	{
+		"_comment": "POP UP",
+		"title": "KLBQ | Home",
+		"msg_greeting": "Welcome back, ",
+
+		"_comment": "GAME MODE SELECTION",
+		"btn_1vs1": "1 vs 1",
+		"btn_tour": "Tournament",
+		"btn_AI": "AI Match",
+
+		"_comment": "OTHER PARTS IN HOMEPAGE",
+		"btn_friend": "Friends",
+		"btn_history": "Match History",
+		"text_version": "Version ",
+		"btn_credit": "Credits"
+	},
+
+	"profile":
+	{
+		"title": "KLBQ | Profile",
+		"btn_log_out": "Log Out",
+		"btn_profile": "Profile",
+
+		"btn_option": "Option",
+		"btn_update_avatar": "Update Avatar",
+		"btn_delete_avatar": "Delete Avatar",
+		"btn_update_name": "Update Username",
+		"btn_update_password": "Update Password"
+	},
+
+	"history":
+	{
+		"title": "KLBQ | History",
+		"mode_1vs1": "1 vs 1",
+		"mode_tour": "Tournament",
+		"mode_tourMatch": "Tournament Match"
+	},
+
+	"friend": 
+	{
+		"title": "KLBQ | Friends",
+		"stat_mutual": "Friendships",
+
+		"form_addFriend": "Enter User ID",
+
+		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
+		"msg_deleteConfirm": "Delete this friend?",
+		"btn_delete": "Delete",
+		"btn_no": "No"
+	},
+
+	"shared":
+	{
+		"game_stats":
+		{
+			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
+			"_comment": "HISTORY SHARED WON & LOSE",
+			"stat_won": "Won",
+			"stat_lose": "Lose",
+			"stat_tournament": "Tournament",
+			"stat_total_match": "Total Matches",
+			"stat_win_rate": "Win Rate"
+		},
+
+		"msg_unauthorized": "Session expired. Log in again!",
+		"msg_userNotFound": "User not found. Log in again!",
+		"msg_serverErr": "Server error. Attempt to connect again",
+		"msg_serverErr_fail": "Attempt failed! Log in again."
+	}
+
+}

@@ -11,9 +11,11 @@ export type Progress = {
 
 export function LoadingScreen({ progress}: { progress: Progress }) {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <p className="font-semibold font-serif italic">{progress.step}</p>
-      {progress.completed !== null && <p className="">{progress.completed} / {progress.total} </p>}
+    <div className="flex flex-col items-center">
+      <p className="flex items-center gap-2 font-semibold">
+        {progress.completed !== null && (<span className="">{progress.completed} / {progress.total}:</span>)}
+        <span className="font-serif italic">{progress.step}</span>
+      </p>
       <button type="button" className="px-4 py-2 flex items-center justify-center" disabled>
         <svg className="size-5 animate-spin text-black" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="4" r="1.8"></circle>
@@ -38,7 +40,6 @@ type fetchDataProps = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setProgress: React.Dispatch<React.SetStateAction<Progress>>,
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
-  // setFriend: React.Dispatch<React.SetStateAction<Friends | null>>
 }
 
 export async function loadData({ setLoading, setProgress, setUser }: fetchDataProps ) {
@@ -47,7 +48,6 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
   [
     { name: "Checking User", api: () => apiFetchPrivate("me", { method: "GET" }), setter: null },
     { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
-    // { name: "Fetching Friends Data", api: () => apiFetchPrivate("my_friends", { method: "POST", body: "{}"}), setter: setFriend }
   ]
   
   try {
@@ -59,7 +59,7 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
         ...prev, step: name, completed: prev.completed, }));
 
       const data = await api();
-      // console.info(data);
+      // console.info("Data Fetched:\n",data);
       if (setter)
         setter(data);
 
@@ -69,9 +69,10 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
       await sleep(500);
     }
 
-    setProgress({ step: "Data fetching completed", completed: null, total: null });
+    setProgress({ step: "Finished", completed: null, total: null });
     await sleep(500);
     setLoading(false);
+    console.log("User data fetched");
 
   } catch (err: any) {
     console.error("Issue: " + err.message);

@@ -144,8 +144,8 @@ export function FriendPage() {
         setFriends(data.friends);
         setTotal(data.friends.length);
       }
-      console.log("Friends data fetched.");
-      console.log(friends);
+      console.log("Friends data fetched");
+      // console.log(friends);
     } catch (err: any) {
       toast.error("Error when fetching friends");
     }

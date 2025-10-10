@@ -3,6 +3,7 @@ import type { Friends } from "../../share/type/friend.ts";
 import { getUserById } from "../../database/user.ts";
 import { addFriendbyId, checkFriendMutual, deleteFriendbyId, getFriendshipsById } from "../../database/friendship.ts";
 import { getProfileById } from "../../database/profile.ts";
+import validator from "validator";
 
 const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 {
@@ -47,19 +48,25 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 
 	fastify.post('/add_friend', async (req: any, res: any) => {
 		try {
-			const { friend_adding } = req.body as any;
-			if (req.user === friend_adding)
-				return res.status(400).send({ message: "Error: You cannot add yourself as a friend" });
-			// else if (!isNumeric(friend_adding))
-			// 	return res.status(400).send({ message: "Error: ID have to be numeric value" });
+			let { friend_adding } = req.body as any;
+			
+			if (!validator.isNumeric(friend_adding))
+				return res.status(400).send({ message: "Error: ID have to be numeric value" });
 			if (friend_adding < 1)
 				return res.status(400).send({ message: "Error: Invalid ID" });
+			
+			friend_adding = Number(friend_adding);
+			if (req.user === friend_adding)
+				return res.status(400).send({ message: "Error: You cannot add yourself as a friend" });
+
 			await addFriendbyId(req.user, friend_adding);
+			
 			return res.send({ message: 'Friend added successfully' });
 		}
 		catch (error: any)
 		{
-			res.status(400).send({ message: 'Unauthorize add_friend' });
+			console.log(error.message);
+			res.status(400).send({ message: "Fail to add friend!" });
 		}
 	});
 
