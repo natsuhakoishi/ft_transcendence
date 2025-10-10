@@ -66,7 +66,7 @@ function handleGoal(room: Room | AIRoom, gameOver: () => void): void {
     const score: GameScore = room.getState().score;
     console.log("goal", score);
 
-    if (score.p1Score === 3 || score.p2Score === 3)
+    if (score.p1Score === 5 || score.p2Score === 5)
     {
         end(room, gameOver);
         return ;
