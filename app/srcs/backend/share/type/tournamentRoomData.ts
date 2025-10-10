@@ -2,7 +2,7 @@ import { createTRoomID, initLeaderboard, initTData, TDataWithOutWS } from "../..
 import type { TData } from "./gameData.ts";
 import fp from "fastify-plugin";
 import type { DBMatchData } from "./db_MatchData.ts";
-import { bindMatchTournament, createTournament, getTournamentLeaderboard, joinTournament } from "../../database/tournament.ts";
+import { bindMatchTournament, createTournament, getTournamentLeaderboard, joinTournament, updateTournamentRank } from "../../database/tournament.ts";
 import { getMatchByUserId } from "../../database/match.ts";
 import type { Player, PlayerWithProfileData } from "./Player.ts";
 import type { Matches } from "./Matches.ts";
@@ -148,6 +148,9 @@ export class TRoom {
     }
 
     updateWinnerNLoser(id: number, p1Score: number, p2Score: number): void {
+        // console.log("status: ", this.status);
+        // console.log("r1 score: );
+
         if (this.status === "round1" && this.r1flag < 2)
         {
             this.r1flag++;
@@ -184,11 +187,19 @@ export class TRoom {
 
             if (this.r2flag === 2)
             {
-                this.data.tournament_id = this.dbID;
                 this.data.leaderboard = this.leaderboard;
                 console.log("updateWNL: ", this.data.leaderboard, {first: this.leaderboard.first, second: this.leaderboard.second});
                 addWinLose(this.leaderboard.first.id, "tournament_wins");
                 this.status = "end";
+
+                console.log("r2 matches data:", r2.matches[0], r2.matches[1]);
+
+                (async () => {
+                    await updateTournamentRank(this.dbID, this.leaderboard.first.id, 1);
+                    await updateTournamentRank(this.dbID, this.leaderboard.second.id, 2);
+                    await updateTournamentRank(this.dbID, this.leaderboard.third.id, 3);
+                    await updateTournamentRank(this.dbID, this.leaderboard.last.id, 4);
+                })()
             }
         }
         console.log("updateWNL: ", this.r1flag, this.r2flag, this.status);
@@ -202,9 +213,9 @@ export class TRoom {
     bindMatch(id: number)
     {
         ( async () => {
-            const MatchData_A: DBMatchData[] = await getMatchByUserId(id);
+            const MatchData: DBMatchData[] = await getMatchByUserId(id);
             // await console.log(MatchData_A);
-            await bindMatchTournament(this.dbID, MatchData_A[0].id);
+            await bindMatchTournament(this.dbID, MatchData[0].id);
             console.log("tournament room: bind Match");
         })()
     }
@@ -228,6 +239,11 @@ export class TRoom {
     addResult(losers: Player[], winners: Player[], loser: Player, winner: Player): void {
         losers.push(loser);
         winners.push(winner);
+        if (losers.length === 2)
+        {
+            losers.sort((a, b) => a.id - b.id );
+            winners.sort((a, b) => a.id - b.id );
+        }
     }
 
     getR1Winners(): Player[] {

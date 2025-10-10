@@ -119,7 +119,7 @@ export function TournamentGamePage() {
                     console.log("TournamentGamePage: leaderboard: ", parse);
                     setTimeout(() => {
                         console.log("TournamentGamePage: to:", import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT);
-                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT, { state: {tournament_id: parse.state.tournament_id, leaderboard: parse.state.leaderboard, playerID: playerID}, replace: true});
+                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: playerID}, replace: true});
                     }, 1000 * 4);
                     //TODO possible to return to game page if hit "back" while navigating
                 }

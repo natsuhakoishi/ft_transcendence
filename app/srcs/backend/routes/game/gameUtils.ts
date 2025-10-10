@@ -146,8 +146,7 @@ export function TDataWithOutWS(_data: TData, _state?: "r1" | "r2"): TData {
         },
         players: _data.players,
         state: _state,
-        leaderboard: _data.leaderboard,
-        tournament_id: _data.tournament_id
+        leaderboard: _data.leaderboard
     }
 
     return data;

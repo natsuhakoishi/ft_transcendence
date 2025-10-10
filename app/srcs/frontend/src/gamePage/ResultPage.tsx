@@ -66,24 +66,14 @@ function Rank({rank, player, me}: {rank: string, player: PlayerWithProfileData, 
 export function TournamentResultPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { tournament_id, leaderboard, playerID } = (location.state || {}) as { tournament_id: number, leaderboard: Leaderboard, playerID: number };
+    const { leaderboard, playerID } = (location.state || {}) as { leaderboard: Leaderboard, playerID: number };
 
     React.useEffect(() => {
         document.title = "Result";
         console.log("TournamentResult: useEffect");
-        if (!leaderboard || !playerID || !tournament_id)
+        if (!leaderboard || !playerID)
             navigate(import.meta.env.VITE_PATH_404NOTFOUND);
         console.log("TOurnamentResult: ", leaderboard);
-
-        const updateRanks = async () => {
-            try {
-                await apiFetchPrivate("tournament/update_ranking", { method: "POST", body: JSON.stringify({ tournament_id, leaderboard }) });
-                console.log("tournament leaderboard updated.");
-            } catch (err: any) {
-                console.error("Error updating tournament ranks:", err);
-            }
-        };
-        updateRanks();
 
     }, []);
 
