@@ -1,0 +1,101 @@
+{
+	"_comment": "CONSIDERED ADD FOR CERTAIN STATUS",
+	"_comment": "REUSED COMPONENTS FIRST THEN PAGES",
+
+	"loading":
+	{
+		"_comment": "PROVIDED FOR THE LOADING COMPONENTS",
+		"step_start": "読み込み中",
+		"step_complete": "読み込み完了",
+		"step_checkUser": "ユーザー情報を確認中",
+		"step_fetchUser": "ユーザー情報を取得中"
+	},
+
+	"auth":
+	{
+		"title_login": "KLBQ | ログイン",
+		"title_register": "KLBQ | 登録",
+
+		"_comment": "SHARED BETW REGISTER AND LOGIN FORM",
+		"form_one": "メールアドレスを入力してください",
+		"form_two": "パスワードを入力してください",
+		"form_three": "ユーザー名を入力してください",
+
+		"btn_signIn": "ログイン",
+		"btn_Google": "Googleでログイン",
+		"msg_or": "または",
+		"btn_register": "登録"
+	},
+
+	"home":
+	{
+		"_comment": "POP UP",
+		"title": "KLBQ | ホーム",
+		"msg_greeting": "おかえりなさい、 ",
+
+		"_comment": "GAME MODE SELECTION",
+		"btn_1vs1": "1 vs 1",
+		"btn_tour": "トーナメント",
+		"btn_AI": "AI ゲーム",
+
+		"_comment": "OTHER PARTS IN HOMEPAGE",
+		"btn_friend": "フレンド",
+		"btn_history": "対戦履歴",
+		"text_version": "バージョン ",
+		"btn_credit": "スタッフクレジット"
+	},
+
+	"profile":
+	{
+		"title": "KLBQ | プロフィール",
+		"btn_log_out": "ログアウト",
+		"btn_profile": "プロフィール",
+
+		"btn_option": "オプション",
+		"btn_update_avatar": "アバターを更新",
+		"btn_delete_avatar": "アバターを削除",
+		"btn_update_name": "ユーザー名を変更",
+		"btn_update_password": "パスワードを変更"
+	},
+
+	"history":
+	{
+		"title": "KLBQ | 対戦履歴",
+		"mode_1vs1": "1 vs 1",
+		"mode_tour": "トーナメント",
+		"mode_tourMatch": "トーナメントマッチの履歴"
+	},
+
+	"friend":
+	{
+		"title": "KLBQ | フレンド",
+		"stat_mutual": "フレンド",
+
+		"form_addFriend": "ユーザーIDを入力してください",
+
+		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
+		"msg_deleteConfirm": "このフレンドを削除しますか？",
+		"btn_delete": "削除",
+		"btn_no": "キャンセル"
+	},
+
+	"shared":
+	{
+		"game_stats":
+		{
+			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
+			"_comment": "HISTORY SHARED WON & LOSE",
+			"stat_won": "勝利数",
+			"stat_lose": "敗北数",
+			"stat_tournament": "トーナメント勝利数",
+			"stat_total_match": "総対戦数",
+			"stat_win_rate": "勝率"
+		},
+
+		"msg_unauthorized": "セッションの有効期限が切れました。再度ログインしてください！",
+		"msg_userNotFound": "ユーザーが見つかりません。再度ログインしてください！",
+		"msg_serverErr": "サーバーエラーです。再接続をお試しください！",
+		"msg_serverErr_fail": "接続に失敗しました。再度ログインしてください！"
+	}
+
+}
