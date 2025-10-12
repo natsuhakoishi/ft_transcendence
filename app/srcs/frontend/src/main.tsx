@@ -13,7 +13,7 @@ import { HistoryPage } from "./homePage/MatchHistory/history";
 import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
-import { useGlobalErrorMonitor } from "./hook.ts";
+import { useGlobalErrorMonitor } from "./_helper/hook.ts";
 
 function App() {
   useGlobalErrorMonitor();

@@ -2,12 +2,12 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-type ApiEventKey = "401" | "NETWORK_ERROR" | "USER_NOT_FOUND";
+type ApiEventKey = "401" | "503" | "404";
 
 let globalErrorHandler: Record<ApiEventKey, (() => void) | null> = {
   "401": null,
-  "NETWORK_ERROR": null,
-  "USER_NOT_FOUND": null,
+  "503": null,
+  "404": null,
 };
 
 export function useGlobalErrorMonitor() {
@@ -22,8 +22,8 @@ export function useGlobalErrorMonitor() {
     };
 
     //Backend Server Down
-    globalErrorHandler["NETWORK_ERROR"] = async () => {
-      toast.error("Cannot connect to server. Retrying...");
+    globalErrorHandler["503"] = async () => {
+      toast.error("Server disconnect. Retrying...");
       // const currentPath = location.pathname;
 
       await new Promise(r => setTimeout(r, 1000 * 25));
@@ -35,7 +35,7 @@ export function useGlobalErrorMonitor() {
         toast.success("Reconnected!");
         window.location.reload();
       } catch {
-        toast.error("Server still unreachable. Redirecting to login...");
+        toast.error("Server still unreachable. Redirecting...");
         setTimeout(() => {
           navigate("/auth", { replace: true });
         }, 2000);
@@ -43,8 +43,8 @@ export function useGlobalErrorMonitor() {
     };
 
     //User not found
-    globalErrorHandler["USER_NOT_FOUND"] = () => {
-      toast.error("User not found.");
+    globalErrorHandler["404"] = () => {
+      toast.error("User not found. Redirecting...");
       navigate("/auth", { replace: true });
     };
 
