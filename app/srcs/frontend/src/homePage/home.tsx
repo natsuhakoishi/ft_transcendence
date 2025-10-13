@@ -1,10 +1,10 @@
 import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
+import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
+import { useLang, withTranslation, type Lang } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
-import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
-import { useLang, type Lang } from "../_hooks/language.tsx";
 
 export function LanguageBar() {
   const { lang, setLang } = useLang();
@@ -16,7 +16,7 @@ export function LanguageBar() {
         onChange={(e) => setLang(e.target.value as Lang)}
         className="border-2 rounded bg-gray-800"
       >
-        <option value="en" className="bg-blue-950">EN</option>
+        <option value="en" className="bg-blue-950">English</option>
         <option value="zh" className="bg-blue-950">繁體中文</option>
         <option value="jp" className="bg-blue-950">日語</option>
       </select>
@@ -25,9 +25,10 @@ export function LanguageBar() {
 }
 
 export function FetchData() {
+  const { t } = useLang();
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [progress, setProgress] = React.useState<Progress>({ step: "Loading", completed: null, total: 2 });
+  const [progress, setProgress] = React.useState<Progress>({ step: `${t("loading.step_start")}`, completed: null, total: 2 });
 
   React.useEffect(() => {
     console.log("Fetching data...");
@@ -54,9 +55,8 @@ export type SharedData = {
   progress: Progress;
 };
 
-export function Home() {
+export function HomeP({ t, lang }: { t: (key: string) => string; lang?: string }) {
   const navigate = useNavigate();
-  const { t, lang } = useLang();
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
   const [match, setMatch] = React.useState<boolean>(false);
@@ -75,15 +75,12 @@ export function Home() {
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
       (match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
-        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-blend-overlay"
-          style={{
-          backgroundImage: "url('/pic/homeP.jpg')"
-          }}
-        >
+        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-black/23 bg-[url('/pic/homeP.jpg')] bg-blend-overlay text-xl">
+
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
-            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 font-bold">
-              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-gray-300/50 flex items-center justify-center hover:scale-90 transition-transform"
+            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold">
+              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover:scale-90 transition-transform"
                 onClick={() => navigate("/profile")}>
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
@@ -95,27 +92,27 @@ export function Home() {
           {/*Center part*/}
           <div className="column-start-2 row-span-3 flex flex-col items-center">
             <div className="flex-1" />
-            <div className="bg-[#A0EAFF]/75 w-[90%] h-1/2">
-              <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center">
-                <button className="row-span-2 w-full h-full bg-sky-500"
+            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl">
+              <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
+                <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
                  onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
 
-                <button className="bg-gray-300 h-2/3 w-2/3"
+                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
                  onClick={() => { setMatch(true); setAI(false); }}
                 >{t("home.btn_1vs1")}</button>
 
-                <button className="bg-gray-300 h-2/3 w-2/3"
+                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
                  onClick={() => { setMatch(true); setAI(true); }}
                 >{t("home.btn_AI")}</button>
               </div>
             </div>
             <div className="flex-1" />
-            <span className="">{t("home.btn_credit")}</span>
+            <span className="mb-3">{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}
-          <div className="column-start-3 row-span-3 flex flex-col items-end">
+          <div className="column-start-3 row-span-3 flex flex-col items-end mr-3">
             <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
             <LanguageBar />
             <button className="absolute bottom-2 right-4 p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
@@ -127,3 +124,5 @@ export function Home() {
     </>
   );
 }
+
+export const Home = withTranslation(HomeP);

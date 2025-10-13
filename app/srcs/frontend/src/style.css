@@ -32,6 +32,10 @@ body {
   @apply cursor-pointer transition-transform ease-in-out duration-100;
 }
 
+.hover-increase {
+  @apply cursor-pointer hover:scale-105 transition-transform ease-in-out duration-100;
+}
+
 /* visualize boundaries */
 /* * {
   outline: 1px solid red;

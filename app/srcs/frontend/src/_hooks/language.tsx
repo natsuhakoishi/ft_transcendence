@@ -4,21 +4,6 @@ export type Lang = "en" | "zh" | "jp";
 
 export const LanguageContext = React.createContext<any>(null);
 
-export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const langPack = useLanguage();
-
-  if (!Object.keys(langPack.translations).length)
-    return <div>Translation loading..</div>;
-
-  return (
-    <LanguageContext.Provider value={langPack}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-export const useLang = () => React.useContext(LanguageContext);
-
 export function useLanguage() {
   const storedLang = (localStorage.getItem("lang") as Lang) ?? "en";
   const [lang, setLang] = React.useState<Lang>(storedLang);
@@ -37,4 +22,28 @@ export function useLanguage() {
     key.split('.').reduce((obj: any, k) => obj && obj[k], translations) || key;
 
   return { lang, setLang, t, translations };
+}
+
+export const useLang = () => React.useContext(LanguageContext);
+
+export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
+  const langPack = useLanguage();
+
+  if (!Object.keys(langPack.translations).length)
+    return <div>Translation loading..</div>;
+
+  return (
+    <LanguageContext.Provider value={langPack}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export function withTranslation<T extends { t: Function; lang?: string }>(
+  Component: React.ComponentType<T>
+) {
+  return (props: Omit<T, "t">) => {
+    const { t, lang } = useLang();
+    return <Component {...(props as T)} t={t} lang={lang} />;
+  };
 }

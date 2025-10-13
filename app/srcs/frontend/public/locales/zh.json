@@ -16,15 +16,9 @@
 		"title_login": "KLBQ | 登入",
 		"title_register": "KLBQ | 註冊",
 
-		"_comment": "SHARED BETW REGISTER AND LOGIN FORM",
-		"form_one": "請輸入電郵地址",
-		"form_two": "請輸入密碼",
-		"form_three": "請輸入用戶名稱",
-
 		"btn_signIn": "登入",
-		"btn_Google": "Google 登入",
-		"msg_or": "或",
-		"btn_register": "註冊"
+		"btn_register": "註冊",
+		"btn_cancel": "取消"
 	},
 
 	"home":
@@ -71,8 +65,6 @@
 		"title": "KLBQ | 好友",
 		"stat_mutual": "好友",
 
-		"form_addFriend": "請輸入用戶 ID",
-
 		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
 		"msg_deleteConfirm": "確定刪除此好友？",
 		"btn_delete": "刪除",
@@ -81,6 +73,16 @@
 
 	"shared":
 	{
+		"form":
+		{
+			"place_email": "請輸入電郵地址",
+			"place_password": "請輸入密碼",
+			"place_n_password": "請輸入新密碼",
+			"place_o_password": "請輸入舊密碼",
+			"place_name": "請輸入用戶名稱",
+			"place_userID": "請輸入用戶 ID"
+		},
+
 		"game_stats":
 		{
 			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
@@ -92,10 +94,14 @@
 			"stat_win_rate": "勝率"
 		},
 
-		"msg_unauthorized": "登入階段已逾期，請重新登入！",
-		"msg_userNotFound": "找不到用戶，請重新登入！",
-		"msg_serverErr": "伺服器錯誤，請嘗試重新連線！",
-		"msg_serverErr_fail": "連線失敗，請重新登入！"
+		"error":
+		{
+			"401": "登入階段已逾期，跳转中。。。",
+			"404": "找不到用戶，跳转中。。。",
+			"503": "Server disconnect. Retrying...",
+			"503-Fail": "連線失敗，跳转中。。。",
+			"503-Success": "Reconnected!"
+		}
 	}
 
 }

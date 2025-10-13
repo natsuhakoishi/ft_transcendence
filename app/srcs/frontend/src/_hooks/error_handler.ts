@@ -1,6 +1,7 @@
 import React from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "./language";
 
 type ApiEventKey = "401" | "503" | "404";
 
@@ -12,18 +13,19 @@ let globalErrorHandler: Record<ApiEventKey, (() => void) | null> = {
 
 export function useGlobalErrorMonitor() {
   const navigate = useNavigate();
+  const { t } = useLang();
 
   React.useEffect(() => {
 
     //Access Token Expired
     globalErrorHandler["401"] = () => {
-      toast.error("Session expired. Redirecting...");
+      toast.error(t("shared.error.401"));
       navigate("/auth", { replace: true });
     };
 
     //Backend Server Down
     globalErrorHandler["503"] = async () => {
-      toast.error("Server disconnect. Retrying...");
+      toast.error(`${t("shared.error.503")}`);
       // const currentPath = location.pathname;
 
       await new Promise(r => setTimeout(r, 1000 * 25));
@@ -32,10 +34,10 @@ export function useGlobalErrorMonitor() {
         const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}me`, { credentials: "include" });
         if (!res.ok) throw new Error("Still unreachable");
 
-        toast.success("Reconnected!");
+        toast.success(t("shared.error.503-success"));
         window.location.reload();
       } catch {
-        toast.error("Server still unreachable. Redirecting...");
+        toast.error(t("shared.error.503-fail"));
         setTimeout(() => {
           navigate("/auth", { replace: true });
         }, 2000);
@@ -44,7 +46,7 @@ export function useGlobalErrorMonitor() {
 
     //User not found
     globalErrorHandler["404"] = () => {
-      toast.error("User not found. Redirecting...");
+      toast.error(t("shared.error.404"));
       navigate("/auth", { replace: true });
     };
 

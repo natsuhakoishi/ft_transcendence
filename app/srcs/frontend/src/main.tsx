@@ -17,12 +17,11 @@ import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 
 function App() {
-  useGlobalErrorMonitor();
-
   return (
     <>
       <Toaster position="top-center" />
       <LanguageProvider>
+      <GlobalErrorMonitor />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
         <Route path="/" element={<FetchData />}>
@@ -44,6 +43,11 @@ function App() {
       </LanguageProvider>
     </>
    );
+
+  function GlobalErrorMonitor() {
+    useGlobalErrorMonitor();
+    return null;
+  }
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -51,7 +55,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <App />
     </BrowserRouter>
 );
-
 
 // ReactDOM.createRoot(document.getElementById("root")!).render(
 //   <React.StrictMode>

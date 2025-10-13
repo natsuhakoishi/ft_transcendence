@@ -16,14 +16,7 @@
 		"title_login": "KLBQ | ログイン",
 		"title_register": "KLBQ | 登録",
 
-		"_comment": "SHARED BETW REGISTER AND LOGIN FORM",
-		"form_one": "メールアドレスを入力してください",
-		"form_two": "パスワードを入力してください",
-		"form_three": "ユーザー名を入力してください",
-
 		"btn_signIn": "ログイン",
-		"btn_Google": "Googleでログイン",
-		"msg_or": "または",
 		"btn_register": "登録"
 	},
 
@@ -71,8 +64,6 @@
 		"title": "KLBQ | フレンド",
 		"stat_mutual": "フレンド",
 
-		"form_addFriend": "ユーザーIDを入力してください",
-
 		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
 		"msg_deleteConfirm": "このフレンドを削除しますか？",
 		"btn_delete": "削除",
@@ -81,6 +72,16 @@
 
 	"shared":
 	{
+		"form":
+		{
+			"place_email": "メールアドレスを入力してください",
+			"place_password": "パスワードを入力してください",
+			"place_n_password": "新しいパスワードを入力してください",
+			"place_o_password": "古いパスワードを入力してください",
+			"place_name": "ユーザー名を入力してください",
+			"place_userID": "ユーザーIDを入力してください"
+		},
+
 		"game_stats":
 		{
 			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
@@ -92,10 +93,14 @@
 			"stat_win_rate": "勝率"
 		},
 
-		"msg_unauthorized": "セッションの有効期限が切れました。再度ログインしてください！",
-		"msg_userNotFound": "ユーザーが見つかりません。再度ログインしてください！",
-		"msg_serverErr": "サーバーエラーです。再接続をお試しください！",
-		"msg_serverErr_fail": "接続に失敗しました。再度ログインしてください！"
+		"error":
+		{
+			"401": "セッションの有効期限が切れました。再度ログインしてください！",
+			"404": "ユーザーが見つかりません。再度ログインしてください！",
+			"503": "Server disconnect. Retrying...",
+			"503-Fail": "Server still unreachable. Redirecting...",
+			"503-Success": "Reconnected!"
+		}
 	}
 
 }

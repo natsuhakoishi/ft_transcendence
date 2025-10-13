@@ -14,7 +14,8 @@ const submitUsername = async (
   const input = form.elements.namedItem("username") as HTMLInputElement;
   const value = input.value.trim();
   if (!value) return toast.error("Empty username!");
-  if (value.length < 3) return toast.error("Username length must longer than 3.");
+  if (value.length < 3) return toast.error("Username length must between 3 - 8.");
+  if (value.length > 8) return toast.error("Username length must between 3 - 8.");
 
   try {
     await apiFetchPrivate("update_username", { method: "POST", body: JSON.stringify({ username: value}) });
@@ -108,7 +109,7 @@ const avatarUpdate = async (
 
 type Mode = "upAvatar" | "upPass" | "upName" | "dltAvatar" | "";
 
-export function MenuOption({ user, refetch } : {user : User | null , refetch: () => void}) {
+export function MenuOption({ user, refetch, t } : { user : User | null; refetch: () => void; t: (key: string) => string; }) {
   const [toggle, setToggle] = useState<Mode>("");
   const [preview, setPreview] = useState<string>("");
   const [previewName, setPreviewName] = useState<string>("");
@@ -118,7 +119,7 @@ export function MenuOption({ user, refetch } : {user : User | null , refetch: ()
   const pickAvatar = () => { fileInputRef.current?.click(); }
 
   React.useEffect(() => {
-    setPreviewName(user?.acc.username ?? "Loading..");
+    setPreviewName(user?.acc.username ?? "...");
   }, [user]);
 
   return (  
@@ -130,33 +131,33 @@ export function MenuOption({ user, refetch } : {user : User | null , refetch: ()
         <button className="aspect-square h-1/2 rounded-full overflow-clip border-2 border-gray-300 disable" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={preview || avatarURL} />
         </button>
-        <button type="button" className="w-[35%] border-2 p-0.5 text-xs" onClick={() => {avatarDelete(setPreview, refetch), setToggle("dltAvatar")}}>Delete Avatar</button>
+        <button type="button" className="w-[50%] border-2 p-1" onClick={() => {avatarDelete(setPreview, refetch), setToggle("dltAvatar")}}>{t("profile.btn_delete_avatar")}</button>
       </div>
 
       <div className="flex flex-col gap-2 justify-center align-middle">
-        <button type="button" className="border-2 p-1" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>Update Avatar</button>
+        <button type="button" className="border-2 p-2" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>{t("profile.btn_update_avatar")}</button>
         <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(event) => avatarUpdate(event, setPreview, refetch)}/>
-        {/*feat: cancel & apply*/}
-        <button type="button" className="border-2 p-1" onClick={() => setToggle("upName")}>Update Username</button>
-        <button className="border-2 p-1" onClick={() => setToggle("upPass")}>Update Password</button>
+
+        <button type="button" className="border-2 p-2" onClick={() => setToggle("upName")}>{t("profile.btn_update_name")}</button>
+        <button className="border-2 p-2" onClick={() => setToggle("upPass")}>{t("profile.btn_update_password")}</button>
       </div>
 
       {toggle === "upName" &&
       (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName, setToggle, refetch)}>
-        <input type="username" name="username" placeholder="Enter new username" autoComplete="off" required
+        <input type="username" name="username" placeholder={t("shared.form.place_name")} autoComplete="off" required
           className="border rounded h-8 text-sm"
         />
         <button type="submit" className="rounded">✔</button>
         <button type="button" onClick={() => setToggle("")} className="text-sm rounded">✖</button>
-      </form>)
+      </form>)  
       }
-
+      {/* //feat: UX improved, aligned with correspond action */}
       {toggle === "upPass" &&
       (<form className="flex gap-1 items-center" onSubmit={(event) => submitPassword(event, user, setToggle)}>
-        <input type="password" name="old_password" placeholder="Enter old password" autoComplete="off" required
+        <input type="password" name="old_password" placeholder={t("shared.form.place_o_password")} autoComplete="off" required
           className="border rounded h-8 text-sm"
         />
-        <input type="password" name="new_password" placeholder="Enter new password" autoComplete="off" required
+        <input type="password" name="new_password" placeholder={t("shared.form.place_n_password")} autoComplete="off" required
           className="border rounded h-8 text-sm"
         />
         <button type="submit" className="rounded">✔</button>
@@ -167,7 +168,3 @@ export function MenuOption({ user, refetch } : {user : User | null , refetch: ()
     </>
   );
 }
-
-//todo ofc you didnt forget to proper style the button the button and the buttons right
-//todo not forgetting the font & text also
-//todo ofc you not forget to tweak the styling back to smth fit dark theme right
