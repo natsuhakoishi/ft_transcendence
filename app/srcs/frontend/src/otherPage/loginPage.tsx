@@ -31,17 +31,6 @@ const Register = ( { verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
 }
 //feat! "return button"
 
-const GoogleLogIn: React.FC<{ onClick: () => void }> = ({ onClick }) => {
-  return (
-    <button onClick={onClick} type="button" className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 ">
-      <svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 19">
-        <path fillRule="evenodd" d="M8.842 18.083a8.8 8.8 0 0 1-8.65-8.948 8.841 8.841 0 0 1 8.8-8.652h.153a8.464 8.464 0 0 1 5.7 2.257l-2.193 2.038A5.27 5.27 0 0 0 9.09 3.4a5.882 5.882 0 0 0-.2 11.76h.124a5.091 5.091 0 0 0 5.248-4.057L14.3 11H9V8h8.34c.066.543.095 1.09.088 1.636-.086 5.053-3.463 8.449-8.4 8.449l-.186-.002Z" clipRule="evenodd"/>
-      </svg>
-    Sign in with Google
-    </button>
-  );
-}
-
 const OTPModal = ({ verifyRef, onVerify }: { verifyRef: React.RefObject<VerifyBody>, onVerify: () => void }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
@@ -81,7 +70,7 @@ const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
       <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
       type="password" name="password" placeholder="Enter password" required autoComplete="current-password"
       />
-      <button type="submit" className="border-black-300 border-2 rounded-lg p-1">Sign in</button>
+      <button type="submit" className="border-black-300 border-2 rounded-lg p-1 mt-2">Sign in</button>
       </form>
     </>
   );
@@ -121,34 +110,6 @@ export function LoginPage() {
         toast.error(err.message);
     }
   }
-
-  const handleLoginGoogle = async () => {
-  try {
-      const client = google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        ux_mode: 'popup',
-        callback: async (response: any) => {
-          const { credential } = response;
-
-          const res = await fetch(`${import.meta.env.VITE_API_GOOGLE_AUTH}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ credential }),
-          });
-
-          if (!res.ok) throw new Error('Failed to log in');
-          toast.success("Log in with Google Account");
-          navigate("/", { replace: true });
-        },
-      });
-
-      google.accounts.id.prompt();
-    } catch (err: any) {
-      console.error('Issue: ' + err.message);
-      toast.error(err.message);
-    }
-  };
 
   const handleLogin = async () => {
     try {
@@ -201,18 +162,16 @@ export function LoginPage() {
 
   return (
   <>
-    <div className="flex flex-col justify-start items-center h-100 w-100 bg-gray-300 gap-2">
-      <h1 className="text-2xl font-extrabold mb-2 mt-5">KLBQ</h1>
-      <div className="flex flex-col items-center bg-[rgba(199,237,206,1)] rounded-xl w-75 h-2/3 shadow-2xl text-justify mx-3">
+    <div className="relative flex flex-col justify-center items-center h-100 w-100 bg-gray-300 gap-2">
+      <h1 className="absolute top-0 text-2xl font-extrabold mb-2 mt-5">KLBQ</h1>
+      <div className="flex flex-col justify-center items-center bg-[rgba(199,237,206,1)] rounded-xl w-75 h-[60%] shadow-2xl text-justify">
         
       {showOTP && <OTPModal verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
       { mode === "register" ? <Register verifyRef={verifyRef} onSubmit={handleRegister} /> :
         (
           <>
             <LoginForm verifyRef={verifyRef} onSubmit={handleLogin} />
-            <h2>OR</h2>
-            <GoogleLogIn onClick={handleLoginGoogle} />
-            <hr className="h-px min-w-70 my-3 bg-red-700 border-1 dark:bg-gray-700"></hr>
+            <hr className="h-px min-w-70 my-3 bg-red-700 border-1"></hr>
             <button onClick={() => setMode("register")} className="border-black-300 border-2 rounded-lg p-1">Register</button>
           </>
         )
