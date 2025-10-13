@@ -18,7 +18,6 @@ import matchApi from './routes/api/match-api.ts';
 import tournamentApi from './routes/api/tournament-api.ts';
 import jwtPlugin from './routes/api/jwt-plugin.ts'
 import tournamentGetApi from './routes/api/tournament-get-api.ts';
-import authGoogleApi from './routes/api/auth-google-api.ts';
 
 //game
 import websocketPlugin from "@fastify/websocket";
@@ -33,10 +32,9 @@ import AI from './routes/game/gameAI.ts';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const PEM_PASS = process.env.PEM_PASS;
 const BACKEND_PORT = process.env.BACKEND_PORT;
+const IP = process.env.IP || 'localhost';
 export const SMTP_EMAIL = process.env.SMTP_EMAIL;
 export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
 
@@ -46,8 +44,8 @@ export const GAME_PADDLES_HEIGHT_PX: string | undefined = process.env.GAME_PADDL
 export const GAME_PADDLES_WIDTH_PX: string | undefined = process.env.GAME_PADDLES_WIDTH_PX;
 export const GAME_PADDLES_MARGIN_PX: string | undefined = process.env.GAME_PADDLES_MARGIN_PX;
 
-if (!GAME_BOARD_WIDTH_PX || !GAME_BOARD_HEIGHT_PX || 
-	!GAME_PADDLES_HEIGHT_PX || !GAME_PADDLES_WIDTH_PX || 
+if (!GAME_BOARD_WIDTH_PX || !GAME_BOARD_HEIGHT_PX ||
+	!GAME_PADDLES_HEIGHT_PX || !GAME_PADDLES_WIDTH_PX ||
 	!GAME_PADDLES_MARGIN_PX)
 {
 	console.error('Error: Game\'s env not found');
@@ -57,12 +55,6 @@ if (!GAME_BOARD_WIDTH_PX || !GAME_BOARD_HEIGHT_PX ||
 if (!JWT_SECRET)
 {
 	console.error('Error: JWT_SECRET not found');
-	process.exit(1);
-}
-
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET)
-{
-	console.error('Error: GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not found');
 	process.exit(1);
 }
 
@@ -117,7 +109,6 @@ async function initServer()
 	await fastify.register(jwt, { secret: JWT_SECRET,  cookie: { cookieName: "cookiesToken", signed: false } });
 
 	await fastify.register(authApi, { prefix: '/api' });
-	await fastify.register(authGoogleApi, { prefix: '/api' });
 	await fastify.register(tournamentGetApi, { prefix: '/api' });
 
 	// game
@@ -155,7 +146,7 @@ async function main()
 	try
 	{
 		await server.listen({ port: Number(BACKEND_PORT), host: "0.0.0.0"});
-		console.log(`Server listening at https://localhost:${BACKEND_PORT}`);
+		console.log(`Server listening at https://${IP}:${BACKEND_PORT}`);
 	}
 	catch (error)
 	{
