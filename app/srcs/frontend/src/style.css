@@ -2,6 +2,13 @@
 @import "tailwindcss";
 @import "tailwindcss/preflight";
 
+@theme {  
+  --color-golden: #EFE66A;
+  --color-silver: #E9E9E7;
+  --color-online: #43A25A;
+  --color-offline: #82838B;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -15,11 +22,10 @@ body {
     font-weight: bold;
 }
 
-@theme {  
-  --color-golden: #EFE66A;
-  --color-silver: #E9E9E7;
-  --color-online: #43A25A;
-  --color-offline: #82838B;
+.default_text {
+  font-weight: normal;
+  -webkit-text-stroke: 0px;
+  color: black;
 }
 
 .hover {

@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import fastifyCookie from '@fastify/cookie';
 import jwt from '@fastify/jwt';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
@@ -6,7 +7,6 @@ import dotenv from 'dotenv';
 import fastifyStatic from '@fastify/static';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import oauthPlugin from '@fastify/oauth2';
 import fs from 'fs';
 
 import { initDB } from './database/tables.ts';
@@ -109,24 +109,11 @@ async function initServer()
 		}
 	});
 
-	await fastify.register((oauthPlugin as any), {
-		name: 'googleOAuth2',
-		scope: ['openid', 'profile', 'email'],
-		credentials: {
-			client: {
-				id: GOOGLE_CLIENT_ID,
-				secret: GOOGLE_CLIENT_SECRET
-			},
-			auth: oauthPlugin.GOOGLE_CONFIGURATION
-		},
-		startRedirectPath: '/api/auth/google',
-		callbackUri: `https://localhost:${BACKEND_PORT}/api/auth/google/callback`,
-	});
-
 	const dir_name = path.dirname(fileURLToPath(import.meta.url));
 	const avatars_path = path.join(dir_name, 'assets/avatars');
 	await fastify.register(fastifyStatic, { root: avatars_path, prefix: '/avatars/' });
 
+	await fastify.register(fastifyCookie);
 	await fastify.register(jwt, { secret: JWT_SECRET,  cookie: { cookieName: "cookiesToken", signed: false } });
 
 	await fastify.register(authApi, { prefix: '/api' });

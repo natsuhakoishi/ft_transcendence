@@ -90,7 +90,7 @@ export function ProfilePage() {
 		<>
     <div className="w-screen h-screen gap-2 flex flex-col bg-cover bg-center bg-blend-overlay"
       style={{
-      backgroundImage: " url('/pic/profileP.png')"
+      backgroundImage: "linear-gradient(to bottom, #6FB7FFcc, #daade0ac, #A79BFFcc), url('/pic/profileP.jpg')"
       }}
     >
     {/*bg-[linear-gradient(to_bottom,#dbd1dcde,#daade0ac,#ee8ffab8),url('/pic/profileP.png')] bg-blend-overlay*/}
