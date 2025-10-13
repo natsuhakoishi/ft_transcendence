@@ -99,8 +99,7 @@ async function initServer()
 	await initDB();
 
 	await fastify.register(cors, {
-		origin: ["https://localhost:5173", "https://192.168.1.131:5173", "https://54456d68ae06.ngrok-free.app"],
-		//have to manually set ngrok url here as frontend origin else CORS KABOOM
+		origin: true,
 		credentials: true,
 	});
 

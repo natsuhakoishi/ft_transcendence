@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { apiFetchPrivate } from "../utils";
 import toast from "react-hot-toast";
+import { apiFetchPrivate } from "../utils";
 import type { Friends } from "../../../backend/share/type/friend.ts";
 
 const handleAddFriend = async (e: React.FormEvent<HTMLFormElement>, fetch: () => void, setT_Add: React.Dispatch<React.SetStateAction<boolean>>) => {

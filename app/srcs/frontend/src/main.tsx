@@ -4,6 +4,8 @@ import { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/loginPage";
 import { Home, FetchData } from "./homePage/home";
+import { useGlobalErrorMonitor } from "./_hooks/error_handler.ts";
+import { LanguageProvider } from "./_hooks/language.tsx";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";
 import { TournamentGamePage } from "./gamePage/TournamentGamePage";
@@ -13,7 +15,6 @@ import { HistoryPage } from "./homePage/MatchHistory/history";
 import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
-import { useGlobalErrorMonitor } from "./_helper/hook.ts";
 
 function App() {
   useGlobalErrorMonitor();
@@ -21,6 +22,7 @@ function App() {
   return (
     <>
       <Toaster position="top-center" />
+      <LanguageProvider>
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
         <Route path="/" element={<FetchData />}>
@@ -39,6 +41,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/404" element={<NotFound />} />
       </Routes>
+      </LanguageProvider>
     </>
    );
 }

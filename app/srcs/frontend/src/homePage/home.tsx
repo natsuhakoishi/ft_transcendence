@@ -2,8 +2,27 @@ import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import type { User } from "../../../backend/share/type/user.ts";
-import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
 import { Matching } from "../gamePage/matching.tsx";
+import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
+import { useLang, type Lang } from "../_hooks/language.tsx";
+
+export function LanguageBar() {
+  const { lang, setLang } = useLang();
+
+  return (
+    <div className="flex items-center justify-between p-1">
+      <h1 className="text-lg font-bold"></h1>
+      <select value={lang}
+        onChange={(e) => setLang(e.target.value as Lang)}
+        className="border-2 rounded bg-gray-800"
+      >
+        <option value="en" className="bg-blue-950">EN</option>
+        <option value="zh" className="bg-blue-950">繁體中文</option>
+        <option value="jp" className="bg-blue-950">日語</option>
+      </select>
+    </div>
+  );
+}
 
 export function FetchData() {
   const [user, setUser] = React.useState<User | null>(null);
@@ -37,18 +56,19 @@ export type SharedData = {
 
 export function Home() {
   const navigate = useNavigate();
+  const { t, lang } = useLang();
   const { user, loading, progress } = useOutletContext<SharedData>();
+  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
   const [match, setMatch] = React.useState<boolean>(false);
   const [ AI, setAI ] = React.useState(false);
-  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
 
   React.useEffect(() => {
-  	document.title = "KLBQ | Home";
-  }, []);
+    document.title = t("home.title");
+  }, [t, lang]);
 
   React.useEffect(() => {
     if (user && !loading)
-      toast.success("Welcome back, " + user.acc.username + ".");
+      toast.success(`${t("home.msg_greeting")}${user.acc.username}.`);
   }, [user, loading]);
 
   return (
@@ -69,7 +89,7 @@ export function Home() {
               </button>
               <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
             </div>
-            <button className="absolute p-1 bottom-2 left-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>Friends</button>
+            <button className="absolute p-1 bottom-2 left-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
@@ -78,31 +98,27 @@ export function Home() {
             <div className="bg-[#A0EAFF]/75 w-[90%] h-1/2">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center">
                 <button className="row-span-2 w-full h-full bg-sky-500"
-                 onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}>Tournament</button>
+                 onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
+                >{t("home.btn_tour")}</button>
 
                 <button className="bg-gray-300 h-2/3 w-2/3"
-                 onClick={() => {
-                   setMatch(true);
-                   setAI(false);
-                  }}
-                  >1 vs 1</button>
+                 onClick={() => { setMatch(true); setAI(false); }}
+                >{t("home.btn_1vs1")}</button>
 
                 <button className="bg-gray-300 h-2/3 w-2/3"
-                 onClick={() => {
-                   setMatch(true);
-                   setAI(true);
-                  }}
-                 >AI Match</button>
+                 onClick={() => { setMatch(true); setAI(true); }}
+                >{t("home.btn_AI")}</button>
               </div>
             </div>
             <div className="flex-1" />
-            <span className="">Credits</span>
+            <span className="">{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}
-          <div className="column-start-3 row-span-3 flex flex-col items-end justify-between">
-            <span className="p-2 font-semibold">Version {import.meta.env.VITE_VERSION}</span>
-            <button className="absolute bottom-2 right-4 p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>Match History</button>
+          <div className="column-start-3 row-span-3 flex flex-col items-end">
+            <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
+            <LanguageBar />
+            <button className="absolute bottom-2 right-4 p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
 
         </div>

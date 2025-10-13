@@ -3,7 +3,7 @@ import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 import type { PlayerWithProfileData } from "../../backend/share/type/Player";
 import type { User } from "../../backend/share/type/user";
-import { getGlobalErrorHandler } from "./_helper/hook";
+import { getGlobalErrorHandler } from "./_hooks/error_handler";
 
 export function initGameState(): GameState {
 	const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
