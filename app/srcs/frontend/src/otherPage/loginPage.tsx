@@ -123,10 +123,29 @@ export function LoginPage() {
   }
 
   const handleLoginGoogle = async () => {
-    try {
-      window.location.href = import.meta.env.VITE_API_GOOGLE_AUTH;
+  try {
+      const client = google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        ux_mode: 'popup',
+        callback: async (response: any) => {
+          const { credential } = response;
+
+          const res = await fetch(`${import.meta.env.VITE_API_GOOGLE_AUTH}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ credential }),
+          });
+
+          if (!res.ok) throw new Error('Failed to log in');
+          toast.success("Log in with Google Account");
+          navigate("/", { replace: true });
+        },
+      });
+
+      google.accounts.id.prompt();
     } catch (err: any) {
-      console.error("Issue: " + err.message);
+      console.error('Issue: ' + err.message);
       toast.error(err.message);
     }
   };
