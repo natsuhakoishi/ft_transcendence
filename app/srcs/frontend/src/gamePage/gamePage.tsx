@@ -305,7 +305,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                                     else if (theme === "light")
                                         setTheme("default");
                                 }}>
-                        {`Theme [${theme}]`}
+                        {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
                         </button>
                     </div>
 
@@ -315,21 +315,21 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                             onTouchEnd={() => handleKeypress("up", false)}
                             onMouseDown={() => handleKeypress("up", true)}
                             onMouseUp={() => handleKeypress("up", false)}
-                            >Up</button>
+                            >{t("shared.game.btn_up")}</button>
 
                         <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
                                 onClick={() => {
                                     setConfirm(true);
                                     handleKeypress("Enter", true);
                                 }}
-                        >Confirm</button>
+                        >{t("shared.game.btn_confirm")}</button>
 
                         <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
                                 onTouchStart={() => handleKeypress("down", true)}
                                 onTouchEnd={() => handleKeypress("down", false)}
                                 onMouseDown={() => handleKeypress("down", true)}
                                 onMouseUp={() => handleKeypress("down", false)}
-                            >Down</button>
+                            >{t("shared.game.btn_down")}</button>
                     </div>
                 </div>
             </div>

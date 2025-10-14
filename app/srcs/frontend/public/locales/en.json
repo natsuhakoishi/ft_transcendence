@@ -57,11 +57,6 @@
 		"mode_tour": "Tournament",
 		"mode_tourMatch": "Tournament Match",
 
-		"rank_1th": "1th",
-		"rank_2nd": "2nd",
-		"rank_3rd": "3rd",
-		"rank_4th": "4th",
-
 		"msg_closeTourPop": "Click anywhere to close"
 	},
 
@@ -95,21 +90,38 @@
 
 	"shared":
 	{
+		"result":
+		{
+			"title": "Result",
+			"msg_winner": "Winner !",
+			"btn_again": "New Game",
+			"btn_home": "Home"
+		},
+
 		"game":
 		{
+			"_comment": "WHEN PLAYERS STAND-BY",
 			"preparing": "Press [Space] to ready: ",
 			"ready": "Ready: ",
 			"waiting": "Waiting for opponent confirm game",
 			"onGoing": "Pong!",
+
+			"_comment": "TOAST CONTENT",
 			"ERR_timeOut": "Timeout",
 			"ERR_timeOut_redirect": "Back to home",
 			"ERR_forgetReady": "Timeout. Back to home",
 			"ERR_trespassing": "Trespassing!",
 
+			"_comment": "THEME",
 			"theme": "Theme",
 			"default": "default",
 			"light": "light",
-			"black": "black"
+			"black": "black",
+
+			"_comment": "FOR MOBILE",
+			"btn_confirm": "Confirm",
+			"btn_up": "Up",
+			"btn_down": "Down"
 		},
 		
 		"second": "Second",
@@ -129,6 +141,11 @@
 		{
 			"_comment": "USED AT MENU_PROFILE & FRIEND_PROFILE",
 			"_comment": "MATCH HISTORY USED won AND lose",
+			"_comment": "MATCH HISTORY SHARED ranks WITH RESULT PAGE",
+			"rank_1th": "1th",
+			"rank_2nd": "2nd",
+			"rank_3rd": "3rd",
+			"rank_4th": "4th",
 			"won": "Won",
 			"lose": "Lose",
 			"tournament": "Tournament",

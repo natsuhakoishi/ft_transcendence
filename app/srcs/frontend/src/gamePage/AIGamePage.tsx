@@ -191,7 +191,7 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
         <div>
             {/* Loading Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${Load ? "visible" : "invisible"} `}>
-                <LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />
+                <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
             </div>
 
             {/* Result Page */}
@@ -252,21 +252,21 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
                             onTouchEnd={() => handleKeypress("up", false)}
                             onMouseDown={() => handleKeypress("up", true)}
                             onMouseUp={() => handleKeypress("up", false)}
-                            >Up</button>
+                            >{t("shared.game.btn_up")}</button>
 
                         <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
                                 onClick={() => {
                                     setConfirm(true);
                                     handleKeypress("Enter", true);
                                 }}
-                        >Confirm</button>
+                        >{t("shared.game.btn_confirm")}</button>
 
                         <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
                                 onTouchStart={() => handleKeypress("down", true)}
                                 onTouchEnd={() => handleKeypress("down", false)}
                                 onMouseDown={() => handleKeypress("down", true)}
                                 onMouseUp={() => handleKeypress("down", false)}
-                            >Down</button>
+                            >{t("shared.game.btn_down")}</button>
                     </div>
                 </div>
             </div>
