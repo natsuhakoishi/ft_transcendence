@@ -34,6 +34,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET!;
 const PEM_PASS = process.env.PEM_PASS;
 const BACKEND_PORT = process.env.BACKEND_PORT;
+const FRONTEND_PORT = process.env.FRONTEND_PORT;
 const IP = process.env.IP || 'localhost';
 export const SMTP_EMAIL = process.env.SMTP_EMAIL;
 export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
@@ -64,9 +65,9 @@ if (!PEM_PASS)
 	process.exit(1);
 }
 
-if (!BACKEND_PORT)
+if (!BACKEND_PORT || !FRONTEND_PORT)
 {
-	console.error('Error: BACKEND_PORT not found!');
+	console.error('Error: PORT not found!');
 	process.exit(1);
 }
 
@@ -135,6 +136,11 @@ async function initServer()
 //     console.log('Cookies received:', req.cookies);
 //     done();
 //   });
+
+	fastify.get('/', async (req: any, res: any) => {
+		void(req);
+		res.redirect(`https://${IP}:${FRONTEND_PORT}/`);
+	});
 
 	return fastify;
 }
