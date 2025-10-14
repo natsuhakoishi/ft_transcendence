@@ -1,5 +1,4 @@
 import React from "react";
-import toast from "react-hot-toast"
 import { apiFetchPrivate } from "../utils.ts";
 import type { User } from "../../../backend/share/type/user.ts";
 
@@ -74,11 +73,5 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
     setLoading(false);
     console.log("User data fetched");
 
-  } catch (err: any) {
-    console.error("Issue: " + err.message);
-    if (err.message.includes("Failed to fetch"))
-      toast.error("Server Error");
-    else
-      toast.error("Error: "+ err.message);
-  }
+  } catch (err: any) {}
 };
