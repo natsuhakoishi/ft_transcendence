@@ -32,7 +32,7 @@ const Register = ( { verifyRef, onSubmit, mode }: {
         />
         <div className="flex gap-2">
           <button type="submit" className="default_button hover-increase">{t("auth.btn_register")}</button>
-          <button type="button" onClick={() => mode("login")} className="default_button hover-increase">{t("auth.btn_cancel")}</button>
+          <button type="button" onClick={() => mode("login")} className="default_button hover-increase">{t("shared.btn_cancel")}</button>
         </div>
       </form>
     </>

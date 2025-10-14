@@ -1,9 +1,12 @@
 {
+	"404_page": "404 Page Not Found",
+	"404_msg": "Redirect in ",
+	"matching_1vs1": "Matching...",
+	"matching_AI": "Calling AI chan...",
+	"matching_tour": "Tournament Matching...",
+
 	"loading":
 	{
-		"mode_1vs1": "Matching...",
-		"mode_tour": "Tournament Matching...",
-
 		"step_start": "Loading",
 		"step_complete": "Finished",
 		"step_checkUser": "Checking User",
@@ -17,7 +20,6 @@
 
 		"btn_signIn": "Sign in",
 		"btn_register": "Register",
-		"btn_cancel": "Cancel",
 
 		"_comment": "OTP part",
 		"msg_otp": "Enter OTP",
@@ -85,6 +87,7 @@
 
 	"shared":
 	{
+		"btn_cancel": "Cancel",
 		"form":
 		{
 			"place_email": "Enter email address",
