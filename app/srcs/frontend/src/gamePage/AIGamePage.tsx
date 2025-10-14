@@ -23,6 +23,8 @@ export function AIGamePage() {
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
     const [ result , setResult ] = React.useState(false);
     const confirmRef = React.useRef<boolean>(false);
+    const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
+    const themeRef = React.useRef<"black" | "light" | "default">("default");
 
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
 
@@ -35,7 +37,7 @@ export function AIGamePage() {
 
     setTimeout(() => {
         setLoad(false);
-    }, 1000 * 0.8);
+    }, 1000 * 3);
 
     React.useEffect(() => {
         document.title = "AI Game";
@@ -51,7 +53,7 @@ export function AIGamePage() {
         ws.onopen = () => {
             const gameState: GameState = initGameState();
             console.log("ws.onopen: pre rendering");
-            draw(gameState);
+            draw(gameState, themeRef.current);
             setGameData(gameData);
             gameData.keyPress = "init";
             setPlayerID(gameData.playerId);
@@ -68,7 +70,7 @@ export function AIGamePage() {
             if (type === "render")
             {
                 key.current = true;
-                draw(parse.gameState);
+                draw(parse.gameState, themeRef.current);
             }
             else if (type === "start")
             {
@@ -77,7 +79,7 @@ export function AIGamePage() {
                 setReady(true);
 
                 setTimeout(() => {
-                    draw(parse.gameState);
+                    draw(parse.gameState, themeRef.current);
                 }, 1000 * 1);
 
                 setTimeout( () => {
@@ -165,6 +167,12 @@ export function AIGamePage() {
         };
     }, []);
 
+    React.useEffect(() => {
+        themeRef.current = theme;
+        draw(initGameState(), theme);
+    }, [theme]);
+
+
     return (
         <div>
             {/* Loading Page */}
@@ -205,6 +213,22 @@ export function AIGamePage() {
 
                     {/* Player 2 */}
                     <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
+                </div>
+
+
+                {/* Theme setting bar */}
+                <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "invisible" : "visible"}`}>
+                    <button className=""
+                            onClick={() => {
+                                if (theme === "default")
+                                    setTheme("black");
+                                else if (theme === "black")
+                                    setTheme("light");
+                                else if (theme === "light")
+                                    setTheme("default");
+                            }}>
+                    {`Click to Change Theme [${theme}]`}
+                    </button>
                 </div>
 
             </div>

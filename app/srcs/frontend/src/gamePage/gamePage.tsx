@@ -13,14 +13,13 @@ import toast from "react-hot-toast";
 
 export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const navigate = useNavigate();
-    console.log("GamePage");
+    // console.log("GamePage");
     const location = useLocation();
     const [ Load , setLoad ] = React.useState(true);
     const [ result , setResult ] = React.useState(false);
     const [ start, setStart ] = React.useState(false);
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
-
     const key = React.useRef<boolean>(false);
     const confirmRef = React.useRef<boolean>(false);
     const [ ready, setReady ] = React.useState(false);
@@ -35,6 +34,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         TROOMID?: string;
         playersData?: MatchPlayersData;
     };
+    const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
+    const themeRef = React.useRef<"black" | "light" | "default">("default");
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
@@ -44,7 +45,6 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         return () => clearTimeout(timer);
     }, []);
 
-    //TODO: use useEffect/Stage to handle player score
     React.useEffect(() => {
         document.title = isTournament ? "Tournament: In Game..." : "Game";
         (async () => {
@@ -58,7 +58,6 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
 
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_GAMEPLAY!);
 
-            // console.log(gameState);
             const gameData: GameData = {
                 roomId: RoomID!,
                 playerId: 0,
@@ -84,7 +83,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             ws.onopen = () => {
                 const gameState: GameState = initGameState();
                 console.log("ws.onopen: pre rendering");
-                draw(gameState);
+                draw(gameState, themeRef.current);
                 setGameData(gameData);
                 gameData.keyPress = "init";
                 ws.send(JSON.stringify(gameData));
@@ -95,12 +94,12 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 const parse: {type : string, gameState: GameState} = JSON.parse(msg.data);
 
                 const type: string = parse.type;
-                console.log("/gamePage: type: ", type);
+                // console.log("/gamePage: type: ", type);
                 setScore(parse.gameState.score);
                 if (type === "render")
                 {
                     key.current = true;
-                    draw(parse.gameState);
+                    draw(parse.gameState, themeRef.current);
                 }
                 else if (type === "start")
                 {
@@ -110,7 +109,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     setReady(true);
 
                     setTimeout(() => {
-                        draw(parse.gameState); //pre render new ball and paddles position
+                        draw(parse.gameState, themeRef.current); //pre render new ball and paddles position
                     }, 1000 * 1);
 
                     setTimeout( () => {
@@ -205,10 +204,16 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             };
 
             const keyup = () => {
-                console.log("gamePage: stop");
-                gameData.keyPress = "stop";
-                if (ws.readyState === WebSocket.OPEN)
-                    ws.send(JSON.stringify(gameData));
+                console.log("gamePage: keyup");
+                if (gameData.keyPress === "Enter" || gameData.keyPress === "up" || gameData.keyPress === "down")
+                {
+                    gameData.keyPress = "stop";
+                    if (ws.readyState === WebSocket.OPEN)
+                    {
+                        ws.send(JSON.stringify(gameData));
+                        console.log("sent stop");
+                    }
+                }
             };
 
             document.addEventListener("keydown", keydown);
@@ -225,6 +230,10 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         })();
     }, []);
 
+    React.useEffect(() => {
+        themeRef.current = theme;
+        draw(initGameState(), theme);
+    }, [theme]);
 
     return (
         <div>
@@ -256,10 +265,10 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                         <canvas
                             id="gameBoard"
                             className={`w-[${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}px]
-                            h-[${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}px]
-                            bg-red-300`}
+                                h-[${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}px]`}
                             width={`${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}`}
-                            height={`${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}`}
+                            height={`${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}
+                            `}
                         ></canvas>
                     </div>
 
@@ -267,12 +276,27 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
                 </div>
 
+                {/* Theme setting bar */}
+                <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "invisible" : "visible"}`}>
+                    <button className=""
+                            onClick={() => {
+                                if (theme === "default")
+                                    setTheme("black");
+                                else if (theme === "black")
+                                    setTheme("light");
+                                else if (theme === "light")
+                                    setTheme("default");
+                            }}>
+                    {`Click to Change Theme [${theme}]`}
+                    </button>
+                </div>
+
             </div>
         </div>
     )
 }
 
-export function draw(gameState: GameState): void {
+export function draw(gameState: GameState, theme: "black" | "light" | "default"): void {
     if (!gameState) {
         console.log("gamePage: returned");
         return ;
@@ -287,11 +311,36 @@ export function draw(gameState: GameState): void {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
 
-    const color = "black";
+    let color = "black";
+    let bgColor = "#ff7272ff";
+    if (theme === "light")
+    {
+        bgColor = "#f9e16cff";
+        color = "#8d7100ff";
+    }
+    else if (theme === "black")
+    {
+        bgColor = "black";
+        color = "grey";
+    }
+    // else if (theme === "default")
+    // {
+    //     bgColor = "red";
+    //     color = "black";
+    // }
+
+    drawBackground(canvas.width, canvas.height, ctx, bgColor);
+
     drawBall(gameState.ball, ctx, color);
 
     drawPaddles(gameState.leftPaddle, ctx, color);
     drawPaddles(gameState.rightPaddle, ctx, color);
+}
+
+function drawBackground(width: number, height: number, ctx: CanvasRenderingContext2D, color: string)
+{
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, width, height);
 }
 
 function drawBall(ball: Ball, ctx: CanvasRenderingContext2D, color: string): void {

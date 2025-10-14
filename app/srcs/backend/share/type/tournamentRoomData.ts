@@ -54,7 +54,6 @@ export class TRoom {
             this.r1winners = [];
             this.r1losers = [];
             this.leaderboard = initLeaderboard();
-
             this.r2flag = 0;
     }
 

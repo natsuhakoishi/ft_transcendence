@@ -99,6 +99,8 @@ function end(room: Room | AIRoom, gameOver: () => void): void {
 export function handleKeyPress(room: Room, data: GameData, player: Player): void {
 
     // const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
+    if (!data.roomId)
+        return ;
     const id: string[] = data.roomId.split("-");
     const pos: string = data.playerId.toString() === id[0] ? "left" : "right";
     const keypress = data.keyPress;
