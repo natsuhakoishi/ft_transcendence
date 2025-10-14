@@ -14,12 +14,25 @@
 	"200": "Success",
 
 	"_comment": "PREFIX OPTION: OK, ERR, MSG",
-	"ERR_NameRepetitive": "Warning: Username already taken",
+	"ERR_NameRepeat": "Username already taken",
+	"ERR_PasswordLen": "Password must atleast 8 characters long",
 
 	"auth":
 	{
+		"MSG_CONNECTING": "Connecting to server...",
+		"OK_OTP": "Check email for OTP code",
+		"ERR_OTP": "Fail to sent OTP, please enter valid email address!",
+
+		"ERR_Login": "Invalid email or password",
+		"_comment": "FOR REGISTER PART",
 		"ERR_NameTooLong": "Username too long! Max. 8",
-		"ERR_NameTooShort": "Username too short! Min. 3"
+		"ERR_NameTooShort": "Username too short! Min. 3",
+		"ERR_EmailRepeat": "Email already registered",
+		"_comment": "FOR OTP",
+		"ERR_OTPExpired": "OTP expired, make a new request!",
+		"ERR_OTPManyTry": "Too many attempts. Try again later.",
+		"ERR_EmptyOTP": "Please submit OTP!",
+		"ERR_InvalidOTP": "Invalid OTP"
 
 	}
 }
