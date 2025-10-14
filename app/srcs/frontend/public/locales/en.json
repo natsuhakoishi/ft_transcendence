@@ -92,10 +92,14 @@
 			"stat_win_rate": "Win Rate"
 		},
 
-		"msg_unauthorized": "Session expired. Log in again!",
-		"msg_userNotFound": "User not found. Log in again!",
-		"msg_serverErr": "Server error. Attempt to connect again",
-		"msg_serverErr_fail": "Attempt failed! Log in again."
+		"error":
+		{
+			"401": "Session expired. Redirecting...",
+			"404": "User not found. Redirecting...",
+			"503": "Server disconnect. Retrying...",
+			"503-Fail": "Server still unreachable. Redirecting...",
+			"503-Success": "Reconnected!"
+		}
 	}
 
 }

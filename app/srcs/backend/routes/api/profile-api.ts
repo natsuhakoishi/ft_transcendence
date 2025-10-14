@@ -13,10 +13,15 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	fastify.post('/profile', async (req: any, res: any) => {
 		try
 		{
+			if (!req.user)
+				return res.status(401).send({ message: 'Unauthorized: missing token' });
+
 			const user = await getUserById(req.user);
+			if (!user)
+				return res.status(404).send({ message: 'User Not Found' });
 			const profile = await getProfileById(req.user);
-			if (!user || !profile)
-				return res.status(404).send({ message: 'User or Profie Not Found' });
+			if (!profile)
+				return res.status(404).send({ message: 'Profie Not Found' });
 
 			const response: User =
 			{
@@ -45,13 +50,16 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		}
 		catch (error)
 		{
-			res.status(401).send({ message: 'Invalid / Expired token to show profile' });
+			res.status(500).send({ message: 'Server Error: show profile' });
 		}
 	});
 
 	fastify.post('/upload_avatar', async (req: any, res: any) => {
 		try
 		{
+			if (!req.user)
+				return res.status(401).send({ message: 'Unauthorized: missing token' });
+
 			const data = await req.file();
 			if (!data)
 				return res.status(400).send({ message: 'No file uploaded' });
@@ -81,13 +89,16 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		}
 		catch (error)
 		{
-			res.status(500).send({ message: 'Failed to upload avatar' });
+			res.status(500).send({ message: 'Server Error: upload avatar' });
 		}
 	});
 
 	fastify.post('/delete_avatar', async (req: any, res: any) => {
 		try
 		{
+			if (!req.user)
+				return res.status(401).send({ message: 'Unauthorized: missing token' });
+
 			const profile = await getProfileById(req.user);
 			if (profile.avatar_path && profile.avatar_path !== 'default.webp')
 			{
@@ -102,23 +113,36 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		}
 		catch (error)
 		{
-			res.status(401).send({ message: 'Error caused when deleting avatar' });
+			res.status(500).send({ message: 'Server Error: delete avatar' });
 		}
 	});
 
 	fastify.post('/update_username', async (req: any, res: any) => {
-		const new_username = req.body.username;
-		const flag_checkname = await checkUsernameExist(new_username);
+		if (!req.user)
+			return res.status(401).send({ message: 'Unauthorized: missing token' });
 
-		if (flag_checkname)
-			return res.status(400).send({ message: 'Username already taken' });
-		await updateUsernameById(req.user, new_username);
-		res.send({ message: 'Username changed successfully' });
+		try
+		{
+			const new_username = req.body.username;
+			const flag_checkname = await checkUsernameExist(new_username);
+
+			if (flag_checkname)
+				return res.status(400).send({ message: 'Username already taken' });
+			await updateUsernameById(req.user, new_username);
+			res.send({ message: 'Username changed successfully' });
+		}
+		catch (error)
+		{
+			res.status(500).send({ message: 'Server Error: update username' });
+		}
 	});
 
 	fastify.post('/update_password', async (req: any, res: any) => {
 		try
 		{
+			if (!req.user)
+				return res.status(401).send({ message: 'Unauthorized: missing token' });
+
 			const user = await getUserById(req.user);
 			const { old_password, new_password } = req.body;
 			console.log(old_password, new_password);
@@ -135,7 +159,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		catch (error)
 		{
 			console.log(error);
-			res.status(400).send({ message: 'Error caused when update password' });
+			res.status(500).send({ message: 'Server Error: update password' });
 		}
 	});
 };

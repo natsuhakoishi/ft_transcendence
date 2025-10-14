@@ -1,15 +1,15 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/loginPage";
 import { Home, FetchData } from "./homePage/home";
+import { useGlobalErrorMonitor } from "./_hooks/error_handler.ts";
+import { LanguageProvider } from "./_hooks/language.tsx";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";
 import { TournamentGamePage } from "./gamePage/TournamentGamePage";
 import NotFound from "./otherPage/NotFound";
-import { setUnauthorized } from "./utils";
 import { FriendPage } from "./homePage/friend";
 import { HistoryPage } from "./homePage/MatchHistory/history";
 import { ProfilePage } from "./homePage/Profile/profile.tsx";
@@ -17,20 +17,12 @@ import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 
 function App() {
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    setUnauthorized(() => {
-      toast.error("Session expired. Log in again!");
-      setTimeout(() => {
-        navigate("/auth", { replace: true });
-      }, 1000 * 2);
-    });
-  }, []);
+  useGlobalErrorMonitor();
 
   return (
     <>
       <Toaster position="top-center" />
+      <LanguageProvider>
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
         <Route path="/" element={<FetchData />}>
@@ -49,6 +41,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/404" element={<NotFound />} />
       </Routes>
+      </LanguageProvider>
     </>
    );
 }
