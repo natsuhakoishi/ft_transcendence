@@ -9,12 +9,23 @@ export function useLanguage() {
   const [lang, setLang] = React.useState<Lang>(storedLang);
   const [translations, setTranslations] = React.useState<Record<string, any>>({});
 
+  // `${lang}-pop.json`
   React.useEffect(() => {
-    fetch(`locales/${lang}.json`)
-      .then((res) => res.json())    
-      .then((data) => setTranslations(data))
-      .catch(() => console.error(`Missing language file: ${lang}`));
+    const files = [`${lang}.json`];
 
+    Promise.all(
+      files.map(file =>
+        fetch(`locales/${file}`)
+          .then(res => res.json())
+          .catch(() => {
+            console.error(`Missing language file: ${file}`);
+            return {};
+          })
+      )
+    ).then((results) => {
+      const mergedTranslations = Object.assign({}, ...results);
+      setTranslations(mergedTranslations);
+    });
     localStorage.setItem("lang", lang);
   }, [lang]);
 
@@ -30,7 +41,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const langPack = useLanguage();
 
   if (!Object.keys(langPack.translations).length)
-    return <div>Translation loading..</div>;
+    return <div className="text-xl">Translation loading..</div>;
 
   return (
     <LanguageContext.Provider value={langPack}>

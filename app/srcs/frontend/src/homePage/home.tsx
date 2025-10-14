@@ -35,16 +35,14 @@ export function FetchData() {
     setTimeout(() => {
       loadData({ setLoading, setProgress, setUser }, t);
     }, 500);
-  }, [t]);
+  }, []);
 
   const refetchData = React.useCallback(() => {
     console.log("Refetch triggered");
     setTimeout(() => {
       loadData({ setLoading, setProgress, setUser }, t);
     }, 500);
-  }, [t]);
-
-  if (loading) return <LoadingScreen progress={progress} />
+  }, []);
 
   return (
     <Outlet context={{ user, loading, progress, refetchData}} />
