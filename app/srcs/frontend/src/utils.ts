@@ -1,9 +1,8 @@
-import toast from "react-hot-toast";
 import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 import type { PlayerWithProfileData } from "../../backend/share/type/Player";
 import type { User } from "../../backend/share/type/user";
-import { getGlobalErrorHandler } from "./_hooks/error_handler";
+import { getGlobalErrorHandler } from "./_hooks/error";
 
 export function initGameState(): GameState {
 	const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
@@ -40,16 +39,6 @@ export function initGameData(_roomId: string, _playerID: number): GameData {
     return data;
 }
 
-function handleApiError(err: any) {
-  console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
-
-  const key = err.status; // use status field (number or route-specific)
-//   const toastMessage = dictionary[lang][toastKey] || err.message || 'Something went wrong';
-
-//   toast.error(toastMessage);
-//   toast.error(err.message || "something wrong");
-}
-
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 	const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
 	if (!(options.body instanceof FormData))
@@ -61,23 +50,23 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 		let data: any = {};
 		data = await res.json();
 
-		if (!res.ok) {
+		if (!res.ok)
+    {
 			if (res.status === 401) getGlobalErrorHandler("401")();
 			if (res.status === 404) getGlobalErrorHandler("404")();
 
 			throw { status: res.status, message: data.message };
 		}
-
 		return data;
 
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-      		console.error("Server/network Error\n", err);
+      console.error("Server/network Error\n", err);
 			getGlobalErrorHandler("503")();
-      		throw { status: 0, message: 'Cannot connect to server. Please try later.' };
-    	}
-		handleApiError(err);
+      throw { status: 503, message: 'Cannot connect to server. Please try later.' };
+    }
+    console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
 	}
 }
@@ -93,23 +82,23 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 		let data: any = {};
 		data = await res.json();
 
-		if (!res.ok) {
+		if (!res.ok)
+    {
 			if (res.status === 401) getGlobalErrorHandler("401")();
 			if (res.status === 404) getGlobalErrorHandler("404")();
 
 			throw { status: res.status, message: data.message };
 		}
-
 		return data;
 
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-      		console.error("Server/network Error\n", err);
+      console.error("Server/network Error\n", err);
 			getGlobalErrorHandler("503")();
-      		throw { status: 0, message: "Server Error. Retrying..." };
-    	}
-		handleApiError(err);
+      throw { status: 503, message: "Server Error. Retrying..." };
+    }
+    console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
 	}
 }

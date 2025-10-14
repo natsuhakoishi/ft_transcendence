@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/loginPage";
 import { Home, FetchData } from "./homePage/home";
-import { useGlobalErrorMonitor } from "./_hooks/error_handler.ts";
+import { useGlobalErrorMonitor } from "./_hooks/error.ts";
 import { LanguageProvider } from "./_hooks/language.tsx";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";

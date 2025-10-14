@@ -38,14 +38,15 @@ interface ImportMetaEnv {
   readonly VITE_GAME_PADDLES_WIDTH_PX: string;
   readonly VITE_GAME_PADDLES_MARGIN_PX: string;
   
-  readonly VITE_API_GOOGLE_AUTH: string;
+  // OTHER PAGE
+  readonly VITE_PATH_404NOTFOUND: string;
+
+  // API
   readonly VITE_API_AVATAR: string;
   readonly VITE_API_FETCH: string;
   readonly VITE_API_PRI_FETCH: string;
-
-  // 404
-  readonly VITE_PATH_404NOTFOUND: string;
   
+  // COMMON SETUPS
   readonly VITE_VERSION: string;
 }
 

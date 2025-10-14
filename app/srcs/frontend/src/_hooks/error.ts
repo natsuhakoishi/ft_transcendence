@@ -3,12 +3,8 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useLang } from "./language";
 
-type ApiEventKey = "401" | "503" | "404";
-
-let globalErrorHandler: Record<ApiEventKey, (() => void) | null> = {
-  "401": null,
-  "503": null,
-  "404": null,
+let globalErrorHandler: Record<string, (() => void) | null> = {
+  "401": null, "503": null, "404": null,
 };
 
 export function useGlobalErrorMonitor() {
@@ -19,13 +15,13 @@ export function useGlobalErrorMonitor() {
 
     //Access Token Expired
     globalErrorHandler["401"] = () => {
-      toast.error(t("shared.error.401"));
+      toast.error(t("401"));
       navigate("/auth", { replace: true });
     };
 
     //Backend Server Down
     globalErrorHandler["503"] = async () => {
-      toast.error(`${t("shared.error.503")}`);
+      toast.error(`${t("503")}`);
       // const currentPath = location.pathname;
 
       await new Promise(r => setTimeout(r, 1000 * 25));
@@ -34,10 +30,10 @@ export function useGlobalErrorMonitor() {
         const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}me`, { credentials: "include" });
         if (!res.ok) throw new Error("Still unreachable");
 
-        toast.success(t("shared.error.503-success"));
+        toast.success(t("503-SUCCESS"));
         window.location.reload();
       } catch {
-        toast.error(t("shared.error.503-fail"));
+        toast.error(t("503-FAIL"));
         setTimeout(() => {
           navigate("/auth", { replace: true });
         }, 2000);
@@ -46,17 +42,31 @@ export function useGlobalErrorMonitor() {
 
     //User not found
     globalErrorHandler["404"] = () => {
-      toast.error(t("shared.error.404"));
+      toast.error(t("USER-404"));
       navigate("/auth", { replace: true });
     };
 
     return () => {
-      Object.keys(globalErrorHandler).forEach(k => (globalErrorHandler[k as ApiEventKey] = null));
+      Object.keys(globalErrorHandler).forEach(k => (globalErrorHandler[k as string] = null));
     };
-
   }, [navigate, location]);
 }
 
-export function getGlobalErrorHandler(key: ApiEventKey) {
+export function getGlobalErrorHandler(key: string) {
   return globalErrorHandler[key] || (() => {});
+}
+
+export function useToaster() {
+  const { t } = useLang();
+
+  return (res: any) => {
+    const key = String(res.status || "SWR");
+    const message = t(key);
+    //500, server error when processed request
+    //200, request success
+    //400, bad request
+
+    const type = key.startsWith("OK") ? "success" : "error";
+    toast[type](message);
+  };
 }
