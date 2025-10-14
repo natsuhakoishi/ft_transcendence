@@ -100,16 +100,6 @@
 			"tournament": "多人對局勝場",
 			"total_match": "總對局數",
 			"win_rate": "勝率"
-		},
-
-		"error":
-		{
-			"_comment": "GLOBAL ERROR",
-			"401": "登入階段已逾期，跳转中。。。",
-			"404": "找不到用戶，跳转中。。。",
-			"503": "Server disconnect. Retrying...",
-			"503-Fail": "連線失敗，跳转中。。。",
-			"503-Success": "Reconnected!"
 		}
 	}
 

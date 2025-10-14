@@ -1,0 +1,25 @@
+{
+	"_comment": "MORE GLOBAL LVL ERROR",
+	"401": "Session expired. Redirecting...",
+	"USER-404": "User not found. Redirecting...",
+	"503": "Server disconnect. Retrying...",
+	"503-FAIL": "Server still unreachable. Redirecting...",
+	"503-SUCCESS": "Reconnected!",
+
+	"req":
+	{
+		"_comment": "REQUEST ERROR",
+		"SWR": "Something went wrong",
+		"500": "Server Error",
+		"404": "Not Found",
+		"400": "Bad Request",
+		"200": "Success"
+	},
+
+	"req_auth":
+	{
+		"_comment": "OK_(wwhat)",
+		"_comment": "ERR_(what)"
+	}
+
+}
