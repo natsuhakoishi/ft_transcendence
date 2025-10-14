@@ -227,7 +227,7 @@ export function AIGamePage() {
                                 else if (theme === "light")
                                     setTheme("default");
                             }}>
-                    {`Click to Change Theme [${theme}]`}
+                    {`Theme [${theme}]`}
                     </button>
                 </div>
 

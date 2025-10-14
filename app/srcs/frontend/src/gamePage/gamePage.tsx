@@ -1,7 +1,7 @@
 import React from "react";
 import type { GameData } from "../../../backend/share/type/gameData.ts";
-import { useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate, initGameState } from "../utils.ts";
+import { data, useLocation, useNavigate } from "react-router-dom";
+import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
 import { LoadingScreen } from "../homePage/loadData.tsx";
@@ -36,6 +36,9 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     };
     const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
     const themeRef = React.useRef<"black" | "light" | "default">("default");
+    const wsRef = React.useRef<WebSocket | null>(null);
+    const isMobileRef = React.useRef(true);
+    // const isMobileRef = React.useRef(isMobile());
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
@@ -87,6 +90,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 setGameData(gameData);
                 gameData.keyPress = "init";
                 ws.send(JSON.stringify(gameData));
+                wsRef.current = ws;
             }
 
             ws.onmessage = (msg) => {
@@ -235,6 +239,19 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         draw(initGameState(), theme);
     }, [theme]);
 
+
+    function handleKeypress(key: "up" | "down" | "Enter", pressed: boolean)
+    {
+        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !gameData)
+            return ;
+        
+        if (pressed)
+            gameData.keyPress = key;
+        else 
+            gameData.keyPress = "stop";
+        wsRef.current.send(JSON.stringify(gameData));
+    }
+
     return (
         <div>
             {/* Loading Page */}
@@ -251,12 +268,12 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             <div className={`container gap-12 flex flex-col items-center justify-center ${Load || result ? "invisible" : "visible"}`}>
 
                 {/* players data, pong game's board */}
-                <div className="flex items-center justify-between w-full px-10">
+                <div className="flex items-center justify-between w-full px-10 gap-10">
 
                     {/* Player 1 */}
                     <Player player={playersData?.Players[0]} me={playerID === playersData?.Players[0].id} />
 
-                    <div className="flex flex-col items-center"> {/* Pong game's board */}
+                    <div className="flex flex-col items-center gap-2"> {/* Pong game's board */}
                         <Score score={score}></Score>
 
                         {/* Countdown */}
@@ -276,21 +293,46 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
                 </div>
 
-                {/* Theme setting bar */}
-                <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "invisible" : "visible"}`}>
-                    <button className=""
-                            onClick={() => {
-                                if (theme === "default")
-                                    setTheme("black");
-                                else if (theme === "black")
-                                    setTheme("light");
-                                else if (theme === "light")
-                                    setTheme("default");
-                            }}>
-                    {`Click to Change Theme [${theme}]`}
-                    </button>
-                </div>
+                <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
 
+                    {/* Theme setting bar */}
+                    <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "hidden" : "block"}`}>
+                        <button className="p-4"
+                                onClick={() => {
+                                    if (theme === "default")
+                                        setTheme("black");
+                                    else if (theme === "black")
+                                        setTheme("light");
+                                    else if (theme === "light")
+                                        setTheme("default");
+                                }}>
+                        {`Theme [${theme}]`}
+                        </button>
+                    </div>
+
+                    <div className={`flex ${isMobileRef.current && !Load && !result ? "visible" : "invisible" } gap-10 `}>
+                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
+                            onTouchStart={() => handleKeypress("up", true)}
+                            onTouchEnd={() => handleKeypress("up", false)}
+                            onMouseDown={() => handleKeypress("up", true)}
+                            onMouseUp={() => handleKeypress("up", false)}
+                            >Up</button>
+
+                        <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
+                                onClick={() => {
+                                    setConfirm(true);
+                                    handleKeypress("Enter", true);
+                                }}
+                        >Confirm</button>
+
+                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
+                                onTouchStart={() => handleKeypress("down", true)}
+                                onTouchEnd={() => handleKeypress("down", false)}
+                                onMouseDown={() => handleKeypress("down", true)}
+                                onMouseUp={() => handleKeypress("down", false)}
+                            >Down</button>
+                    </div>
+                </div>
             </div>
         </div>
     )
@@ -323,11 +365,6 @@ export function draw(gameState: GameState, theme: "black" | "light" | "default")
         bgColor = "black";
         color = "grey";
     }
-    // else if (theme === "default")
-    // {
-    //     bgColor = "red";
-    //     color = "black";
-    // }
 
     drawBackground(canvas.width, canvas.height, ctx, bgColor);
 
