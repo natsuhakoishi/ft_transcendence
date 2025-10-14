@@ -19,7 +19,7 @@ export async function createMatch(player1_id: number, player2_id: number, player
 		tournament_flag
 	);
 
-	if (tournament_flag)
+	if (!tournament_flag)
 	{
 		if (winner_id === player1_id)
 		{
