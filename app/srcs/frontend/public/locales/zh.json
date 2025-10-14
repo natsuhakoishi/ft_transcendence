@@ -1,10 +1,6 @@
 {
-	"_comment": "CONSIDERED ADD FOR CERTAIN STATUS",
-	"_comment": "REUSED COMPONENTS FIRST THEN PAGES",
-
 	"loading":
 	{
-		"_comment": "PROVIDED FOR THE LOADING COMPONENTS",
 		"step_start": "載入中",
 		"step_complete": "載入完成",
 		"step_checkUser": "檢查用戶資訊中",
@@ -18,21 +14,23 @@
 
 		"btn_signIn": "登入",
 		"btn_register": "註冊",
-		"btn_cancel": "取消"
+		"btn_cancel": "取消",
+
+		"_comment": "OTP part",
+		"msg_otp": "Enter OTP",
+		"place_otp": "6-digit code",
+		"btn_verify": "Verify OTP"
 	},
 
 	"home":
 	{
-		"_comment": "POP UP",
 		"title": "KLBQ | 主頁",
 		"msg_greeting": "歡迎回來, ",
 
-		"_comment": "GAME MODE SELECTION",
 		"btn_1vs1": "單人對局",
 		"btn_tour": "多人對局",
 		"btn_AI": "人機對局",
 
-		"_comment": "OTHER PARTS IN HOMEPAGE",
 		"btn_friend": "好友",
 		"btn_history": "對局記錄",
 		"text_version": "版本號 ",
@@ -55,17 +53,27 @@
 	"history":
 	{
 		"title": "KLBQ | 歷史記錄",
+		"status_empty": "No history yet",
 		"mode_1vs1": "單人對局",
 		"mode_tour": "多人對局",
-		"mode_tourMatch": "多人對局記錄"
+		"mode_tourMatch": "多人對局記錄",
+
+		"rank_1th": "1th",
+		"rank_2nd": "2nd",
+		"rank_3rd": "3rd",
+		"rank_4th": "4th",
+
+		"msg_closeTourPop": "Click anywhere to close"
 	},
 
 	"friend":
 	{
 		"title": "KLBQ | 好友",
-		"stat_mutual": "好友",
 
-		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
+		"mutual_status": "好友",
+		"mutual_true": "Mutual Friend",
+		"mutual_false": "Friend",
+
 		"msg_deleteConfirm": "確定刪除此好友？",
 		"btn_delete": "刪除",
 		"btn_no": "取消"
@@ -83,19 +91,20 @@
 			"place_userID": "請輸入用戶 ID"
 		},
 
-		"game_stats":
+		"game_stat":
 		{
 			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
-			"_comment": "HISTORY SHARED WON & LOSE",
-			"stat_won": "勝場",
-			"stat_lose": "敗場",
-			"stat_tournament": "多人對局勝場",
-			"stat_total_match": "總對局數",
-			"stat_win_rate": "勝率"
+			"_comment": "MATCH HISTORY USED won AND lose",
+			"won": "勝場",
+			"lose": "敗場",
+			"tournament": "多人對局勝場",
+			"total_match": "總對局數",
+			"win_rate": "勝率"
 		},
 
 		"error":
 		{
+			"_comment": "GLOBAL ERROR",
 			"401": "登入階段已逾期，跳转中。。。",
 			"404": "找不到用戶，跳转中。。。",
 			"503": "Server disconnect. Retrying...",

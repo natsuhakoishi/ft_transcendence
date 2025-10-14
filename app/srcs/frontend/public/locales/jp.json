@@ -1,10 +1,6 @@
 {
-	"_comment": "CONSIDERED ADD FOR CERTAIN STATUS",
-	"_comment": "REUSED COMPONENTS FIRST THEN PAGES",
-
 	"loading":
 	{
-		"_comment": "PROVIDED FOR THE LOADING COMPONENTS",
 		"step_start": "読み込み中",
 		"step_complete": "読み込み完了",
 		"step_checkUser": "ユーザー情報を確認中",
@@ -17,21 +13,24 @@
 		"title_register": "KLBQ | 登録",
 
 		"btn_signIn": "ログイン",
-		"btn_register": "登録"
+		"btn_register": "登録",
+		"btn_cancel": "Cancel",
+
+		"_comment": "OTP part",
+		"msg_otp": "Enter OTP",
+		"place_otp": "6-digit code",
+		"btn_verify": "Verify OTP"
 	},
 
 	"home":
 	{
-		"_comment": "POP UP",
 		"title": "KLBQ | ホーム",
 		"msg_greeting": "おかえりなさい、 ",
 
-		"_comment": "GAME MODE SELECTION",
 		"btn_1vs1": "1 vs 1",
 		"btn_tour": "トーナメント",
 		"btn_AI": "AI ゲーム",
 
-		"_comment": "OTHER PARTS IN HOMEPAGE",
 		"btn_friend": "フレンド",
 		"btn_history": "対戦履歴",
 		"text_version": "バージョン ",
@@ -54,17 +53,27 @@
 	"history":
 	{
 		"title": "KLBQ | 対戦履歴",
+		"status_empty": "No history yet",
 		"mode_1vs1": "1 vs 1",
 		"mode_tour": "トーナメント",
-		"mode_tourMatch": "トーナメントマッチの履歴"
+		"mode_tourMatch": "トーナメントマッチの履歴",
+
+		"rank_1th": "1th",
+		"rank_2nd": "2nd",
+		"rank_3rd": "3rd",
+		"rank_4th": "4th",
+
+		"msg_closeTourPop": "Click anywhere to close"
 	},
 
 	"friend":
 	{
 		"title": "KLBQ | フレンド",
-		"stat_mutual": "フレンド",
 
-		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
+		"mutual_status": "フレンド",
+		"mutual_true": "Mutual Friend",
+		"mutual_false": "Friend",
+
 		"msg_deleteConfirm": "このフレンドを削除しますか？",
 		"btn_delete": "削除",
 		"btn_no": "キャンセル"
@@ -82,19 +91,20 @@
 			"place_userID": "ユーザーIDを入力してください"
 		},
 
-		"game_stats":
+		"game_stat":
 		{
-			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
-			"_comment": "HISTORY SHARED WON & LOSE",
-			"stat_won": "勝利数",
-			"stat_lose": "敗北数",
-			"stat_tournament": "トーナメント勝利数",
-			"stat_total_match": "総対戦数",
-			"stat_win_rate": "勝率"
+			"_comment": "USED AT MENU_PROFILE & FRIEND_PROFILE",
+			"_comment": "MATCH HISTORY USED won AND lose",
+			"won": "勝利数",
+			"lose": "敗北数",
+			"tournament": "トーナメント勝利数",
+			"total_match": "総対戦数",
+			"win_rate": "勝率"
 		},
 
 		"error":
 		{
+			"_comment": "GLOBAL ERROR",
 			"401": "セッションの有効期限が切れました。再度ログインしてください！",
 			"404": "ユーザーが見つかりません。再度ログインしてください！",
 			"503": "Server disconnect. Retrying...",
