@@ -87,9 +87,11 @@
 
 	"title_match": "Game",
 	"title_AI": "AI Game",
+	"title_tour": "Tournament",
 	"title_tourM": "Tournament: In Game...",
 
-	"msg_Disconnect": "Opponent disconnected",
+	"ERR_Disconnect": "Opponent disconnected",
+	"ERR_TourCancel": "Tournament cancel",
 
 	"shared":
 	{
@@ -99,9 +101,10 @@
 			"ready": "Ready: ",
 			"waiting": "Waiting for opponent confirm game",
 			"onGoing": "Pong!",
-			"msg_timeOut": "Timeout",
-			"msg_timeOut_redirect": "Back to home :)",
-			"msg_trespassing": "Trespassing!",
+			"ERR_timeOut": "Timeout",
+			"ERR_timeOut_redirect": "Back to home",
+			"ERR_forgetReady": "Timeout. Back to home",
+			"ERR_trespassing": "Trespassing!",
 
 			"theme": "Theme",
 			"default": "default",

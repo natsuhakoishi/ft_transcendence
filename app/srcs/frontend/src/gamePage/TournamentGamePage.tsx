@@ -7,7 +7,7 @@ import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matc
 import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
 import { TournamentResultPage } from "./ResultPage";
-import toast from "react-hot-toast";
+import { withTranslation, type TranslationProps } from "../_hooks/language";
 
 function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
     const p1: Player = match[0];
@@ -16,7 +16,7 @@ function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWi
     return {roomID: roomID, Players: [players[p1.id], players[p2.id]]};
 }
 
-export function TournamentGamePage() {
+function TournamentGameP({ t, toasterPluz }: TranslationProps) { 
     let init: boolean = false;
     const navigate = useNavigate();
     const [load, setLoad] = React.useState(true);
@@ -35,13 +35,13 @@ export function TournamentGamePage() {
     }>();
 
     React.useEffect(() => {
-        document.title = "Tournament";
+        document.title = t("title_tour");
         ( async () => {
             console.log("TournamentGamePage: useEffect");
             if (!tournamentRoomID)
             {
                 console.log("TournamentGamePage: Trespassing ^u^b");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
 
             let playerID: string;
@@ -51,7 +51,7 @@ export function TournamentGamePage() {
             }
             catch (e) {
                 console.log("FlowPage: trespassing");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
 
             console.log("TournamentGamePage", playerID!);
@@ -77,8 +77,9 @@ export function TournamentGamePage() {
 
                 if (type === "trespassing")
                 {
+                    toasterPluz("shared.game.ERR_trespassing");
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                 }
                 else if (type === "update")
                 {
@@ -126,8 +127,8 @@ export function TournamentGamePage() {
                 else if (type === "offline")
                 {
                     console.log("TournamentGamePage: player offline");
-                    toast.error("Opponent offline");
-                    toast.error("Tournament cancel");
+                    toasterPluz("ERR_Disconnect");
+                    toasterPluz("ERR_TourCancel");
                     console.log("TournamentGamePage: redirect to home");
                     navigate("/", { replace: true });
                 }
@@ -170,3 +171,5 @@ export function TournamentGamePage() {
         </Routes>
     );
 }
+
+export const TournamentGamePage = withTranslation(TournamentGameP);

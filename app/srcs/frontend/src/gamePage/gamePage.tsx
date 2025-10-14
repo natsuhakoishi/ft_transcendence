@@ -161,8 +161,8 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     }
                     else
                     {
-                        toasterPluz("shared.game.msg_timeOut");
-                        toasterPluz("shared.game.msg_timeOut_redicrect");
+                        toasterPluz("shared.game.ERR_timeOut");
+                        toasterPluz("shared.game.ERR_timeOut_redicrect");
                         navigate("/", { replace: true });
                     }
                     //TODO: render ending
@@ -170,7 +170,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 else if (type === "trespassing")
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
-                    toasterPluz("shared.game.msg_trespassing");
+                    toasterPluz("shared.game.ERR_trespassing");
                     navigate("/", { replace: true });
                 }
             };
