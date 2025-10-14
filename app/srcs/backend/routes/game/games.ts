@@ -26,7 +26,7 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             const room: Room | null = fastify.rooms.getRoomByPlayerID(player.id);
             console.log("/gameplay check trespassing", player.id, (room ? "ok" : "tps"));
             if (!room) {
-                if (data.keyPress !== "stop")
+                if (data.keyPress !== "stop" || data.playerId != 0)
                     Trespassing(ws);
                 return ;
             }
@@ -36,10 +36,12 @@ const games: FastifyPluginAsync = async (fastify: any) => {
                 start(room, () => {
                     const score: GameScore = room.getState().score;
                     try {
-                        createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
-                        console.log("/gameplay: call database success");
-                        if (data.tournament)
-                            fastify.tournamentRooms.getRoomByPlayerID(room.getP1ID()).updateWinnerNLoser(room.getP1ID(), score.p1Score, score.p2Score);
+                        ( async () => {
+                            const MatchID: number = await createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
+                            console.log("/gameplay: call database success");
+                            if (data.tournament)
+                                fastify.tournamentRooms.getRoomByPlayerID(room.getP1ID()).updateWinnerNLoser(room.getP1ID(), MatchID, score.p1Score, score.p2Score);
+                        })()
                     }
                     catch (e) {
                         console.log(e);
@@ -50,7 +52,7 @@ const games: FastifyPluginAsync = async (fastify: any) => {
 
         ws.on("close", () =>
         {
-            console.log("/gameplay(get): player disconnected");
+            console.log("/gameplay: player disconnected");
         });
     });
 

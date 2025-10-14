@@ -38,7 +38,7 @@ export function AILogic(room: AIRoom, runtime: number): void {
         "hard" : { reactionSpeed: 10, preDirectionError: 80},
     }[difficulty()]
 
-    console.log("difficult: ", difficulty(), runtime);
+    // console.log("difficult: ", difficulty(), runtime);
     const reactionSpeed: number = config.reactionSpeed;
     const preDirectionError: number = config.preDirectionError;
 

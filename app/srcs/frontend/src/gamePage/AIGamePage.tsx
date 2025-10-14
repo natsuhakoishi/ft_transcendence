@@ -128,7 +128,7 @@ export function AIGamePage() {
                 if (ws.readyState === WebSocket.OPEN)
                     ws.send(JSON.stringify(gameData));
             }
-            else if (e.key === "Enter" && !confirmGame)
+            else if (e.key === " " && !confirmGame)
             {
                 console.log("/AI gamePage:" + e.key);
                 console.log("/AI gamePage:", confirmGame);
@@ -174,7 +174,8 @@ export function AIGamePage() {
 
             {/* Result Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} />
+                <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={true} />
+                {/* <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} /> */}
             </div>
 
             {/* whole Game's stuff */}

@@ -39,7 +39,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     React.useEffect(() => {
         const timer = setTimeout(() => {
             setLoad(false);
-        }, 1000 * 0.8);
+        }, 1000 * 3);
 
         return () => clearTimeout(timer);
     }, []);
@@ -58,12 +58,28 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
 
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_GAMEPLAY!);
 
+            // console.log(gameState);
             const gameData: GameData = {
                 roomId: RoomID!,
                 playerId: 0,
                 keyPress: "null",
                 tournament: isTournament ? true : false
             }
+
+            try {
+                const data = await apiFetchPrivate("me", { method: "GET" });
+                gameData.playerId = data.id;
+                await setPlayerID(data.id);
+                console.log("/GamePage: playersData: ", playersData);
+                console.log("/GamePage: gameData: ", gameData);
+                console.log("/GamePage: PlayerID: ", data, playerID, playersData?.Players[0].id, playersData?.Players[1].id);
+                console.log("/GamePage: PlayerID: ", playerID === playersData?.Players[0].id);
+            }
+            catch (e) {
+                console.log("Matching: fetch error: ", e);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+            }
+
             //init default position and board size
             ws.onopen = () => {
                 const gameState: GameState = initGameState();
@@ -74,25 +90,10 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 ws.send(JSON.stringify(gameData));
             }
 
-            try {
-                const data = await apiFetchPrivate("me", { method: "GET" });
-                gameData.playerId = data.id;
-                setPlayerID(data.id);
-                console.log("/GamePage: playersData: ", playersData);
-                console.log("/GamePage: gameData: ", gameData);
-                console.log("/GamePage: PlayerID: ", data, playerID, playersData?.Players[0].id, playersData?.Players[1].id);
-                console.log("/GamePage: PlayerID: ", playerID === playersData?.Players[0].id);
-            }
-            catch (e) {
-                console.log("Matching: fetch error: ", e);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
-            }
-            // console.log(gameState);
-
             ws.onmessage = (msg) => {
                 // console.log("/gamePage: rev msg");
                 const parse: {type : string, gameState: GameState} = JSON.parse(msg.data);
-    
+
                 const type: string = parse.type;
                 console.log("/gamePage: type: ", type);
                 setScore(parse.gameState.score);
@@ -109,7 +110,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     setReady(true);
 
                     setTimeout(() => {
-                        draw(parse.gameState);
+                        draw(parse.gameState); //pre render new ball and paddles position
                     }, 1000 * 1);
 
                     setTimeout( () => {
@@ -186,7 +187,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     if (ws.readyState === WebSocket.OPEN)
                         ws.send(JSON.stringify(gameData));
                 }
-                else if (e.key === "Enter" && !confirmGame)
+                else if (e.key === " " && !confirmGame)
                 {
                     console.log("gamePage:" + e.key);
                     console.log("gamePage:", confirmGame);
@@ -224,6 +225,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         })();
     }, []);
 
+
     return (
         <div>
             {/* Loading Page */}
@@ -233,7 +235,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
 
             {/* Result Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result score={score} playersData={playersData} me={playerID === playersData?.Players[0].id} AI={false} />
+                <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={false} />
             </div>
 
             {/* whole Game's stuff */}

@@ -1,7 +1,7 @@
 import { addWinLose } from "./profile.ts";
 import { runSQLite, allSQLite, getSQLite } from "./utils.ts";
 
-export async function createMatch(player1_id: number, player2_id: number, player1_score: number, player2_score: number, tournament_flag: boolean = false)
+export async function createMatch(player1_id: number, player2_id: number, player1_score: number, player2_score: number, tournament_flag: boolean = false): Promise<number>
 {
 	const winner_id = player1_score > player2_score ? player1_id : player2_score > player1_score ? player2_id : null;
 
@@ -20,17 +20,21 @@ export async function createMatch(player1_id: number, player2_id: number, player
 	);
 
 	if (tournament_flag)
-		return ;
-	if (winner_id === player1_id)
 	{
-		addWinLose(player1_id, "win_games");
-		addWinLose(player2_id, "lose_games");
+		if (winner_id === player1_id)
+		{
+			addWinLose(player1_id, "win_games");
+			addWinLose(player2_id, "lose_games");
+		}
+		else
+		{
+			addWinLose(player2_id, "win_games");
+			addWinLose(player1_id, "lose_games");
+		}
 	}
-	else
-	{
-		addWinLose(player2_id, "win_games");
-		addWinLose(player1_id, "lose_games");
-	}
+
+	const result = await runSQLite(`SELECT last_insert_rowid() as id`);
+	return result.lastID;
 }
 
 export async function getMatchById(match_id: number)

@@ -60,7 +60,7 @@ export class TRoom {
 
     async init(): Promise<void> {
         this.data = await initTData([this.p1ID, this.p2ID, this.p3ID, this.p4ID]);
-        console.log("init: ", this.data);
+        // console.log("init: ", this.data);
         this.dbID = await createTournament(this.p1ID);
         await joinTournament(this.dbID, this.p1ID);
         await joinTournament(this.dbID, this.p2ID);
@@ -147,15 +147,12 @@ export class TRoom {
         ];
     }
 
-    updateWinnerNLoser(id: number, p1Score: number, p2Score: number): void {
-        // console.log("status: ", this.status);
-        // console.log("r1 score: );
-
+    updateWinnerNLoser(id: number, matchID: number, p1Score: number, p2Score: number): void {
         if (this.status === "round1" && this.r1flag < 2)
         {
             this.r1flag++;
             const r1: Matches = this.data.round1;
-            this.bindMatch(id);
+            this.bindMatch(matchID);
             if (r1.matches[0][0].id === id || r1.matches[0][1].id === id)
                 if (p1Score > p2Score)
                     this.addResult(this.r1losers, this.r1winners, r1.matches[0][1], r1.matches[0][0]);
@@ -173,7 +170,7 @@ export class TRoom {
         {
             this.r2flag++;
             const r2: Matches = this.data.round2;
-            this.bindMatch(id);
+            this.bindMatch(matchID);
             if (r2.matches[0][0].id === id || r2.matches[0][1].id === id) 
                 if (p1Score > p2Score)
                     this.setLeaderboard("first", "second", r2.matches[0][0], r2.matches[0][1]);
@@ -188,17 +185,23 @@ export class TRoom {
             if (this.r2flag === 2)
             {
                 this.data.leaderboard = this.leaderboard;
-                console.log("updateWNL: ", this.data.leaderboard, {first: this.leaderboard.first, second: this.leaderboard.second});
+                console.log("updateWNL: ", this.data.leaderboard);
                 addWinLose(this.leaderboard.first.id, "tournament_wins");
                 this.status = "end";
 
-                console.log("r2 matches data:", r2.matches[0], r2.matches[1]);
+                // console.log("r2 matches data:", r2.matches[0], r2.matches[1]);
 
                 (async () => {
-                    await updateTournamentRank(this.dbID, this.leaderboard.first.id, 1);
-                    await updateTournamentRank(this.dbID, this.leaderboard.second.id, 2);
-                    await updateTournamentRank(this.dbID, this.leaderboard.third.id, 3);
-                    await updateTournamentRank(this.dbID, this.leaderboard.last.id, 4);
+                    try {
+                        await updateTournamentRank(this.dbID, 1, this.leaderboard.first.id);
+                        await updateTournamentRank(this.dbID, 2, this.leaderboard.second.id);
+                        await updateTournamentRank(this.dbID, 3, this.leaderboard.third.id);
+                        await updateTournamentRank(this.dbID, 4, this.leaderboard.last.id);
+                        console.log("TRoom: add tournament leaderboard to database ok");
+                    }
+                    catch (e){
+                        console.log(e);
+                    }
                 })()
             }
         }
@@ -210,13 +213,14 @@ export class TRoom {
         this.leaderboard[b] = this.data.players[loser.id.toString()];
     }
 
-    bindMatch(id: number)
+    bindMatch(matchID: number)
     {
         ( async () => {
-            const MatchData: DBMatchData[] = await getMatchByUserId(id);
-            // await console.log(MatchData_A);
-            await bindMatchTournament(this.dbID, MatchData[0].id);
-            console.log("tournament room: bind Match");
+        //     const MatchData: DBMatchData[] = await getMatchByUserId(id);
+        //     // await console.log(MatchData_A);
+            await bindMatchTournament(this.dbID, matchID);
+            console.log("tournament room: bind Match", matchID);
+            // console.log(`user: ${id}, matchData`, MatchData[0]);
         })()
     }
 

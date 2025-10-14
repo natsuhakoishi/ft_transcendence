@@ -1,14 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import type { GameScore } from "../../../backend/share/type/gameState";
-import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { Player } from "./player";
 import React from "react";
 import { Matching } from "./matching";
 import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
-import { apiFetchPrivate } from "../utils";
 
-export function Result({ score, playersData, me, AI }: { score: GameScore, playersData?: MatchPlayersData, me: boolean, AI: boolean}) {
+export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean}) {
     const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
 
@@ -26,7 +23,7 @@ export function Result({ score, playersData, me, AI }: { score: GameScore, playe
                         <h1 className={`text-5xl font-bold mb-6`} >Winner!</h1>
                     </div>
                     <div className="flex items-center space-x-4 mb-12">
-                        <Player player={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]} me={me} spin={true}  />
+                        <Player player={winner} me={playerID === winner?.id} spin={true}  />
                     </div>
 
                     <AgainButton callback={() => setAgain(true)} />
