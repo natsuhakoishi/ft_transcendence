@@ -14,7 +14,6 @@
 
 		"btn_signIn": "登入",
 		"btn_register": "註冊",
-		"btn_cancel": "取消",
 
 		"_comment": "OTP part",
 		"msg_otp": "Enter OTP",
@@ -58,11 +57,6 @@
 		"mode_tour": "多人對局",
 		"mode_tourMatch": "多人對局記錄",
 
-		"rank_1th": "1th",
-		"rank_2nd": "2nd",
-		"rank_3rd": "3rd",
-		"rank_4th": "4th",
-
 		"msg_closeTourPop": "Click anywhere to close"
 	},
 
@@ -79,8 +73,60 @@
 		"btn_no": "取消"
 	},
 
+	"404_page": "404 Page Not Found",
+	"404_msg": "Redirect in ",
+
+	"matching_1vs1": "Matching...",
+	"matching_AI": "Calling AI chan...",
+	"matching_tour": "Tournament Matching...",
+
+	"title_match": "Game",
+	"title_AI": "AI Game",
+	"title_tour": "Tournament",
+	"title_tourM": "Tournament: In Game...",
+
+	"ERR_Disconnect": "Opponent disconnected",
+	"ERR_TourCancel": "Tournament cancel",
+
 	"shared":
 	{
+		"result":
+		{
+			"title": "KLBQ | Result",
+			"msg_winner": "Winner !",
+			"btn_again": "New Game",
+			"btn_home": "Home"
+		},
+
+		"game":
+		{
+			"_comment": "WHEN PLAYERS STAND-BY",
+			"preparing": "Press [Space] to ready: ",
+			"ready": "Ready: ",
+			"waiting": "Waiting for opponent confirm game",
+			"onGoing": "Pong!",
+
+			"_comment": "TOAST CONTENT",
+			"ERR_timeOut": "Timeout",
+			"ERR_timeOut_redirect": "Back to home",
+			"ERR_forgetReady": "Timeout. Back to home",
+			"ERR_trespassing": "Trespassing!",
+
+			"_comment": "THEME",
+			"theme": "Theme",
+			"default": "default",
+			"light": "light",
+			"black": "black",
+
+			"_comment": "FOR MOBILE",
+			"btn_confirm": "Confirm",
+			"btn_up": "Up",
+			"btn_down": "Down"
+		},
+
+		"second": "秒",
+		"btn_cancel": "取消",
+
 		"form":
 		{
 			"place_email": "請輸入電郵地址",
@@ -94,7 +140,12 @@
 		"game_stat":
 		{
 			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
-			"_comment": "MATCH HISTORY USED won AND lose",
+			"_comment": "MATCH HISTORY USED won AND lose",,
+			"_comment": "MATCH HISTORY SHARED ranks WITH RESULT PAGE",
+			"rank_1th": "1th",
+			"rank_2nd": "2nd",
+			"rank_3rd": "3rd",
+			"rank_4th": "4th",
 			"won": "勝場",
 			"lose": "敗場",
 			"tournament": "多人對局勝場",
