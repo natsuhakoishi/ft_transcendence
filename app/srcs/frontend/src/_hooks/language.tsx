@@ -9,9 +9,8 @@ export function useLanguage() {
   const [lang, setLang] = React.useState<Lang>(storedLang);
   const [translations, setTranslations] = React.useState<Record<string, any>>({});
 
-  // `${lang}-pop.json`
   React.useEffect(() => {
-    const files = [`${lang}.json`];
+    const files = [`${lang}.json`, `${lang}-pop.json`];
 
     Promise.all(
       files.map(file =>
@@ -23,8 +22,9 @@ export function useLanguage() {
           })
       )
     ).then((results) => {
-      const mergedTranslations = Object.assign({}, ...results);
-      setTranslations(mergedTranslations);
+      const merged = Object.assign({}, ...results);
+      setTranslations(merged);
+      // console.log(merged);
     });
     localStorage.setItem("lang", lang);
   }, [lang]);
