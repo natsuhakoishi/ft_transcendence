@@ -1,23 +1,30 @@
-import { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "../_hooks/language";
 
 function NotFound() {
     const navigate = useNavigate();
-    
-    useEffect( ()=> {
-        document.title = "404";
-        const timer = setTimeout(() => {
-            console.log("NotFound: redirect to /");
-            navigate("/", { replace: true });
-        }, 1000 * 2);
+    const { t } = useLang();
+    const [counter, setCounter] = React.useState(2000);
 
-        return () => clearTimeout(timer);
+    React.useEffect( ()=> {
+        const interval = setInterval(() => {
+            setCounter(prev => {
+                const next = prev - 1000;
+                if (next <= 0) {
+                    clearInterval(interval);
+                    navigate("/", { replace: true });
+                }
+                return next;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
     }, []);
 
     return (
         <div>
-            <h1 className="bg-red-400">404 page Not Found</h1>
-            <p>2 second redirect to login page...</p>
+            <h1 className="text-3xl font-extrabold">{t("404_page")}</h1>
+            <p className="mt-5 text-center">{t("404_msg")}{Math.ceil(counter / 1000)}</p>
         </div>
     );
 }

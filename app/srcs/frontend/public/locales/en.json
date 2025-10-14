@@ -1,9 +1,11 @@
 {
+	"404_page": "404 Page Not Found",
+	"404_msg": "Redirect in ",
+	"matching_1vs1": "Matching...",
+	"matching_tour": "Tournament Matching...",
+
 	"loading":
 	{
-		"mode_1vs1": "Matching...",
-		"mode_tour": "Tournament Matching...",
-
 		"step_start": "Loading",
 		"step_complete": "Finished",
 		"step_checkUser": "Checking User",
