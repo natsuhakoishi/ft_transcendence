@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 import type { PlayerWithProfileData } from "../../backend/share/type/Player";
@@ -56,22 +57,22 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 		data = await res.json();
 
 		if (!res.ok)
-    {
+    	{
 			if (res.status === 401) getGlobalErrorHandler("401")();
 			if (res.status === 404) getGlobalErrorHandler("404")();
 
-			throw { status: res.status, message: data.message };
+			throw { status: res.status, code: data.code, message: data.message };
 		}
 		return data;
 
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-      console.error("Server/network Error\n", err);
+			console.error("Server/network Error\n", err);
 			getGlobalErrorHandler("503")();
-      throw { status: 503, message: 'Cannot connect to server. Please try later.' };
-    }
-    console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
+			throw { status: 503, message: 'Cannot connect to server. Please try later.' };
+		}
+		console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
 	}
 }
@@ -88,22 +89,22 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 		data = await res.json();
 
 		if (!res.ok)
-    {
+		{
 			if (res.status === 401) getGlobalErrorHandler("401")();
 			if (res.status === 404) getGlobalErrorHandler("404")();
 
-			throw { status: res.status, message: data.message };
+			throw { status: res.status, code: data.code, message: data.message };
 		}
 		return data;
 
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-      console.error("Server/network Error\n", err);
+			console.error("Server/network Error\n", err);
 			getGlobalErrorHandler("503")();
-      throw { status: 503, message: "Server Error. Retrying..." };
-    }
-    console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
+			throw { status: 503, message: "Server Error. Retrying..." };
+		}
+		console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
 	}
 }
@@ -129,3 +130,27 @@ export async function sendProfile(ws: WebSocket, callback: () => void): Promise<
 		callback();
 	}
 }
+
+//todo 503 error message should use hook
+
+export function bakery(t: (key: string) => string) {
+  return (err: any) => {
+	const key = typeof err === "string" || typeof err === "number" ? `pop.${String(err)}` : 
+		( err?.code ? `pop.${err.code}` :
+			( err?.status ? `pop.${String(err.status)}` : "pop.SWR" ));
+
+	// console.log(key);
+	const shortKey = key.split(".").pop() || key;
+    const msg = t(key);
+
+    if (shortKey.startsWith("ERR_")) return toast.error(msg);
+    if (shortKey.startsWith("OK_")) return toast.success(msg);
+    if (shortKey.startsWith("INFO_")) return toast(msg);
+
+    return toast(msg);
+  };
+}
+
+//500, server error when processed request
+//200, request success
+//400, bad request

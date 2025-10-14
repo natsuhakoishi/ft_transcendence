@@ -13,7 +13,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.post('/register', { schema: registerSchema }, async (req: any, res: any) => {
 		const { username, email, password } = req.body as any;
 		if (await getUserByUsername(username))
-			return res.status(400).send({ message: 'Warning: Username already taken.' });
+			return res.status(400).send({ code: "ERR_NameRepetitive", message: 'Warning: Username already taken.' });
 		if (await getUserByEmail(email))
 			return res.status(400).send({ message: 'Warning: Email already registered.' });
 		if (!password || password.length < 8)
@@ -129,7 +129,8 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			secure: true,
 			sameSite: "none",
 			partitioned: true,
-			maxAge: 2 * 60 * 60
+			maxAge: 6 * 60 * 60
+			// maxAge: 2 * 60 * 60
 		}).send({ message: "Login successful. Cookies created." });
 	});
 

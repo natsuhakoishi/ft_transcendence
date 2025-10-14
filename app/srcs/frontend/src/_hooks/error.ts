@@ -15,13 +15,13 @@ export function useGlobalErrorMonitor() {
 
     //Access Token Expired
     globalErrorHandler["401"] = () => {
-      toast.error(t("401"));
+      toast.error(t("pop.401"));
       navigate("/auth", { replace: true });
     };
 
     //Backend Server Down
     globalErrorHandler["503"] = async () => {
-      toast.error(`${t("503")}`);
+      toast.error(`${t("pop.503")}`);
       // const currentPath = location.pathname;
 
       await new Promise(r => setTimeout(r, 1000 * 25));
@@ -30,10 +30,10 @@ export function useGlobalErrorMonitor() {
         const res = await fetch(`${import.meta.env.VITE_API_PRI_FETCH}me`, { credentials: "include" });
         if (!res.ok) throw new Error("Still unreachable");
 
-        toast.success(t("503-SUCCESS"));
+        toast.success(t("pop.503-SUCCESS"));
         window.location.reload();
       } catch {
-        toast.error(t("503-FAIL"));
+        toast.error(t("pop.503-FAIL"));
         setTimeout(() => {
           navigate("/auth", { replace: true });
         }, 2000);
@@ -42,7 +42,7 @@ export function useGlobalErrorMonitor() {
 
     //User not found
     globalErrorHandler["404"] = () => {
-      toast.error(t("USER-404"));
+      toast.error(t("pop.USER-404"));
       navigate("/auth", { replace: true });
     };
 

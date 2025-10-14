@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { apiFetch } from "../utils";
-import { withTranslation } from "../_hooks/language";
+import { useLang, withTranslation, type TranslationProps } from "../_hooks/language";
 
-const Register = ( { verifyRef, onSubmit, mode, t = (key: string) => key }: {
+const Register = ( { verifyRef, onSubmit, mode }: {
   verifyRef: React.RefObject<VerifyBody>,
   onSubmit: () => void,
   mode: React.Dispatch<React.SetStateAction<"login" | "register">>,
-  t: (key: string) => string,
 }) => {
+  const { t } = useLang();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -18,33 +18,35 @@ const Register = ( { verifyRef, onSubmit, mode, t = (key: string) => key }: {
     verifyRef.current.password = formData.get("password") as string;
     onSubmit();
   };
+
   return (
     <>
-      <form className="flex flex-col items-center justify-center w-full gap-2 mt-5" onSubmit={handleSubmit}>
-      <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-        type="text" name="username" placeholder={t("shared.form.place_name")} required autoComplete="on"
-      />
-      <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-        type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
-      />
-      <input className="p-0.5 rounded-lg border-2 border-green-400 placeholder-gray-400 placeholder-opacity-10 bg-green-100"
-      type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
-      />
-      <div className="flex gap-2">
-        <button type="submit" className="border-black-300 border-2 rounded-lg p-1">{t("auth.btn_register")}</button>
-        <button type="button" onClick={() => mode("login")} className="border-black-300 border-2 rounded-lg p-1">{t("auth.btn_cancel")}</button>
-      </div>
+      <form className="flex flex-col items-center justify-center w-full gap-2 default_text" onSubmit={handleSubmit}>
+        <input className="p-1.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100"
+          type="text" name="username" placeholder={t("shared.form.place_name")} required autoComplete="on"
+        />
+        <input className="p-1.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100"
+          type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
+        />
+        <input className="p-1.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100"
+        type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
+        />
+        <div className="flex gap-2">
+          <button type="submit" className="default_button hover-increase">{t("auth.btn_register")}</button>
+          <button type="button" onClick={() => mode("login")} className="default_button hover-increase">{t("auth.btn_cancel")}</button>
+        </div>
       </form>
     </>
   );
 }
 
-const OTPModal = ({ show, verifyRef, onVerify, t = (key: string) => key }: {
+const OTPModal = ({ show, verifyRef, onVerify }: {
   show: React.Dispatch<React.SetStateAction<boolean>>,
   verifyRef: React.RefObject<VerifyBody>,
   onVerify: () => void,
-  t: (key: string) => string,
 }) => {
+  const { t } = useLang();
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 w-full max-w-full">
       <div className="relative flex flex-col items-center justify-center gap-2 bg-blue-200 rounded-lg shadow-lg p-6 w-[30%]">
@@ -65,7 +67,8 @@ const OTPModal = ({ show, verifyRef, onVerify, t = (key: string) => key }: {
   );
 }
 
-const LoginForm = ({ verifyRef, onSubmit, t }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void, t: (key: string) => string, }) => {
+const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyBody>, onSubmit: () => void }) => {
+  const { t } = useLang();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -73,6 +76,7 @@ const LoginForm = ({ verifyRef, onSubmit, t }: { verifyRef: React.RefObject<Veri
     verifyRef.current.password = formData.get("password") as string;
     onSubmit();
   };
+
   return (
     <>
       <form className="flex flex-col items-center w-full gap-2 mt-2" onSubmit={handleSubmit}>
@@ -95,7 +99,7 @@ type VerifyBody = {
   otp: string;
 };
 
-export function LoginP({ t }: { t: (key: string) => string; }) {
+export function LoginP({ t, toasterPluz }: TranslationProps) { 
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [showOTP, setShowOTP] = useState(false);
@@ -107,24 +111,22 @@ export function LoginP({ t }: { t: (key: string) => string; }) {
 
   const handleRegister = async () => {
     try {
-      if (verifyRef.current.username && verifyRef.current.username?.length > 8)
+      if (verifyRef.current.username && (verifyRef.current.username.length < 3 || verifyRef.current.username.length > 8))
       {
-        toast.error("Username too long! Length: 8 char");
+        if (verifyRef.current.username.length > 8)
+          toasterPluz("auth.ERR_NameTooLong");
+        else
+          toasterPluz("auth.ERR_NameTooShort");
         return ;
       }
-      toast("Connecting to server...");
       const data = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
 
-      toast.success(data.message);
+      toast(data.message);
       if (data.requireOTP)
         setShowOTP(true);
 
-    } catch (err: any) {
-      console.error("Issue: " + err.message);
-      if (err.message.includes("Failed to fetch"))
-        toast.error("Server Error");
-      else
-        toast.error(err.message);
+    } catch (err: any) { 
+      toasterPluz(err);
     }
   }
 
@@ -138,11 +140,7 @@ export function LoginP({ t }: { t: (key: string) => string; }) {
         setShowOTP(true);
 
     } catch (err: any) {
-      console.error("Issue: " + err.message);
-      if (err.message.includes("Failed to fetch"))
-        toast.error("Server Error");
-      else
-        toast.error(err.message);
+      toasterPluz(err);
     }
   };
 
@@ -171,16 +169,19 @@ export function LoginP({ t }: { t: (key: string) => string; }) {
 
   return (
   <>
-    <div className="relative flex flex-col justify-center items-center h-100 w-100 bg-gray-300 gap-2">
-      <h1 className="absolute top-0 text-2xl font-extrabold mb-2 mt-5">KLBQ</h1>
+    <div className="relative flex flex-col justify-center items-center h-screen w-100 bg-gray-300 gap-2">
+      <h1 className="absolute top-5 text-2xl font-extrabold mb-2 mt-5">KLBQ</h1>
       <div className="flex flex-col justify-center items-center bg-[rgba(199,237,206,1)] rounded-xl w-75 h-[60%] shadow-2xl text-justify">
         
-      {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} t={t} />}
-      { mode === "register" ? <Register verifyRef={verifyRef} onSubmit={handleRegister} mode={setMode} t={t} /> :
+      {/* OTP Verification Modal (Shared) */}
+      {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
+
+      {/* Display Login Modal or Register Modal */}
+      { mode === "register" ? <Register verifyRef={verifyRef} onSubmit={handleRegister} mode={setMode} /> :
         (
           <>
-            <LoginForm verifyRef={verifyRef} onSubmit={handleLogin} t={t} />
-            <hr className="h-px min-w-70 my-3 bg-red-700 border-1"></hr>
+            <LoginForm verifyRef={verifyRef} onSubmit={handleLogin} />
+            <hr className="h-px min-w-70 my-3 border-1"></hr>
             <button onClick={() => setMode("register")} className="border-black-300 border-2 rounded-lg p-1">{t("auth.btn_register")}</button>
           </>
         )

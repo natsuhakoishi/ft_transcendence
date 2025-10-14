@@ -1,5 +1,5 @@
 import React from "react";
-import toast from "react-hot-toast";
+import { bakery } from "../utils";
 
 export type Lang = "en" | "zh" | "jp";
 
@@ -11,23 +11,29 @@ export function useLanguage() {
   const [translations, setTranslations] = React.useState<Record<string, any>>({});
 
   React.useEffect(() => {
-    const files = [`${lang}.json`, `${lang}-pop.json`];
+    const file = `${lang}.json`;
+    const pop = `${lang}-pop.json`;
 
-    Promise.all(
-      files.map(file =>
-        fetch(`locales/${file}`)
-          .then(res => res.json())
-          .catch(() => {
-            console.error(`Missing language file: ${file}`);
-            return {};
-          })
-      )
-    ).then((results) => {
-      const merged = Object.assign({}, ...results);
+    Promise.all([
+      fetch(`locales/${file}`)
+        .then(res => res.json())
+        .catch(() => {
+          console.error(`Missing language file: ${file}`);
+          return {};
+        }),
+      fetch(`locales/${pop}`)
+        .then(res => res.json())
+        .catch(() => {
+          console.error(`Missing language file: ${pop}`);
+          return {};
+        }),
+    ]).then(([Data, popData]) => {
+      const merged = { ...Data, pop: popData, };
       setTranslations(merged);
       // console.log(merged);
+      localStorage.setItem("lang", lang);
     });
-    localStorage.setItem("lang", lang);
+
   }, [lang]);
 
   const t = (key: string): string =>
@@ -44,33 +50,26 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   if (!Object.keys(langPack.translations).length)
     return <div className="text-xl">Translation loading..</div>;
 
+  const toasterPluz = bakery(langPack.t);
+
   return (
-    <LanguageContext.Provider value={langPack}>
+    <LanguageContext.Provider value={{ ...langPack, toasterPluz }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-export function withTranslation<T extends { t: Function; lang?: string }>(
-  Component: React.ComponentType<T>
-) {
-  return (props: Omit<T, "t">) => {
-    const { t, lang } = useLang();
-    return <Component {...(props as T)} t={t} lang={lang} />;
-  };
+export interface TranslationProps {
+  t: (key: string) => string;
+  lang?: string;
+  toasterPluz: (key: string) => void;
 }
 
-export function useToaster() {
-  const { t } = useLang();
-
-  return (res: any) => {
-    const key = String(res.status || "SWR");
-    const message = t(key);
-    //500, server error when processed request
-    //200, request success
-    //400, bad request
-
-    const type = key.startsWith("OK") ? "success" : "error";
-    toast[type](message);
+export function withTranslation<T extends object>(
+  Component: React.ComponentType<T & TranslationProps>
+) {
+  return (props: T) => {
+    const { t, lang, toasterPluz } = useLang();
+    return <Component {...props} t={t} lang={lang} toasterPluz={toasterPluz} />;
   };
 }

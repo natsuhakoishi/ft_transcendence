@@ -24,8 +24,18 @@ body {
 
 .default_text {
   font-weight: normal;
-  -webkit-text-stroke: 0px;
+  -webkit-text-stroke: 0px rgba(0, 0, 0, 0.525);
   color: black;
+}
+
+.default_button {
+  border-style: var(--tw-border-style);
+  border-width: 2px;
+  border-radius: var(--radius-lg);
+  padding: calc(var(--spacing) * 1.5);
+  color: white;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
+  font-weight: bold;
 }
 
 .hover {
@@ -33,7 +43,7 @@ body {
 }
 
 .hover-increase {
-  @apply cursor-pointer hover:scale-105 transition-transform ease-in-out duration-100;
+  @apply cursor-pointer hover:scale-110 transition-transform ease-in-out duration-100;
 }
 
 /* visualize boundaries */
