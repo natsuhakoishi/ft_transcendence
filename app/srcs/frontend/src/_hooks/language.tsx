@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 
 export type Lang = "en" | "zh" | "jp";
 
@@ -56,5 +57,20 @@ export function withTranslation<T extends { t: Function; lang?: string }>(
   return (props: Omit<T, "t">) => {
     const { t, lang } = useLang();
     return <Component {...(props as T)} t={t} lang={lang} />;
+  };
+}
+
+export function useToaster() {
+  const { t } = useLang();
+
+  return (res: any) => {
+    const key = String(res.status || "SWR");
+    const message = t(key);
+    //500, server error when processed request
+    //200, request success
+    //400, bad request
+
+    const type = key.startsWith("OK") ? "success" : "error";
+    toast[type](message);
   };
 }

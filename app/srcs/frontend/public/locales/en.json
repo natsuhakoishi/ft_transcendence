@@ -1,6 +1,9 @@
 {
 	"loading":
 	{
+		"mode_1vs1": "Matching...",
+		"mode_tour": "Tournament Matching...",
+
 		"step_start": "Loading",
 		"step_complete": "Finished",
 		"step_checkUser": "Checking User",
@@ -78,6 +81,7 @@
 		"btn_delete": "Delete",
 		"btn_no": "No"
 	},
+
 
 	"shared":
 	{
