@@ -4,3 +4,4 @@ klbq.db
 .vscode
 *.webp
 !.default.webp
+!.ai.png

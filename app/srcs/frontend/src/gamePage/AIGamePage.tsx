@@ -7,7 +7,7 @@ import { Score } from "./Score";
 import { Banner } from "./banner";
 import type { GameScore, GameState } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
-import { initGameState } from "../utils";
+import { initGameState, isMobile } from "../utils";
 import { draw } from "./gamePage";
 import type { GameData } from "../../../backend/share/type/gameData";
 import toast from "react-hot-toast";
@@ -25,6 +25,8 @@ export function AIGamePage() {
     const confirmRef = React.useRef<boolean>(false);
     const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
     const themeRef = React.useRef<"black" | "light" | "default">("default");
+    const wsRef = React.useRef<WebSocket | null>(null);
+    const isMobileRef = React.useRef(isMobile());
 
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
 
@@ -58,6 +60,7 @@ export function AIGamePage() {
             gameData.keyPress = "init";
             setPlayerID(gameData.playerId);
             ws.send(JSON.stringify(gameData));
+            wsRef.current = ws;
         }
 
         ws.onmessage = (msg) => {
@@ -172,6 +175,17 @@ export function AIGamePage() {
         draw(initGameState(), theme);
     }, [theme]);
 
+    function handleKeypress(key: "up" | "down" | "Enter", pressed: boolean)
+    {
+        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !gameData)
+            return ;
+        
+        if (pressed)
+            gameData.keyPress = key;
+        else 
+            gameData.keyPress = "stop";
+        wsRef.current.send(JSON.stringify(gameData));
+    }
 
     return (
         <div>
@@ -215,6 +229,7 @@ export function AIGamePage() {
                     <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
                 </div>
 
+                <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
 
                 {/* Theme setting bar */}
                 <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "invisible" : "visible"}`}>
@@ -231,6 +246,29 @@ export function AIGamePage() {
                     </button>
                 </div>
 
+                    <div className={`flex ${isMobileRef.current && !Load && !result ? "visible" : "invisible" } gap-10 `}>
+                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
+                            onTouchStart={() => handleKeypress("up", true)}
+                            onTouchEnd={() => handleKeypress("up", false)}
+                            onMouseDown={() => handleKeypress("up", true)}
+                            onMouseUp={() => handleKeypress("up", false)}
+                            >Up</button>
+
+                        <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
+                                onClick={() => {
+                                    setConfirm(true);
+                                    handleKeypress("Enter", true);
+                                }}
+                        >Confirm</button>
+
+                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
+                                onTouchStart={() => handleKeypress("down", true)}
+                                onTouchEnd={() => handleKeypress("down", false)}
+                                onMouseDown={() => handleKeypress("down", true)}
+                                onMouseUp={() => handleKeypress("down", false)}
+                            >Down</button>
+                    </div>
+                </div>
             </div>
         </div>
     )

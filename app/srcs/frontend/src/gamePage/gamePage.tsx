@@ -37,8 +37,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
     const themeRef = React.useRef<"black" | "light" | "default">("default");
     const wsRef = React.useRef<WebSocket | null>(null);
-    const isMobileRef = React.useRef(true);
-    // const isMobileRef = React.useRef(isMobile());
+    const isMobileRef = React.useRef(isMobile());
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
