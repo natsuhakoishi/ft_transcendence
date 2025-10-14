@@ -51,7 +51,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			if (!email)
 				return res.status(500).send({ message: 'Error: Email are required.' });
 			if (!otp)
-				return res.status(400).send({ code: "ERR_EmptyOTP", message: "Error: OTP are required." });
+				return res.status(400).send({ code: "auth.ERR_EmptyOTP", message: "Error: OTP are required." });
 
 			const temp = otpTemp[email];
 			if (!temp)
@@ -70,7 +70,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			if (temp.otp !== otp)
 			{
 				temp.attempts += 1;
-				return res.status(400).send({ code: "auth.ERR_InvalidOTP", message: 'Invalid OTP.' });
+				return res.status(400).send({ code: "auth.ERR_VerifyOTP", message: 'Invalid OTP.' });
 			}
 
 			const userData = dataUserRegister[email];
@@ -108,7 +108,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			if (!email)
 				return res.status(500).send({ message: 'Error: Email are required.' });
 			if (!otp)
-				return res.status(400).send({ code: "ERR_EmptyOTP", message: "Error: OTP are required." });
+				return res.status(400).send({ code: "auth.ERR_EmptyOTP", message: "Error: OTP are required." });
 
 			const temp = otpTemp[email];
 			if (!temp)
@@ -126,7 +126,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 			if (temp.otp !== otp)
 			{
 				temp.attempts += 1;
-				return res.status(400).send({ code: "auth.ERR_InvalidOTP", message: 'Invalid OTP.' });
+				return res.status(400).send({ code: "auth.ERR_VerifyOTP", message: 'Invalid OTP.' });
 			}
 			delete otpTemp[email];
 

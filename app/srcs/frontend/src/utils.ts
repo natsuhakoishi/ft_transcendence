@@ -68,9 +68,9 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-			console.error("Server/network Error\n", err);
+			console.error("Server/Network Error\n", err);
 			getGlobalErrorHandler("503")();
-			throw { status: 503, message: 'Cannot connect to server. Please try later.' };
+			throw { status: 503, message: "Server/Network Error" };
 		}
 		console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
@@ -100,9 +100,9 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-			console.error("Server/network Error\n", err);
+			console.error("Server/Network Error\n", err);
 			getGlobalErrorHandler("503")();
-			throw { status: 503, message: "Server Error. Retrying..." };
+			throw { status: 503, message: "Server/Network Error" };
 		}
 		console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
@@ -150,7 +150,3 @@ export function bakery(t: (key: string) => string) {
     return toast(msg);
   };
 }
-
-//500, server error when processed request
-//200, request success
-//400, bad request

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { apiFetch } from "../utils";
 import { useLang, withTranslation, type TranslationProps } from "../_hooks/language";
 
@@ -111,20 +110,25 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
 
   const handleRegister = async () => {
     try {
-      if (verifyRef.current.username && (verifyRef.current.username.length < 3 || verifyRef.current.username.length > 8))
-      {
+      if (verifyRef.current.username && (verifyRef.current.username.length < 3 || verifyRef.current.username.length > 8)) {
         if (verifyRef.current.username.length > 8)
           toasterPluz("auth.ERR_NameTooLong");
         else
           toasterPluz("auth.ERR_NameTooShort");
         return ;
       }
-      const data = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
 
-      toast(data.message);
+      if (verifyRef.current.password && verifyRef.current.password.length < 8) {
+        toasterPluz("ERR_PasswordLen");
+        return ;
+      }
+      //feat password management
+
+      toasterPluz("auth.MSG_CONNECTING");
+      const data = await apiFetch("register", { method: "POST", body: JSON.stringify(verifyRef.current) });
       if (data.requireOTP)
         setShowOTP(true);
-
+      toasterPluz(data);
     } catch (err: any) { 
       toasterPluz(err);
     }
@@ -132,13 +136,11 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
 
   const handleLogin = async () => {
     try {
-      toast("Submit succesful. Loading...");
+      toasterPluz("auth.MSG_CONNECTING");
       const data = await apiFetch("login", { method: "POST", body: JSON.stringify(verifyRef.current) });
-
-      toast.success(data.message);
       if (data.requireOTP)
         setShowOTP(true);
-
+      toasterPluz(data);
     } catch (err: any) {
       toasterPluz(err);
     }
@@ -160,10 +162,10 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
       }
 
       await apiFetch(url, { method: "POST", body: JSON.stringify(body) });
-      toast.success("Verified success!");
+      toasterPluz("auth.OK_VerifyOTP");
       navigate("/");
-
     } catch (err: any) {
+      toasterPluz(err);
     }
   }
 
@@ -186,6 +188,9 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
           </>
         )
       }
+
+      {/* todo Warning Context: valid email address */}
+
       </div>
     </div>
   </>
