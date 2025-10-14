@@ -33,16 +33,18 @@ export function FetchData() {
   React.useEffect(() => {
     console.log("Fetching data...");
     setTimeout(() => {
-      loadData({ setLoading, setProgress, setUser });
+      loadData({ setLoading, setProgress, setUser }, t);
     }, 500);
-  }, []);
+  }, [t]);
 
   const refetchData = React.useCallback(() => {
     console.log("Refetch triggered");
     setTimeout(() => {
-      loadData({ setLoading, setProgress, setUser });
+      loadData({ setLoading, setProgress, setUser }, t);
     }, 500);
-  }, []);
+  }, [t]);
+
+  if (loading) return <LoadingScreen progress={progress} />
 
   return (
     <Outlet context={{ user, loading, progress, refetchData}} />
@@ -99,12 +101,10 @@ export function HomeP({ t, lang }: { t: (key: string) => string; lang?: string }
                 >{t("home.btn_tour")}</button>
 
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
-                 onClick={() => { setMatch(true); setAI(false); }}
-                >{t("home.btn_1vs1")}</button>
+                 onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
-                 onClick={() => { setMatch(true); setAI(true); }}
-                >{t("home.btn_AI")}</button>
+                 onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               </div>
             </div>
             <div className="flex-1" />

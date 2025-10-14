@@ -41,12 +41,12 @@ type fetchDataProps = {
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
 }
 
-export async function loadData({ setLoading, setProgress, setUser }: fetchDataProps ) {
+export async function loadData({ setLoading, setProgress, setUser }: fetchDataProps, t: (key: string) => string ) {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const progress: [ ProgressObj<any>, ProgressObj<User> ] =
   [
-    { name: "Checking User", api: () => apiFetchPrivate("me", { method: "GET" }), setter: null },
-    { name: "Fetching User Data", api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
+    { name: t("loading.step_checkUser"), api: () => apiFetchPrivate("me", { method: "GET" }), setter: null },
+    { name: t("loading.step_fetchUser"), api: () => apiFetchPrivate("profile", { method: "POST", body: "{}" }), setter: setUser },
   ]
   
   try {
@@ -68,7 +68,7 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
       await sleep(500);
     }
 
-    setProgress({ step: "Finished", completed: null, total: null });
+    setProgress({ step: t("loading.step_complete"), completed: null, total: null });
     await sleep(500);
     setLoading(false);
     console.log("User data fetched");
