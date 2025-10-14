@@ -145,7 +145,6 @@ export function bakery(t: (key: string) => string) {
 
     if (shortKey.startsWith("ERR_")) return toast.error(msg);
     if (shortKey.startsWith("OK_")) return toast.success(msg);
-    if (shortKey.startsWith("INFO_")) return toast(msg);
 
     return toast(msg);
   };

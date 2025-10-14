@@ -9,9 +9,9 @@ import { Score } from "./Score.tsx";
 import { Player } from "./player.tsx";
 import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
-import toast from "react-hot-toast";
+import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 
-export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
+function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();
     // console.log("GamePage");
     const location = useLocation();
@@ -48,13 +48,13 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     }, []);
 
     React.useEffect(() => {
-        document.title = isTournament ? "Tournament: In Game..." : "Game";
+        document.title = isTournament ? t("title_tourM") : t("title_match");
         (async () => {
             console.log("gamePage: useEffect");
 
             if (!RoomID) {
                 console.log("gamePage: missing roomID");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
             console.log("GamePage: roomid:", RoomID);
 
@@ -78,7 +78,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             }
             catch (e) {
                 console.log("Matching: fetch error: ", e);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
 
             //init default position and board size
@@ -149,7 +149,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     if (confirmRef.current)
                     {
                         confirmRef.current = false;
-                        toast.error("Opponent disconnected");
+                        toasterPluz("msg_Disconnect");
                         setTimeout(()=>{
                             if (gameData.tournament) {
                                 navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }, replace: true});
@@ -161,8 +161,8 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     }
                     else
                     {
-                        toast.error("Timeout");
-                        toast.error("Back to home");
+                        toasterPluz("shared.game.msg_timeOut");
+                        toasterPluz("shared.game.msg_timeOut_redicrect");
                         navigate("/", { replace: true });
                     }
                     //TODO: render ending
@@ -170,7 +170,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 else if (type === "trespassing")
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
-                    toast.error("Trespassing!");
+                    toasterPluz("shared.game.msg_trespassing");
                     navigate("/", { replace: true });
                 }
             };
@@ -255,7 +255,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         <div>
             {/* Loading Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${Load ? "visible" : "invisible"} `}>
-                <LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />
+                <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
             </div>
 
             {/* Result Page */}
@@ -390,3 +390,5 @@ function drawPaddles(paddle: Paddle, ctx: CanvasRenderingContext2D, color: strin
     ctx.fillStyle = color;
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
+
+export const GamePage = withTranslation(GameP);

@@ -24,7 +24,7 @@ function NotFound() {
     return (
         <div>
             <h1 className="text-3xl font-extrabold">{t("404_page")}</h1>
-            <p className="mt-5 text-center">{t("404_msg")}{Math.ceil(counter / 1000)}</p>
+            <p className="mt-5 text-center">{t("404_msg")}{Math.ceil(counter / 1000)} {t("shared.second")}</p>
         </div>
     );
 }

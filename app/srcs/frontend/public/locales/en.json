@@ -1,10 +1,4 @@
 {
-	"404_page": "404 Page Not Found",
-	"404_msg": "Redirect in ",
-	"matching_1vs1": "Matching...",
-	"matching_AI": "Calling AI chan...",
-	"matching_tour": "Tournament Matching...",
-
 	"loading":
 	{
 		"step_start": "Loading",
@@ -84,10 +78,40 @@
 		"btn_no": "No"
 	},
 
+	"404_page": "404 Page Not Found",
+	"404_msg": "Redirect in ",
+
+	"matching_1vs1": "Matching...",
+	"matching_AI": "Calling AI chan...",
+	"matching_tour": "Tournament Matching...",
+
+	"title_match": "Game",
+	"title_AI": "AI Game",
+	"title_tourM": "Tournament: In Game...",
+
+	"msg_Disconnect": "Opponent disconnected",
 
 	"shared":
 	{
+		"game":
+		{
+			"preparing": "Press [Space] to ready: ",
+			"ready": "Ready: ",
+			"waiting": "Waiting for opponent confirm game",
+			"onGoing": "Pong!",
+			"msg_timeOut": "Timeout",
+			"msg_timeOut_redirect": "Back to home :)",
+			"msg_trespassing": "Trespassing!",
+
+			"theme": "Theme",
+			"default": "default",
+			"light": "light",
+			"black": "black"
+		},
+		
+		"second": "Second",
 		"btn_cancel": "Cancel",
+
 		"form":
 		{
 			"place_email": "Enter email address",

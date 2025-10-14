@@ -10,9 +10,9 @@ import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { initGameState, isMobile } from "../utils";
 import { draw } from "./gamePage";
 import type { GameData } from "../../../backend/share/type/gameData";
-import toast from "react-hot-toast";
+import { withTranslation, type TranslationProps } from "../_hooks/language";
 
-export function AIGamePage() {
+function AIGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const key = React.useRef<boolean>(false);
@@ -42,7 +42,7 @@ export function AIGamePage() {
     }, 1000 * 3);
 
     React.useEffect(() => {
-        document.title = "AI Game";
+        document.title = t("title_AI");
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_AI_GAMEPLAY);
 
         const gameData: GameData = {
@@ -108,14 +108,14 @@ export function AIGamePage() {
             else if (type === "timeout")
             {
                 console.log("/AI gamepage timeout")
-                toast.error("Timeout");
-                toast.error("Back to home");
+                toasterPluz("shared.game.msg_timeOut");
+                toasterPluz("shared.game.msg_timeOut_redicrect");
                 navigate("/", { replace: true });
             }
             else if (type === "trespassing")
             {
                 console.log("/AI gamePage trespassing 凸^u^凸");
-                toast.error("Trespassing!");
+                toasterPluz("shared.game.msg_trespassing");
                 navigate("/", { replace: true });
             }
         }
@@ -242,7 +242,7 @@ export function AIGamePage() {
                                 else if (theme === "light")
                                     setTheme("default");
                             }}>
-                    {`Theme [${theme}]`}
+                    {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
                     </button>
                 </div>
 
@@ -273,3 +273,5 @@ export function AIGamePage() {
         </div>
     )
 }
+
+export const AIGamePage = withTranslation(AIGameP);
