@@ -32,8 +32,10 @@ export function Matching({again, setMatch, AI} : {
     
             ws.onmessage = async (event) => {
                 const data: MatchPlayersData = JSON.parse(event.data);
-                const playerID = await apiFetchPrivate("me", { method: "GET" });
+                const playerData = await apiFetchPrivate("me", { method: "GET" });
+                const playerID: string = playerData.id.toString();
                 console.log("/Matching: ", data);
+                console.log("/Matching: ", playerID);
                 
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
                 if (!again)
@@ -41,7 +43,7 @@ export function Matching({again, setMatch, AI} : {
                 else
                     navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
             };
-    
+
             return () => { //when user press 'back button'
                 console.log("Matching: closing ws");
                 ws.close();
@@ -60,7 +62,8 @@ export function Matching({again, setMatch, AI} : {
 
             ws.onmessage = async (event) => {
                 const data: MatchPlayersData = JSON.parse(event.data);
-                const playerID = await apiFetchPrivate("me", { method: "GET" });
+                const playerData = await apiFetchPrivate("me", { method: "GET" });
+                const playerID: string = playerData.id.toString();
                 console.log("AI Matching: ", data);
 
                 console.log("AI matching: to", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
@@ -109,8 +112,7 @@ export function TMatching() {
                 }
                 catch (e) {
                     console.log("TMatching: fetch error: ", e);
-                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "H"}, replace: true});
-                    // navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
                 }
             })();
         };

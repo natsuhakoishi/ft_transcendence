@@ -26,7 +26,7 @@ export function Banner({
                             // gameData.keyPress = "timeout";
                             // ws.send(JSON.stringify(gameData));
                         }}
-                        describe="Press [Enter] to ready:" />
+                        describe="Press [Space] to ready:" />
                 ) : !start ? (
                     <h1 className="text-3xl font-bold text-center">Waiting for opponent confirm game</h1>
                 ) : ready ? (

@@ -4,6 +4,11 @@ import type { PlayerWithProfileData } from "../../backend/share/type/Player";
 import type { User } from "../../backend/share/type/user";
 import { getGlobalErrorHandler } from "./_hooks/error";
 
+export function isMobile(): boolean {
+	return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+	.test(navigator.userAgent);
+}
+
 export function initGameState(): GameState {
 	const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
 	const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);

@@ -7,7 +7,7 @@ import { Score } from "./Score";
 import { Banner } from "./banner";
 import type { GameScore, GameState } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
-import { initGameState } from "../utils";
+import { initGameState, isMobile } from "../utils";
 import { draw } from "./gamePage";
 import type { GameData } from "../../../backend/share/type/gameData";
 import toast from "react-hot-toast";
@@ -23,6 +23,10 @@ export function AIGamePage() {
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
     const [ result , setResult ] = React.useState(false);
     const confirmRef = React.useRef<boolean>(false);
+    const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
+    const themeRef = React.useRef<"black" | "light" | "default">("default");
+    const wsRef = React.useRef<WebSocket | null>(null);
+    const isMobileRef = React.useRef(isMobile());
 
     const [ gameData, setGameData ] = React.useState<GameData | null>(null);
 
@@ -35,7 +39,7 @@ export function AIGamePage() {
 
     setTimeout(() => {
         setLoad(false);
-    }, 1000 * 0.8);
+    }, 1000 * 3);
 
     React.useEffect(() => {
         document.title = "AI Game";
@@ -51,11 +55,12 @@ export function AIGamePage() {
         ws.onopen = () => {
             const gameState: GameState = initGameState();
             console.log("ws.onopen: pre rendering");
-            draw(gameState);
+            draw(gameState, themeRef.current);
             setGameData(gameData);
             gameData.keyPress = "init";
             setPlayerID(gameData.playerId);
             ws.send(JSON.stringify(gameData));
+            wsRef.current = ws;
         }
 
         ws.onmessage = (msg) => {
@@ -68,7 +73,7 @@ export function AIGamePage() {
             if (type === "render")
             {
                 key.current = true;
-                draw(parse.gameState);
+                draw(parse.gameState, themeRef.current);
             }
             else if (type === "start")
             {
@@ -77,7 +82,7 @@ export function AIGamePage() {
                 setReady(true);
 
                 setTimeout(() => {
-                    draw(parse.gameState);
+                    draw(parse.gameState, themeRef.current);
                 }, 1000 * 1);
 
                 setTimeout( () => {
@@ -128,7 +133,7 @@ export function AIGamePage() {
                 if (ws.readyState === WebSocket.OPEN)
                     ws.send(JSON.stringify(gameData));
             }
-            else if (e.key === "Enter" && !confirmGame)
+            else if (e.key === " " && !confirmGame)
             {
                 console.log("/AI gamePage:" + e.key);
                 console.log("/AI gamePage:", confirmGame);
@@ -165,6 +170,23 @@ export function AIGamePage() {
         };
     }, []);
 
+    React.useEffect(() => {
+        themeRef.current = theme;
+        draw(initGameState(), theme);
+    }, [theme]);
+
+    function handleKeypress(key: "up" | "down" | "Enter", pressed: boolean)
+    {
+        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !gameData)
+            return ;
+        
+        if (pressed)
+            gameData.keyPress = key;
+        else 
+            gameData.keyPress = "stop";
+        wsRef.current.send(JSON.stringify(gameData));
+    }
+
     return (
         <div>
             {/* Loading Page */}
@@ -174,7 +196,8 @@ export function AIGamePage() {
 
             {/* Result Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} />
+                <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={true} />
+                {/* <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} /> */}
             </div>
 
             {/* whole Game's stuff */}
@@ -206,6 +229,46 @@ export function AIGamePage() {
                     <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
                 </div>
 
+                <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
+
+                {/* Theme setting bar */}
+                <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "invisible" : "visible"}`}>
+                    <button className=""
+                            onClick={() => {
+                                if (theme === "default")
+                                    setTheme("black");
+                                else if (theme === "black")
+                                    setTheme("light");
+                                else if (theme === "light")
+                                    setTheme("default");
+                            }}>
+                    {`Theme [${theme}]`}
+                    </button>
+                </div>
+
+                    <div className={`flex ${isMobileRef.current && !Load && !result ? "visible" : "invisible" } gap-10 `}>
+                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
+                            onTouchStart={() => handleKeypress("up", true)}
+                            onTouchEnd={() => handleKeypress("up", false)}
+                            onMouseDown={() => handleKeypress("up", true)}
+                            onMouseUp={() => handleKeypress("up", false)}
+                            >Up</button>
+
+                        <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
+                                onClick={() => {
+                                    setConfirm(true);
+                                    handleKeypress("Enter", true);
+                                }}
+                        >Confirm</button>
+
+                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
+                                onTouchStart={() => handleKeypress("down", true)}
+                                onTouchEnd={() => handleKeypress("down", false)}
+                                onMouseDown={() => handleKeypress("down", true)}
+                                onMouseUp={() => handleKeypress("down", false)}
+                            >Down</button>
+                    </div>
+                </div>
             </div>
         </div>
     )

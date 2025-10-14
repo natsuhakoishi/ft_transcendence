@@ -34,16 +34,20 @@ async function main()
 
 		// console.log(match);
 
-		// console.log(
+		console.log(
 		// 	await getTournamentAll(),
 		// 	await getTournamentParticipantsByTournamentId(1),
-		// 	await getMatchesByTournamentId(1),
+			// await getMatchesByTournamentId(36),
+			// await getTournamentLeaderboard(36)
 		// 	// await 
-		// );
+			// await getMatchAll()
+			await getMatchByUserId(1)	
+		);
 
-		let i = 0;
-		while (++i < 5)
-			await console.log(i, await getMatchByUserId(i));
+		// console.log(await getTournamentAll());
+		// console.log(await getMatchesByTournamentId(26));
+		
+		
 	}
 	catch (error)
 	{

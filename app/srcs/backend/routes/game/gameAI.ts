@@ -24,7 +24,7 @@ const AI: FastifyPluginAsync = async (fastify: any) => {
                     roomID: "",
                     Players: [
                         {id: playerProfile.id, avatar: playerProfile.avatar, name: playerProfile.name},
-                        {id: 0, avatar: "default.webp", name: "Ai chan"}
+                        {id: 0, avatar: "default.png", name: "AI"}
                     ]
                 };
 
