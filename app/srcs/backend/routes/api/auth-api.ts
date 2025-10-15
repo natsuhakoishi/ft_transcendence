@@ -11,36 +11,45 @@ export const dataUserRegister: Record<string, { username: string; email: string;
 const authApi: FastifyPluginAsync = async (fastify: any) => {
 	// register
 	fastify.post('/register', { schema: registerSchema }, async (req: any, res: any) => {
-		const { username, email, password } = req.body as any;
+		try {
+			const { username, email, password } = req.body as any;
 
-		if (await getUserByUsername(username))
-			return res.status(400).send({ code: "ERR_NameRepeat", message: 'Warning: Username already taken.' });
-		if (await getUserByEmail(email))
-			return res.status(400).send({ code: "auth.ERR_EmailRepeat", message: 'Warning: Email already registered.' });
-		if (!password || password.length < 8)
-		return res.status(400).send({ code: "ERR_PasswordLen", message: 'Warning: Password must be at least 8 characters long.' });
+			if (await getUserByUsername(username))
+				return res.status(400).send({ code: "ERR_NameRepeat", message: 'Warning: Username already taken.' });
+			if (await getUserByEmail(email))
+				return res.status(400).send({ code: "auth.ERR_EmailRepeat", message: 'Warning: Email already registered.' });
+			if (!password || password.length < 8)
+			return res.status(400).send({ code: "ERR_PasswordLen", message: 'Warning: Password must be at least 8 characters long.' });
 
-		const hashed_pw = await hashPassword(password);
+			const hashed_pw = await hashPassword(password);
 
-		dataUserRegister[email] = { username, email, password: hashed_pw };
+			dataUserRegister[email] = { username, email, password: hashed_pw };
 
-		const sent = await sendOTP(email);
-		if (!sent)
-			return res.status(500).send({ code: "auth.ERR_OTP", message: 'Error: Failed to send OTP' });
-		res.send({ code: "auth.OK_OTP", message: 'OTP sent successfully', requireOTP: true });
+			const sent = await sendOTP(email);
+			if (!sent)
+				return res.status(500).send({ code: "auth.ERR_OTP", message: 'Error: Failed to send OTP' });
+			res.send({ code: "auth.OK_OTP", message: 'OTP sent successfully', requireOTP: true });
+		} catch {
+			res.status(500).send({ message: 'Server Error: register' });
+		}
 	});
 
 	// login
 	fastify.post('/login', { schema: loginSchema }, async (req: any, res: any) => {
-		const { email, password } = req.body as any;
-		const user = await getUserByEmail(email);
-		if (!user || !(await verifyPassword(password, user.password)))
-			return res.status(400).send({ code: "auth.ERR_Login", message: 'Invalid email or password' });
+		try
+		{
+			const { email, password } = req.body as any;
+			const user = await getUserByEmail(email);
+			if (!user || !(await verifyPassword(password, user.password)))
+				return res.status(400).send({ code: "auth.ERR_Login", message: 'Invalid email or password' });
 
-		const sent = await sendOTP(email);
-		if (!sent)
-			return res.status(500).send({ code: "auth.ERR_OTP", message: 'Error: Failed to send OTP' });
-		res.send({ code: "auth.OK_OTP", message: 'OTP sent successfully', requireOTP: true });
+			const sent = await sendOTP(email);
+			if (!sent)
+				return res.status(500).send({ code: "auth.ERR_OTP", message: 'Error: Failed to send OTP' });
+			res.send({ code: "auth.OK_OTP", message: 'OTP sent successfully', requireOTP: true });
+		} catch {
+			res.status(500).send({ message: 'Server Error: login' });
+		}
 	});
 
 	//verify-otp-register

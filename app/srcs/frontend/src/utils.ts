@@ -137,7 +137,7 @@ export function bakery(t: (key: string) => string) {
   return (err: any) => {
 	const key = typeof err === "string" || typeof err === "number" ? `pop.${String(err)}` : 
 		( err?.code ? `pop.${err.code}` :
-			( err?.status ? `pop.${String(err.status)}` : "pop.SWR" ));
+			( err?.status ? `pop.${String(err.status)}` : "pop.ERR_SWR" ));
 
 	// console.log(key);
 	const shortKey = key.split(".").pop() || key;
