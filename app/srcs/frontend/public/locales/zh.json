@@ -33,7 +33,10 @@
 		"btn_friend": "好友",
 		"btn_history": "對局記錄",
 		"text_version": "版本號 ",
-		"btn_credit": "製作名單"
+		"btn_credit": "製作名單",
+		"role_en": "Backend",
+		"role_yb": "Game",
+		"role_zw": "UIUX"
 	},
 
 	"profile":

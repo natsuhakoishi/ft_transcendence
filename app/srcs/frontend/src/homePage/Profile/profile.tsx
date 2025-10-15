@@ -23,7 +23,7 @@ function MenuProfile({ user } : { user: User | null } ) {
 
   return (
     <>
-    <div className="mb-10 mt-1 inset-0 w-screen h-[50%] shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/40 backdrop-blur-md flex justify-start">
+    <div className="mb-10 mt-1 inset-0 w-screen h-[50%] shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/60 backdrop-blur-md flex justify-start">
 
       <div className="flex flex-col mt-5">
         {/* Upper section*/}
@@ -102,7 +102,7 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
 	return (
 		<>
     <div className="w-screen h-screen gap-2 flex flex-col bg-cover bg-center bg-blend-overlay
-      bg-[linear-gradient(to_bottom,#6FB7FFcc,#daade0ac,#A79BFFcc),url('/pic/profileP.jpg')]"
+      bg-[linear-gradient(to_bottom,#6FB7FF4d,#daade04d,#A79BFF4d),url('/pic/profileP.jpg')]"
     >
 
       {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}

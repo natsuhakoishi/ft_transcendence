@@ -33,7 +33,10 @@
 		"btn_friend": "Friends",
 		"btn_history": "Match History",
 		"text_version": "Version ",
-		"btn_credit": "Credits"
+		"btn_credit": "Credits",
+		"role_en": "Backend",
+		"role_yb": "Game",
+		"role_zw": "UIUX"
 	},
 
 	"profile":

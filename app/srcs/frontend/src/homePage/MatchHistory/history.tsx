@@ -198,7 +198,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
 
 	return (
     <>
-    <div className="w-screen h-screen grid grid-cols-[1fr_15%] bg-cover bg-center bg-gray-100/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay">
+    <div className="w-screen h-screen grid grid-cols-[1fr_15%] bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay">
   
       {/* Tournament Modal */}
       {TourModal && (

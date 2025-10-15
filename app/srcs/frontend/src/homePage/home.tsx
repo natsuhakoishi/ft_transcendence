@@ -6,6 +6,63 @@ import { useLang, withTranslation, type Lang, type TranslationProps } from "../_
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
 
+function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const { t } = useLang();
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
+
+    <div className="w-[60%] h-[68%] relative flex flex-col justify-center bg-gray-300/60 backdrop-blur-2xl border-1 rounded-4xl gap-3" onClick={(e) => e.stopPropagation()}>
+      {/* Title */}
+      <h1 className="text-2xl text-center">{t("home.btn_credit")}</h1>
+      {/* Credit list */}
+      <div className="flex flex-col gap-3 items-start mx-5">
+        {/* First */}
+        <div className="flex w-full gap-2 items-center">
+          <img className="w-20 aspect-square rounded-sm border-2 p-1.5" src="/pic/e.png" />
+          <div className="font-semibold ">
+            <span className="text-[20px] font-inter font-bold leading-[150%] text-silver
+              [text-shadow:1px_1px_2px_rgba(80,80,80,0.8),-1px_-1px_2px_rgba(200,200,200,0.9)]">natsuhakoishi</span>
+            <p className="text-base italic text-[#848A98] mb-3">yyean-wa</p>
+          </div>
+          <div className="flex-1" />
+          <div>{t("home.role_en")}</div>
+          <div className="flex-1" />
+        </div>
+        {/* Second */}
+        <div className="flex w-full gap-2 items-center">
+          <img className="w-20 aspect-square rounded-sm border-2" src="/pic/yb.png" />
+          <div className="flex flex-col font-semibold">
+            <span className="text-xl font-inter font-bold leading-[150%] text-silver
+              [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">Yabi924</span>
+            <span className="text-base italic text-[#848A98]">yyan-bin</span> 
+          </div>
+          <div className="flex-1" />
+          <div>{t("home.role_yb")}</div>
+          <div className="flex-1" />
+        </div>
+        {/* Third */}
+        <div className="flex w-full gap-2 items-center">
+          <img className="w-20 aspect-square rounded-sm border-2" src="/pic/zw.png" />
+          <div className="font-semibold">
+            <span className="text-xl font-inter font-bold leading-[150%] text-silver
+              [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">nightZQ</span>
+            <p className="text-base italic text-[#848A98]">zgoh</p> 
+          </div>
+          <div className="flex-1" />
+          <div>{t("home.role_zw")}</div>
+          <div className="flex-1" />
+        </div>
+
+      </div>
+      <div className="flex justify-center align-center items-center w-full gap-3">
+        <div className="text-sm">©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
+      </div>
+    </div>
+    </div>
+  );
+}
+
 export function LanguageBar() {
   const { lang, setLang } = useLang();
 
@@ -59,9 +116,10 @@ export type SharedData = {
 export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
   const { user, loading, progress } = useOutletContext<SharedData>();
-  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
+  const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [match, setMatch] = React.useState<boolean>(false);
-  const [ AI, setAI ] = React.useState(false);
+  const [ AI, setAI ] = React.useState<boolean>(false);
+  const [ creditM, setCreditM ] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -75,8 +133,10 @@ export function HomeP({ t, lang }: TranslationProps) {
   return (
     <>
     {loading ? <LoadingScreen progress={progress}/> : 
-      (match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
+      match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> : 
         (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-black/23 bg-[url('/pic/homeP.jpg')] bg-blend-overlay text-xl">
+
+          {creditM && <Credit onClick={setCreditM} />}
 
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
@@ -87,7 +147,7 @@ export function HomeP({ t, lang }: TranslationProps) {
               </button>
               <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
             </div>
-            <button className="absolute p-1 bottom-2 left-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
+            <button className="absolute p-1 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
@@ -107,18 +167,17 @@ export function HomeP({ t, lang }: TranslationProps) {
               </div>
             </div>
             <div className="flex-1" />
-            <span className="mb-3">{t("home.btn_credit")}</span>
+            <span className="mb-3" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end mr-3">
             <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
             <LanguageBar />
-            <button className="absolute bottom-2 right-4 p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            <button className="absolute bottom-2 right-4 rounded-2xl p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
 
-        </div>
-      ))
+        </div>)
     }
     </>
   );

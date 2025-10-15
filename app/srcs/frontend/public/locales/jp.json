@@ -33,7 +33,10 @@
 		"btn_friend": "フレンド",
 		"btn_history": "対戦履歴",
 		"text_version": "Version ",
-		"btn_credit": "スタッフ"
+		"btn_credit": "スタッフ",
+		"role_en": "Backend",
+		"role_yb": "Game",
+		"role_zw": "UIUX"
 	},
 
 	"profile":
