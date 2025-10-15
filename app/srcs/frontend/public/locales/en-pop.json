@@ -18,13 +18,7 @@
 	"ERR_NameTooLong": "Username too long! Max. 8",
 	"ERR_NameTooShort": "Username too short! Min. 3",
 	"ERR_PasswordLen": "Password must atleast 8 characters long",
-
 	"ERR_fetchH": "Fail to fetch history",
-
-	"OK_refresh": "Up to date!",
-	"ERR_fetchF": "Fail to fetch friends record",
-	"OK_DltFriend": "You have deleted your friend!",
-	"OK_AddFriend": "Friend added",
 
 	"auth":
 	{
@@ -59,6 +53,17 @@
 		"ERR_UpAva_type": "File type not support. Only: webp, jpeg, jpg, png",
 		"ERR_UpAva_size": "File too large! Size < 10MB",
 		"OK_UpAva": "Avar update successfully"
+	},
+
+	"friend":
+	{
+		"OK_refresh": "Up to date!",
+		"ERR_fetchF": "Fail to fetch friends record",
+		"OK_DltFriend": "You have deleted your friend!",
+		"OK_AddFriend": "Friend added",
+		"ERR_AddF_Self": "You can't add yourself as friend",
+		"ERR_AddF_IdNan": "ID have to be numeric value",
+		"ERR_IdInvalid": "Invalid ID"
 	},
 
 	"game":

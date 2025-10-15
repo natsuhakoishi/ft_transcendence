@@ -25,6 +25,8 @@
 	"ERR_fetchF": "Fail to fetch friends record",
 	"OK_DltFriend": "You have deleted your friend!",
 	"OK_AddFriend": "Friend added",
+	"ERR_AddF_IdNan": "ID have to be numeric value",
+	"ERR_IdInvalid": "Invalid ID",
 
 	"auth":
 	{

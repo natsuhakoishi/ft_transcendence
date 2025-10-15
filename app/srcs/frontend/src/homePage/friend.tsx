@@ -18,7 +18,7 @@ const handleAddFriend = async (
 
   try {
     await apiFetchPrivate("add_friend", { method: "POST", body: JSON.stringify({ "friend_adding": input }) });
-    toasterPluz("OK_AddFriend");
+    toasterPluz("friend.OK_AddFriend");
     fetch?.();
     setT_Add(false);
   } catch (err: any) {
@@ -89,7 +89,7 @@ export function Friend({ data, addFriend, fetch, onClick }: {
 const handleFDelete = async ( friend_id: number, fetch: () => void, toasterPluz: (key: string) => void ) => {
   try {
     await apiFetchPrivate("delete_friend", { method: "POST", body: JSON.stringify({ "friend_deleting": friend_id }) });
-    toasterPluz("OK_DltFriend");
+    toasterPluz("friend.OK_DltFriend");
     fetch();
   } catch (err: any) {
     toasterPluz(err);
@@ -173,7 +173,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
       console.log("Friends data fetched");
       // console.log(friends);
     } catch (err: any) {
-      toasterPluz("ERR_fetchF");
+      toasterPluz("friend.ERR_fetchF");
     }
   };
 
@@ -220,7 +220,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
       </button>
       {/* Refresh button */}
       <button className="w-13 aspect-square hover hover:scale-90 border-2 border-silver rounded-md overflow-hidden"
-        onClick={() => {fetchFriends; toasterPluz("OK_refresh")} }>
+        onClick={() => {fetchFriends; toasterPluz("friend.OK_refresh")} }>
           <img src="/pic/icons/refresh_btn.png" className="w-full h-full object-cover"/>  
       </button>
       {/* Display Total Friend */}
