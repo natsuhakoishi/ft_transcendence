@@ -1,6 +1,7 @@
 import React from "react";
 import { apiFetchPrivate } from "../utils.ts";
 import type { User } from "../../../backend/share/type/user.ts";
+import type { TranslationProps } from "../_hooks/language.tsx";
 
 export type Progress = {
   step: string;
@@ -16,7 +17,7 @@ export function LoadingScreen({ progress}: { progress: Progress }) {
         <span className="font-serif italic">{progress.step}</span>
       </p>
       <button type="button" className="px-4 py-2 flex items-center justify-center" disabled>
-        <svg className="size-5 animate-spin text-black" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="size-5 animate-spin text-white" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="4" r="1.8"></circle>
           <circle cx="19" cy="8" r="1.8"></circle>
           <circle cx="19" cy="16" r="1.8"></circle>
@@ -41,7 +42,7 @@ type fetchDataProps = {
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
 }
 
-export async function loadData({ setLoading, setProgress, setUser }: fetchDataProps, t: (key: string) => string ) {
+export async function loadData({ setLoading, setProgress, setUser }: fetchDataProps, { t, toasterPluz }: TranslationProps ) {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const progress: [ ProgressObj<any>, ProgressObj<User> ] =
   [
@@ -73,5 +74,7 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
     setLoading(false);
     console.log("User data fetched");
 
-  } catch (err: any) {}
+  } catch (err: any) {
+    toasterPluz(err);
+  }
 };

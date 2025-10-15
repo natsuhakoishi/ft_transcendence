@@ -2,7 +2,7 @@ import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
 import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
-import { useLang, withTranslation, type Lang } from "../_hooks/language.tsx";
+import { useLang, withTranslation, type Lang, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
 
@@ -24,8 +24,7 @@ export function LanguageBar() {
   );
 }
 
-export function FetchData() {
-  const { t } = useLang();
+function fetchD({ t, toasterPluz }: TranslationProps) { 
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [progress, setProgress] = React.useState<Progress>({ step: `${t("loading.step_start")}`, completed: null, total: 2 });
@@ -33,14 +32,14 @@ export function FetchData() {
   React.useEffect(() => {
     console.log("Fetching data...");
     setTimeout(() => {
-      loadData({ setLoading, setProgress, setUser }, t);
+      loadData({ setLoading, setProgress, setUser }, { t, toasterPluz });
     }, 500);
   }, []);
 
   const refetchData = React.useCallback(() => {
     console.log("Refetch triggered");
     setTimeout(() => {
-      loadData({ setLoading, setProgress, setUser }, t);
+      loadData({ setLoading, setProgress, setUser }, { t, toasterPluz });
     }, 500);
   }, []);
 
@@ -48,6 +47,8 @@ export function FetchData() {
     <Outlet context={{ user, loading, progress, refetchData}} />
   );
 }
+
+export const FetchData = withTranslation(fetchD);
 
 export type SharedData = {
   user: User | null;
