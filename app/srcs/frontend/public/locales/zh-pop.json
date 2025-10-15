@@ -1,0 +1,85 @@
+{
+	"_comment": "MORE GLOBAL LVL ERROR",
+	"401": "登入階段已逾期，跳转中。。。",
+	"USER-404": "找不到用戶，跳转中。。。",
+	"503": "Server disconnect. Retrying...",
+	"503-FAIL": "連線失敗，跳转中。。。",
+	"503-SUCCESS": "Reconnected!",
+
+	"_comment": "MORE GLOBAL LVL ERROR & SOME FALLBACK",
+	"401": "Session expired. Redirecting...",
+	"USER-404": "User not found. Redirecting...",
+	"503": "Server disconnect. Retrying...",
+	"503-FAIL": "Server still unreachable. Redirecting...",
+	"503-SUCCESS": "Reconnected!",
+
+	"_comment": "REQUEST ERROR",
+	"ERR_SWR": "Something went wrong",
+	"500": "Server Error",
+	"404": "Not Found",
+	"400": "Bad Request",
+	"200": "Success",
+
+	"_comment": "SHARED MESSAGE / NOT ENOUGH TO CATEGORIZE AS ONE CATEGORY",
+	"ERR_NameRepeat": "Username already taken",
+	"ERR_NameTooLong": "Username too long! Max. 8",
+	"ERR_NameTooShort": "Username too short! Min. 3",
+	"ERR_PasswordLen": "Password must atleast 8 characters long",
+
+	"ERR_fetchH": "Fail to fetch history",
+
+	"OK_refresh": "Up to date!",
+	"ERR_fetchF": "Fail to fetch friends record",
+	"OK_DltFriend": "You have deleted your friend!",
+	"OK_AddFriend": "Friend added",
+	"ERR_AddF_IdNan": "ID have to be numeric value",
+	"ERR_IdInvalid": "Invalid ID",
+
+	"auth":
+	{
+		"MSG_CONNECTING": "Connecting to server...",
+		"OK_OTP": "Check email for OTP code",
+		"ERR_OTP": "Fail to sent OTP, please enter valid email address!",
+
+		"ERR_Login": "Invalid email or password",
+		"_comment": "LOGIC FOR REGISTER PART",
+		"ERR_EmailRepeat": "Email already registered",
+		"_comment": "LOGIC FOR OTP",
+		"ERR_OTPExpired": "OTP expired, make a new request!",
+		"ERR_OTPManyTry": "Too many attempts. Try again later.",
+		"ERR_EmptyOTP": "Please submit OTP!",
+		"ERR_VerifyOTP": "Invalid OTP",
+		"OK_VerifyOTP": "Verify success!"
+
+	},
+
+	"profile":
+	{
+		"OK_LogOut": "Log out",
+		"OK_DeleteAva": "Avatar delete successfully",
+
+		"ERR_NameEmpty": "Please provide username!",
+		"OK_UpName": "Username update successfully",
+
+		"ERR_PasswordSame": "New password can't be same as old password",
+		"ERR_PassVerifyFail": "Invalid old password!",
+		"OK_UpPassword": "Password update successfully",
+
+		"ERR_UpAva_type": "File type not support. Only: webp, jpeg, jpg, png",
+		"ERR_UpAva_size": "File too large! Size < 10MB",
+		"OK_UpAva": "Avar update successfully"
+	},
+
+	"game":
+	{
+		"ERR_timeOut": "Timeout",
+		"ERR_timeOut_redirect": "Back to home",
+		"ERR_forgetReady": "Timeout. Back to home",
+
+		"ERR_trespassing": "Trespassing!",
+
+		"ERR_Disconnect": "Opponent disconnected",
+		"ERR_TourCancel": "Tournament cancel"
+	}
+
+}

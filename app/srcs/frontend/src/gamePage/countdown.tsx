@@ -1,4 +1,5 @@
 import React from "react"
+import { useLang } from "../_hooks/language";
 
 export function Countdown({
         start,
@@ -11,6 +12,7 @@ export function Countdown({
 
     const [ second, setSecond ] = React.useState<number>(start);
     const timer = React.useRef<NodeJS.Timeout | null>(null);
+    const { t } = useLang();
 
     React.useEffect( () => {
         if (second === 0)
@@ -41,7 +43,7 @@ export function Countdown({
 
     return (
         <div className="text-3xl font-bold text-center">
-            <h1>{describe} {second} Second </h1>
+            <h1>{describe} {second} {t("shared.second")} </h1>
         </div>
     );
 }

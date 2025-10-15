@@ -3,8 +3,10 @@ import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { Player } from "./player";
+import { useLang } from "../_hooks/language";
 
 export function Loading() {
+    const { t } = useLang();
     const navigate = useNavigate();
     const location = useLocation();
     const { playerID, playersData, AI } = (location.state || {}) as {
@@ -20,7 +22,7 @@ export function Loading() {
     console.log("Loading: ", playerID);
 
     React.useEffect(() => {
-        document.title = "Loading";
+        document.title = t("loading.step_start");
         console.log("Loading: to Gameplay", AI);
         const timer = setTimeout(() => {
             if (AI)

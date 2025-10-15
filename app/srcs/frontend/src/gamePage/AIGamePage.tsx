@@ -10,9 +10,9 @@ import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { initGameState, isMobile } from "../utils";
 import { draw } from "./gamePage";
 import type { GameData } from "../../../backend/share/type/gameData";
-import toast from "react-hot-toast";
+import { withTranslation, type TranslationProps } from "../_hooks/language";
 
-export function AIGamePage() {
+function AIGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const key = React.useRef<boolean>(false);
@@ -42,7 +42,7 @@ export function AIGamePage() {
     }, 1000 * 3);
 
     React.useEffect(() => {
-        document.title = "AI Game";
+        document.title = t("title_AI");
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_AI_GAMEPLAY);
 
         const gameData: GameData = {
@@ -108,14 +108,15 @@ export function AIGamePage() {
             else if (type === "timeout")
             {
                 console.log("/AI gamepage timeout")
-                toast.error("Timeout");
-                toast.error("Back to home");
+                // toasterPluz("pop.game.ERR_timeOut");
+                // toasterPluz("pop.game.ERR_timeOut_redirect");
+                toasterPluz("game.ERR_forgetReady");
                 navigate("/", { replace: true });
             }
             else if (type === "trespassing")
             {
                 console.log("/AI gamePage trespassing 凸^u^凸");
-                toast.error("Trespassing!");
+                toasterPluz("game.ERR_trespassing");
                 navigate("/", { replace: true });
             }
         }
@@ -191,7 +192,7 @@ export function AIGamePage() {
         <div>
             {/* Loading Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${Load ? "visible" : "invisible"} `}>
-                <LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />
+                <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
             </div>
 
             {/* Result Page */}
@@ -242,7 +243,7 @@ export function AIGamePage() {
                                 else if (theme === "light")
                                     setTheme("default");
                             }}>
-                    {`Theme [${theme}]`}
+                    {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
                     </button>
                 </div>
 
@@ -252,24 +253,26 @@ export function AIGamePage() {
                             onTouchEnd={() => handleKeypress("up", false)}
                             onMouseDown={() => handleKeypress("up", true)}
                             onMouseUp={() => handleKeypress("up", false)}
-                            >Up</button>
+                            >{t("shared.game.btn_up")}</button>
 
                         <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
                                 onClick={() => {
                                     setConfirm(true);
                                     handleKeypress("Enter", true);
                                 }}
-                        >Confirm</button>
+                        >{t("shared.game.btn_confirm")}</button>
 
                         <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
                                 onTouchStart={() => handleKeypress("down", true)}
                                 onTouchEnd={() => handleKeypress("down", false)}
                                 onMouseDown={() => handleKeypress("down", true)}
                                 onMouseUp={() => handleKeypress("down", false)}
-                            >Down</button>
+                            >{t("shared.game.btn_down")}</button>
                     </div>
                 </div>
             </div>
         </div>
     )
 }
+
+export const AIGamePage = withTranslation(AIGameP);

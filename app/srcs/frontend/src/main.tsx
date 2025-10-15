@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/loginPage";
 import { Home, FetchData } from "./homePage/home";
-import { useGlobalErrorMonitor } from "./_hooks/error_handler.ts";
+import { useGlobalErrorMonitor } from "./_hooks/error.ts";
 import { LanguageProvider } from "./_hooks/language.tsx";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";
@@ -17,12 +17,11 @@ import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 
 function App() {
-  useGlobalErrorMonitor();
-
   return (
     <>
       <Toaster position="top-center" />
       <LanguageProvider>
+      <GlobalErrorMonitor />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
         <Route path="/" element={<FetchData />}>
@@ -44,6 +43,11 @@ function App() {
       </LanguageProvider>
     </>
    );
+
+  function GlobalErrorMonitor() {
+    useGlobalErrorMonitor();
+    return null;
+  }
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -51,7 +55,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <App />
     </BrowserRouter>
 );
-
 
 // ReactDOM.createRoot(document.getElementById("root")!).render(
 //   <React.StrictMode>

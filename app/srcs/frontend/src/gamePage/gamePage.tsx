@@ -1,6 +1,6 @@
 import React from "react";
 import type { GameData } from "../../../backend/share/type/gameData.ts";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
@@ -9,9 +9,9 @@ import { Score } from "./Score.tsx";
 import { Player } from "./player.tsx";
 import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
-import toast from "react-hot-toast";
+import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 
-export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
+function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();
     // console.log("GamePage");
     const location = useLocation();
@@ -48,13 +48,13 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
     }, []);
 
     React.useEffect(() => {
-        document.title = isTournament ? "Tournament: In Game..." : "Game";
+        document.title = isTournament ? t("title_tourM") : t("title_match");
         (async () => {
             console.log("gamePage: useEffect");
 
             if (!RoomID) {
                 console.log("gamePage: missing roomID");
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
             console.log("GamePage: roomid:", RoomID);
 
@@ -78,7 +78,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
             }
             catch (e) {
                 console.log("Matching: fetch error: ", e);
-                navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
 
             //init default position and board size
@@ -149,7 +149,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     if (confirmRef.current)
                     {
                         confirmRef.current = false;
-                        toast.error("Opponent disconnected");
+                        toasterPluz("msg_Disconnect");
                         setTimeout(()=>{
                             if (gameData.tournament) {
                                 navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }, replace: true});
@@ -161,8 +161,9 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                     }
                     else
                     {
-                        toast.error("Timeout");
-                        toast.error("Back to home");
+                        // toasterPluz("pop.game.ERR_timeOut");
+                        // toasterPluz("pop.game.ERR_timeOut_redicrect");
+                        toasterPluz("game.ERR_forgerReady");
                         navigate("/", { replace: true });
                     }
                     //TODO: render ending
@@ -170,7 +171,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                 else if (type === "trespassing")
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
-                    toast.error("Trespassing!");
+                    toasterPluz("game.ERR_trespassing");
                     navigate("/", { replace: true });
                 }
             };
@@ -255,7 +256,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
         <div>
             {/* Loading Page */}
             <div className={`absolute inset-0 flex items-center justify-center ${Load ? "visible" : "invisible"} `}>
-                <LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />
+                <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
             </div>
 
             {/* Result Page */}
@@ -305,7 +306,7 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                                     else if (theme === "light")
                                         setTheme("default");
                                 }}>
-                        {`Theme [${theme}]`}
+                        {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
                         </button>
                     </div>
 
@@ -315,21 +316,21 @@ export function GamePage({ onGameOver }: { onGameOver?: () => void}) {
                             onTouchEnd={() => handleKeypress("up", false)}
                             onMouseDown={() => handleKeypress("up", true)}
                             onMouseUp={() => handleKeypress("up", false)}
-                            >Up</button>
+                            >{t("shared.game.btn_up")}</button>
 
                         <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
                                 onClick={() => {
                                     setConfirm(true);
                                     handleKeypress("Enter", true);
                                 }}
-                        >Confirm</button>
+                        >{t("shared.game.btn_confirm")}</button>
 
                         <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
                                 onTouchStart={() => handleKeypress("down", true)}
                                 onTouchEnd={() => handleKeypress("down", false)}
                                 onMouseDown={() => handleKeypress("down", true)}
                                 onMouseUp={() => handleKeypress("down", false)}
-                            >Down</button>
+                            >{t("shared.game.btn_down")}</button>
                     </div>
                 </div>
             </div>
@@ -390,3 +391,5 @@ function drawPaddles(paddle: Paddle, ctx: CanvasRenderingContext2D, color: strin
     ctx.fillStyle = color;
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
+
+export const GamePage = withTranslation(GameP);

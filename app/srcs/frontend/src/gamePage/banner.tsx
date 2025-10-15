@@ -1,4 +1,5 @@
 import type { GameData } from "../../../backend/share/type/gameData";
+import { useLang } from "../_hooks/language";
 import { Countdown } from "./countdown";
 
 export function Banner({
@@ -14,6 +15,7 @@ export function Banner({
     if (!gameData)
             return ;
 
+    const { t } = useLang();
     // console.log("Banner: ", confirm, start, ready);
 
     return (
@@ -26,15 +28,15 @@ export function Banner({
                             // gameData.keyPress = "timeout";
                             // ws.send(JSON.stringify(gameData));
                         }}
-                        describe="Press [Space] to ready:" />
+                        describe={t("shared.game.preparing")} />
                 ) : !start ? (
-                    <h1 className="text-3xl font-bold text-center">Waiting for opponent confirm game</h1>
+                    <h1 className="text-3xl font-bold text-center">{t("shared.game.waiting")}</h1>
                 ) : ready ? (
                         <Countdown
                         start={2}
                         timeout={() => {}}
-                        describe="Ready:" />
-                ) : <h1 className="text-3xl font-bold text-center">Pong!</h1>
+                        describe={t("shared.game.ready")} />
+                ) : <h1 className="text-3xl font-bold text-center">{t("shared.game.onGoing")}</h1>
             }
         </>
     )

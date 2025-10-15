@@ -3,7 +3,7 @@ import type { GameData } from "../../backend/share/type/gameData";
 import type { GameState } from "../../backend/share/type/gameState";
 import type { PlayerWithProfileData } from "../../backend/share/type/Player";
 import type { User } from "../../backend/share/type/user";
-import { getGlobalErrorHandler } from "./_hooks/error_handler";
+import { getGlobalErrorHandler } from "./_hooks/error";
 
 export function isMobile(): boolean {
 	return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
@@ -45,16 +45,6 @@ export function initGameData(_roomId: string, _playerID: number): GameData {
     return data;
 }
 
-function handleApiError(err: any) {
-  console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
-
-  const key = err.status; // use status field (number or route-specific)
-//   const toastMessage = dictionary[lang][toastKey] || err.message || 'Something went wrong';
-
-//   toast.error(toastMessage);
-//   toast.error(err.message || "something wrong");
-}
-
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 	const headers: Record<string, string> = { ...(options.headers as Record<string, string> || {}) };
 	if (!(options.body instanceof FormData))
@@ -66,23 +56,23 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 		let data: any = {};
 		data = await res.json();
 
-		if (!res.ok) {
+		if (!res.ok)
+    	{
 			if (res.status === 401) getGlobalErrorHandler("401")();
 			if (res.status === 404) getGlobalErrorHandler("404")();
 
-			throw { status: res.status, message: data.message };
+			throw { status: res.status, code: data.code, message: data.message };
 		}
-
 		return data;
 
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-      		console.error("Server/network Error\n", err);
+			console.error("Server/Network Error\n", err);
 			getGlobalErrorHandler("503")();
-      		throw { status: 0, message: 'Cannot connect to server. Please try later.' };
-    	}
-		handleApiError(err);
+			throw { status: 503, message: "Server/Network Error" };
+		}
+		console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
 	}
 }
@@ -98,23 +88,23 @@ export async function apiFetchPrivate(endpoint: string, options: RequestInit = {
 		let data: any = {};
 		data = await res.json();
 
-		if (!res.ok) {
+		if (!res.ok)
+		{
 			if (res.status === 401) getGlobalErrorHandler("401")();
 			if (res.status === 404) getGlobalErrorHandler("404")();
 
-			throw { status: res.status, message: data.message };
+			throw { status: res.status, code: data.code, message: data.message };
 		}
-
 		return data;
 
 	} catch (err: any) {
 		if (err instanceof TypeError && err.message.includes('Failed to fetch'))
 		{
-      		console.error("Server/network Error\n", err);
+			console.error("Server/Network Error\n", err);
 			getGlobalErrorHandler("503")();
-      		throw { status: 0, message: "Server Error. Retrying..." };
-    	}
-		handleApiError(err);
+			throw { status: 503, message: "Server/Network Error" };
+		}
+		console.error(`API Error: ${err.message}`,`[Status: ${err.status}]`);
 		throw err;
 	}
 }
@@ -139,4 +129,23 @@ export async function sendProfile(ws: WebSocket, callback: () => void): Promise<
 		console.log("Matching: fetch error: ", e);
 		callback();
 	}
+}
+
+//todo 503 error message should use hook
+
+export function bakery(t: (key: string) => string) {
+  return (err: any) => {
+	const key = typeof err === "string" || typeof err === "number" ? `pop.${String(err)}` : 
+		( err?.code ? `pop.${err.code}` :
+			( err?.status ? `pop.${String(err.status)}` : "pop.ERR_SWR" ));
+
+	// console.log(key);
+	const shortKey = key.split(".").pop() || key;
+    const msg = t(key);
+
+    if (shortKey.startsWith("ERR_")) return toast.error(msg);
+    if (shortKey.startsWith("OK_")) return toast.success(msg);
+
+    return toast(msg);
+  };
 }

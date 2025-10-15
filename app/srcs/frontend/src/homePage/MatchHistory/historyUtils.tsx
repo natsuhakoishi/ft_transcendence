@@ -1,18 +1,20 @@
 import type { Player } from "../../../../backend/share/type/history";
 import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import type { Winner } from "./history";
+import { useLang } from "../../_hooks/language";
 
 export function WinStatus ({ won } : { won: Winner }) {
+  const { t } = useLang();
   const getOrdinal = (n: number) => {
-    if (n === 1) return "1st";
-    if (n === 2) return "2nd";
-    if (n === 3) return "3rd";
-    return "4th";
+    if (n === 1) return t("shared.game_stat.rank_1th");
+    if (n === 2) return t("shared.game_stat.rank_2nd");
+    if (n === 3) return t("shared.game_stat.rank_3rd");
+    return t("shared.game_stat.rank_4th");
   };
 
   return (
     <span className={` relative font-semibold text-lg ${won === true || won === 1 ? 'text-golden' : 'text-silver'}`} 
-      style={{ textShadow: won ?
+      style={{ textShadow: (won || (typeof won === "number" && getOrdinal(won) === t("shared.game_stat.rank_1th")) ) ?
         '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(255,255,255,0.7)' :
         '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(192,192,192,0.8)', }}>
         {typeof won === "number" ? getOrdinal(won) : 
@@ -63,5 +65,14 @@ export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }
         <p className="mt-1 text-sm text-center text-gray-200 truncate w-full">{isPlayer ? pInfo.username : pInfo.name}</p>
       </div>
     </div>
+  );
+}
+
+export const ModeIndicate = ({ mode }: {mode: string}) => {
+  const { t } = useLang();
+  const display = t(`history.mode_${mode}`);
+
+  return (
+    <span className="font-bold p-2 text-center">{display}</span>
   );
 }

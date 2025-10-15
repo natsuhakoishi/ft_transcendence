@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetchPrivate, sendProfile } from "../utils.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
+import { useLang } from "../_hooks/language.tsx";
 
 // const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
 // const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
@@ -14,6 +15,7 @@ export function Matching({again, setMatch, AI} : {
         AI: boolean
     }) {
     const navigate = useNavigate();
+    const { t } = useLang();
 
     React.useEffect( () => {
         if (!AI)
@@ -80,7 +82,7 @@ export function Matching({again, setMatch, AI} : {
     return (
         <>
         <div className=" bg-blue-500">
-            <h1 className="text-5xl decoration-cyan-800">{AI ? "Calling AI chan..." : "Matching..."}</h1>
+            <h1 className="text-5xl decoration-cyan-800">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
         </div>
         <button
             type="submit"
@@ -88,13 +90,14 @@ export function Matching({again, setMatch, AI} : {
             onClick={() => {
                 again ? navigate("/", { replace: true }) : setMatch?.(false)
             }}
-            >Cancel</button>
+            >{t("shared.btn_cancel")}</button>
         </>
     );
 }
 
 export function TMatching() {
     const navigate = useNavigate();
+    const { t } = useLang();
 
     React.useEffect( () => {
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_TOURNAMENT_MATCHING);
@@ -134,7 +137,7 @@ export function TMatching() {
     return (
         <>
         <div className="container bg-blue-500">
-            <h1 className="text-5xl decoration-cyan-800">Tournament Matching...</h1>
+            <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
         </div>
         <button type="submit" className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={() => navigate("/")}>Cancel</button>
         </>

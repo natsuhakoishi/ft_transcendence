@@ -11,10 +11,11 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 		try
 		{
 			const user = await getUserById(req.user);
-			const friends = await getFriendshipsById(req.user);
 			if (!user)
 				return res.status(404).send({ message: 'User not found'});
-			else if (!friends || friends.length === 0)
+
+			const friends = await getFriendshipsById(req.user);
+			if (!friends || friends.length === 0)
 				return res.send({ friends: [] });
 
 			const friends_detail = await Promise.all(friends.map(async (f: any) => {
@@ -38,11 +39,11 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 				} as Friends
 			}));
 
-			return res.send({ friends: friends_detail });
+			return res.send({ friends: friends_detail, message: "Data get successfully" });
 		}
 		catch (error: any)
 		{
-			res.status(401).send({ message: error.message || 'Unauthorize friendships' });
+			res.status(500).send({ message: 'Server Error: fetch friendships' });
 		}
 	});
 
@@ -50,14 +51,19 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 		try {
 			let { friend_adding } = req.body as any;
 			
+			if (!friend_adding)
+				return res.status(500).send({ message: "Need user id to add friend" });
+
 			if (!validator.isNumeric(friend_adding))
-				return res.status(400).send({ message: "Error: ID have to be numeric value" });
-			if (friend_adding < 1)
-				return res.status(400).send({ message: "Error: Invalid ID" });
-			
+				return res.status(400).send({ code: "ERR_AddF_IdNan", message: "Error: ID have to be numeric value" });
+
 			friend_adding = Number(friend_adding);
+			const friend = await getUserById(friend_adding);
+			if (!friend)
+				return res.status(400).send({ code: "ERR_IdInvalid", message: "Error: Invalid ID" });
+
 			if (req.user === friend_adding)
-				return res.status(400).send({ message: "Error: You cannot add yourself as a friend" });
+				return res.status(400).send({ code: "ERR_AddF_Self", message: "Error: You cannot add yourself as a friend" });
 
 			await addFriendbyId(req.user, friend_adding);
 			
@@ -66,7 +72,7 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 		catch (error: any)
 		{
 			console.log(error.message);
-			res.status(400).send({ message: "Fail to add friend!" });
+			res.status(500).send({ message: 'Server Error: add friend' });
 		}
 	});
 
@@ -79,7 +85,7 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 		}
 		catch (error: any)
 		{
-			res.status(400).send({ message: 'Unauthorize delete_friend' });
+			res.status(500).send({ message: 'Server Error: delete friend' });
 		}
 	});
 };

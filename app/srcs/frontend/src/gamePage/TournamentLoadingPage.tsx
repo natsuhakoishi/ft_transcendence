@@ -1,5 +1,6 @@
 import type { Matches } from "../../../backend/share/type/Matches";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
+import { useLang } from "../_hooks/language";
 import { LoadingScreen } from "../homePage/loadData";
 import { Player } from "./player";
 
@@ -13,8 +14,9 @@ export interface LoadingProps {
 }
 
 export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps) {
+    const { t } = useLang();
     if (load || !leaderboard)
-        return (<LoadingScreen progress={{step: "Loading", completed: null, total: 1}} />);
+        return (<LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />);
 
     const { matches, players } = leaderboard;
 

@@ -1,10 +1,6 @@
 {
-	"_comment": "CONSIDERED ADD FOR CERTAIN STATUS",
-	"_comment": "REUSED COMPONENTS FIRST THEN PAGES",
-
 	"loading":
 	{
-		"_comment": "PROVIDED FOR THE LOADING COMPONENTS",
 		"step_start": "読み込み中",
 		"step_complete": "読み込み完了",
 		"step_checkUser": "ユーザー情報を確認中",
@@ -16,29 +12,24 @@
 		"title_login": "KLBQ | ログイン",
 		"title_register": "KLBQ | 登録",
 
-		"_comment": "SHARED BETW REGISTER AND LOGIN FORM",
-		"form_one": "メールアドレスを入力してください",
-		"form_two": "パスワードを入力してください",
-		"form_three": "ユーザー名を入力してください",
-
 		"btn_signIn": "ログイン",
-		"btn_Google": "Googleでログイン",
-		"msg_or": "または",
-		"btn_register": "登録"
+		"btn_register": "登録",
+
+		"_comment": "OTP part",
+		"msg_otp": "Enter OTP",
+		"place_otp": "6-digit code",
+		"btn_verify": "Verify OTP"
 	},
 
 	"home":
 	{
-		"_comment": "POP UP",
 		"title": "KLBQ | ホーム",
 		"msg_greeting": "おかえりなさい、 ",
 
-		"_comment": "GAME MODE SELECTION",
 		"btn_1vs1": "1 vs 1",
 		"btn_tour": "トーナメント",
 		"btn_AI": "AI ゲーム",
 
-		"_comment": "OTHER PARTS IN HOMEPAGE",
 		"btn_friend": "フレンド",
 		"btn_history": "対戦履歴",
 		"text_version": "バージョン ",
@@ -61,41 +52,97 @@
 	"history":
 	{
 		"title": "KLBQ | 対戦履歴",
+		"status_empty": "No history yet",
 		"mode_1vs1": "1 vs 1",
 		"mode_tour": "トーナメント",
-		"mode_tourMatch": "トーナメントマッチの履歴"
+		"mode_tourMatch": "トーナメントマッチの履歴",
+
+		"msg_closeTourPop": "Click anywhere to close"
 	},
 
 	"friend":
 	{
 		"title": "KLBQ | フレンド",
-		"stat_mutual": "フレンド",
 
-		"form_addFriend": "ユーザーIDを入力してください",
+		"mutual_status": "フレンド",
+		"mutual_true": "Mutual Friend",
+		"mutual_false": "Friend",
 
-		"_comment": "THIS WHOLE SHIT IS FOR DELETE FRIEND FEATURE",
 		"msg_deleteConfirm": "このフレンドを削除しますか？",
 		"btn_delete": "削除",
 		"btn_no": "キャンセル"
 	},
 
+	"404_page": "404 Page Not Found",
+	"404_msg": "Redirect in ",
+
+	"matching_1vs1": "Matching...",
+	"matching_AI": "Calling AI chan...",
+	"matching_tour": "Tournament Matching...",
+
+	"title_match": "Game",
+	"title_AI": "AI Game",
+	"title_tour": "Tournament",
+	"title_tourM": "Tournament: In Game...",
+
 	"shared":
 	{
-		"game_stats":
+		"result":
 		{
-			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
-			"_comment": "HISTORY SHARED WON & LOSE",
-			"stat_won": "勝利数",
-			"stat_lose": "敗北数",
-			"stat_tournament": "トーナメント勝利数",
-			"stat_total_match": "総対戦数",
-			"stat_win_rate": "勝率"
+			"title": "KLBQ | Result",
+			"msg_winner": "Winner !",
+			"btn_again": "New Game",
+			"btn_home": "Home"
 		},
 
-		"msg_unauthorized": "セッションの有効期限が切れました。再度ログインしてください！",
-		"msg_userNotFound": "ユーザーが見つかりません。再度ログインしてください！",
-		"msg_serverErr": "サーバーエラーです。再接続をお試しください！",
-		"msg_serverErr_fail": "接続に失敗しました。再度ログインしてください！"
+		"game":
+		{
+			"_comment": "WHEN PLAYERS STAND-BY",
+			"preparing": "Press [Space] to ready: ",
+			"ready": "Ready: ",
+			"waiting": "Waiting for opponent confirm game",
+			"onGoing": "Pong!",
+
+			"_comment": "THEME",
+			"theme": "Theme",
+			"default": "default",
+			"light": "light",
+			"black": "black",
+
+			"_comment": "FOR MOBILE",
+			"btn_confirm": "Confirm",
+			"btn_up": "Up",
+			"btn_down": "Down"
+		},
+
+		"second": "Second",
+		"btn_cancel": "Cancel",
+
+		"form":
+		{
+			"place_email": "メールアドレスを入力してください",
+			"place_password": "パスワードを入力してください",
+			"place_n_password": "新しいパスワードを入力してください",
+			"place_o_password": "古いパスワードを入力してください",
+			"place_name": "ユーザー名を入力してください",
+			"place_userID": "ユーザーIDを入力してください"
+		},
+
+		"game_stat":
+		{
+			"_comment": "USED AT MENU_PROFILE & FRIEND_PROFILE",
+			"_comment": "MATCH HISTORY USED won AND lose",
+			"_comment": "MATCH HISTORY SHARED ranks WITH RESULT PAGE",
+			"rank_1th": "1th",
+			"rank_2nd": "2nd",
+			"rank_3rd": "3rd",
+			"rank_4th": "4th",
+			"won": "勝利数",
+			"lose": "敗北数",
+			"tournament": "トーナメント勝利数",
+			"total_match": "総対戦数",
+			"win_rate": "勝率"
+		}
 	}
 
 }
