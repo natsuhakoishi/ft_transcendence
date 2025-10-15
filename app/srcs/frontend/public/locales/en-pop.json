@@ -15,6 +15,8 @@
 
 	"_comment": "PREFIX OPTION: OK, ERR, MSG",
 	"ERR_NameRepeat": "Username already taken",
+	"ERR_NameTooLong": "Username too long! Max. 8",
+	"ERR_NameTooShort": "Username too short! Min. 3",
 	"ERR_PasswordLen": "Password must atleast 8 characters long",
 
 	"auth":
@@ -25,8 +27,6 @@
 
 		"ERR_Login": "Invalid email or password",
 		"_comment": "LOGIC FOR REGISTER PART",
-		"ERR_NameTooLong": "Username too long! Max. 8",
-		"ERR_NameTooShort": "Username too short! Min. 3",
 		"ERR_EmailRepeat": "Email already registered",
 		"_comment": "LOGIC FOR OTP",
 		"ERR_OTPExpired": "OTP expired, make a new request!",
@@ -39,7 +39,17 @@
 
 	"profile":
 	{
-		"OK_LogOut": "Log out"
+		"OK_LogOut": "Log out",
+
+		"OK_DeleteAva": "Avatar delete successfully",
+		"ERR_NameEmpty": "Please provide username!",
+		"OK_UpName": "Username update successfully",
+		"ERR_PasswordSame": "New password can't be same as old password",
+		"ERR_PassVerifyFail": "Invalid old password!",
+		"OK_UpPassword": "Password update successfully",
+		"ERR_UpAva_type": "File type not support. Only: webp, jpeg, jpg, png",
+		"ERR_UpAva_size": "File too large! Size < 10MB",
+		"OK_UpAva": "Avar update successfully"
 	},
 
 	"game":

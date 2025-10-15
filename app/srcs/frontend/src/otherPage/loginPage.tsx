@@ -112,9 +112,9 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
     try {
       if (verifyRef.current.username && (verifyRef.current.username.length < 3 || verifyRef.current.username.length > 8)) {
         if (verifyRef.current.username.length > 8)
-          toasterPluz("auth.ERR_NameTooLong");
+          toasterPluz("ERR_NameTooLong");
         else
-          toasterPluz("auth.ERR_NameTooShort");
+          toasterPluz("ERR_NameTooShort");
         return ;
       }
 

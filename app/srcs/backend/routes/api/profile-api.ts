@@ -127,7 +127,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			const flag_checkname = await checkUsernameExist(new_username);
 
 			if (flag_checkname)
-				return res.status(400).send({ message: 'Username already taken' });
+				return res.status(400).send({ code: "ERR_NameRepeat", message: 'Username already taken' });
 			await updateUsernameById(req.user, new_username);
 			res.send({ message: 'Username changed successfully' });
 		}
@@ -149,7 +149,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 
 			const checked = await verifyPassword(old_password, user.password);
 			if (!checked)
-				return res.code(400).send({ message: "Invalid old password" });
+				return res.code(400).send({ code:"ERR_PassVerifyFail", message: "Invalid old password" });
 
 			const hashed_pw = await hashPassword(new_password);
 			await updatePasswordById(req.user, hashed_pw);

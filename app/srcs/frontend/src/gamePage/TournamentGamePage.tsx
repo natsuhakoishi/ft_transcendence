@@ -77,7 +77,7 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
 
                 if (type === "trespassing")
                 {
-                    toasterPluz("pop.game.ERR_trespassing");
+                    toasterPluz("game.ERR_trespassing");
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
                     navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                 }
@@ -127,8 +127,8 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
                 else if (type === "offline")
                 {
                     console.log("TournamentGamePage: player offline");
-                    toasterPluz("pop.game.ERR_Disconnect");
-                    toasterPluz("pop.game.ERR_TourCancel");
+                    toasterPluz("game.ERR_Disconnect");
+                    toasterPluz("game.ERR_TourCancel");
                     console.log("TournamentGamePage: redirect to home");
                     navigate("/", { replace: true });
                 }
