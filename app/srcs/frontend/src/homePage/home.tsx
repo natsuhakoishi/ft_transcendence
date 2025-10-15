@@ -56,7 +56,7 @@ export type SharedData = {
   progress: Progress;
 };
 
-export function HomeP({ t, lang }: { t: (key: string) => string; lang?: string }) {
+export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
