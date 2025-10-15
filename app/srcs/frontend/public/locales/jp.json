@@ -2,9 +2,9 @@
 	"loading":
 	{
 		"step_start": "読み込み中",
-		"step_complete": "読み込み完了",
-		"step_checkUser": "ユーザー情報を確認中",
-		"step_fetchUser": "ユーザー情報を取得中"
+		"step_complete": "完了",
+		"step_checkUser": "ユーザー確認中",
+		"step_fetchUser": "データ取得中"
 	},
 
 	"auth":
@@ -16,24 +16,24 @@
 		"btn_register": "登録",
 
 		"_comment": "OTP part",
-		"msg_otp": "Enter OTP",
-		"place_otp": "6-digit code",
-		"btn_verify": "Verify OTP"
+		"msg_otp": "OTPを入力",
+		"place_otp": "6桁コード",
+		"btn_verify": "確認"
 	},
 
 	"home":
 	{
 		"title": "KLBQ | ホーム",
-		"msg_greeting": "おかえりなさい、 ",
+		"msg_greeting": "おかえり、",
 
 		"btn_1vs1": "1 vs 1",
 		"btn_tour": "トーナメント",
-		"btn_AI": "AI ゲーム",
+		"btn_AI": "AI戦",
 
 		"btn_friend": "フレンド",
 		"btn_history": "対戦履歴",
-		"text_version": "バージョン ",
-		"btn_credit": "スタッフクレジット"
+		"text_version": "Version ",
+		"btn_credit": "スタッフ"
 	},
 
 	"profile":
@@ -43,21 +43,21 @@
 		"btn_profile": "プロフィール",
 
 		"btn_option": "オプション",
-		"btn_update_avatar": "アバターを更新",
-		"btn_delete_avatar": "アバターを削除",
-		"btn_update_name": "ユーザー名を変更",
-		"btn_update_password": "パスワードを変更"
+		"btn_update_avatar": "アバター変更",
+		"btn_delete_avatar": "アバター削除",
+		"btn_update_name": "ユーザー名変更",
+		"btn_update_password": "パスワード変更"
 	},
 
 	"history":
 	{
 		"title": "KLBQ | 対戦履歴",
-		"status_empty": "No history yet",
+		"status_empty": "対戦履歴なし",
 		"mode_1vs1": "1 vs 1",
 		"mode_tour": "トーナメント",
-		"mode_tourMatch": "トーナメントマッチの履歴",
+		"mode_tourMatch": "トーナメント戦履歴",
 
-		"msg_closeTourPop": "Click anywhere to close"
+		"msg_closeTourPop": "クリックで閉じる"
 	},
 
 	"friend":
@@ -65,67 +65,67 @@
 		"title": "KLBQ | フレンド",
 
 		"mutual_status": "フレンド",
-		"mutual_true": "Mutual Friend",
-		"mutual_false": "Friend",
+		"mutual_true": "相互",
+		"mutual_false": "片方",
 
-		"msg_deleteConfirm": "このフレンドを削除しますか？",
+		"msg_deleteConfirm": "削除しますか？",
 		"btn_delete": "削除",
 		"btn_no": "キャンセル"
 	},
 
-	"404_page": "404 Page Not Found",
-	"404_msg": "Redirect in ",
+	"404_page": "404 ページが見つかりません",
+	"404_msg": "リダイレクトまで ",
 
-	"matching_1vs1": "Matching...",
-	"matching_AI": "Calling AI chan...",
-	"matching_tour": "Tournament Matching...",
+	"matching_1vs1": "マッチング中...",
+	"matching_AI": "AI準備中...",
+	"matching_tour": "トーナメントマッチ中...",
 
-	"title_match": "Game",
-	"title_AI": "AI Game",
-	"title_tour": "Tournament",
-	"title_tourM": "Tournament: In Game...",
+	"title_match": "ゲーム",
+	"title_AI": "AI戦",
+	"title_tour": "トーナメント",
+	"title_tourM": "トーナメント: ゲーム中...",
 
 	"shared":
 	{
 		"result":
 		{
-			"title": "KLBQ | Result",
-			"msg_winner": "Winner !",
-			"btn_again": "New Game",
-			"btn_home": "Home"
+			"title": "KLBQ | 結果",
+			"msg_winner": "勝者！",
+			"btn_again": "再戦",
+			"btn_home": "ホーム"
 		},
 
 		"game":
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
-			"preparing": "Press [Space] to ready: ",
-			"ready": "Ready: ",
-			"waiting": "Waiting for opponent confirm game",
+			"preparing": "[Space]で準備：",
+			"ready": "準備：",
+			"waiting": "相手確認待ち",
 			"onGoing": "Pong!",
 
 			"_comment": "THEME",
-			"theme": "Theme",
-			"default": "default",
-			"light": "light",
-			"black": "black",
+			"theme": "テーマ",
+			"default": "デフォルト",
+			"light": "ライト",
+			"black": "ブラック",
 
 			"_comment": "FOR MOBILE",
-			"btn_confirm": "Confirm",
-			"btn_up": "Up",
-			"btn_down": "Down"
+			"btn_confirm": "準備確認",
+			"btn_up": "上",
+			"btn_down": "下"
 		},
 
-		"second": "Second",
-		"btn_cancel": "Cancel",
+		"second": "秒",
+		"btn_cancel": "キャンセル",
 
 		"form":
 		{
-			"place_email": "メールアドレスを入力してください",
-			"place_password": "パスワードを入力してください",
-			"place_n_password": "新しいパスワードを入力してください",
-			"place_o_password": "古いパスワードを入力してください",
-			"place_name": "ユーザー名を入力してください",
-			"place_userID": "ユーザーIDを入力してください"
+			"place_email": "メールを入力",
+			"place_password": "パスワードを入力",
+			"place_n_password": "新しいパスワードを入力",
+			"place_o_password": "古いパスワードを入力",
+			"place_name": "ユーザー名を入力",
+			"place_userID": "ユーザーIDを入力"
 		},
 
 		"game_stat":
@@ -133,10 +133,10 @@
 			"_comment": "USED AT MENU_PROFILE & FRIEND_PROFILE",
 			"_comment": "MATCH HISTORY USED won AND lose",
 			"_comment": "MATCH HISTORY SHARED ranks WITH RESULT PAGE",
-			"rank_1th": "1th",
-			"rank_2nd": "2nd",
-			"rank_3rd": "3rd",
-			"rank_4th": "4th",
+			"rank_1th": "1位",
+			"rank_2nd": "2位",
+			"rank_3rd": "3位",
+			"rank_4th": "4位",
 			"won": "勝利数",
 			"lose": "敗北数",
 			"tournament": "トーナメント勝利数",

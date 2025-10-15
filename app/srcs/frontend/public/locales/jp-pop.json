@@ -1,78 +1,79 @@
 {
 	"_comment": "MORE GLOBAL LVL ERROR",
-	"401": "セッションの有効期限が切れました。再度ログインしてください！",
-	"USER-404": "ユーザーが見つかりません。再度ログインしてください！",
-	"503": "Server disconnect. Retrying...",
-	"503-FAIL": "Server still unreachable. Redirecting...",
-	"503-SUCCESS": "Reconnected!",
+	"401": "セッションの有効期限が切れました。再ログインしてください！",
+	"USER-404": "ユーザーが見つかりません。再ログインしてください！",
+	"503": "サーバー切断。再接続中...",
+	"503-FAIL": "サーバーに接続できません。リダイレクト中...",
+	"503-SUCCESS": "再接続しました！",
 
 	"_comment": "REQUEST ERROR",
-	"ERR_SWR": "Something went wrong",
-	"500": "Server Error",
-	"404": "Not Found",
-	"400": "Bad Request",
-	"200": "Success",
+	"ERR_SWR": "エラーが発生しました",
+	"500": "サーバーエラー",
+	"404": "見つかりません",
+	"400": "不正なリクエスト",
+	"200": "成功",
 
 	"_comment": "SHARED MESSAGE / NOT ENOUGH TO CATEGORIZE AS ONE CATEGORY",
-	"ERR_NameRepeat": "Username already taken",
-	"ERR_NameTooLong": "Username too long! Max. 8",
-	"ERR_NameTooShort": "Username too short! Min. 3",
-	"ERR_PasswordLen": "Password must atleast 8 characters long",
-
-	"ERR_fetchH": "Fail to fetch history",
-
-	"OK_refresh": "Up to date!",
-	"ERR_fetchF": "Fail to fetch friends record",
-	"OK_DltFriend": "You have deleted your friend!",
-	"OK_AddFriend": "Friend added",
-	"ERR_AddF_IdNan": "ID have to be numeric value",
-	"ERR_IdInvalid": "Invalid ID",
+	"ERR_NameRepeat": "この名前は使用されています",
+	"ERR_NameTooLong": "名前が長すぎます！（最大8文字）",
+	"ERR_NameTooShort": "名前が短すぎます！（最小3文字）",
+	"ERR_PasswordLen": "パスワードは8文字以上で入力してください",
+	"ERR_fetchH": "履歴の取得に失敗しました",
 
 	"auth":
 	{
-		"MSG_CONNECTING": "Connecting to server...",
-		"OK_OTP": "Check email for OTP code",
-		"ERR_OTP": "Fail to sent OTP, please enter valid email address!",
+		"MSG_CONNECTING": "サーバーに接続中...",
+		"OK_OTP": "メールでOTPを確認してください",
+		"ERR_OTP": "OTP送信に失敗しました。有効なメールを入力してください！",
 
-		"ERR_Login": "Invalid email or password",
-		"_comment": "LOGIC FOR REGISTER PART",
-		"ERR_EmailRepeat": "Email already registered",
-		"_comment": "LOGIC FOR OTP",
-		"ERR_OTPExpired": "OTP expired, make a new request!",
-		"ERR_OTPManyTry": "Too many attempts. Try again later.",
-		"ERR_EmptyOTP": "Please submit OTP!",
-		"ERR_VerifyOTP": "Invalid OTP",
-		"OK_VerifyOTP": "Verify success!"
+		"ERR_Login": "メールまたはパスワードが違います",
 
+		"ERR_EmailRepeat": "このメールは既に登録されています",
+
+		"ERR_OTPExpired": "OTPの有効期限が切れました。再発行してください！",
+		"ERR_OTPManyTry": "試行回数が多すぎます。後でもう一度お試しください。",
+		"ERR_EmptyOTP": "OTPを入力してください！",
+		"ERR_VerifyOTP": "無効なOTPです",
+		"OK_VerifyOTP": "認証成功！"
 	},
 
 	"profile":
 	{
-		"OK_LogOut": "Log out",
-		"OK_DeleteAva": "Avatar delete successfully",
+		"OK_LogOut": "ログアウトしました",
+		"OK_DeleteAva": "アバターを削除しました",
 
-		"ERR_NameEmpty": "Please provide username!",
-		"OK_UpName": "Username update successfully",
+		"ERR_NameEmpty": "ユーザー名を入力してください！",
+		"OK_UpName": "ユーザー名を更新しました",
 
-		"ERR_PasswordSame": "New password can't be same as old password",
-		"ERR_PassVerifyFail": "Invalid old password!",
-		"OK_UpPassword": "Password update successfully",
+		"ERR_PasswordSame": "新しいパスワードが古いものと同じです",
+		"ERR_PassVerifyFail": "古いパスワードが正しくありません！",
+		"OK_UpPassword": "パスワードを更新しました",
 
-		"ERR_UpAva_type": "File type not support. Only: webp, jpeg, jpg, png",
-		"ERR_UpAva_size": "File too large! Size < 10MB",
-		"OK_UpAva": "Avar update successfully"
+		"ERR_UpAva_type": "対応していない形式です（webp, jpeg, jpg, png）",
+		"ERR_UpAva_size": "ファイルが大きすぎます！（10MB未満）",
+		"OK_UpAva": "アバターを更新しました"
+	},
+
+	"friend":
+	{
+		"OK_refresh": "最新です！",
+		"ERR_fetchF": "フレンド情報の取得に失敗しました",
+		"OK_DltFriend": "フレンドを削除しました！",
+		"OK_AddFriend": "フレンド追加完了！",
+		"ERR_AddF_Self": "自分をフレンドに追加できません",
+		"ERR_AddF_IdNan": "IDは数字で入力してください",
+		"ERR_IdInvalid": "無効なIDです"
 	},
 
 	"game":
 	{
-		"ERR_timeOut": "Timeout",
-		"ERR_timeOut_redirect": "Back to home",
-		"ERR_forgetReady": "Timeout. Back to home",
+		"ERR_timeOut": "タイムアウト",
+		"ERR_timeOut_redirect": "ホームに戻ります",
+		"ERR_forgetReady": "準備されていません。ホームに戻ります",
 
-		"ERR_trespassing": "Trespassing!",
+		"ERR_trespassing": "不正アクセス！",
 
-		"ERR_Disconnect": "Opponent disconnected",
-		"ERR_TourCancel": "Tournament cancel"
+		"ERR_Disconnect": "相手が切断しました",
+		"ERR_TourCancel": "トーナメントが中止されました"
 	}
-
 }

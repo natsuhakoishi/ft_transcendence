@@ -16,9 +16,9 @@
 		"btn_register": "註冊",
 
 		"_comment": "OTP part",
-		"msg_otp": "Enter OTP",
-		"place_otp": "6-digit code",
-		"btn_verify": "Verify OTP"
+		"msg_otp": "請輸入OTP碼",
+		"place_otp": "6位數OTP碼",
+		"btn_verify": "驗證"
 	},
 
 	"home":
@@ -52,12 +52,12 @@
 	"history":
 	{
 		"title": "KLBQ | 歷史記錄",
-		"status_empty": "No history yet",
+		"status_empty": "未有歷史對局記錄",
 		"mode_1vs1": "單人對局",
 		"mode_tour": "多人對局",
 		"mode_tourMatch": "多人對局記錄",
 
-		"msg_closeTourPop": "Click anywhere to close"
+		"msg_closeTourPop": "點擊任意處關閉"
 	},
 
 	"friend":
@@ -65,54 +65,54 @@
 		"title": "KLBQ | 好友",
 
 		"mutual_status": "好友",
-		"mutual_true": "Mutual Friend",
-		"mutual_false": "Friend",
+		"mutual_true": "互相",
+		"mutual_false": "單向",
 
 		"msg_deleteConfirm": "確定刪除此好友？",
 		"btn_delete": "刪除",
 		"btn_no": "取消"
 	},
 
-	"404_page": "404 Page Not Found",
-	"404_msg": "Redirect in ",
+	"404_page": "404 無法找到頁面",
+	"404_msg": "導向至主頁中...",
 
-	"matching_1vs1": "Matching...",
-	"matching_AI": "Calling AI chan...",
-	"matching_tour": "Tournament Matching...",
+	"matching_1vs1": "匹配中...",
+	"matching_AI": "人機準備中...",
+	"matching_tour": "多人對局匹配中...",
 
-	"title_match": "Game",
-	"title_AI": "AI Game",
-	"title_tour": "Tournament",
-	"title_tourM": "Tournament: In Game...",
+	"title_match": "遊戲",
+	"title_AI": "人機對局",
+	"title_tour": "多人對局",
+	"title_tourM": "多人對局：遊戲中...",
 
 	"shared":
 	{
 		"result":
 		{
-			"title": "KLBQ | Result",
-			"msg_winner": "Winner !",
-			"btn_again": "New Game",
-			"btn_home": "Home"
+			"title": "KLBQ | 結果",
+			"msg_winner": "贏家！",
+			"btn_again": "新遊戲",
+			"btn_home": "主頁"
 		},
 
 		"game":
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
-			"preparing": "Press [Space] to ready: ",
-			"ready": "Ready: ",
-			"waiting": "Waiting for opponent confirm game",
+			"preparing": "點擊 [空格鍵] 準備：",
+			"ready": "準備: ",
+			"waiting": "等待對手確認遊戲",
 			"onGoing": "Pong!",
 
 			"_comment": "THEME",
-			"theme": "Theme",
-			"default": "default",
-			"light": "light",
-			"black": "black",
+			"theme": "主題",
+			"default": "默認",
+			"light": "亮",
+			"black": "暗",
 
 			"_comment": "FOR MOBILE",
-			"btn_confirm": "Confirm",
-			"btn_up": "Up",
-			"btn_down": "Down"
+			"btn_confirm": "確認準備",
+			"btn_up": "上",
+			"btn_down": "下"
 		},
 
 		"second": "秒",
@@ -133,10 +133,10 @@
 			"_comment": "USED AT MENU_PROFILE, FRIENDP_PROFILE",
 			"_comment": "MATCH HISTORY USED won AND lose",
 			"_comment": "MATCH HISTORY SHARED ranks WITH RESULT PAGE",
-			"rank_1th": "1th",
-			"rank_2nd": "2nd",
-			"rank_3rd": "3rd",
-			"rank_4th": "4th",
+			"rank_1th": "第一名",
+			"rank_2nd": "第二名",
+			"rank_3rd": "第三名",
+			"rank_4th": "第四名",
 			"won": "勝場",
 			"lose": "敗場",
 			"tournament": "多人對局勝場",

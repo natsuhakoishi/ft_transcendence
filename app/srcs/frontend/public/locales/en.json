@@ -60,7 +60,7 @@
 		"msg_closeTourPop": "Click anywhere to close"
 	},
 
-	"friend": 
+	"friend":
 	{
 		"title": "KLBQ | Friends",
 
@@ -77,7 +77,7 @@
 	"404_msg": "Redirect in ",
 
 	"matching_1vs1": "Matching...",
-	"matching_AI": "Calling AI chan...",
+	"matching_AI": "Getting AI ready...",
 	"matching_tour": "Tournament Matching...",
 
 	"title_match": "Game",
@@ -105,16 +105,16 @@
 
 			"_comment": "THEME",
 			"theme": "Theme",
-			"default": "default",
-			"light": "light",
-			"black": "black",
+			"default": "Default",
+			"light": "Light",
+			"black": "Black",
 
 			"_comment": "FOR MOBILE",
 			"btn_confirm": "Confirm",
 			"btn_up": "Up",
 			"btn_down": "Down"
 		},
-		
+
 		"second": "Second",
 		"btn_cancel": "Cancel",
 
