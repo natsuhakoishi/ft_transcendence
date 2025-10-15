@@ -14,30 +14,34 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 
 	fastify.get('/online', { websocket: true }, (connection: any, req: any) => {
 		const ws = connection;
-		let id: number;
+		let user: number;
 
 		ws.on("message", (msg: any) => {
 			const data = JSON.parse(msg.toString());
 			console.log("/online: received\n",data);
 
+			// if (!data.user || !data.friends) {
+			// 	ws.send(JSON.stringify({ type: "error", message: "missing data" }));
+			// 	return ;
+			// }
+
 			if (data.type === "init")
 			{
-				id = data.online_id;
+				user = data.user;
 				const friends = new Set(data.friends || []);
 
 				//duplicate connection hm
-				if (onlineUsers.has(id)) {
-					const prev = onlineUsers.get(id);
+				if (onlineUsers.has(user)) {
+					const prev = onlineUsers.get(user);
 					prev.ws.close();
 				}
 
-				onlineUsers.set(id, { ws, friends });
+				onlineUsers.set(user, { ws, friends });
 
 				const onlineFriend = [];
 				for (const id of friends) {
-					if (onlineUsers.has(id)) {
-						onlineFriend.push({ id: id, online: true });
-					}
+					if (onlineUsers.has(id))
+						onlineFriend.push(id);
 				}
 				ws.send(JSON.stringify({ type: "init", list: onlineFriend }));
 				return ;
@@ -45,23 +49,23 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			
 			if (data.type === "ping")
 			{
+				//implement later
 				ws.send(JSON.stringify({ type: "pong" }));
 				return ;
 			}
 
 			if (data.type === "update")
 			{
-				if (!id) return ;
+				if (!user) return ;
 
-				const entry = onlineUsers.get(id);
+				const entry = onlineUsers.get(user);
 				if (!entry) return ;
 
 				entry.friends = new Set(data.friends || []);
 				const onlineFriend = [];
-								for (const id of entry.friends) {
-					if (onlineUsers.has(id)) {
-						onlineFriend.push({ id: id, online: true });
-					}
+				for (const id of entry.friends) {
+					if (onlineUsers.has(id))
+						onlineFriend.push(id);
 				}
 				ws.send(JSON.stringify({ type: "update", list: onlineFriend }));
 				return ;
@@ -69,9 +73,9 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		});
 
 		ws.on("close", () => {
-			if (!id) return ;
-			console.log("/online: player offline, id: ", id);
-			onlineUsers.delete(id);
+			if (!user) return ;
+			console.log("/online: player offline, id: ", user);
+			onlineUsers.delete(user);
 		});
 
 	});

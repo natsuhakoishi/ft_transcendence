@@ -4,8 +4,7 @@ import type { Friends } from "../../../backend/share/type/friend.ts";
 import { apiFetchPrivate } from "../utils";
 import { useLang, withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
-
-
+import { LoadingScreen } from "./loadData.tsx";
 
 const handleAddFriend = async (
   e: React.FormEvent<HTMLFormElement>,
@@ -29,11 +28,12 @@ const handleAddFriend = async (
   }
 };
 
-export function Friend({ data, addFriend, fetch, onClick }: {
+export function Friend({ data, addFriend, fetch, onClick, online }: {
   data?: Friends,
   addFriend?: boolean,
   fetch?: () => void,
   onClick?: () => void,
+  online?: boolean,
 }) {
 
   const { t, toasterPluz } = useLang();
@@ -76,7 +76,7 @@ export function Friend({ data, addFriend, fetch, onClick }: {
       <div className="relative">
         <img src={`${import.meta.env.VITE_API_AVATAR}${data.info.avatar_path}`}
           className="w-16 h-16 rounded-full object-cover border border-gray-300"/>
-        <span className={`absolute bottom-0.5 right-0.5 w-3 aspect-square border-2 border-gray-300 rounded-full ${data.info.login_status ? "bg-online" : "bg-offline" }`}></span>
+        <span className={`absolute bottom-0.5 right-0.5 w-3 aspect-square border-2 border-gray-300 rounded-full ${online ? "bg-online" : "bg-offline" }`}></span>
       </div>
       {/* Username & Id */}
       <span className="flex flex-col flex-grow text-lg mb-7">
@@ -163,8 +163,10 @@ function FriendProfile({ setFModal, FProfile, handleFDelete, fetchFriends }: {
 
 export function FriendP({ t, toasterPluz }: TranslationProps) { 
   const navigate = useNavigate();
-  const user = useOutletContext<User | null>();
+  const { user, loading } = useOutletContext<{user: User, loading: boolean}>();
   const [friends, setFriends] = React.useState<Friends[]>([]);
+  const [online, setOnline] = React.useState<number[]>([]);
+  const [ready, setReady] = React.useState<boolean>(false);
   const [total, setTotal] = React.useState<number>(0);
   const [FModal, setFModal] = React.useState<boolean>(false);
   const [selectedF, setSelectedF] = React.useState<Friends | null>(null);
@@ -172,15 +174,26 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
   const getOnline = async () => {
     //return a list of friends who is online
     const ws = new WebSocket(import.meta.env.VITE_API_ONLINE);
+    let user_id: number;
+    let friends_id: number[];
+  
+    user_id = user.acc.user_id;
+    friends_id = friends.map(friend => friend.info.id);
 
-    //should sent friend data as well, so return a list of friend's online status, not all users in database
-    const id = user?.acc.user_id!;
     ws.onopen = () => {
-      ws.send(JSON.stringify({ online_id: id, friends: friends }));
+      ws.send(JSON.stringify({ type: "init", user: user_id, friends: friends_id }));
+      console.log("Data sent");
+      //start ping loop
     }
 
     ws.onmessage = (msg) => {
-      console.log(msg.data);
+      const data = JSON.parse(msg.data);
+      if (data.type === "init" || data.type === "update")
+      {
+        setOnline(data.list);
+        setReady(true);
+        console.log("Current online >",online);
+      }
     }
 
     ws.onerror = (err) => {
@@ -189,7 +202,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
 
     return async () => {
       console.log("close user connection");
-      await ws.send(JSON.stringify({ type: "offline", id: id }));
+      await ws.send(JSON.stringify({ type: "offline", id: user_id }));
       ws.close();
     };
   };
@@ -208,58 +221,75 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
 
   React.useEffect(() => {
     document.title = t("friend.title");
-    getOnline();
     fetchFriends();
   }, []);
+
+  React.useEffect(() => {
+    if (!loading && user && friends)
+      getOnline();
+  }, [loading, user, friends]);
 
   return (
   <div className="relative flex flex-col h-screen w-screen bg-cover bg-center bg-[url('/pic/friendP.jpg')]">
   <div className="absolute inset-0 bg-black/50 z-0" />
 
+    {/* Loading screen when online status not ready = = */}
+    {!ready && 
+      <div className="relative z-10 flex flex-col flex-1 items-center justify-center">
+        <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
+      </div>
+    }
+
     {/* Friend List */}
-    <div className="relative z-10 flex-1 overflow-y-auto">
+    {ready &&
+    <div className="relative z-10 flex-1">
       {/* Pop Up Modal - Show friend profile */}
       {FModal && selectedF && <FriendProfile setFModal={setFModal} FProfile={selectedF} handleFDelete={handleFDelete} fetchFriends={fetchFriends} />}
 
       {/* Friend list */}
       <div className="grid grid-cols-2 grid-rows-5 w-full max-w-3xl h-[88vh] mx-auto gap-3 p-2">
         {/* Show friend card */}
-        {friends.slice(0, 10).map((f, i) => (
-          <Friend key={i} data={f}
-            onClick={() => { setSelectedF(f); setFModal(true); }} />
-        ))}
+        {friends.slice(0, 10).map((f, i) => {
+          const isOnline = online.includes(f.info.id);
+          return (
+            <Friend key={i} data={f} onClick={() => { setSelectedF(f); setFModal(true); }} online={isOnline} />
+          );
+        })}
 
-        {/* Show add friend button at the end of friend list */}
+        {/* Only when friend < 10 - Show add friend button at the end of friend list */}
         {friends.length < 10 && <Friend addFriend fetch={fetchFriends} />}
 
-        {/* Show empty friend card */}
+        {/* Fill empty slot with this special friend card */}
         {friends.length < 10 && Array.from({ length: Math.max(0, 9 - friends.length) }).map((_, i) => (
           <Friend key={`empty-${i}`} />
         ))}
+
       </div>
 
-    </div>
-
+    </div>}
 
     {/* (Bottom) Button Menu: Back, Refresh List, Total Friend */}
+    {ready &&
     <div className="relative z-10 flex items-center justify-center gap-2 p-1.5 bg-black/40 backdrop-blur-sm">
       {/* Back button */}
       <button className="w-13 aspect-square hover hover:scale-90 border-2 border-silver rounded-md overflow-hidden"
         onClick={() => navigate("/")}>
           <img src="/pic/icons/back_btn.png" className="w-full h-full object-cover"/>  
       </button>
+
       {/* Refresh button */}
       <button className="w-13 aspect-square hover hover:scale-90 border-2 border-silver rounded-md overflow-hidden"
         onClick={() => {fetchFriends; toasterPluz("friend.OK_refresh")} }>
           <img src="/pic/icons/refresh_btn.png" className="w-full h-full object-cover"/>  
       </button>
+
       {/* Display Total Friend */}
       <div className="flex items-center gap-2 border border-white p-1">
         <div className="w-5 h-5 bg-white mask-[url('/pic/icons/friends.svg')] mask-no-repeat mask-center" />
         <span className="text-white">{total}</span>
       </div>
 
-    </div>
+    </div>}
 
   </div>
 	);
