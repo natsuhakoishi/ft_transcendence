@@ -2,6 +2,8 @@ import type { FastifyPluginAsync } from "fastify";
 import { createMatch, getMatchByUserId } from "../../database/match.ts";
 import type { MatchMeResponse, Match, TournamentMatch } from '../../share/type/history.ts';
 import { getTournamentLeaderboard } from "../../database/tournament.ts";
+import { getUserById } from "../../database/user.ts";
+import { getProfileById } from "../../database/profile.ts";
 
 const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.post('/match', async (req: any, res: any) => {
@@ -22,6 +24,16 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 	fastify.get('/match/me', async (req: any, res: any) => {
 		try
 		{
+			if (!req.user)
+				return res.status(401).send({ message: 'Unauthorized: missing token' });
+
+			const user = await getUserById(req.user);
+			if (!user)
+				return res.status(404).send({ message: 'User Not Found' });
+			const profile = await getProfileById(req.user);
+			if (!profile)
+				return res.status(404).send({ message: 'Profie Not Found' });
+
 			const matches = await getMatchByUserId(req.user);
 			const toMatch = (match: any): Match => ({
 				mode: match.tournament_id ? "tournament" : "match",
@@ -65,11 +77,11 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 				}
 			}
 
-			res.send({ user_id: req.user, user_matches });
+			res.send({ user_id: req.user, user_matches, message: "Match history get successfully" });
 		}
 		catch (error)
 		{
-			res.status(401).send({ message: 'Unauthorize or Error getting match record' });
+			res.status(500).send({ message: 'Server Error: getting match record(me)' });
 		}
 	});
 }
