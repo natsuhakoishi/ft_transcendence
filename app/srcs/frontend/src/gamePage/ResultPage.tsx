@@ -22,7 +22,7 @@ export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileDat
                 <div className="relative flex flex-col items-center justify-center w-full h-screen bg-black-500"  >
 
                     <div className="flex" >
-                        <h1 className={`text-5xl font-bold mb-6`} >t("shared.result.msg_winner")</h1>
+                        <h1 className={`text-5xl font-bold mb-6`} >{t("shared.result.msg_winner")}</h1>
                     </div>
                     <div className="flex items-center space-x-4 mb-12">
                         <Player player={winner} me={playerID === winner?.id} spin={true}  />
