@@ -12,11 +12,12 @@ function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<bool
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
 
-    <div className="w-[60%] h-[68%] relative flex flex-col justify-center bg-gray-300/60 backdrop-blur-2xl border-1 rounded-4xl gap-3" onClick={(e) => e.stopPropagation()}>
+    <div className="w-[60%] h-[68%] relative flex flex-col justify-center gap-3 bg-gray-300/60 backdrop-blur-2xl border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
       {/* Title */}
       <h1 className="text-2xl text-center">{t("home.btn_credit")}</h1>
       {/* Credit list */}
-      <div className="flex flex-col gap-3 items-start mx-5">
+      <div className="flex flex-col gap-3 items-start mx-10">
+
         {/* First */}
         <div className="flex w-full gap-2 items-center">
           <img className="w-20 aspect-square rounded-sm border-2 p-1.5" src="/pic/e.png" />
@@ -29,6 +30,7 @@ function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<bool
           <div>{t("home.role_en")}</div>
           <div className="flex-1" />
         </div>
+
         {/* Second */}
         <div className="flex w-full gap-2 items-center">
           <img className="w-20 aspect-square rounded-sm border-2" src="/pic/yb.png" />
@@ -41,6 +43,7 @@ function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<bool
           <div>{t("home.role_yb")}</div>
           <div className="flex-1" />
         </div>
+
         {/* Third */}
         <div className="flex w-full gap-2 items-center">
           <img className="w-20 aspect-square rounded-sm border-2" src="/pic/zw.png" />
@@ -55,9 +58,7 @@ function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<bool
         </div>
 
       </div>
-      <div className="flex justify-center align-center items-center w-full gap-3">
-        <div className="text-sm">©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
-      </div>
+        <div className="text-sm text-center">©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
     </div>
     </div>
   );

@@ -10,6 +10,72 @@ import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
 import type { User } from '../../share/type/user.ts';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
+	const onlineUsers = new Map(); 
+
+	fastify.get('/online', { websocket: true }, (connection: any, req: any) => {
+		const ws = connection;
+		let id: number;
+
+		ws.on("message", (msg: any) => {
+			const data = JSON.parse(msg.toString());
+			console.log("/online: received\n",data);
+
+			if (data.type === "init")
+			{
+				id = data.online_id;
+				const friends = new Set(data.friends || []);
+
+				//duplicate connection hm
+				if (onlineUsers.has(id)) {
+					const prev = onlineUsers.get(id);
+					prev.ws.close();
+				}
+
+				onlineUsers.set(id, { ws, friends });
+
+				const onlineFriend = [];
+				for (const id of friends) {
+					if (onlineUsers.has(id)) {
+						onlineFriend.push({ id: id, online: true });
+					}
+				}
+				ws.send(JSON.stringify({ type: "init", list: onlineFriend }));
+				return ;
+			}
+			
+			if (data.type === "ping")
+			{
+				ws.send(JSON.stringify({ type: "pong" }));
+				return ;
+			}
+
+			if (data.type === "update")
+			{
+				if (!id) return ;
+
+				const entry = onlineUsers.get(id);
+				if (!entry) return ;
+
+				entry.friends = new Set(data.friends || []);
+				const onlineFriend = [];
+								for (const id of entry.friends) {
+					if (onlineUsers.has(id)) {
+						onlineFriend.push({ id: id, online: true });
+					}
+				}
+				ws.send(JSON.stringify({ type: "update", list: onlineFriend }));
+				return ;
+			}
+		});
+
+		ws.on("close", () => {
+			if (!id) return ;
+			console.log("/online: player offline, id: ", id);
+			onlineUsers.delete(id);
+		});
+
+	});
+
 	fastify.post('/profile', async (req: any, res: any) => {
 		try
 		{

@@ -1,8 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import type { Friends } from "../../../backend/share/type/friend.ts";
 import { apiFetchPrivate } from "../utils";
 import { useLang, withTranslation, type TranslationProps } from "../_hooks/language.tsx";
+import type { User } from "../../../backend/share/type/user.ts";
+
+
 
 const handleAddFriend = async (
   e: React.FormEvent<HTMLFormElement>,
@@ -160,10 +163,36 @@ function FriendProfile({ setFModal, FProfile, handleFDelete, fetchFriends }: {
 
 export function FriendP({ t, toasterPluz }: TranslationProps) { 
   const navigate = useNavigate();
+  const user = useOutletContext<User | null>();
   const [friends, setFriends] = React.useState<Friends[]>([]);
   const [total, setTotal] = React.useState<number>(0);
   const [FModal, setFModal] = React.useState<boolean>(false);
   const [selectedF, setSelectedF] = React.useState<Friends | null>(null);
+
+  const getOnline = async () => {
+    //return a list of friends who is online
+    const ws = new WebSocket(import.meta.env.VITE_API_ONLINE);
+
+    //should sent friend data as well, so return a list of friend's online status, not all users in database
+    const id = user?.acc.user_id!;
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ online_id: id, friends: friends }));
+    }
+
+    ws.onmessage = (msg) => {
+      console.log(msg.data);
+    }
+
+    ws.onerror = (err) => {
+      console.log("WebSocket Error: \n", err);
+    }
+
+    return async () => {
+      console.log("close user connection");
+      await ws.send(JSON.stringify({ type: "offline", id: id }));
+      ws.close();
+    };
+  };
 
   const fetchFriends = async () => {
     try {
@@ -179,8 +208,9 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
 
   React.useEffect(() => {
     document.title = t("friend.title");
+    getOnline();
     fetchFriends();
-}, []);
+  }, []);
 
   return (
   <div className="relative flex flex-col h-screen w-screen bg-cover bg-center bg-[url('/pic/friendP.jpg')]">
