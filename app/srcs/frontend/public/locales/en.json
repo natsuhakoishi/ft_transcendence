@@ -85,9 +85,6 @@
 	"title_tour": "Tournament",
 	"title_tourM": "Tournament: In Game...",
 
-	"ERR_Disconnect": "Opponent disconnected",
-	"ERR_TourCancel": "Tournament cancel",
-
 	"shared":
 	{
 		"result":
@@ -105,12 +102,6 @@
 			"ready": "Ready: ",
 			"waiting": "Waiting for opponent confirm game",
 			"onGoing": "Pong!",
-
-			"_comment": "TOAST CONTENT",
-			"ERR_timeOut": "Timeout",
-			"ERR_timeOut_redirect": "Back to home",
-			"ERR_forgetReady": "Timeout. Back to home",
-			"ERR_trespassing": "Trespassing!",
 
 			"_comment": "THEME",
 			"theme": "Theme",

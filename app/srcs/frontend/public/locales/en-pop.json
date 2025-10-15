@@ -35,5 +35,23 @@
 		"ERR_VerifyOTP": "Invalid OTP",
 		"OK_VerifyOTP": "Verify success!"
 
+	},
+
+	"profile":
+	{
+		"OK_LogOut": "Log out"
+	},
+
+	"game":
+	{
+		"ERR_timeOut": "Timeout",
+		"ERR_timeOut_redirect": "Back to home",
+		"ERR_forgetReady": "Timeout. Back to home",
+
+		"ERR_trespassing": "Trespassing!",
+
+		"ERR_Disconnect": "Opponent disconnected",
+		"ERR_TourCancel": "Tournament cancel"
 	}
+
 }

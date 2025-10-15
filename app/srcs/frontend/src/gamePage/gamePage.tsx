@@ -1,6 +1,6 @@
 import React from "react";
 import type { GameData } from "../../../backend/share/type/gameData.ts";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
@@ -161,8 +161,9 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     }
                     else
                     {
-                        toasterPluz("shared.game.ERR_timeOut");
-                        toasterPluz("shared.game.ERR_timeOut_redicrect");
+                        // toasterPluz("pop.game.ERR_timeOut");
+                        // toasterPluz("pop.game.ERR_timeOut_redicrect");
+                        toasterPluz("pop.game.ERR_forgerReady");
                         navigate("/", { replace: true });
                     }
                     //TODO: render ending
@@ -170,7 +171,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 else if (type === "trespassing")
                 {
                     console.log("/gamePage trespassing 凸^u^凸");
-                    toasterPluz("shared.game.ERR_trespassing");
+                    toasterPluz("pop.game.ERR_trespassing");
                     navigate("/", { replace: true });
                 }
             };

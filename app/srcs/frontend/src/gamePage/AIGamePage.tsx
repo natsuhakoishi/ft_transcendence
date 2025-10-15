@@ -108,14 +108,15 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
             else if (type === "timeout")
             {
                 console.log("/AI gamepage timeout")
-                toasterPluz("shared.game.msg_timeOut");
-                toasterPluz("shared.game.msg_timeOut_redicrect");
+                // toasterPluz("pop.game.ERR_timeOut");
+                // toasterPluz("pop.game.ERR_timeOut_redirect");
+                toasterPluz("pop.game.ERR_forgetReady");
                 navigate("/", { replace: true });
             }
             else if (type === "trespassing")
             {
                 console.log("/AI gamePage trespassing 凸^u^凸");
-                toasterPluz("shared.game.msg_trespassing");
+                toasterPluz("pop.game.ERR_trespassing");
                 navigate("/", { replace: true });
             }
         }
