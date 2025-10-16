@@ -168,7 +168,7 @@ export function HomeP({ t, lang }: TranslationProps) {
               </div>
             </div>
             <div className="flex-1" />
-            <span className="mb-3" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
+            <span className="mb-3 cursor-pointer" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}

@@ -142,8 +142,11 @@ export function bakery(t: (key: string) => string) {
 	// console.log(key);
 	const shortKey = key.split(".").pop() || key;
     const msg = t(key);
+	let isStatus: boolean = false;
+	if (Number(shortKey) >= 400 && Number(shortKey) <= 599)
+		isStatus = true;
 
-    if (shortKey.startsWith("ERR_")) return toast.error(msg);
+    if (isStatus || shortKey.startsWith("ERR_")) return toast.error(msg);
     if (shortKey.startsWith("OK_")) return toast.success(msg);
 
     return toast(msg);
