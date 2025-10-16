@@ -10,66 +10,77 @@ import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
 import type { User } from '../../share/type/user.ts';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
-	const onlineUsers = new Map(); 
+	const onlineUsers = new Map();
 
 	fastify.get('/online', { websocket: true }, (connection: any, req: any) => {
 		const ws = connection;
 		let user: number;
 
 		ws.on("message", (msg: any) => {
-			const data = JSON.parse(msg.toString());
-			console.log("/online: received\n",data);
+		const data = JSON.parse(msg.toString());
+		console.log("\n/online: received\n",data,"\n");
 
-			// if (!data.user || !data.friends) {
-			// 	ws.send(JSON.stringify({ type: "error", message: "missing data" }));
-			// 	return ;
-			// }
-
-			if (data.type === "init")
-			{
-				user = data.user;
-				const friends = new Set(data.friends || []);
-
-				//duplicate connection hm
-				if (onlineUsers.has(user)) {
-					const prev = onlineUsers.get(user);
-					prev.ws.close();
-				}
-
-				onlineUsers.set(user, { ws, friends });
-
-				const onlineFriend = [];
-				for (const id of friends) {
-					if (onlineUsers.has(id))
-						onlineFriend.push(id);
-				}
-				ws.send(JSON.stringify({ type: "init", list: onlineFriend }));
-				return ;
-			}
-			
-			if (data.type === "ping")
-			{
-				//implement later
-				ws.send(JSON.stringify({ type: "pong" }));
+		if (data.type === "online")
+		{
+			if (!data.user || !data.friends) {
+				ws.send(JSON.stringify({ type: "error", message: "missing data" }));
 				return ;
 			}
 
-			if (data.type === "update")
-			{
-				if (!user) return ;
+			user = data.user;
+			const friends = new Set(data.friends || []);
 
-				const entry = onlineUsers.get(user);
-				if (!entry) return ;
-
-				entry.friends = new Set(data.friends || []);
-				const onlineFriend = [];
-				for (const id of entry.friends) {
-					if (onlineUsers.has(id))
-						onlineFriend.push(id);
-				}
-				ws.send(JSON.stringify({ type: "update", list: onlineFriend }));
-				return ;
+			//duplicate connection hm
+			if (onlineUsers.has(user)) {
+				const prev = onlineUsers.get(user);
+				prev.ws.close();
 			}
+
+			onlineUsers.set(user, { ws, friends, lastPing: Date.now() });
+
+			const onlineFriend = [];
+			for (const id of friends) {
+				if (onlineUsers.has(id))
+					onlineFriend.push(id);
+			}
+			ws.send(JSON.stringify({ type: "online", list: onlineFriend }));
+			return ;
+		}
+		
+		if (data.type === "ping")
+		{
+			if (!user) return ;
+        	const entry = onlineUsers.get(user);
+        	if (entry)
+				entry.lastPing = Date.now();
+			ws.send(JSON.stringify({ type: "pong" }));
+			return ;
+		}
+
+		if (data.type === "update")
+		{
+			if (!user) return ;
+
+			const entry = onlineUsers.get(user);
+			if (!entry) return ;
+
+			entry.friends = new Set(data.friends || []);
+			const onlineFriend = [];
+			for (const id of entry.friends) {
+				if (onlineUsers.has(id))
+					onlineFriend.push(id);
+			}
+			ws.send(JSON.stringify({ type: "update", list: onlineFriend }));
+			return ;
+		}
+
+		if (data.type === "offline")
+		{
+			if (!user) return ;
+			console.log("/online: player offline, id: ", user);
+			onlineUsers.delete(user);
+		}
+
 		});
 
 		ws.on("close", () => {
@@ -77,7 +88,17 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			console.log("/online: player offline, id: ", user);
 			onlineUsers.delete(user);
 		});
-
+		
+		setInterval(() => {
+			const now = Date.now();
+			for (const [id, entry] of onlineUsers.entries()) {
+				if (now - entry.lastPing > 60000) {
+					console.log(`User ${id} ?? "?"} timed out`);
+					entry.ws.terminate();
+					onlineUsers.delete(id);
+				}
+			}
+		}, 1000 * 30);
 	});
 
 	fastify.post('/profile', async (req: any, res: any) => {

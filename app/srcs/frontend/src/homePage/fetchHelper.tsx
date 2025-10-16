@@ -81,3 +81,5 @@ function fetchD({ t, toasterPluz }: TranslationProps) {
 }
 
 export const FetchData = withTranslation(fetchD);
+
+//Socket Provider
