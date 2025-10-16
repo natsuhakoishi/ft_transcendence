@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingScreen } from "../homePage/loadData";
+import { LoadingScreen } from "../homePage/HomeChildC";
 import React from "react";
 import { Result } from "./ResultPage";
 import { Player } from "./player";

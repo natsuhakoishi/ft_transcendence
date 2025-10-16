@@ -1,84 +1,22 @@
 import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { LoadingScreen, type Progress } from "./loadData.tsx"
+import { Credit, LoadingScreen, type Progress } from "./HomeChildC.tsx"
 import { useLang, withTranslation, type Lang, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
-
-function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const { t } = useLang();
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
-
-    <div className="w-[60%] h-[68%] relative flex flex-col justify-center gap-3 bg-gray-300/60 backdrop-blur-2xl border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
-      {/* Title */}
-      <h1 className="text-2xl text-center">{t("home.btn_credit")}</h1>
-      {/* Credit list */}
-      <div className="flex flex-col gap-3 items-start mx-10">
-
-        {/* First */}
-        <div className="flex w-full gap-2 items-center">
-          <img className="w-20 aspect-square rounded-sm border-2 p-1.5" src="/pic/e.png" />
-          <div className="font-semibold ">
-            <span className="text-[20px] font-inter font-bold leading-[150%] text-silver
-              [text-shadow:1px_1px_2px_rgba(80,80,80,0.8),-1px_-1px_2px_rgba(200,200,200,0.9)]">natsuhakoishi</span>
-            <p className="text-base italic text-[#848A98] mb-3">yyean-wa</p>
-          </div>
-          <div className="flex-1" />
-          <div>{t("home.role_en")}</div>
-          <div className="flex-1" />
-        </div>
-
-        {/* Second */}
-        <div className="flex w-full gap-2 items-center">
-          <img className="w-20 aspect-square rounded-sm border-2" src="/pic/yb.png" />
-          <div className="flex flex-col font-semibold">
-            <span className="text-xl font-inter font-bold leading-[150%] text-silver
-              [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">Yabi924</span>
-            <span className="text-base italic text-[#848A98]">yyan-bin</span> 
-          </div>
-          <div className="flex-1" />
-          <div>{t("home.role_yb")}</div>
-          <div className="flex-1" />
-        </div>
-
-        {/* Third */}
-        <div className="flex w-full gap-2 items-center">
-          <img className="w-20 aspect-square rounded-sm border-2" src="/pic/zw.png" />
-          <div className="font-semibold">
-            <span className="text-xl font-inter font-bold leading-[150%] text-silver
-              [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">nightZQ</span>
-            <p className="text-base italic text-[#848A98]">zgoh</p> 
-          </div>
-          <div className="flex-1" />
-          <div>{t("home.role_zw")}</div>
-          <div className="flex-1" />
-        </div>
-
-      </div>
-        <div className="text-sm text-center">©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
-    </div>
-    </div>
-  );
-}
 
 export function LanguageBar() {
   const { lang, setLang } = useLang();
 
   return (
-    <div className="flex items-center justify-between p-1">
-      <h1 className="text-lg font-bold"></h1>
-      <select value={lang}
-        onChange={(e) => setLang(e.target.value as Lang)}
-        className="border-2 rounded bg-gray-800"
-      >
-        <option value="en" className="bg-blue-950">English</option>
-        <option value="zh" className="bg-blue-950">繁體中文</option>
-        <option value="jp" className="bg-blue-950">日語</option>
-      </select>
-    </div>
+    <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
+      className="border-2 rounded bg-gray-800/80 text-lg p-1"
+    >
+      <option value="en" className="bg-[#1E1622]">English</option>
+      <option value="zh" className="bg-[#1E1622]">繁體中文</option>
+      <option value="jp" className="bg-[#1E1622]">日語</option>
+    </select>
   );
 }
 
@@ -111,45 +49,63 @@ export function HomeP({ t, lang }: TranslationProps) {
       match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> : 
         (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-black/23 bg-[url('/pic/homeP.jpg')] bg-blend-overlay text-xl">
 
+          {/* Pop Up Modal -> Credits page */}
           {creditM && <Credit onClick={setCreditM} />}
 
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
+            {/* Top Left: avatar & username */}
             <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold">
+              {/* Avatar -> Profile page */}
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover:scale-90 transition-transform"
                 onClick={() => navigate("/profile")}>
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
+              {/* Display -> Username */}
               <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
             </div>
-            <button className="absolute p-1 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
+            {/* Button -> Friend page */}
+            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
           <div className="column-start-2 row-span-3 flex flex-col items-center">
+
             <div className="flex-1" />
+
+            {/* Menu -> Select Game Mode */}
             <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
+                {/* Button -> Tournament Mode */}
                 <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
                  onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
 
+                {/* Button -> 1 vs 1 Mode */}
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
                  onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
+
+                {/* Button -> AI Mode */}
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
                  onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
+              
               </div>
             </div>
+
             <div className="flex-1" />
+            {/* Display -> trigger Credits modal */}
             <span className="mb-3 cursor-pointer" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end mr-3">
+            {/* Display -> Game Version */}
             <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
+            {/* Dropdown -> Language Selector */}
             <LanguageBar />
-            <button className="absolute bottom-2 right-4 rounded-2xl p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            {/* Button -> Match History page */}
+            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
 
         </div>)

@@ -4,7 +4,7 @@ import { apiFetchPrivate } from "../../utils.ts";
 import { withTranslation, type TranslationProps } from "../../_hooks/language.tsx";
 import type { Friends } from "../../../../backend/share/type/friend.ts";
 import type { User } from "../../../../backend/share/type/user.ts";
-import { LoadingScreen } from "../loadData.tsx";
+import { LoadingScreen } from "../HomeChildC.tsx";
 import { Friend } from "./FriendCard.tsx";
 import { FriendProfile, handleFDelete } from "./FriendModal.tsx";
 
