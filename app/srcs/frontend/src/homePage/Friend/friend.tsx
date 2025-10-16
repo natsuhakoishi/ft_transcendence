@@ -29,7 +29,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
 
     ws.onopen = () => {
       ws.send(JSON.stringify({ type: "init", user: user_id, friends: friends_id }));
-      console.log("Data sent");
+      console.log("Online_> Data sent");
       //start ping loop
     }
 
@@ -39,7 +39,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
       {
         setOnline(data.list);
         setReady(true);
-        console.log("Current online >",online);
+        online.length ? console.log("Online_> ",online) : console.log("Online_> -");
       }
     }
 
@@ -126,7 +126,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
 
       {/* Button -> Refresh */}
       <button className="w-13 aspect-square hover hover:scale-90 border-2 border-silver rounded-md overflow-hidden"
-        onClick={() => {fetchFriends; toasterPluz("friend.OK_refresh")} }>
+        onClick={async () => { await fetchFriends(); toasterPluz("friend.OK_refresh")} }>
           <img src="/pic/icons/refresh_btn.png" className="w-full h-full object-cover"/>  
       </button>
 
