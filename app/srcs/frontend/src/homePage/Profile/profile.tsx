@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { apiFetch } from "../../utils.ts";
 import type { User } from "../../../../backend/share/type/user";
-import { MenuOption } from "./profileOption";
+import { MenuOption } from "./Option.tsx";
 import { useLang, withTranslation, type TranslationProps } from "../../_hooks/language.tsx";
 
 const handleLogOut = async ({ navigate, toasterPluz }: { navigate: (path: string) => void; toasterPluz: (msg: string) => void }) => {

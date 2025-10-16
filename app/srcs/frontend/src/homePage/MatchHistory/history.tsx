@@ -4,7 +4,7 @@ import { apiFetchPrivate } from "../../utils";
 import { useLang, withTranslation, type TranslationProps } from "../../_hooks/language";
 import type { User } from "../../../../backend/share/type/user";
 import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backend/share/type/history";
-import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./historyUtils";
+import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./HistoryChildC";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
   console.log(entries);
