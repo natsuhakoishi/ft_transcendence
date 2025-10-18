@@ -21,11 +21,14 @@ export function AILogic(room: AIRoom, runtime: number): void {
     const ai: Paddle = state.rightPaddle;
     const ball: Ball = state.ball;
 
-    const difficulty = () => {
-        if (runtime < 960 * 10) //  960 == 1second
-            return "normal";
-        return "hard";
-    }
+    if (runtime % 960 !== 0)
+        return ;
+
+    // const difficulty = () => {
+    //     if (runtime < 960 * 10) //  960 == 1second
+    //         return "normal";
+    //     return "hard";
+    // }
 
     if (runtime > 960 * 60)
     {
@@ -33,23 +36,27 @@ export function AILogic(room: AIRoom, runtime: number): void {
         ball.vy *= 1.5;
     }
 
-    const config = {
-        "normal" : { reactionSpeed: 8, preDirectionError: 100},
-        "hard" : { reactionSpeed: 10, preDirectionError: 80},
-    }[difficulty()]
+    // const config = {
+    //     "normal" : { reactionSpeed: 8, preDirectionError: 100},
+    //     "hard" : { reactionSpeed: 10, preDirectionError: 80},
+    // }[difficulty()]
 
     // console.log("difficult: ", difficulty(), runtime);
-    const reactionSpeed: number = config.reactionSpeed;
-    const preDirectionError: number = config.preDirectionError;
+    // const reactionSpeed: number = config.reactionSpeed;
+    // const preDirectionError: number = config.preDirectionError;
 
-    const targetY = ball.y + randomError(preDirectionError);
+    // const targetY = ball.y// + randomError(preDirectionError);
 
-    if (ai.y + ai.height / 2 < targetY - 10)
-        ai.y += reactionSpeed
-    else if (ai.y + ai.height > targetY + 10)
-        ai.y += -reactionSpeed
+    if (ai.y < ball.y)
+    // if (ai.y + ai.height / 2 < targetY - 10)
+        handleKeyPressAI("down", room);
+        // ai.y += reactionSpeed
+    else if (ai.y > ball.y)
+    // else if (ai.y + ai.height > targetY + 10)
+        handleKeyPressAI("up", room);
+        // ai.y += -reactionSpeed
 }
 
-function randomError(range: number): number {
-    return (Math.random() - 0.5) * range;
-}
+// function randomError(range: number): number {
+//     return (Math.random() - 0.5) * range;
+// }
