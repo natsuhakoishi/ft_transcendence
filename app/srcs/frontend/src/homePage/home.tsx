@@ -6,16 +6,22 @@ import { useLang, withTranslation, type Lang, type TranslationProps } from "../_
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
 
-export function LanguageBar() {
+type LanguageBarProps = {
+  bgColor?: string;
+  optionColor?: string;
+};
+
+export function LanguageBar({ bgColor = "bg-gray-800/80", optionColor = "bg-[#1E1622]" }: LanguageBarProps) {
   const { lang, setLang } = useLang();
 
   return (
     <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
-      className="border-2 rounded bg-gray-800/80 text-lg p-1"
+      className={`border-2 rounded p-1 text-lg ${bgColor}`}
+      style={{ backgroundColor: bgColor.startsWith("#") ? bgColor : undefined }}
     >
-      <option value="en" className="bg-[#1E1622]">English</option>
-      <option value="zh" className="bg-[#1E1622]">繁體中文</option>
-      <option value="jp" className="bg-[#1E1622]">日語</option>
+      <option value="en" className={optionColor}>English</option>
+      <option value="zh" className={optionColor}>繁體中文</option>
+      <option value="jp" className={optionColor}>日語</option>
     </select>
   );
 }

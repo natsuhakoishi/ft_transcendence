@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../utils";
 import { useLang, withTranslation, type TranslationProps } from "../_hooks/language";
+import { LanguageBar } from "../homePage/home";
 
 const Register = ( { verifyRef, onSubmit, mode }: {
   verifyRef: React.RefObject<VerifyBody>,
@@ -170,10 +171,16 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
   }
 
   return (
-  <>
-    <div className="relative flex flex-col justify-center items-center h-screen w-100 bg-gray-300 gap-2">
-      <h1 className="absolute top-5 text-2xl font-extrabold mb-2 mt-5">KLBQ</h1>
-      <div className="flex flex-col justify-center items-center bg-[rgba(199,237,206,1)] rounded-xl w-75 h-[60%] shadow-2xl text-justify">
+  <div className="h-screen w-screen max-h-screen max-w-screen flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpg')] bg-blend-overlay">
+
+    {/* Button -> Language Bar */}
+    <div className="absolute top-2 right-2 m-2">
+      <LanguageBar bgColor="" optionColor="bg-[#44332D]"/>
+    </div>
+    {/* Form Modal -> Register / Login */}
+    <h1 className="absolute top-8 text-5xl font-extrabold">KLBQ</h1>
+    <div className="place-items-center place-content-center h-screen w-[60%] bg-[#915C2E]/30 backdrop-blur-base gap-2">
+      <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[60%] shadow-2xl text-justify">
         
       {/* OTP Verification Modal (Shared) */}
       {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
@@ -193,7 +200,8 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
 
       </div>
     </div>
-  </>
+
+  </div>
   );
 }
 
