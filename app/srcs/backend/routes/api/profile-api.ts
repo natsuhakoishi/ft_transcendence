@@ -10,18 +10,34 @@ import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
 import type { User } from '../../share/type/user.ts';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
+	const ping_interval = 1000 * 45;
+	const timeout = 1000 * 80;
 	const onlineUsers = new Map();
 
-	setInterval(() => {
+	const ping = setInterval(() => {
 		const now = Date.now();
+
 		for (const [id, entry] of onlineUsers.entries()) {
-			if (now - entry.lastPing > 60000) {
-				console.log(`\nUser ${id ?? "?"} - ${entry.username ?? "Who"} timed out`);
-				entry.ws.terminate();
+			const { ws, username, lastPong } = entry;
+
+			// if too long since last pong, kill connection
+			if (now - (lastPong ?? 0) > timeout) {
+				console.log(`\n[Timeout] User ${id ?? "?"} (${username ?? "?"})`);
+				ws.terminate();
+				onlineUsers.delete(id);
+				continue;
+			}
+
+			// send ping to client
+			try {
+				ws.send(JSON.stringify({ type: "ping" }));
+			} catch {
+				console.log(`\n[Error] Failed to ping ${username}`);
+				ws.terminate();
 				onlineUsers.delete(id);
 			}
 		}
-	}, 1000 * 30);
+	}, ping_interval);
 
 	fastify.get('/online', { websocket: true }, (connection: any) => {
 		const ws = connection;
@@ -48,7 +64,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 						const prev = onlineUsers.get(user);
 						prev.ws.close();
 					}
-					onlineUsers.set(user, { username: data.username, lastPing: Date.now(), ws });
+					onlineUsers.set(user, { username: data.username, lastPong: Date.now(), ws });
 
 					//log Fastify console
 					for (const [user, info] of onlineUsers.entries()) {
@@ -63,12 +79,11 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 					}));
 					return ;
 				
-				case "ping":
-					if (!user) return ;
+				case "pong":
+					console.log("I get pong aaw\n");
 					const entry = onlineUsers.get(user);
 					if (entry)
-						entry.lastPing = Date.now();
-					ws.send(JSON.stringify({ type: "pong" }));
+						entry.lastPong = Date.now();
 					return ;
 
 				case "update":
@@ -83,6 +98,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 					if (!user) return ;
 					console.log(`Log out - Goodby ${name ?? "who"}\n`);
 					onlineUsers.delete(user);
+					clearInterval(ping);
 					return ;
 			}
 		});
@@ -92,6 +108,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 			console.log(`Goodbye ${name ?? "who"}\n`);
 			if (user)
 				onlineUsers.delete(user);
+			clearInterval(ping);
 		});
 	});
 

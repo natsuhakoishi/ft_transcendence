@@ -114,16 +114,22 @@ export function OnlineProvider({ user, loading, children }: { user: User | null,
       const data = JSON.parse(msg.data);
       switch (data.type) {
         case "init":
-          console.log("Online_> socket created");
+          // console.log("Online_> socket created");
           setOnlineUsers(data.list);
           break ;
+
         case "update":
           console.log("Online_> up to date");
           setOnlineUsers(data.list);
           break ;
-        case "pong":
-          console.warn("Online_> ",data.type);
+
+        case "ping":
+          // console.warn("Online_> you send ping, i send pong");
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "pong" }));
+          }
           break ;
+
         case "log_out":
           console.log("Online_>", data.message);
           break ;
