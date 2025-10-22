@@ -67,7 +67,8 @@ export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }
   return (
     <div className="flex flex-col items-center w-15 text-center">
       <div className="relative h-13 aspect-square flex-shrink-0">
-        <button className="aspect-square h-full rounded-full overflow-clip border-2 border-gray-300 disable" tabIndex={-1}>
+        <button className={`aspect-square h-full rounded-full overflow-clip border-2 border-gray-300 ${!isMe && "cursor-pointer"}`}
+          tabIndex={-1} disabled={isMe} onClick={() => console.warn("clicked")}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
         <span className={`text-base text-center text-gray-200 truncate w-full ${isMe && "bg-[#9DD6AD]/80 inline-block rounded-3xl justify-center"}`}>{isPlayerI ? pInfo.username : pInfo.name}</span>

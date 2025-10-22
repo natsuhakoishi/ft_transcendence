@@ -8,7 +8,7 @@ import { useOutletContext } from "react-router-dom";
 import { LoadingScreen } from "../HomeChildC";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
-  console.log(entries);
+  // console.log(entries);
 
   return ( entries && entries.matches && entries.matches.length >= 2 &&
     <div className="flex flex-col gap-2">

@@ -74,8 +74,8 @@ function MenuProfile({ user } : { user: User | null } ) {
             
             {/* Win Rate */}
             <span className="font-bold">{t("shared.game_stat.win_rate")}</span>
-            <span className="font-inter font-bold leading-[150%] text-silver
-              [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">{!win_rate ? "-" : `${win_rate}%`}</span>
+            <span className={`font-inter font-bold leading-[150%] ${typeof win_rate === "number" && win_rate >= 51.0 ? "text-golden" : "text-gray-600"}
+              [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]`}>{!win_rate ? "-" : `${win_rate}%`}</span>
           </div>
 
         </div>
