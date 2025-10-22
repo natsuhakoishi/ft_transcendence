@@ -61,14 +61,14 @@ export function HomeP({ t, lang }: TranslationProps) {
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
             {/* Top Left: avatar & username */}
-            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold">
+            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%]">
               {/* Avatar -> Profile page */}
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover:scale-90 transition-transform"
-                onClick={() => navigate("/profile")}>
+                onClick={() => navigate("/profile")}> 
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
               {/* Display -> Username */}
-              <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
+              <span className="my-1 font-mono text-blue-300">{user?.acc.username}</span>
             </div>
             {/* Button -> Friend page */}
             <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>

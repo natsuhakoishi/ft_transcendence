@@ -80,7 +80,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 					return ;
 				
 				case "pong":
-					console.log("I get pong aaw\n");
+					// console.log("I get pong aaw\n");
 					const entry = onlineUsers.get(user);
 					if (entry)
 						entry.lastPong = Date.now();

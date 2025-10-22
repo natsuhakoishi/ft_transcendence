@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 import { apiFetchPrivate } from "../../utils";
 import { useLang, withTranslation, type TranslationProps } from "../../_hooks/language";
-import type { User } from "../../../../backend/share/type/user";
 import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backend/share/type/history";
 import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./HistoryChildC";
+import { ProfileSideBar } from "./ProfileSidebar";
+import { useOutletContext } from "react-router-dom";
+import { LoadingScreen } from "../HomeChildC";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
   console.log(entries);
@@ -171,11 +172,10 @@ function ExpandTourModal({ children, onClose, }: {
 
 
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
-  const navigate = useNavigate();
-  const user = useOutletContext<User | null>();
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
-  const [entries, setEntries] = useState<TournamentMatch | null>(null)
+  const [entries, setEntries] = useState<TournamentMatch | null>(null);
+  const { loading } = useOutletContext<{ loading: boolean}>();
 
   const handleTournamentClick = (entries: TournamentMatch) => {
     setEntries(entries); setTourModal(true);
@@ -197,43 +197,50 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   }, []);
 
 	return (
-    <>
-    <div className="w-screen h-screen grid grid-cols-[1fr_15%] bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay">
-  
-      {/* Tournament Modal */}
-      {TourModal && (
-        <ExpandTourModal onClose={() => setTourModal(false)}>
-          <ExpandTour entries={entries} user_id={matches?.user_id ?? 0} />
-        </ExpandTourModal>
-      )}
+    <div className="w-screen h-screen bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay">
 
-      {/* Left side: History Matches; exactly 5 rows */}
-      <section>
-      { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
-        (<>
-          <div className="flex items-center w-full h-full font-semibold">
-            <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
-              <p>{t("history.status_empty")}</p>
+    { loading ?
+      <>
+      {/* Loading UI */}
+      <div className="h-screen w-screen place-content-center place-items-center row-span-2">
+        <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
+      </div>
+      </>
+    :
+      <>
+      {/* History Page Content */}
+      <div className="grid grid-cols-[1fr_15%] ">
+
+        {/* Tournament Modal */}
+        {TourModal && (
+          <ExpandTourModal onClose={() => setTourModal(false)}>
+            <ExpandTour entries={entries} user_id={matches?.user_id ?? 0} />
+          </ExpandTourModal>
+        )}
+
+        {/* Left side: History Matches; exactly 5 rows */}
+        <section>
+        { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
+          (<>
+            <div className="flex items-center w-full h-full font-semibold">
+              <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
+                <p>{t("history.status_empty")}</p>
+              </div>
             </div>
-          </div>
-        </>)
-        :
-          <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />}
-      </section>
+          </>)
+          :
+            <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />}
+        </section>
 
-      {/* Right side: User's profile; as addition visual */}
-      <section className="flex flex-col bg-[#1f3735] justify-center items-end gap-">
-        {/* Back Button */}
-        <button className="relative bottom-0 w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
-          <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-        </button>
-        <button className="relative bottom-0 w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => {console.log(matches)}}>
-          <img src="/pic/heng.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-        </button>
-      </section>
+        {/* Right side: User's profile */}
+        <section className="flex flex-col bg-[#1f3735] justify-center items-center shadow-2xl">
+          <ProfileSideBar />
+        </section>
 
+      </div>
+      </>
+    }
     </div>
-    </>
   );
 }
 
