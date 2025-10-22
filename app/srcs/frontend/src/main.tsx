@@ -25,21 +25,23 @@ function App() {
       <GlobalErrorMonitor />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
-        <Route path="/" element={<FetchData />}>
-          <Route index element={<Home />} />
-          <Route path="/friends" element={<FriendPage />} />
-          <Route path="/match_history" element={<HistoryPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+        <Route element={<FetchData />}>
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="/friends" element={<FriendPage />} />
+            <Route path="/match_history" element={<HistoryPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
+          <Route path="/game" >
+            <Route path="loading" element={<Loading />} />
+            <Route path="gameplay" element={<GamePage />} />
+            <Route path="tournament/*" element={<TournamentGamePage />} />
+            <Route path="tournamentMatching" element={<TMatching />} />
+            <Route path="AI/gameplay" element={<AIGamePage />}/>
+          </Route>
+          <Route path="*" element={<NotFound />} />
+          <Route path="/404" element={<NotFound />} />
         </Route>
-        <Route path="/game" >
-          <Route path="loading" element={<Loading />} />
-          <Route path="gameplay" element={<GamePage />} />
-          <Route path="tournament/*" element={<TournamentGamePage />} />
-          <Route path="tournamentMatching" element={<TMatching />} />
-          <Route path="AI/gameplay" element={<AIGamePage />}/>
-        </Route>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/404" element={<NotFound />} />
       </Routes>
       </LanguageProvider>
     </>
@@ -53,7 +55,7 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
-    <App />
+      <App />
     </BrowserRouter>
 );
 

@@ -12,93 +12,87 @@ import type { User } from '../../share/type/user.ts';
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	const onlineUsers = new Map();
 
-	fastify.get('/online', { websocket: true }, (connection: any, req: any) => {
+	setInterval(() => {
+		const now = Date.now();
+		for (const [id, entry] of onlineUsers.entries()) {
+			if (now - entry.lastPing > 60000) {
+				console.log(`\nUser ${id ?? "?"} - ${entry.username ?? "Who"} timed out`);
+				entry.ws.terminate();
+				onlineUsers.delete(id);
+			}
+		}
+	}, 1000 * 30);
+
+	fastify.get('/online', { websocket: true }, (connection: any) => {
 		const ws = connection;
 		let user: number;
+		let name: string;
 
 		ws.on("message", (msg: any) => {
-		const data = JSON.parse(msg.toString());
-		console.log("\n/online: received\n",data,"\n");
+			const data = JSON.parse(msg.toString());
+			switch (data.type) {
 
-		if (data.type === "online")
-		{
-			if (!data.user || !data.friends) {
-				ws.send(JSON.stringify({ type: "error", message: "missing data" }));
-				return ;
+				case "init":
+					if (!data.id || !data.username) {
+						ws.send(JSON.stringify({ type: "error", message: "missing data" }));
+						return ;
+					}
+					console.log(`\nOnline Socket is up - ${new Date().toLocaleString('en-MY', {timeZone: 'Asia/Kuala_Lumpur'})}`);
+					console.log(`Welcome, ${data.username}. Current Online:`);
+
+					user = data.id;
+					name = data.username;
+
+					//duplicate connection hm
+					if (onlineUsers.has(user)) {
+						const prev = onlineUsers.get(user);
+						prev.ws.close();
+					}
+					onlineUsers.set(user, { username: data.username, lastPing: Date.now(), ws });
+
+					//log Fastify console
+					for (const [user, info] of onlineUsers.entries()) {
+						console.log(`${user}: ${info.username}`);
+					}
+					console.log("\n");
+
+					ws.send(JSON.stringify({
+						type: "init",
+						// list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
+						list: Array.from(onlineUsers.entries()).map(([id]) => id)
+					}));
+					return ;
+				
+				case "ping":
+					if (!user) return ;
+					const entry = onlineUsers.get(user);
+					if (entry)
+						entry.lastPing = Date.now();
+					ws.send(JSON.stringify({ type: "pong" }));
+					return ;
+
+				case "update":
+					console.log("Huh from update");
+					ws.send(JSON.stringify({
+						type: "update",
+						list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
+					}));
+					return ;
+			
+				case "log_out":
+					if (!user) return ;
+					console.log(`Log out - Goodby ${name ?? "who"}\n`);
+					onlineUsers.delete(user);
+					return ;
 			}
-
-			user = data.user;
-			const friends = new Set(data.friends || []);
-
-			//duplicate connection hm
-			if (onlineUsers.has(user)) {
-				const prev = onlineUsers.get(user);
-				prev.ws.close();
-			}
-
-			onlineUsers.set(user, { ws, friends, lastPing: Date.now() });
-
-			const onlineFriend = [];
-			for (const id of friends) {
-				if (onlineUsers.has(id))
-					onlineFriend.push(id);
-			}
-			ws.send(JSON.stringify({ type: "online", list: onlineFriend }));
-			return ;
-		}
-		
-		if (data.type === "ping")
-		{
-			if (!user) return ;
-        	const entry = onlineUsers.get(user);
-        	if (entry)
-				entry.lastPing = Date.now();
-			ws.send(JSON.stringify({ type: "pong" }));
-			return ;
-		}
-
-		if (data.type === "update")
-		{
-			if (!user) return ;
-
-			const entry = onlineUsers.get(user);
-			if (!entry) return ;
-
-			entry.friends = new Set(data.friends || []);
-			const onlineFriend = [];
-			for (const id of entry.friends) {
-				if (onlineUsers.has(id))
-					onlineFriend.push(id);
-			}
-			ws.send(JSON.stringify({ type: "update", list: onlineFriend }));
-			return ;
-		}
-
-		if (data.type === "offline")
-		{
-			if (!user) return ;
-			console.log("/online: player offline, id: ", user);
-			onlineUsers.delete(user);
-		}
-
 		});
 
 		ws.on("close", () => {
-			if (!user) return ;
-			console.log("/online: player offline, id: ", user);
-			onlineUsers.delete(user);
+			console.log(`\nOnline Socket is closed - ${new Date().toLocaleString('en-MY', {timeZone: 'Asia/Kuala_Lumpur'})}`);
+			console.log(`Goodbye ${name ?? "who"}\n`);
+			if (user)
+				onlineUsers.delete(user);
 		});
-		
-		setInterval(() => {
-			const now = Date.now();
-			for (const [id, entry] of onlineUsers.entries()) {
-				if (now - entry.lastPing > 60000) {
-					console.log(`User ${id} ?? "?"} timed out`);
-					entry.ws.terminate();
-					onlineUsers.delete(id);
-				}
-			}
-		}, 1000 * 30);
 	});
 
 	fastify.post('/profile', async (req: any, res: any) => {

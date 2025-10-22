@@ -6,6 +6,7 @@ import type { Friends } from "../../../../backend/share/type/friend.ts";
 import { LoadingScreen } from "../HomeChildC.tsx";
 import { Friend } from "./FriendCard.tsx";
 import { FriendProfile, handleFDelete } from "./FriendModal.tsx";
+import { useSocket } from "../fetchHelper.tsx";
 
 export function FriendP({ t, toasterPluz }: TranslationProps) { 
   const navigate = useNavigate();
@@ -13,8 +14,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
   const [total, setTotal] = React.useState<number>(0);
   const [FModal, setFModal] = React.useState<boolean>(false);
   const [selectedF, setSelectedF] = React.useState<Friends | null>(null);
-
-  //get online user list, then get the online friend, render out
+  const { onlineUsers, socket } = useSocket();
 
   const fetchFriends = async () => {
     try {
@@ -37,11 +37,15 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
   <div className="relative flex flex-col h-screen w-screen bg-cover bg-center bg-[url('/pic/friendP.jpg')]">
   <div className="absolute inset-0 bg-black/50 z-0" />
 
-    {/* Loading screen when online status not ready = = */} 
+  {!socket ?
+  (<>
+    {/* Loading screen when socket not ready = = */} 
     <div className="relative z-10 flex flex-col flex-1 items-center justify-center">
       <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
     </div>
-
+  </>)
+    :
+  (<>
     {/* Body: Friends Card */}
     <div className="relative z-10 flex-1">
       {/* Pop Up Modal -> Show friend profile */}
@@ -51,10 +55,10 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
       <div className="grid grid-cols-2 grid-rows-5 w-full max-w-3xl h-[88vh] mx-auto gap-3 p-2">
         {/* Normal Friend Card */}
         {friends.slice(0, 10).map((f, i) => {
-          // const isOnline = online.includes(f.info.id);
-          // online={isOnline}
+          console.log(onlineUsers);
+          const isOnline = onlineUsers?.some(user => user.id === f.info.id) ?? false;
           return (
-            <Friend key={i} data={f} onCardClick={() => { setSelectedF(f); setFModal(true); }}  />
+            <Friend key={i} data={f} onCardClick={() => { setSelectedF(f); setFModal(true); }} online={isOnline}  />
           );
         })}
 
@@ -91,6 +95,7 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
       </div>
 
     </div>
+  </>)}
 
   </div>
 	);

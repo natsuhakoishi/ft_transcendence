@@ -55,7 +55,7 @@ export async function loadData({ setLoading, setProgress, setUser }: fetchDataPr
   }
 };
 
-//Outlet Context
+//OutletContext - User
 function fetchD({ t, toasterPluz }: TranslationProps) { 
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -76,10 +76,85 @@ function fetchD({ t, toasterPluz }: TranslationProps) {
   }, []);
 
   return (
-    <Outlet context={{ user, loading, progress, refetchData}} />
+    <OnlineProvider user={user} loading={loading} >
+      <Outlet context={{ user, loading, progress, refetchData}} />
+    </OnlineProvider>
   );
 }
 
 export const FetchData = withTranslation(fetchD);
 
-//Socket Provider
+//ContextProvider - Online Users @ WebSocket
+export type Online = {
+  id: number,
+  username: string,
+}
+
+export type OnlineContextProps = {
+  onlineUsers: Online[],
+  socket: WebSocket | null;
+}
+
+const OnlineContext = React.createContext<OnlineContextProps | null>(null);
+
+export function OnlineProvider({ user, loading, children }: { user: User | null, loading: boolean, children: React.ReactNode }) {
+  const [onlineUsers, setOnlineUsers] = React.useState<Online[]>([]);
+  const [socket, setSocket] = React.useState<WebSocket | null>(null);
+
+  React.useEffect(() => {
+    if (!user || loading) return ;
+    const ws = new WebSocket(import.meta.env.VITE_API_ONLINE);
+    setSocket(ws);
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: "init", id: user?.acc.user_id, username: user?.acc.username }));
+    };
+
+    ws.onmessage = (msg) => {
+      const data = JSON.parse(msg.data);
+      switch (data.type) {
+        case "init":
+          console.log("Online_> socket created");
+          setOnlineUsers(data.list);
+          break ;
+        case "update":
+          console.log("Online_> up to date");
+          setOnlineUsers(data.list);
+          break ;
+        case "pong":
+          console.warn("Online_> ",data.type);
+          break ;
+        case "log_out":
+          console.log("Online_>", data.message);
+          break ;
+        case "error":
+          console.log("Online_> ",data.message);
+          break ;
+      }
+    };
+
+    ws.onerror = (error) => console.log(error);
+    ws.onclose = (event) => console.warn(`Online_> Socket closed! ${event.code} ${event.reason}`);
+
+    return () => {
+      ws.close();
+      console.warn(`Online_> Socket closed! (Clean Up)`);
+      setSocket(null);
+    }
+  }, [loading]);
+
+
+  return (
+    <OnlineContext.Provider value={{ socket, onlineUsers, }}>
+      {children}
+    </OnlineContext.Provider>
+  );
+}
+
+export const useSocket = (): OnlineContextProps => {
+  const context = React.useContext(OnlineContext);
+  if (!context) {
+    throw new Error("useSocket is used outside its provider!");
+  }
+  return context;
+};
