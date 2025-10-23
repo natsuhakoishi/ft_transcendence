@@ -38,7 +38,7 @@ function ProfileSB({ t }: TranslationProps) {
       >{displayDash(win_games)}</span>
 
       {/* Tournament won */}
-      <span className="ml-3 row-span-2">{t("shared.game_stat.tournament")}</span>
+      <span className="row-span-2">{t("shared.game_stat.tournament")}</span>
       <span className="
         font-inter font-bold leading-[150%] text-golden
         [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]"
