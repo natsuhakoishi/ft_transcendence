@@ -37,7 +37,10 @@ interface ImportMetaEnv {
   readonly VITE_GAME_PADDLES_HEIGHT_PX: string;
   readonly VITE_GAME_PADDLES_WIDTH_PX: string;
   readonly VITE_GAME_PADDLES_MARGIN_PX: string;
-  
+  readonly GAME_BALL_RADIUS_PX: string;
+  readonly GAME_BALL_VX_PX: string;
+  readonly GAME_BALL_VY_PX: string;
+
   // OTHER PAGE
   readonly VITE_PATH_404NOTFOUND: string;
 

@@ -8,9 +8,9 @@ import { Banner } from "./banner";
 import type { GameScore, GameState } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { initGameState, isMobile } from "../utils";
-import { draw } from "./gamePage";
 import type { GameData } from "../../../backend/share/type/gameData";
 import { withTranslation, type TranslationProps } from "../_hooks/language";
+import { draw, sendKeyPress } from "./gameUtils";
 
 function AIGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
@@ -123,49 +123,80 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
         let confirmGame: boolean = false;
         const keydown = (e: KeyboardEvent) => {
-            if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
-                console.log("/AI gamePage: up");
-                gameData.keyPress = "up";
-                ws.send(JSON.stringify(gameData));
-            }
-            else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown")) {
-                console.log("/AI gamePage: down");
-                gameData.keyPress = "down";
-                if (ws.readyState === WebSocket.OPEN)
-                    ws.send(JSON.stringify(gameData));
-            }
+            if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp"))
+                sendKeyPress("up", ws, gameData)
+            else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown"))
+                sendKeyPress("down", ws, gameData);
             else if (e.key === " " && !confirmGame)
             {
                 console.log("/AI gamePage:" + e.key);
                 console.log("/AI gamePage:", confirmGame);
                 if (gameData.playerId) {
-                    gameData.keyPress = "Enter";
-                    if (ws.readyState === WebSocket.OPEN)
-                    {
-                        ws.send(JSON.stringify(gameData));
-                        confirmGame = true;
-                        setConfirm(true);
-                        confirmRef.current = true;
-                    }
+                    sendKeyPress("Enter", ws, gameData);
+                    confirmGame = true;
+                    setConfirm(true);
+                    confirmRef.current = true;
                 }
             }
         };
 
         const keyup = () => {
             console.log("AI gamePage: stop");
-            gameData.keyPress = "stop";
-            if (ws.readyState === WebSocket.OPEN)
-                ws.send(JSON.stringify(gameData));
+            if (gameData.keyPress === "Enter" || gameData.keyPress === "up" || gameData.keyPress === "down")
+                sendKeyPress("stop", ws, gameData);
         };
 
-        document.addEventListener("keydown", keydown);
+        const handleTouch = (e: TouchEvent) => {
+            if (!confirmRef.current)
+            {
+                sendKeyPress("Enter", ws, gameData);
+                confirmGame = true;
+                setConfirm(true);
+                confirmRef.current = true;
+            }
+            else if (e.touches[0].clientY < window.innerHeight / 2) 
+                sendKeyPress("up", ws, gameData);
+            else
+                sendKeyPress("down", ws, gameData);
+        }
+
+        const handleClick = (e: MouseEvent) => {
+            if (!confirmRef.current)
+            {
+                sendKeyPress("Enter", ws, gameData);
+                confirmGame = true;
+                setConfirm(true);
+                confirmRef.current = true;
+            }
+            else if (e.clientY < window.innerHeight / 2) 
+                sendKeyPress("up", ws, gameData);
+            else
+                sendKeyPress("down", ws, gameData);
+        }
+
+        const handleUp = () => sendKeyPress("stop", ws, gameData);
+
+        document.addEventListener("mousedown", handleClick);
+        document.addEventListener("mouseup", handleUp);
+
+        document.addEventListener("touchstart", handleTouch);
+        document.addEventListener("touchend", handleUp);
+
         document.addEventListener("keyup", keyup);
+        document.addEventListener("keydown", keydown);
 
         return () => { //when user press 'back button'
             console.log("AI GamePage: closing ws");
             key.current = false;
             confirmRef.current = false;
             ws.close();
+
+            document.removeEventListener("mousedown", handleClick);
+            document.removeEventListener("mouseup", handleUp);
+
+            document.removeEventListener("touchstart", handleTouch);
+            document.removeEventListener("touchend", handleUp);
+
             document.removeEventListener("keydown", keydown);
             document.removeEventListener("keyup", keyup);
         };
@@ -232,42 +263,19 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
                 <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
 
-                {/* Theme setting bar */}
-                <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "invisible" : "visible"}`}>
-                    <button className=""
-                            onClick={() => {
-                                if (theme === "default")
-                                    setTheme("black");
-                                else if (theme === "black")
-                                    setTheme("light");
-                                else if (theme === "light")
-                                    setTheme("default");
-                            }}>
-                    {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
-                    </button>
-                </div>
-
-                    <div className={`flex ${isMobileRef.current && !Load && !result ? "visible" : "invisible" } gap-10 `}>
-                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
-                            onTouchStart={() => handleKeypress("up", true)}
-                            onTouchEnd={() => handleKeypress("up", false)}
-                            onMouseDown={() => handleKeypress("up", true)}
-                            onMouseUp={() => handleKeypress("up", false)}
-                            >{t("shared.game.btn_up")}</button>
-
-                        <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
+                    {/* Theme setting bar */}
+                    <div className={`relative rounded-xl bg-white text-black py-2 ${isMobileRef.current || confirm || Load ? "invisible" : "visible"} `}>
+                        <button className=""
                                 onClick={() => {
-                                    setConfirm(true);
-                                    handleKeypress("Enter", true);
-                                }}
-                        >{t("shared.game.btn_confirm")}</button>
-
-                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
-                                onTouchStart={() => handleKeypress("down", true)}
-                                onTouchEnd={() => handleKeypress("down", false)}
-                                onMouseDown={() => handleKeypress("down", true)}
-                                onMouseUp={() => handleKeypress("down", false)}
-                            >{t("shared.game.btn_down")}</button>
+                                    if (theme === "default")
+                                        setTheme("black");
+                                    else if (theme === "black")
+                                        setTheme("light");
+                                    else if (theme === "light")
+                                        setTheme("default");
+                                }}>
+                        {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
+                        </button>
                     </div>
                 </div>
             </div>
