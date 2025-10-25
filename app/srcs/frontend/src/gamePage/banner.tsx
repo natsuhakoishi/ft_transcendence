@@ -1,5 +1,6 @@
 import type { GameData } from "../../../backend/share/type/gameData";
 import { useLang } from "../_hooks/language";
+import { isMobile } from "../utils";
 import { Countdown } from "./countdown";
 
 export function Banner({
@@ -28,7 +29,7 @@ export function Banner({
                             // gameData.keyPress = "timeout";
                             // ws.send(JSON.stringify(gameData));
                         }}
-                        describe={t("shared.game.preparing")} />
+                        describe={isMobile() ? "Touch anywhere to ready:" : t("shared.game.preparing")} />
                 ) : !start ? (
                     <h1 className="text-3xl font-bold text-center">{t("shared.game.waiting")}</h1>
                 ) : ready ? (

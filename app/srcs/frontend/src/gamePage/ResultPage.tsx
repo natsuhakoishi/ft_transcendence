@@ -39,7 +39,7 @@ export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileDat
 
 function HomeButton({ callback, t }: { callback: () => void, t: (key: string) => string }) {
     return (
-        <div className="absolute bottom-6 right-100 text-black px-6 py-3 rounded">
+        <div className="absolute bottom-6 right-[30%] text-black px-6 py-3 rounded">
             <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={callback}>{t("shared.result.btn_home")}</button>
         </div>
     );
@@ -47,7 +47,7 @@ function HomeButton({ callback, t }: { callback: () => void, t: (key: string) =>
 
 function AgainButton({ callback, t }: { callback: () => void, t: (key: string) => string }) {
     return (
-        <div className="absolute bottom-6 left-100 text-black px-6 py-3 rounded">
+        <div className="absolute bottom-6 left-[30%] text-black px-6 py-3 rounded">
             <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={callback}>{t("shared.result.btn_again")}</button>
         </div>
     );
@@ -78,12 +78,18 @@ export function TournamentResultPage() {
     }, []);
 
     return (
-        <div className="flex">
-            <Rank rank={t("shared.game_stat.rank_1th")} player={leaderboard.first} me={leaderboard.first.id === playerID} />
-            <Rank rank={t("shared.game_stat.rank_2nd")} player={leaderboard.second} me={leaderboard.second.id === playerID} />
-            <Rank rank={t("shared.game_stat.rank_3rd")} player={leaderboard.third} me={leaderboard.third.id === playerID} />
-            <Rank rank={t("shared.game_stat.rank_4th")} player={leaderboard.last} me={leaderboard.last.id === playerID} />
-            <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
-        </div>
+        <div className="grid place-items-center w-screen h-screen">
+            <div className="
+                    flex gap-2
+                    w-4/5 h-auto
+                    lg:w-3/4
+                ">
+                <Rank rank={t("shared.game_stat.rank_1th")} player={leaderboard.first} me={leaderboard.first.id === playerID} />
+                <Rank rank={t("shared.game_stat.rank_2nd")} player={leaderboard.second} me={leaderboard.second.id === playerID} />
+                <Rank rank={t("shared.game_stat.rank_3rd")} player={leaderboard.third} me={leaderboard.third.id === playerID} />
+                <Rank rank={t("shared.game_stat.rank_4th")} player={leaderboard.last} me={leaderboard.last.id === playerID} />
+                <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
+            </div>
+    </div>
     );
 }
