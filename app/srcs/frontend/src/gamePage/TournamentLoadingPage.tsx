@@ -23,55 +23,44 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
     console.log("Loading: " + playerID, leaderboard, playerID);
 
     return (
-        <div className="flex flex-col gap-8">
-        {matches.matches.map((match, idx) => {
-            const [p1, p2] = match;
-            const player1: PlayerWithProfileData = players[p1.id.toString()];
-            const player2: PlayerWithProfileData = players[p2.id.toString()];
+        <div className="grid place-items-center w-screen h-dvh">
+            <div className="
+                    flex flex-col
+                    gap-4
+                    lg:gap-8
+                    scale-50 lg:scale-100
+                    w-[90vw] lg:w-[100vw]
+                    max-h-[90dvh]
+                    origin-center
+                    items-center
+                    ">
+                    {/* w-[50vw] lg:w-[100vw]
+                    h-auto */}
+                {
+                    matches.matches.map((match, idx) => {
+                        const [p1, p2] = match;
+                        const player1: PlayerWithProfileData = players[p1.id.toString()];
+                        const player2: PlayerWithProfileData = players[p2.id.toString()];
 
-            return (
-            <div key={idx} className="flex items-center gap-4">
-                {/* Player 1 */}
-                <div className="flex gap-8 items-center">
-                    <Player player={player1} me={player1?.id.toString() === playerID} />
-                    <h1 className="font-bold text-5xl">VS</h1>
-                    <Player player={player2} me={player2?.id.toString() === playerID} />
-                </div>
-                {/* <div className="flex items-center gap-2">
-                <img
-                    src={import.meta.env.VITE_API_AVATAR + player1?.avatar}
-                    alt={player1?.name}
-                    className="w-8 h-8 rounded-full border"
-                />
-                <span
-                    className={`font-medium ${
-                    player1?.id.toString() === playerID ? "text-blue-600" : ""
-                    }`}
-                >
-                    {player1?.name}
-                </span>
-                </div> */}
+                        return (
+                            <div key={idx}
+                                className="
+                                    flex flex-row
+                                    gap-2 lg:gap-4
+                                    items-center justify-center
+                                ">
 
-                {/* <span className="font-bold">VS</span> */}
-
-                {/* Player 2 */}
-                {/* <div className="flex items-center gap-2">
-                <img
-                    src={import.meta.env.VITE_API_AVATAR + player2?.avatar}
-                    alt={player2?.name}
-                    className="w-8 h-8 rounded-full border"
-                />
-                <span
-                    className={`font-medium ${
-                    player2?.id.toString() === playerID ? "text-blue-600" : ""
-                    }`}
-                >
-                    {player2?.name}
-                </span>
-                </div> */}
+                                {/* Player 1 */}
+                                {/* <div className="flex gap-8 items-center"> */}
+                                    <Player player={player1} me={player1?.id.toString() === playerID} />
+                                    <h1 className="font-bold text-xl lg:text-5xl ">VS</h1>
+                                    <Player player={player2} me={player2?.id.toString() === playerID} />
+                                {/* </div> */}
+                            </div>
+                        );
+                    })}
             </div>
-            );
-        })}
-    </div>
-  );
+
+        </div>
+    );
 }

@@ -15,11 +15,14 @@ export function initGameState(): GameState {
 	const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
 	const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
 	const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
-	const paddlesMargin: number = Number(import.meta.env.VITE_GAME_PADDLES_MARGIN_PX);;
+	const paddlesMargin: number = Number(import.meta.env.VITE_GAME_PADDLES_MARGIN_PX);
+	const ballRadius: number = Number(import.meta.env.VITE_GAME_BALL_RADIUS_PX);
+	const ballVX: number = Number(import.meta.env.VITE_GAME_BALL_VX_PX);
+	const ballVY: number = Number(import.meta.env.VITE_GAME_BALL_VY_PX);
 
 	const data: GameState = {
 				//init default position and board size
-			ball: { x: boardWidth / 2, y: boardHeight / 2, vx: 4, vy: 4, radius: 10},
+			ball: { x: boardWidth / 2, y: boardHeight / 2, vx: ballVX, vy: ballVY, radius: ballRadius},
 			leftPaddle: { x: paddlesMargin, y: boardHeight / 2 - paddlesHeight / 2, vy: 0, width: paddlesWidth, height: paddlesHeight},
 			rightPaddle: { x: boardWidth - paddlesWidth - paddlesMargin, y: boardHeight / 2 - paddlesHeight / 2, vy: 0, width: paddlesWidth, height: paddlesHeight},
 			boardHeight: boardHeight,

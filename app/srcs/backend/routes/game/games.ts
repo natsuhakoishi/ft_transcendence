@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { GameData } from "../../share/type/gameData.ts";
-import { Room, RoomManager } from "../../share/type/roomData.ts";
+import { Room } from "../../share/type/roomData.ts";
 import { Trespassing } from "./gameUtils.ts";
 import { handleKeyPress, start } from "./gameLogic.ts";
 import { createMatch } from "../../database/match.ts";

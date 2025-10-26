@@ -2,7 +2,7 @@ import React from "react";
 import type { GameData } from "../../../backend/share/type/gameData.ts";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
-import type { Ball, GameScore, GameState, Paddle } from "../../../backend/share/type/gameState.ts";
+import type { GameScore, GameState} from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
 import { LoadingScreen } from "../homePage/HomeChildC.tsx";
 import { Score } from "./Score.tsx";
@@ -10,6 +10,7 @@ import { Player } from "./player.tsx";
 import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
+import { draw, sendKeyPress } from "./gameUtils.ts";
 
 function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();
@@ -177,32 +178,20 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
             };
 
             let confirmGame: boolean = false;
-
             const keydown = (e: KeyboardEvent) => {
-                if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp")) {
-                    console.log("gamePage: up");
-                    gameData.keyPress = "up";
-                    ws.send(JSON.stringify(gameData));
-                }
-                else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown")) {
-                    console.log("gamePage: down");
-                    gameData.keyPress = "down";
-                    if (ws.readyState === WebSocket.OPEN)
-                        ws.send(JSON.stringify(gameData));
-                }
+                if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp"))
+                    sendKeyPress("up", ws, gameData)
+                else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown"))
+                    sendKeyPress("down", ws, gameData)
                 else if (e.key === " " && !confirmGame)
                 {
                     console.log("gamePage:" + e.key);
                     console.log("gamePage:", confirmGame);
                     if (gameData.playerId) {
-                        gameData.keyPress = "Enter";
-                        if (ws.readyState === WebSocket.OPEN)
-                        {
-                            ws.send(JSON.stringify(gameData));
-                            confirmGame = true;
-                            setConfirm(true);
-                            confirmRef.current = true;
-                        }
+                        sendKeyPress("Enter", ws, gameData);
+                        confirmGame = true;
+                        setConfirm(true);
+                        confirmRef.current = true;
                     }
                 }
             };
@@ -220,17 +209,62 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 }
             };
 
-            document.addEventListener("keydown", keydown);
+
+            const handleTouch = (e: TouchEvent) => {
+                if (!confirmRef.current)
+                {
+                    sendKeyPress("Enter", ws, gameData);
+                    confirmGame = true;
+                    setConfirm(true);
+                    confirmRef.current = true;
+                }
+                else if (e.touches[0].clientY < window.innerHeight / 2) 
+                    sendKeyPress("up", ws, gameData);
+                else
+                    sendKeyPress("down", ws, gameData);
+            }
+
+            const handleClick = (e: MouseEvent) => {
+                if (!confirmRef.current)
+                {
+                    sendKeyPress("Enter", ws, gameData);
+                    confirmGame = true;
+                    setConfirm(true);
+                    confirmRef.current = true;
+                }
+                else if (e.clientY < window.innerHeight / 2) 
+                    sendKeyPress("up", ws, gameData);
+                else
+                    sendKeyPress("down", ws, gameData);
+            }
+
+            const handleUp = () => sendKeyPress("stop", ws, gameData);
+
+            document.addEventListener("mousedown", handleClick);
+            document.addEventListener("mouseup", handleUp);
+
+            document.addEventListener("touchstart", handleTouch);
+            document.addEventListener("touchend", handleUp);
+
             document.addEventListener("keyup", keyup);
+            document.addEventListener("keydown", keydown);
+
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
                 key.current = false;
                 confirmRef.current = false;
-                ws.close();
-                document.removeEventListener("keydown", keydown);
-                document.removeEventListener("keyup", keyup);
-            };
+            ws.close();
+
+            document.removeEventListener("mousedown", handleClick);
+            document.removeEventListener("mouseup", handleUp);
+
+            document.removeEventListener("touchstart", handleTouch);
+            document.removeEventListener("touchend", handleUp);
+
+            document.removeEventListener("keydown", keydown);
+            document.removeEventListener("keyup", keyup);
+        };
         })();
     }, []);
 
@@ -293,10 +327,11 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
                 </div>
 
+                 {/* bottom control bar */}
                 <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
 
                     {/* Theme setting bar */}
-                    <div className={`relative rounded-xl bg-white text-black py-2 ${confirm || Load ? "hidden" : "block"}`}>
+                    <div className={`relative rounded-xl bg-white text-black py-2 ${isMobileRef.current || confirm || Load ? "hidden" : "block"}`}>
                         <button className="p-4"
                                 onClick={() => {
                                     if (theme === "default")
@@ -309,87 +344,10 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                         {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
                         </button>
                     </div>
-
-                    <div className={`flex ${isMobileRef.current && !Load && !result ? "visible" : "invisible" } gap-10 `}>
-                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
-                            onTouchStart={() => handleKeypress("up", true)}
-                            onTouchEnd={() => handleKeypress("up", false)}
-                            onMouseDown={() => handleKeypress("up", true)}
-                            onMouseUp={() => handleKeypress("up", false)}
-                            >{t("shared.game.btn_up")}</button>
-
-                        <button className={`${!confirm && !Load && isMobileRef.current ? "visible" : "invisible"} p-4 w-30 bg-red-300 text-white rounded-lg`}
-                                onClick={() => {
-                                    setConfirm(true);
-                                    handleKeypress("Enter", true);
-                                }}
-                        >{t("shared.game.btn_confirm")}</button>
-
-                        <button className={`p-4 w-30 bg-blue-500 text-white rounded-lg ${confirm && !result && isMobileRef.current ? "visible" : "invisible"}`}
-                                onTouchStart={() => handleKeypress("down", true)}
-                                onTouchEnd={() => handleKeypress("down", false)}
-                                onMouseDown={() => handleKeypress("down", true)}
-                                onMouseUp={() => handleKeypress("down", false)}
-                            >{t("shared.game.btn_down")}</button>
-                    </div>
                 </div>
             </div>
         </div>
     )
-}
-
-export function draw(gameState: GameState, theme: "black" | "light" | "default"): void {
-    if (!gameState) {
-        console.log("gamePage: returned");
-        return ;
-    }
-    // console.log("gamePage: draw");
-
-    const canvas = document.getElementById("gameBoard") as HTMLCanvasElement;
-    canvas.width = gameState.boardWidth;
-    canvas.height = gameState.boardHeight;
-
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-
-    let color = "black";
-    let bgColor = "#ff7272ff";
-    if (theme === "light")
-    {
-        bgColor = "#f9e16cff";
-        color = "#8d7100ff";
-    }
-    else if (theme === "black")
-    {
-        bgColor = "black";
-        color = "grey";
-    }
-
-    drawBackground(canvas.width, canvas.height, ctx, bgColor);
-
-    drawBall(gameState.ball, ctx, color);
-
-    drawPaddles(gameState.leftPaddle, ctx, color);
-    drawPaddles(gameState.rightPaddle, ctx, color);
-}
-
-function drawBackground(width: number, height: number, ctx: CanvasRenderingContext2D, color: string)
-{
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, width, height);
-}
-
-function drawBall(ball: Ball, ctx: CanvasRenderingContext2D, color: string): void {
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-    ctx.fill();
-}
-
-function drawPaddles(paddle: Paddle, ctx: CanvasRenderingContext2D, color: string): void {
-    ctx.fillStyle = color;
-    ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
 export const GamePage = withTranslation(GameP);

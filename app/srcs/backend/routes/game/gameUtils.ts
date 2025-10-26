@@ -1,6 +1,6 @@
 import { randomInt } from "crypto";
 import { getProfileById } from "../../database/profile.ts";
-import { GAME_BOARD_HEIGHT_PX, GAME_BOARD_WIDTH_PX, GAME_PADDLES_HEIGHT_PX, GAME_PADDLES_MARGIN_PX, GAME_PADDLES_WIDTH_PX } from "../../server.ts";
+import { GAME_BALL_RADIUS_PX, GAME_BALL_VX_PX, GAME_BALL_VY_PX, GAME_BOARD_HEIGHT_PX, GAME_BOARD_WIDTH_PX, GAME_PADDLES_HEIGHT_PX, GAME_PADDLES_MARGIN_PX, GAME_PADDLES_WIDTH_PX } from "../../server.ts";
 import type { Profile } from "../../share/type/db_ProfileData.ts";
 import type { TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
@@ -18,19 +18,22 @@ export function resetBall(state: GameState): void {
     const paddlesHeight: number = parseInt(GAME_PADDLES_HEIGHT_PX!);
     const paddlesWidth: number = parseInt(GAME_PADDLES_WIDTH_PX!);
     const paddlesMargin: number = parseInt(GAME_PADDLES_MARGIN_PX!);
+    const ballRadius: number = parseInt(GAME_BALL_RADIUS_PX!);
+    const ballVY: number = parseInt(GAME_BALL_VY_PX!);
+    const ballVX: number = parseInt(GAME_BALL_VX_PX!);
 
     state.ball.x = boardWidth / 2;
     state.ball.y = boardHeight / 2;
 
-    state.ball.vy = 4;
-    state.ball.vx = 4;
+    state.ball.vy = ballVY;
+    state.ball.vx = ballVX;
     if (randomInt(100) % 2 === 0)
     {
         state.ball.vy *= -1;
         state.ball.vx *= -1;
     }
 
-    state.ball.radius = 10;
+    state.ball.radius = ballRadius;
     state.leftPaddle.x = paddlesMargin;
     state.leftPaddle.y = boardHeight / 2 - paddlesHeight / 2;
     state.rightPaddle.x = boardWidth - paddlesWidth - paddlesMargin;

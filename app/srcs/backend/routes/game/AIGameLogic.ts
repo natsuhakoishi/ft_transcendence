@@ -21,11 +21,8 @@ export function AILogic(room: AIRoom, runtime: number): void {
     const ai: Paddle = state.rightPaddle;
     const ball: Ball = state.ball;
 
-    const difficulty = () => {
-        if (runtime < 960 * 10) //  960 == 1second
-            return "normal";
-        return "hard";
-    }
+    if (runtime % 960 !== 0)
+        return ;
 
     if (runtime > 960 * 60)
     {
@@ -33,23 +30,28 @@ export function AILogic(room: AIRoom, runtime: number): void {
         ball.vy *= 1.5;
     }
 
-    const config = {
-        "normal" : { reactionSpeed: 8, preDirectionError: 100},
-        "hard" : { reactionSpeed: 10, preDirectionError: 80},
-    }[difficulty()]
+    const preDirectionY: number = predictBallY(ball, state.boardHeight, 60);
+    
+    const paddleCenter = ai.y + ai.height / 2;
+    const diff = preDirectionY - paddleCenter; //between ball and paddle
 
-    // console.log("difficult: ", difficulty(), runtime);
-    const reactionSpeed: number = config.reactionSpeed;
-    const preDirectionError: number = config.preDirectionError;
+    if (Math.abs(diff) < ai.height / 2)
+        handleKeyPressAI("stop", room);
+    else if (diff > 0)
+        handleKeyPressAI("down", room);
+    else 
+        handleKeyPressAI("up", room);
 
-    const targetY = ball.y + randomError(preDirectionError);
-
-    if (ai.y + ai.height / 2 < targetY - 10)
-        ai.y += reactionSpeed
-    else if (ai.y + ai.height > targetY + 10)
-        ai.y += -reactionSpeed
 }
 
-function randomError(range: number): number {
-    return (Math.random() - 0.5) * range;
+function predictBallY(ball: Ball, boardHeight: number, steps: number): number {
+    let y: number = ball.y;
+    let vy: number = ball.vy;
+
+    for (let i = 0; i < steps; i++) {
+        y += vy;
+        if (y + ball.radius >= boardHeight || y - ball.radius <= 0)
+            vy *= -1;
+    }
+    return y;
 }
