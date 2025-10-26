@@ -64,7 +64,7 @@ const avatarUpdate = async (
 
   const allowedTypes = ["image/webp", "image/jpeg", "image/png", "image/jpg"];
   if (!allowedTypes.includes(file.type)) {
-    toasterPluz("Profile.ERR_UpAva_type");
+    toasterPluz("profile.ERR_UpAva_type");
     return ;
   }
 

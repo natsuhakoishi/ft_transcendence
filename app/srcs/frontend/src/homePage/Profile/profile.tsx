@@ -8,7 +8,7 @@ import { useLang, withTranslation, type TranslationProps } from "../../_hooks/la
 const handleLogOut = async ({ navigate, toasterPluz }: { navigate: (path: string) => void; toasterPluz: (msg: string) => void }) => {
   try {
     await apiFetch("logout", { method: "POST", body: JSON.stringify({}) });
-    toasterPluz("pop.profile.OK_LogOut");
+    toasterPluz("profile.OK_LogOut");
     navigate("/auth");
   } catch (err: any) {
     toasterPluz(err);

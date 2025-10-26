@@ -55,10 +55,10 @@ const OTPModal = ({ show, verifyRef, onVerify }: {
         <input
           type="text" pattern="\d{6}" maxLength={6} required placeholder={t("auth.place_otp")}
           onChange={(e) => (verifyRef.current.otp = e.target.value)}
-          className="border w-2/3 p-1 text-center"/>
+          className="border-2 w-2/3 p-1 text-center focus:border-none focus:outline-none focus:ring-2 focus:ring-white"/>
         <button onClick={onVerify}
-          className="relative inline-flex items-center justify-center mx-2 p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group
-          bg-gradient-to-br from-[#95B06F] to-[#5E76C0] group-hover:from-[#95B06F] group-hover:to-[#5E76C0] hover:text-white focus:ring-2 focus:outline-none focus:ring-green-200"
+          className="relative inline-flex items-center justify-center mx-2 p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group
+          bg-gradient-to-br from-[#95B06F] to-[#5E76C0] group-hover:from-[#95B06F] group-hover:to-[#5E76C0] hover:text-white focus:outline-none"
         >
           <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
             {t("auth.btn_verify")}
