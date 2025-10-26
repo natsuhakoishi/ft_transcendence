@@ -102,6 +102,7 @@
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
 			"preparing": "點擊 [空格鍵] 準備：",
+			"preparing_mob": "Touch to ready: ",
 			"ready": "準備: ",
 			"waiting": "等待對手確認遊戲",
 			"onGoing": "Pong!",

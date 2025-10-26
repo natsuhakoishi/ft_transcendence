@@ -53,7 +53,7 @@ function ProfileSB({ t }: TranslationProps) {
       {/* Win Rate */}
       <span className="font-bold">{t("shared.game_stat.win_rate")}</span>
       <span className={`
-        font-inter font-bold leading-[150%] ${typeof win_rate === "number" && win_rate >= 51.0 ? "text-golden" : "text-gray-600"}
+        font-inter font-bold leading-[150%] ${typeof win_rate === "number" && win_rate >= 51.0 ? "text-golden" : "text-gray-400"}
         [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]`}
       >{!win_rate ? "-" : `${win_rate}%`}</span>
     </div>

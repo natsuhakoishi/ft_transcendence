@@ -173,7 +173,7 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
   }
 
   return (
-  <div className="h-screen w-screen max-h-screen max-w-screen flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpg')] bg-blend-overlay">
+  <div className="h-screen w-screen max-h-screen max-w-screen flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpeg')] bg-blend-overlay">
 
     {/* Button -> Language Bar */}
     <div className="absolute top-2 right-2 m-2">

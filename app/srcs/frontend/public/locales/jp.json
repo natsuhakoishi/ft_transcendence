@@ -102,6 +102,7 @@
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
 			"preparing": "[Space]で準備：",
+			"preparing_mob": "Touch to ready: ",
 			"ready": "準備：",
 			"waiting": "相手確認待ち",
 			"onGoing": "Pong!",

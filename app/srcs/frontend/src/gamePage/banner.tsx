@@ -29,7 +29,7 @@ export function Banner({
                             // gameData.keyPress = "timeout";
                             // ws.send(JSON.stringify(gameData));
                         }}
-                        describe={isMobile() ? "Touch anywhere to ready:" : t("shared.game.preparing")} />
+                        describe={isMobile() ? t("shared.game.preparing_mob") : t("shared.game.preparing")} />
                 ) : !start ? (
                     <h1 className="text-3xl font-bold text-center">{t("shared.game.waiting")}</h1>
                 ) : ready ? (
