@@ -52,7 +52,7 @@ export function HomeP({ t, lang }: TranslationProps) {
 return (
   <>
   {/* Background Layer */}
-  <div className="absolute h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-[url('/pic/homeP.jpg')] bg-black/25 bg-blend-overlay overflow-hidden" />
+  <div className="absolute min-h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-[url('/pic/homeP.jpg')] bg-black/25 bg-blend-overlay overflow-hidden" />
   {/* Page Content - Conditional Render [ Loading / Matching / Home Page ] */}
   {
     loading ? <LoadingScreen progress={progress}/> :

@@ -123,8 +123,6 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
 
   return (  
     <>
-    <div className="mb-10 mt-1 inset-0 w-screen h-[50%] shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/60 backdrop-blur-md flex justify-start">
-
       {/* Left Part - Username, Avatar, btn Delete_Avatar */}
       <div className="w-[25%] h-full gap-2 flex flex-col justify-center items-center">
         {/* Username */}
@@ -174,8 +172,6 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
 
         </form>)
       }
-
-    </div>
     </>
   );
 }

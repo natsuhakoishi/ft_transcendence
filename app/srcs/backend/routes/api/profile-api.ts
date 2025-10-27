@@ -50,6 +50,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 
 				case "init":
 					if (!data.id || !data.username) {
+						console.log("\Online Socket fail to create\n");
 						ws.send(JSON.stringify({ type: "error", message: "missing data" }));
 						return ;
 					}

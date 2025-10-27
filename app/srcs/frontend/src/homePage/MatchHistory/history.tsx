@@ -101,7 +101,7 @@ const HistoryRow = ({ match, user_id, onTournamentClick } : {
 
   return (
     <div
-      className={`relative p-2 rounded-lg flex items-center justify-between w-full h-full
+      className={`relative p-2 rounded-lg flex items-center justify-between md:w-full md:h-full
       shadow-xl shadow-indigo-950/20
       transition-transform duration-200 hover:shadow-md hover:shadow-[#9DD6AD]
       ${bannerColour} ${isTour && "cursor-pointer hover:scale-98"} `}
@@ -127,9 +127,11 @@ const HistoryList = ({ matches, user_id, onClickHandler } : {
   const records = [...matches, ...Array(5 - matches.length).fill(null)];
 
   return (
-  <div className="h-full w-full grid grid-rows-5 ">
+  <div className="h-[50%] w-full flex flex-col overflow-y-scroll
+    md:h-full md:grid md:grid-rows-5 md:overflow-hidden"
+  >
     {records.map((record, i) => (
-      <div key={i} className="h-full p-1.5">
+      <div key={i} className="flex-1 md:h-full p-1.5">
         {!record ? <div/> :
           <HistoryRow match={record} user_id={user_id} onTournamentClick={onClickHandler} />
         }
@@ -197,50 +199,45 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   }, []);
 
 	return (
-    <div className="w-screen h-screen bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay">
-
-    { loading ?
-      <>
-      {/* Loading UI */}
-      <div className="h-screen w-screen place-content-center place-items-center row-span-2">
-        <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
-      </div>
-      </>
-    :
-      <>
-      {/* History Page Content */}
-      <div className="grid grid-cols-[1fr_15%] ">
+  <>
+  {/* Background Layer */}
+  <div className="absolute h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay" />
+  { loading ?
+    <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
+      :
+    <>
+    {/* History Page Content */}
+      <div className="relative w-[100dvw] h-[100dvh] grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
 
         {/* Tournament Modal */}
-        {TourModal && (
+        {TourModal && 
           <ExpandTourModal onClose={() => setTourModal(false)}>
             <ExpandTour entries={entries} user_id={matches?.user_id ?? 0} />
           </ExpandTourModal>
-        )}
+        }
 
         {/* Left side: History Matches; exactly 5 rows */}
         <section>
         { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
-          (<>
-            <div className="flex items-center w-full h-full font-semibold">
-              <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
-                <p>{t("history.status_empty")}</p>
-              </div>
+          <div className="flex items-center w-full h-full font-semibold">
+            <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
+              <p>{t("history.status_empty")}</p>
             </div>
-          </>)
-          :
-            <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />}
+          </div>
+            :
+          <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />
+        }
         </section>
 
         {/* Right side: User's profile */}
-        <section className="flex flex-col bg-[#1f3735] justify-center items-center shadow-2xl">
+        <section className="h-[60%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
           <ProfileSideBar />
         </section>
 
       </div>
-      </>
-    }
-    </div>
+    </>
+  }
+  </>
   );
 }
 

@@ -21,14 +21,14 @@ const Register = ( { verifyRef, onSubmit, mode }: {
 
   return (
     <>
-      <form className="flex flex-col items-center justify-center w-full gap-2 default_text" onSubmit={handleSubmit}>
-        <input className="p-1.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <form className="flex flex-col items-center w-full gap-2 default_text" onSubmit={handleSubmit}>
+        <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
           type="text" name="username" placeholder={t("shared.form.place_name")} required autoComplete="on"
         />
-        <input className="p-1.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
           type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
         />
-        <input className="p-1.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
         type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
         />
         <div className="flex gap-2">
@@ -81,11 +81,11 @@ const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
 
   return (
     <>
-      <form className="flex flex-col items-center w-full gap-2 mt-2 default_text" onSubmit={handleSubmit}>
-      <input className="p-0.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <form className="flex flex-col items-center w-full gap-2 default_text" onSubmit={handleSubmit}>
+      <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
         type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
       />
-      <input className="p-0.5 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <input className="mb-2 p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
       type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
       />
       <button type="submit" className="default_button hover-increase">{t("auth.btn_signIn")}</button>
@@ -173,14 +173,14 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
   }
 
   return (
-  <div className="h-screen w-screen max-h-screen max-w-screen flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpeg')] bg-blend-overlay">
+  <div className="w-[100dvw] h-[100dvh] flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpeg')] bg-blend-overlay">
 
     {/* Button -> Language Bar */}
     <div className="absolute top-2 right-2 m-2">
       <LanguageBar bgColor="" optionColor="bg-[#44332D]"/>
     </div>
     {/* Form Modal -> Register / Login */}
-    <h1 className="absolute top-8 text-5xl font-extrabold">KLBQ</h1>
+    <h1 className="absolute top-8 text-5xl font-extrabold text-shadow-lg font-[STHupo]">FT_KLBQ</h1>
     <div className="place-items-center place-content-center h-screen w-[60%] bg-[#915C2E]/30 backdrop-blur-base gap-2">
       <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[60%] shadow-2xl text-justify">
         
