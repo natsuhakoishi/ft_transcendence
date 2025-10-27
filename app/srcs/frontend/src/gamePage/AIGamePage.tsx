@@ -115,6 +115,7 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
             }
             else if (type === "trespassing")
             {
+                cleanTouch();
                 console.log("/AI gamePage trespassing 凸^u^凸");
                 toasterPluz("game.ERR_trespassing");
                 navigate("/", { replace: true });
@@ -185,12 +186,8 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
         document.addEventListener("keyup", keyup);
         document.addEventListener("keydown", keydown);
 
-        return () => { //when user press 'back button'
-            console.log("AI GamePage: closing ws");
-            key.current = false;
-            confirmRef.current = false;
-            ws.close();
 
+        function cleanTouch(): void {
             document.removeEventListener("mousedown", handleClick);
             document.removeEventListener("mouseup", handleUp);
 
@@ -199,6 +196,14 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
             document.removeEventListener("keydown", keydown);
             document.removeEventListener("keyup", keyup);
+        }
+
+        return () => { //when user press 'back button'
+            console.log("AI GamePage: closing ws");
+            key.current = false;
+            confirmRef.current = false;
+            ws.close();
+            cleanTouch();
         };
     }, []);
 

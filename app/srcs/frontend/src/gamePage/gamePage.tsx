@@ -171,6 +171,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 }
                 else if (type === "trespassing")
                 {
+                    cleanTouch();
                     console.log("/gamePage trespassing 凸^u^凸");
                     toasterPluz("game.ERR_trespassing");
                     navigate("/", { replace: true });
@@ -249,22 +250,25 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
             document.addEventListener("keyup", keyup);
             document.addEventListener("keydown", keydown);
 
+            function cleanTouch(): void {
+                document.removeEventListener("mousedown", handleClick);
+                document.removeEventListener("mouseup", handleUp);
+
+                document.removeEventListener("touchstart", handleTouch);
+                document.removeEventListener("touchend", handleUp);
+
+                document.removeEventListener("keydown", keydown);
+                document.removeEventListener("keyup", keyup);
+            }
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
                 key.current = false;
                 confirmRef.current = false;
-            ws.close();
+                ws.close();
 
-            document.removeEventListener("mousedown", handleClick);
-            document.removeEventListener("mouseup", handleUp);
-
-            document.removeEventListener("touchstart", handleTouch);
-            document.removeEventListener("touchend", handleUp);
-
-            document.removeEventListener("keydown", keydown);
-            document.removeEventListener("keyup", keyup);
-        };
+                cleanTouch();
+            };
         })();
     }, []);
 
