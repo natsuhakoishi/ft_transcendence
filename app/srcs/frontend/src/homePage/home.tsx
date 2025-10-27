@@ -49,11 +49,15 @@ export function HomeP({ t, lang }: TranslationProps) {
       toast.success(`${t("home.msg_greeting")}${user.acc.username}.`);
   }, [user, loading]);
 
-  return (
-    <>
-    {loading ? <LoadingScreen progress={progress}/> : 
-      match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> : 
-        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-black/23 bg-[url('/pic/homeP.jpg')] bg-blend-overlay text-xl">
+return (
+  <>
+  {/* Background Layer */}
+  <div className="absolute h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-[url('/pic/homeP.jpg')] bg-black/25 bg-blend-overlay overflow-hidden" />
+  {/* Page Content - Conditional Render [ Loading / Matching / Home Page ] */}
+  {
+    loading ? <LoadingScreen progress={progress}/> :
+      match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
+        (<div className="h-[100lvh] w-[100lvw] grid grid-cols-[1fr_2fr_1fr] overflow-hidden text-xl">
 
           {/* Pop Up Modal -> Credits page */}
           {creditM && <Credit onClick={setCreditM} />}
@@ -80,28 +84,28 @@ export function HomeP({ t, lang }: TranslationProps) {
             <div className="flex-1" />
 
             {/* Menu -> Select Game Mode */}
-            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl">
+            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl sm:mb-10">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
                 {/* Button -> Tournament Mode */}
                 <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
-                 onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
+                  onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
 
                 {/* Button -> 1 vs 1 Mode */}
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
-                 onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
-
+                  onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
                 {/* Button -> AI Mode */}
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
-                 onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
+                  onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               
               </div>
             </div>
 
             <div className="flex-1" />
+
             {/* Display -> trigger Credits modal */}
-            <span className="mb-3 cursor-pointer" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
+            <span className="absolute bottom-2 cursor-pointer" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}
@@ -113,11 +117,10 @@ export function HomeP({ t, lang }: TranslationProps) {
             {/* Button -> Match History page */}
             <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
-
         </div>)
-    }
-    </>
-  );
+  }
+  </>
+);
 }
 
 export const Home = withTranslation(HomeP);

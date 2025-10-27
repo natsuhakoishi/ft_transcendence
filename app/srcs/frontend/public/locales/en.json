@@ -102,7 +102,7 @@
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
 			"preparing": "Press [Space] to ready: ",
-			"preparing_mob": "Touch to ready: ",
+			"preparing_mob": "Tap to ready: ",
 			"ready": "Ready: ",
 			"waiting": "Waiting for opponent confirm game",
 			"onGoing": "Pong!",

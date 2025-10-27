@@ -14,11 +14,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    min-width: 100vw;
+    min-height: 100dvh;
+    min-width: 100dvw;
+    overflow: hidden;
     background-color: #9390B5;
     color: white;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
+    -webkit-scrollbar: hidden;
     font-weight: bold;
 }
 
@@ -33,6 +35,7 @@ body {
   border-width: 2px;
   border-radius: var(--radius-lg);
   padding: calc(var(--spacing) * 1.5);
+  background-color:rgba(255, 255, 255, 0.30);
   color: white;
   -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
   font-weight: bold;
