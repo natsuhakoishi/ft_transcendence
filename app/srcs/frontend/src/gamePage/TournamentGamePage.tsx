@@ -162,11 +162,24 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
 
     return (
         <Routes>
-            <Route path="/" element={<TournamentLoading leaderboard={leaderboard} load={load} playerID={gameDataRef.current.playerId.toString()} />} />
+            <Route
+                path="/"
+                element={
+                    <TournamentLoading
+                        leaderboard={leaderboard}
+                        load={load}
+                        playerID={gameDataRef.current.playerId.toString()}
+                    />
+                }
+            />
             <Route
                 path="gameplay"
-                element={<GamePage onGameOver={handleGameOver} />} />
-            <Route path="result" element={<TournamentResultPage />} />
+                element={ <GamePage onGameOver={handleGameOver}/>}
+            />
+            <Route
+                path="result"
+                element={<TournamentResultPage/>}
+            />
             {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
     );

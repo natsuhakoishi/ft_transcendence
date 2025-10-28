@@ -25,17 +25,12 @@ export function Banner({
                 !confirm ? (
                     <Countdown
                         start={10}
-                        timeout={() => {
-                            // gameData.keyPress = "timeout";
-                            // ws.send(JSON.stringify(gameData));
-                        }}
                         describe={isMobile() ? "Touch anywhere to ready:" : t("shared.game.preparing")} />
                 ) : !start ? (
                     <h1 className="text-3xl font-bold text-center">{t("shared.game.waiting")}</h1>
                 ) : ready ? (
                         <Countdown
                         start={2}
-                        timeout={() => {}}
                         describe={t("shared.game.ready")} />
                 ) : <h1 className="text-3xl font-bold text-center">{t("shared.game.onGoing")}</h1>
             }
