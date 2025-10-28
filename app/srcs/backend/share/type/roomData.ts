@@ -38,8 +38,12 @@ export class Room {
         {
             if (player.ws.readyState === WebSocket.OPEN)
                 player.ws.send(JSON.stringify({type: _type, gameState: this.gameState}));
-            else
+            else if (!this.gameState.playerOffline)
+            {
                 this.gameState.playerOffline = true;
+                this.mandatoryWin();
+                this.broadCast("game_over_offline");
+            }
         }
     }
 
