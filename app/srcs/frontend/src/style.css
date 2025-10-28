@@ -1,4 +1,18 @@
 @tailwind utilities;
+
+.default_text {
+  font-weight: normal;
+  -webkit-text-stroke: 0px rgba(0, 0, 0, 0.525);
+  color: black;
+}
+
+.default_button {
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.6);
+  /* background-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important; */
+  @apply border-2 rounded-lg p-1.5 font-bold;
+}
+ 
 @import "tailwindcss";
 @import "tailwindcss/preflight";
 
@@ -14,29 +28,16 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    min-width: 100vw;
+    min-height: 100dvh;
+    min-width: 100dvw;
+    overflow: hidden;
     background-color: #9390B5;
     color: white;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
+    -webkit-scrollbar: hidden;
     font-weight: bold;
 }
 
-.default_text {
-  font-weight: normal;
-  -webkit-text-stroke: 0px rgba(0, 0, 0, 0.525);
-  color: black;
-}
-
-.default_button {
-  border-style: var(--tw-border-style);
-  border-width: 2px;
-  border-radius: var(--radius-lg);
-  padding: calc(var(--spacing) * 1.5);
-  color: white;
-  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
-  font-weight: bold;
-}
 
 .hover {
   @apply cursor-pointer transition-transform ease-in-out duration-100;

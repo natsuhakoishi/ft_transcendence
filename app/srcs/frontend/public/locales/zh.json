@@ -33,7 +33,10 @@
 		"btn_friend": "好友",
 		"btn_history": "對局記錄",
 		"text_version": "版本號 ",
-		"btn_credit": "製作名單"
+		"btn_credit": "製作名單",
+		"role_en": "Backend",
+		"role_yb": "Game",
+		"role_zw": "UIUX"
 	},
 
 	"profile":
@@ -99,6 +102,7 @@
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
 			"preparing": "點擊 [空格鍵] 準備：",
+			"preparing_mob": "點按任意位置準備: ",
 			"ready": "準備: ",
 			"waiting": "等待對手確認遊戲",
 			"onGoing": "Pong!",
