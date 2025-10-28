@@ -52,7 +52,11 @@ export function GameLayout({
             {
                 result && 
                     <div className={`absolute inset-0 flex items-center justify-center`}>
-                        <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={AI} />
+                        <Result
+                            winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}
+                            playerID={playerID}
+                            AI={AI}
+                        />
                     </div>
             }
 

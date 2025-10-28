@@ -3,11 +3,9 @@ import { useLang } from "../_hooks/language";
 
 export function Countdown({
         start,
-        timeout,
         describe
     } : {
         start: number,
-        timeout: () => void,
         describe: string}) {
 
     const [ second, setSecond ] = React.useState<number>(start);
@@ -18,7 +16,6 @@ export function Countdown({
         if (second === 0)
         {
             console.log("cd: Timeout");
-            timeout();
             if (timer.current) {
                 clearInterval(timer.current);
                 timer.current = null;

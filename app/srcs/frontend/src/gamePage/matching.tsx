@@ -81,16 +81,17 @@ export function Matching({again, setMatch, AI} : {
 
     return (
         <>
-        <div className=" bg-blue-500">
-            <h1 className="text-5xl decoration-cyan-800">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
-        </div>
-        <button
-            type="submit"
-            className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 "
-            onClick={() => {
-                again ? navigate("/", { replace: true }) : setMatch?.(false)
-            }}
-            >{t("shared.btn_cancel")}</button>
+            <div className=" bg-blue-500">
+                <h1 className="text-5xl decoration-cyan-800">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
+            </div>
+            <button
+                type="submit"
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 "
+                onClick={() => {
+                    again ? navigate("/", { replace: true }) : setMatch?.(false)
+                }}
+            >{t("shared.btn_cancel")}
+            </button>
         </>
     );
 }
@@ -136,10 +137,15 @@ export function TMatching() {
 
     return (
         <>
-        <div className="container bg-blue-500">
-            <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
-        </div>
-        <button type="submit" className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={() => navigate("/")}>Cancel</button>
+            <div className="container bg-blue-500">
+                <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
+            </div>
+            <button
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2"
+                type="submit"
+                onClick={() => navigate("/")}
+            >Cancel
+            </button>
         </>
     );
 }
