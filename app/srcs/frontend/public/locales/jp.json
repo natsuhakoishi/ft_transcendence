@@ -34,9 +34,9 @@
 		"btn_history": "対戦履歴",
 		"text_version": "Version ",
 		"btn_credit": "スタッフ",
-		"role_en": "Backend",
-		"role_yb": "Game",
-		"role_zw": "UIUX"
+		"role_en": "プロジェクト指導 / Server/Web開発",
+		"role_yb": "ゲーム企画 & 開発",
+		"role_zw": "ビジュアルデザイン / UI/UX開発"
 	},
 
 	"profile":

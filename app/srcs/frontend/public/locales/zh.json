@@ -34,9 +34,9 @@
 		"btn_history": "對局記錄",
 		"text_version": "版本號 ",
 		"btn_credit": "製作名單",
-		"role_en": "Backend",
-		"role_yb": "Game",
-		"role_zw": "UIUX"
+		"role_en": "專案指導 / 伺服器與網站開發",
+		"role_yb": "遊戲企劃 & 程式開發",
+		"role_zw": "視覺設計 / UI/UX程式開發"
 	},
 
 	"profile":

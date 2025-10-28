@@ -1,7 +1,11 @@
 import { hashPassword } from "../routes/api/auth-helper/pwHash.ts";
 import { D_PASS, Q_MAIL, Y_MAIL, Z_MAIL } from "../server.ts";
-import { createProfile } from "./profile.ts";
+import { createProfile, setAvatarPath } from "./profile.ts";
 import { createUser, getUserByEmail } from "./user.ts";
+
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 export async function createDevTeamUser()
 {
@@ -18,4 +22,19 @@ export async function createDevTeamUser()
 	await createProfile(yabi.name);
 	await createUser(zhen.name, zhen.email, await hashPassword(zhen.password));
 	await createProfile(zhen.name);
+
+	const dir_name = path.dirname(fileURLToPath(import.meta.url));
+	const dir = path.join(dir_name, '..', 'assets', 'avatars');
+
+	const qiqiAvatar = path.join(dir, 'qiqi_dev.png');
+	const yabiAvatar = path.join(dir, 'yabi_dev.png');
+	const zhenAvatar = path.join(dir, 'zhen_dev.png');
+
+	const qiqiBuffer = await fs.promises.readFile(qiqiAvatar);
+	const yabiBuffer = await fs.promises.readFile(yabiAvatar);
+	const zhenBuffer = await fs.promises.readFile(zhenAvatar);
+
+	await setAvatarPath(1, 'qiqi_dev.png', qiqiBuffer);
+	await setAvatarPath(2, 'yabi_dev.png', yabiBuffer);
+	await setAvatarPath(3, 'zhen_dev.png', zhenBuffer);
 }

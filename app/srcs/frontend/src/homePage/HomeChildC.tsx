@@ -58,16 +58,16 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
       <div className="flex flex-col gap-1 md:gap-3 items-start mx-5 md:mx-10">
 
         {/* First */}
-        <CreditMember link="/pic/e.png" github="natsuhakoishi" intra="yyean-wa" roles={t("home.role_en")} />
+        <CreditMember link="/pic/e.png" github="Natsuha" intra="yyean-wa" roles={t("home.role_en")} />
 
         {/* Second */}
-        <CreditMember link="/pic/yb.png" github="Yabi924" intra="yyan-bin" roles={t("home.role_yb")} />
+        <CreditMember link="/pic/yb.png" github="Yabi" intra="yyan-bin" roles={t("home.role_yb")} />
 
         {/* Third */}
-        <CreditMember link="/pic/zw.png" github="nightZQ" intra="zgoh" roles={t("home.role_zw")} />
+        <CreditMember link="/pic/zw.png" github="Night" intra="zgoh" roles={t("home.role_zw")} />
 
       </div>
-      <div className="mt-1 text-sm text-center">©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
+      <div className="mt-1 text-sm text-center">Asset ©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
     </div>
 
     </div>
