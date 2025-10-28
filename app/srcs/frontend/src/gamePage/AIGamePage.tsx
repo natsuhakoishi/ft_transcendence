@@ -1,16 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingScreen } from "../homePage/HomeChildC";
 import React from "react";
-import { Result } from "./ResultPage";
-import { Player } from "./player";
-import { Score } from "./Score";
-import { Banner } from "./banner";
 import type { GameScore, GameState } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { initGameState, isMobile } from "../utils";
 import type { GameData } from "../../../backend/share/type/gameData";
 import { withTranslation, type TranslationProps } from "../_hooks/language";
 import { draw, sendKeyPress } from "./gameUtils";
+import { GameLayout } from "./gameLayout";
 
 function AIGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
@@ -94,7 +90,6 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
             {
                 console.log("/AI gamePage: goal");
                 key.current = false;
-                //TODO: render goal animation
             }
             else if (type === "game_over")
             {
@@ -115,6 +110,7 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
             }
             else if (type === "trespassing")
             {
+                cleanTouch();
                 console.log("/AI gamePage trespassing 凸^u^凸");
                 toasterPluz("game.ERR_trespassing");
                 navigate("/", { replace: true });
@@ -161,6 +157,11 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
         }
 
         const handleClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+
+            if (target.closest(".ui"))
+                return ;
+
             if (!confirmRef.current)
             {
                 sendKeyPress("Enter", ws, gameData);
@@ -185,12 +186,8 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
         document.addEventListener("keyup", keyup);
         document.addEventListener("keydown", keydown);
 
-        return () => { //when user press 'back button'
-            console.log("AI GamePage: closing ws");
-            key.current = false;
-            confirmRef.current = false;
-            ws.close();
 
+        function cleanTouch(): void {
             document.removeEventListener("mousedown", handleClick);
             document.removeEventListener("mouseup", handleUp);
 
@@ -199,6 +196,14 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
             document.removeEventListener("keydown", keydown);
             document.removeEventListener("keyup", keyup);
+        }
+
+        return () => { //when user press 'back button'
+            console.log("AI GamePage: closing ws");
+            key.current = false;
+            confirmRef.current = false;
+            ws.close();
+            cleanTouch();
         };
     }, []);
 
@@ -207,79 +212,23 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
         draw(initGameState(), theme);
     }, [theme]);
 
-    function handleKeypress(key: "up" | "down" | "Enter", pressed: boolean)
-    {
-        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !gameData)
-            return ;
-        
-        if (pressed)
-            gameData.keyPress = key;
-        else 
-            gameData.keyPress = "stop";
-        wsRef.current.send(JSON.stringify(gameData));
-    }
-
     return (
-        <div>
-            {/* Loading Page */}
-            <div className={`absolute inset-0 flex items-center justify-center ${Load ? "visible" : "invisible"} `}>
-                <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
-            </div>
-
-            {/* Result Page */}
-            <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={true} />
-                {/* <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} /> */}
-            </div>
-
-            {/* whole Game's stuff */}
-            <div className={`container gap-12 flex flex-col items-center justify-center ${Load || result ? "invisible" : "visible"}`}>
-
-                {/* players data, pong game's board */}
-                <div className="flex items-center justify-between w-full px-10">
-
-                    {/* Player 1 */}
-                    <Player player={playersData?.Players[0]} me={playerID === playersData?.Players[0].id} />
-
-                    <div className="flex flex-col items-center"> {/* Pong game's board */}
-                        <Score score={score}></Score>
-
-                        {/* Countdown */}
-                        <Banner confirm={confirm} start={start} ready={ready} gameData={gameData} />
-                        {/* <Banner confirm={confirm.current} start={start} ready={ready} gameData={gameData} /> */}
-                        <canvas
-                            id="gameBoard"
-                            className={`w-[${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}px]
-                            h-[${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}px]
-                            bg-red-300`}
-                            width={`${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}`}
-                            height={`${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}`}
-                        ></canvas>
-                    </div>
-
-                    {/* Player 2 */}
-                    <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
-                </div>
-
-                <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
-
-                    {/* Theme setting bar */}
-                    <div className={`relative rounded-xl bg-white text-black py-2 ${isMobileRef.current || confirm || Load ? "invisible" : "visible"} `}>
-                        <button className=""
-                                onClick={() => {
-                                    if (theme === "default")
-                                        setTheme("black");
-                                    else if (theme === "black")
-                                        setTheme("light");
-                                    else if (theme === "light")
-                                        setTheme("default");
-                                }}>
-                        {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <GameLayout
+            gameData={gameData}
+            score={score}
+            playersData={playersData}
+            Load={Load}
+            result={result}
+            playerID={playerID}
+            confirm={confirm}
+            start={start}
+            ready={ready}
+            isMobile={isMobileRef.current}
+            theme={theme}
+            setTheme={setTheme}
+            t={t}
+            AI={true}
+        />
     )
 }
 

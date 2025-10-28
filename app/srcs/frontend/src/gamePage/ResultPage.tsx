@@ -25,14 +25,17 @@ export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileDat
                         <h1 className={`text-5xl font-bold mb-6`} >{t("shared.result.msg_winner")}</h1>
                     </div>
                     <div className="flex items-center space-x-4 mb-12">
-                        <Player player={winner} me={playerID === winner?.id} spin={true}  />
+                        <Player
+                            player={winner}
+                            me={playerID === winner?.id}
+                            spin={true} />
                     </div>
 
                     <AgainButton callback={() => setAgain(true)} t={t} />
                     <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
 
                 </div>
-                )}
+            )}
         </>
     );
 }
@@ -40,7 +43,11 @@ export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileDat
 function HomeButton({ callback, t }: { callback: () => void, t: (key: string) => string }) {
     return (
         <div className="absolute bottom-6 right-[30%] text-black px-6 py-3 rounded">
-            <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={callback}>{t("shared.result.btn_home")}</button>
+            <button
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2"
+                onClick={callback}
+            >{t("shared.result.btn_home")}
+            </button>
         </div>
     );
 }
@@ -48,7 +55,11 @@ function HomeButton({ callback, t }: { callback: () => void, t: (key: string) =>
 function AgainButton({ callback, t }: { callback: () => void, t: (key: string) => string }) {
     return (
         <div className="absolute bottom-6 left-[30%] text-black px-6 py-3 rounded">
-            <button className="items-center border-black-300 border-2 rounded-lg p-1 mt-2" onClick={callback}>{t("shared.result.btn_again")}</button>
+            <button
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2"
+                onClick={callback}
+            >{t("shared.result.btn_again")}
+            </button>
         </div>
     );
 }
@@ -84,10 +95,22 @@ export function TournamentResultPage() {
                     w-4/5 h-auto
                     lg:w-3/4
                 ">
-                <Rank rank={t("shared.game_stat.rank_1th")} player={leaderboard.first} me={leaderboard.first.id === playerID} />
-                <Rank rank={t("shared.game_stat.rank_2nd")} player={leaderboard.second} me={leaderboard.second.id === playerID} />
-                <Rank rank={t("shared.game_stat.rank_3rd")} player={leaderboard.third} me={leaderboard.third.id === playerID} />
-                <Rank rank={t("shared.game_stat.rank_4th")} player={leaderboard.last} me={leaderboard.last.id === playerID} />
+                <Rank
+                    rank={t("shared.game_stat.rank_1th")}
+                    player={leaderboard.first}
+                    me={leaderboard.first.id === playerID} />
+                <Rank
+                    rank={t("shared.game_stat.rank_2nd")}
+                    player={leaderboard.second}
+                    me={leaderboard.second.id === playerID} />
+                <Rank
+                    rank={t("shared.game_stat.rank_3rd")}
+                    player={leaderboard.third}
+                    me={leaderboard.third.id === playerID} />
+                <Rank
+                    rank={t("shared.game_stat.rank_4th")}
+                    player={leaderboard.last}
+                    me={leaderboard.last.id === playerID} />
                 <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
             </div>
     </div>

@@ -11,6 +11,7 @@ import { Result } from "./ResultPage.tsx";
 import { Banner } from "./banner.tsx";
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import { draw, sendKeyPress } from "./gameUtils.ts";
+import { GameLayout } from "./gameLayout.tsx";
 
 function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();
@@ -107,7 +108,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 }
                 else if (type === "start")
                 {
-                    //TODO: render countdown animation
                     console.log("/gamePage: start");
                     setStart(true);
                     setReady(true);
@@ -167,10 +167,10 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                         toasterPluz("game.ERR_forgerReady");
                         navigate("/", { replace: true });
                     }
-                    //TODO: render ending
                 }
                 else if (type === "trespassing")
                 {
+                    cleanTouch();
                     console.log("/gamePage trespassing 凸^u^凸");
                     toasterPluz("game.ERR_trespassing");
                     navigate("/", { replace: true });
@@ -225,6 +225,11 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
             }
 
             const handleClick = (e: MouseEvent) => {
+                const target = e.target as HTMLElement;
+                
+                if (target.closest(".ui"))
+                    return ;
+
                 if (!confirmRef.current)
                 {
                     sendKeyPress("Enter", ws, gameData);
@@ -232,7 +237,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     setConfirm(true);
                     confirmRef.current = true;
                 }
-                else if (e.clientY < window.innerHeight / 2) 
+                else if (e.clientY < window.innerHeight / 2)
                     sendKeyPress("up", ws, gameData);
                 else
                     sendKeyPress("down", ws, gameData);
@@ -249,22 +254,25 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
             document.addEventListener("keyup", keyup);
             document.addEventListener("keydown", keydown);
 
+            function cleanTouch(): void {
+                document.removeEventListener("mousedown", handleClick);
+                document.removeEventListener("mouseup", handleUp);
+
+                document.removeEventListener("touchstart", handleTouch);
+                document.removeEventListener("touchend", handleUp);
+
+                document.removeEventListener("keydown", keydown);
+                document.removeEventListener("keyup", keyup);
+            }
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
                 key.current = false;
                 confirmRef.current = false;
-            ws.close();
+                ws.close();
 
-            document.removeEventListener("mousedown", handleClick);
-            document.removeEventListener("mouseup", handleUp);
-
-            document.removeEventListener("touchstart", handleTouch);
-            document.removeEventListener("touchend", handleUp);
-
-            document.removeEventListener("keydown", keydown);
-            document.removeEventListener("keyup", keyup);
-        };
+                cleanTouch();
+            };
         })();
     }, []);
 
@@ -273,80 +281,23 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
         draw(initGameState(), theme);
     }, [theme]);
 
-
-    function handleKeypress(key: "up" | "down" | "Enter", pressed: boolean)
-    {
-        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !gameData)
-            return ;
-        
-        if (pressed)
-            gameData.keyPress = key;
-        else 
-            gameData.keyPress = "stop";
-        wsRef.current.send(JSON.stringify(gameData));
-    }
-
     return (
-        <div>
-            {/* Loading Page */}
-            <div className={`absolute inset-0 flex items-center justify-center ${Load ? "visible" : "invisible"} `}>
-                <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
-            </div>
-
-            {/* Result Page */}
-            <div className={`absolute inset-0 flex items-center justify-center ${result ? "visible" : "invisible"} `}>
-                <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={false} />
-            </div>
-
-            {/* whole Game's stuff */}
-            <div className={`container gap-12 flex flex-col items-center justify-center ${Load || result ? "invisible" : "visible"}`}>
-
-                {/* players data, pong game's board */}
-                <div className="flex items-center justify-between w-full px-10 gap-10">
-
-                    {/* Player 1 */}
-                    <Player player={playersData?.Players[0]} me={playerID === playersData?.Players[0].id} />
-
-                    <div className="flex flex-col items-center gap-2"> {/* Pong game's board */}
-                        <Score score={score}></Score>
-
-                        {/* Countdown */}
-                        <Banner confirm={confirm} start={start} ready={ready} gameData={gameData} />
-                        {/* <Banner confirm={confirm.current} start={start} ready={ready} gameData={gameData} /> */}
-                        <canvas
-                            id="gameBoard"
-                            className={`w-[${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}px]
-                                h-[${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}px]`}
-                            width={`${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}`}
-                            height={`${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}
-                            `}
-                        ></canvas>
-                    </div>
-
-                    {/* Player 2 */}
-                    <Player player={playersData?.Players[1]} me={playerID === playersData?.Players[1].id} />
-                </div>
-
-                 {/* bottom control bar */}
-                <div className={`flex ${confirm || Load ? "invisible" : "visible"} gap-4`}>
-
-                    {/* Theme setting bar */}
-                    <div className={`relative rounded-xl bg-white text-black py-2 ${isMobileRef.current || confirm || Load ? "hidden" : "block"}`}>
-                        <button className="p-4"
-                                onClick={() => {
-                                    if (theme === "default")
-                                        setTheme("black");
-                                    else if (theme === "black")
-                                        setTheme("light");
-                                    else if (theme === "light")
-                                        setTheme("default");
-                                }}>
-                        {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <GameLayout
+            gameData={gameData}
+            score={score}
+            playersData={playersData}
+            Load={Load}
+            result={result}
+            playerID={playerID}
+            confirm={confirm}
+            start={start}
+            ready={ready}
+            isMobile={isMobileRef.current}
+            theme={theme}
+            setTheme={setTheme}
+            t={t}
+            AI={false}
+        />
     )
 }
 

@@ -24,7 +24,8 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
 
     return (
         <div className="grid place-items-center w-screen h-dvh">
-            <div className="
+            <div
+                className="
                     flex flex-col
                     gap-4
                     lg:gap-8
@@ -33,9 +34,8 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
                     max-h-[90dvh]
                     origin-center
                     items-center
-                    ">
-                    {/* w-[50vw] lg:w-[100vw]
-                    h-auto */}
+                "
+            >
                 {
                     matches.matches.map((match, idx) => {
                         const [p1, p2] = match;
@@ -49,18 +49,18 @@ export function TournamentLoading({ leaderboard, load, playerID }: LoadingProps)
                                     gap-2 lg:gap-4
                                     items-center justify-center
                                 ">
-
-                                {/* Player 1 */}
-                                {/* <div className="flex gap-8 items-center"> */}
-                                    <Player player={player1} me={player1?.id.toString() === playerID} />
+                                    <Player
+                                        player={player1}
+                                        me={player1?.id.toString() === playerID} />
                                     <h1 className="font-bold text-xl lg:text-5xl ">VS</h1>
-                                    <Player player={player2} me={player2?.id.toString() === playerID} />
-                                {/* </div> */}
+                                    <Player
+                                        player={player2}
+                                        me={player2?.id.toString() === playerID} />
                             </div>
                         );
-                    })}
+                    })
+                }
             </div>
-
         </div>
     );
 }

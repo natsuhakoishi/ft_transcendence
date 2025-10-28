@@ -35,6 +35,12 @@ export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
             AILogic(room, runtime);
 
         gameLoop(state);
+        if (state.playerOffline)
+        {
+            end(room, gameOver);
+            clearInterval(intervalId);
+            return ;
+        }
 
         if (state.ball.x <= 0)
         {
@@ -80,18 +86,18 @@ function end(room: Room | AIRoom, gameOver: () => void): void {
 
     state.gamingStage = false;
 
-    if (state.playerOffline)
-    {
-        console.log("/gameplay: player offline");
-        if (room instanceof Room)
-            room.mandatoryWin();
-        room.broadCast("game_over_offline");
-    }
-    else
-    {
-        console.log("/gameplay: game over");
-        room.broadCast("game_over");
-    }
+    // if (state.playerOffline)
+    // {
+    //     console.log("/gameplay: player offline");
+    //     // if (room instanceof Room)
+    //     room.mandatoryWin();
+    //     room.broadCast("game_over_offline");
+    // }
+    // else
+    // {
+    console.log("/gameplay: game over");
+    room.broadCast("game_over");
+    // }
     gameOver();
 }
 

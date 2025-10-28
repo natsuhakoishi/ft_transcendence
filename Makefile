@@ -19,7 +19,7 @@ clean:
 
 dbclean:
 	rm -rf ./database/*
-	find ./app/srcs/backend/assets/avatars -type f ! -name 'default.*' -delete\
+	find ./app/srcs/backend/assets/avatars -type f ! \( -name 'default.*' -o -name '*_dev.*' \) -delete\
 
 fclean:
 	sudo docker stop $(shell sudo docker ps -qa) 2>/dev/null || true
