@@ -28,6 +28,7 @@ import match from './routes/game/match.ts';
 import games from './routes/game/games.ts';
 import gamesTournament from './routes/game/gamesTournament.ts';
 import AI from './routes/game/gameAI.ts';
+import { createDevTeamUser } from './database/devteam.ts';
 
 dotenv.config();
 
@@ -38,6 +39,11 @@ const FRONTEND_PORT = process.env.FRONTEND_PORT;
 const IP = process.env.IP || 'localhost';
 export const SMTP_EMAIL = process.env.SMTP_EMAIL;
 export const SMTP_APP_SECRET = process.env.SMTP_APP_SECRET;
+
+export const Q_MAIL = process.env.Q_MAIL!;
+export const Z_MAIL = process.env.Z_MAIL!;
+export const Y_MAIL = process.env.Y_MAIL!;
+export const D_PASS = process.env.D_PASS!;
 
 export const GAME_BOARD_WIDTH_PX: string | undefined = process.env.GAME_BOARD_WIDTH_PX;
 export const GAME_BOARD_HEIGHT_PX: string | undefined = process.env.GAME_BOARD_HEIGHT_PX;
@@ -96,7 +102,7 @@ async function initServer()
 	await initDB();
 
 	await fastify.register(cors, {
-		origin: true,
+		origin: [`https://${IP}:${FRONTEND_PORT}`, `https://localhost:${FRONTEND_PORT}`],
 		credentials: true,
 		methods: ['GET', 'POST']
 	});
@@ -146,6 +152,8 @@ async function initServer()
 		void(req);
 		res.redirect(`https://${IP}:${FRONTEND_PORT}/`);
 	});
+
+	await createDevTeamUser();
 
 	return fastify;
 }
