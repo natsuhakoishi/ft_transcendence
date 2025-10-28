@@ -50,7 +50,7 @@ export const GAME_BALL_VY_PX: string | undefined = process.env.GAME_BALL_VY_PX;
 
 if (!GAME_BOARD_WIDTH_PX || !GAME_BOARD_HEIGHT_PX ||
 	!GAME_PADDLES_HEIGHT_PX || !GAME_PADDLES_WIDTH_PX ||
-	!GAME_PADDLES_MARGIN_PX || !GAME_BALL_RADIUS_PX || 
+	!GAME_PADDLES_MARGIN_PX || !GAME_BALL_RADIUS_PX ||
 	!GAME_BALL_VX_PX || !GAME_BALL_VY_PX)
 {
 	console.error('Error: Game\'s env not found');
@@ -98,6 +98,7 @@ async function initServer()
 	await fastify.register(cors, {
 		origin: true,
 		credentials: true,
+		methods: ['GET', 'POST']
 	});
 
 	await fastify.register(multipart, {
