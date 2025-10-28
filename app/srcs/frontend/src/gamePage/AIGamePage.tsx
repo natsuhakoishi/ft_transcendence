@@ -1,16 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingScreen } from "../homePage/loadData";
 import React from "react";
-import { Result } from "./ResultPage";
-import { Player } from "./player";
-import { Score } from "./Score";
-import { Banner } from "./banner";
 import type { GameScore, GameState } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { initGameState, isMobile } from "../utils";
 import type { GameData } from "../../../backend/share/type/gameData";
 import { withTranslation, type TranslationProps } from "../_hooks/language";
 import { draw, sendKeyPress } from "./gameUtils";
+import { GameLayout } from "./gameLayout";
 
 function AIGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
@@ -217,99 +213,22 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
     }, [theme]);
 
     return (
-        <div>
-            { //Loading Page
-                Load &&
-                    <div className={`absolute inset-0 flex items-center justify-center`}>
-                        <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
-                    </div>
-            }
-
-            { //Result Page
-                result && 
-                    <div className={`absolute inset-0 flex items-center justify-center`}>
-                        <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={true} />
-                        {/* <Result score={score} playersData={playersData} me={score.p1Score > score.p2Score} AI={true} /> */}
-                    </div>
-            }
-
-            {/* whole Game's stuff */}
-            <div
-                className={`
-                    container flex flex-col items-center justify-center
-                    ${isMobileRef.current ? "gap-4" : "gap-12"}
-                    ${isMobileRef.current ? "" : "scale-130"}
-                    ${Load || result ? "invisible" : "visible"}
-                `}
-            >
-
-                {/* players data, pong game's board */}
-                <div
-                    className={`
-                        flex items-center justify-between
-                        w-full px-10
-                        ${isMobileRef.current ? "gap-2" : "gap-10"}
-                    `}
-                >
-                    {/* Player 1 */}
-                    <Player
-                        player={playersData?.Players[0]}
-                        me={playerID === playersData?.Players[0].id}
-                        small={isMobileRef.current ? false : true}
-                    />
-                    {/* Pong game's board */}
-                    <div className="flex flex-col items-center gap-2"> 
-                        <Score score={score} />
-                        <Banner //countdown
-                            confirm={confirm}
-                            start={start}
-                            ready={ready}
-                            gameData={gameData}
-                        />
-                        <canvas
-                            id="gameBoard"
-                            className={`
-                                w-[${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}px]
-                                h-[${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}px]
-                            `}
-                            width={`${import.meta.env.VITE_GAME_BOARD_WIDTH_PX}`}
-                            height={`${import.meta.env.VITE_GAME_BOARD_HEIGHT_PX}`}
-                        ></canvas>
-                    </div>
-
-                    {/* Player 2 */}
-                    <Player
-                        player={playersData?.Players[1]}
-                        me={playerID === playersData?.Players[1].id}
-                        small={isMobileRef.current ? false : true}
-                    />
-                </div>
-
-                {/* Theme setting bar */}
-                <div
-                    className={`
-                        relative rounded-xl
-                        bg-white text-black py-2
-                        ${isMobileRef.current || confirm || Load ? "invisible" : "visible"}
-                    `}
-                >
-                    <button
-                        className="p-4 ui"
-                        onClick={
-                            () => {
-                                if (theme === "default")
-                                    setTheme("black");
-                                else if (theme === "black")
-                                    setTheme("light");
-                                else if (theme === "light")
-                                    setTheme("default");
-                            }
-                        }
-                    > {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
-                    </button>
-                </div>
-            </div>
-        </div>
+        <GameLayout
+            gameData={gameData}
+            score={score}
+            playersData={playersData}
+            Load={Load}
+            result={result}
+            playerID={playerID}
+            confirm={confirm}
+            start={start}
+            ready={ready}
+            isMobile={isMobileRef.current}
+            theme={theme}
+            setTheme={setTheme}
+            t={t}
+            AI={true}
+        />
     )
 }
 

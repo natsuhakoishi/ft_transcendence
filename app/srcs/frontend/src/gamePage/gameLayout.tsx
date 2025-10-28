@@ -17,24 +17,26 @@ export function GameLayout({
     confirm,
     start,
     ready,
-    isMobileRef,
+    isMobile,
     theme,
     setTheme,
-    t
+    t,
+    AI
 } : {
-        gameData: GameData,
+        gameData: GameData | null,
         score: GameScore,
-        playersData: MatchPlayersData,
+        playersData?: MatchPlayersData,
         Load: boolean,
         result: boolean,
-        playerID: number,
+        playerID: number | null,
         confirm: boolean,
         start: boolean,
         ready: boolean,
-        isMobileRef: React.RefObject<"default" | "black" | "light">,
+        isMobile: boolean,
         theme: "default" | "black" | "light",
         setTheme: React.Dispatch<React.SetStateAction<"default" | "black" | "light">>
         t: any
+        AI: boolean
     }) {
 
     return (
@@ -50,7 +52,7 @@ export function GameLayout({
             {
                 result && 
                     <div className={`absolute inset-0 flex items-center justify-center`}>
-                        <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={false} />
+                        <Result winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}  playerID={playerID} AI={AI} />
                     </div>
             }
 
@@ -58,8 +60,8 @@ export function GameLayout({
             <div
                 className={`
                     container flex flex-col items-center justify-center
-                    ${isMobileRef.current ? "gap-4" : "gap-12"}
-                    ${isMobileRef.current ? "" : "scale-130"}
+                    ${isMobile ? "gap-4" : "gap-12"}
+                    ${isMobile ? "" : "scale-130"}
                     ${Load || result ? "invisible" : "visible"}
                 `}
             >
@@ -68,7 +70,7 @@ export function GameLayout({
                     className={`
                         flex items-center justify-between
                         w-full px-10
-                        ${isMobileRef.current ? "gap-2" : "gap-10"}
+                        ${isMobile ? "gap-2" : "gap-10"}
                     `}
                 >
 
@@ -76,7 +78,8 @@ export function GameLayout({
                     <Player
                         player={playersData?.Players[0]}
                         me={playerID === playersData?.Players[0].id}
-                        small={isMobileRef.current ? false : true}
+                        small={isMobile ? false : true}
+                        txtSmall={isMobile}
                     />
                     {/* Pong game's board */}
                     <div className="flex flex-col items-center gap-2"> 
@@ -102,7 +105,8 @@ export function GameLayout({
                     <Player
                         player={playersData?.Players[1]}
                         me={playerID === playersData?.Players[1].id}
-                        small={isMobileRef.current ? false : true}
+                        small={isMobile ? false : true}
+                        txtSmall={isMobile}
                     />
                 </div>
 
@@ -111,7 +115,7 @@ export function GameLayout({
                     className={`
                         relative rounded-xl
                         bg-white text-black py-2
-                        ${isMobileRef.current || confirm || Load ? "invisible" : "visible"}
+                        ${isMobile || confirm || Load ? "invisible" : "visible"}
                     `}
                 >
                     <button

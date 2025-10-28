@@ -1,6 +1,6 @@
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 
-export function Player({ player, me, spin, small}: { player?: PlayerWithProfileData, me: boolean, spin?: boolean, small?: boolean}) {
+export function Player({ player, me, spin, small, txtSmall}: { player?: PlayerWithProfileData, me: boolean, spin?: boolean, small?: boolean, txtSmall?: boolean}) {
 
     return (
         <div
@@ -20,7 +20,8 @@ export function Player({ player, me, spin, small}: { player?: PlayerWithProfileD
             />
             <h1
                 className={`
-                    text-4xl text-black-500
+                    ${txtSmall ? "text-lg" : "text-4xl"}
+                    text-black-500
                     font-bold mb-2
                     ${me ? "bg-green-100" : ""}
                 `}
