@@ -132,7 +132,7 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
           <img className="w-full h-full object-cover" src={preview || avatarURL} />
         </button>
         {/* Delete Avatar button */}
-        <button type="button" className="w-[50%] border-2 p-1"
+        <button type="button" className="w-[50%] border-2 p-1 hover-increase"
           onClick={async () =>  { await avatarDelete({ setPreview, refetch, toasterPluz }); setToggle("dltAvatar");} }
         >{t("profile.btn_delete_avatar")}</button>
 

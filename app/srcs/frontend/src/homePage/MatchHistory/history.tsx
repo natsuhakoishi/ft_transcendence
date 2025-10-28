@@ -127,11 +127,11 @@ const HistoryList = ({ matches, user_id, onClickHandler } : {
   const records = [...matches, ...Array(5 - matches.length).fill(null)];
 
   return (
-  <div className="h-[50%] w-full flex flex-col overflow-y-scroll
+  <div className="h-[55%] w-full flex flex-col overflow-y-scroll p-0.5
     md:h-full md:grid md:grid-rows-5 md:overflow-hidden"
   >
     {records.map((record, i) => (
-      <div key={i} className="flex-1 md:h-full p-1.5">
+      <div key={i} className="flex-1 p-0.5 md:h-full md:p-1.5">
         {!record ? <div/> :
           <HistoryRow match={record} user_id={user_id} onTournamentClick={onClickHandler} />
         }
@@ -171,7 +171,6 @@ function ExpandTourModal({ children, onClose, }: {
   </div>
   );
 }
-
 
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
@@ -230,7 +229,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         </section>
 
         {/* Right side: User's profile */}
-        <section className="h-[60%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
+        <section className="h-[80%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
           <ProfileSideBar />
         </section>
 

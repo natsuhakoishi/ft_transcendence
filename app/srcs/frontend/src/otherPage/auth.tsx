@@ -32,8 +32,8 @@ const Register = ( { verifyRef, onSubmit, mode }: {
         type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
         />
         <div className="flex gap-2">
-          <button type="submit" className="default_button hover-increase">{t("auth.btn_register")}</button>
-          <button type="button" onClick={() => mode("login")} className="default_button hover-increase">{t("shared.btn_cancel")}</button>
+          <button type="submit" className="text-white border-white default_button hover-increase">{t("auth.btn_register")}</button>
+          <button type="button" onClick={() => mode("login")} className="text-white border-white default_button hover-increase">{t("shared.btn_cancel")}</button>
         </div>
       </form>
     </>
@@ -88,7 +88,7 @@ const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
       <input className="mb-2 p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
       type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
       />
-      <button type="submit" className="default_button hover-increase">{t("auth.btn_signIn")}</button>
+      <button type="submit" className="text-white default_button hover-increase">{t("auth.btn_signIn")}</button>
       </form>
     </>
   );
