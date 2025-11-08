@@ -2,23 +2,25 @@ services:
   backend:
     build: ./app/srcs/backend
     container_name: backend_app
-    env_file: ./app/srcs/backend/.env
+    env_file: .env
     ports:
-        - "4242:4242"
+        - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
         - ./database:/database
         - ./app/srcs/backend:/app/srcs/backend
+        - ./certs:/certs
     networks:
         - klbq_network
 
   frontend:
     build: ./app/srcs/frontend
     container_name: frontend_app
-    env_file: ./app/srcs/frontend/.env
+    env_file: .env
     ports:
-        - "5173:5173"
+        - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     volumes:
         - ./app/srcs/frontend:/app/srcs/frontend
+        - ./certs:/certs
     networks:
         - klbq_network
 

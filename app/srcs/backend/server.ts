@@ -30,7 +30,10 @@ import gamesTournament from './routes/game/gamesTournament.ts';
 import AI from './routes/game/gameAI.ts';
 import { createDevTeamUser } from './database/devteam.ts';
 
-dotenv.config();
+
+const __filename = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.join(__filename, '..', '..', '..');
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const PEM_PASS = process.env.PEM_PASS;
@@ -84,7 +87,7 @@ if (!BACKEND_PORT || !FRONTEND_PORT)
 async function initServer()
 {
 	const cert_dirname = path.dirname(fileURLToPath(import.meta.url));
-	const cert_path = path.join(cert_dirname, 'certs');
+	const cert_path = path.join(cert_dirname, '..', '..', '..', 'certs');
 	if (!fs.existsSync(cert_path))
 	{
 		console.error('Error: certs path not found');
@@ -94,8 +97,8 @@ async function initServer()
 	const fastify = Fastify({
 		logger: true,
 		https: {
-			key: fs.readFileSync(path.join(cert_path, "backend-ssl.key")),
-			cert: fs.readFileSync(path.join(cert_path, "backend-ssl.crt")),
+			key: fs.readFileSync(path.join(cert_path, "klbq-ssl.key")),
+			cert: fs.readFileSync(path.join(cert_path, "klbq-ssl.crt")),
 			passphrase: PEM_PASS
 		}
 	});
