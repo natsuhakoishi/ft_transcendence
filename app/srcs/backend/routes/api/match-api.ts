@@ -6,16 +6,17 @@ import { getUserById } from "../../database/user.ts";
 import { getProfileById } from "../../database/profile.ts";
 
 const matchApi: FastifyPluginAsync = async (fastify: any) => {
-	fastify.get('/match/me', async (req: any, res: any) => {
+	fastify.get('/match/:id', async (req: any, res: any) => {
 		try
 		{
 			if (!req.user)
 				return res.status(401).send({ message: 'Unauthorized: missing token' });
 
-			const user = await getUserById(req.user);
+			const { id } = req.params;
+			const user = await getUserById(id);
 			if (!user)
 				return res.status(404).send({ message: 'User Not Found' });
-			const profile = await getProfileById(req.user);
+			const profile = await getProfileById(id);
 			if (!profile)
 				return res.status(404).send({ message: 'Profie Not Found' });
 

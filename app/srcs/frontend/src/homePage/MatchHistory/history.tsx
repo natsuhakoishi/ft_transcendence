@@ -6,6 +6,7 @@ import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } fro
 import { ProfileSideBar } from "./ProfileSidebar";
 import { useOutletContext } from "react-router-dom";
 import { LoadingScreen } from "../HomeChildC";
+import type { User } from "../../../../backend/share/type/user";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
   // console.log(entries);
@@ -173,6 +174,7 @@ function ExpandTourModal({ children, onClose, }: {
 }
 
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
+  const { user } = useOutletContext<{ user: User | null }>();
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
   const [entries, setEntries] = useState<TournamentMatch | null>(null);
@@ -187,7 +189,9 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
 
     const fetchHistory = async () => {
       try {
-        const data = await apiFetchPrivate("match/me", { method: "GET" });
+        const id = user?.acc.user_id;
+        const data = await apiFetchPrivate(`match/${id}`, { method: "GET" });
+        console.log(data);
         setMatches(data);
       } catch (err: any) {
         toasterPluz("ERR_fetchH");

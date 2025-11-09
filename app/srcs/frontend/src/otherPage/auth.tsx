@@ -22,13 +22,13 @@ const Register = ( { verifyRef, onSubmit, mode }: {
   return (
     <>
       <form className="flex flex-col items-center w-full gap-2" onSubmit={handleSubmit}>
-        <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="bg-green-100 default_placeholder"
           type="text" name="username" placeholder={t("shared.form.place_name")} required autoComplete="on"
         />
-        <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="bg-green-100 default_placeholder"
           type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
         />
-        <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="bg-green-100 default_placeholder"
         type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
         />
         <div className="flex gap-2">
@@ -50,20 +50,20 @@ const OTPModal = ({ show, verifyRef, onVerify }: {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 w-full max-w-full">
       <div className="relative flex flex-col items-center justify-center gap-2 bg-[#A4B9F1]/95 rounded-lg shadow-lg p-6 w-max-screen w-[25%]">
-        <button onClick={() => show(false)} className="absolute top-0 right-1 my-1 mr-1 text-black">✘</button>
-        <h2 className="items-center text-center font-bold border-none outline-none focus:ring-2 focus:ring-white">{t("auth.msg_otp")}</h2>
-        <input
-          type="text" pattern="\d{6}" maxLength={6} required placeholder={t("auth.place_otp")}
-          onChange={(e) => (verifyRef.current.otp = e.target.value)}
-          className="border-2 w-2/3 p-1 text-center focus:border-none focus:outline-none focus:ring-2 focus:ring-white"/>
-        <button onClick={onVerify}
-          className="relative inline-flex items-center justify-center mx-2 p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group
-          bg-gradient-to-br from-[#95B06F] to-[#5E76C0] group-hover:from-[#95B06F] group-hover:to-[#5E76C0] hover:text-white focus:outline-none"
-        >
-          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-            {t("auth.btn_verify")}
-          </span>
-        </button>
+        <button onClick={() => show(false)} className="absolute top-0 right-1 my-1 mr-1 text-black cursor-pointer">✘</button>
+        <h2 className="items-center text-center font-bold">{t("auth.msg_otp")}</h2>
+        <form onSubmit={(e) => { e.preventDefault(); onVerify(); }} className="flex flex-col items-center gap-3">
+          <input type="text" pattern="\d{6}" maxLength={6} required placeholder={t("auth.place_otp")} onChange={(e) => (verifyRef.current.otp = e.target.value)}
+            className="border-2 w-2/3 text-center default_placeholder"/>
+          <button type="submit"
+            className="relative inline-flex items-center justify-center mx-2 p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group
+            bg-gradient-to-br from-[#95B06F] to-[#5E76C0] group-hover:from-[#95B06F] group-hover:to-[#5E76C0] hover:text-white focus:outline-none"
+          >
+            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 cursor-pointer hover:scale-110 bg-black rounded-md font-bold group-hover:bg-transparent group-hover:dark:bg-transparent">
+              {t("auth.btn_verify")}
+            </span>
+          </button>
+        </form>
       </div>
     </div>
   );
@@ -82,13 +82,13 @@ const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
   return (
     <>
       <form className="flex flex-col items-center w-full gap-2" onSubmit={handleSubmit}>
-      <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <input className="bg-green-100 default_placeholder"
         type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
       />
-      <input className="mb-2 p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <input className="bg-green-100 default_placeholder"
         type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
       />
-      <button type="submit" className="text-white default_button hover-increase">{t("auth.btn_signIn")}</button>
+      <button type="submit" className="mt-3 text-white default_button hover-increase">{t("auth.btn_signIn")}</button>
       </form>
     </>
   );
@@ -173,16 +173,19 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
   }
 
   return (
-  <div className="w-[100dvw] h-[100dvh] flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpeg')] bg-blend-overlay">
+  <div className="relative w-[100dvw] h-[100dvh] flex flex-col justify-center items-center bg-cover bg-[url('/pic/authP.jpeg')] bg-blend-overlay">
 
     {/* Button -> Language Bar */}
     <div className="absolute top-2 right-2 m-2">
       <LanguageBar bgColor="" optionColor="bg-[#44332D]"/>
     </div>
-    {/* Form Modal -> Register / Login */}
+    {/* Title */}
     <h1 className="absolute top-8 text-5xl font-extrabold text-shadow-lg font-[STHupo]">FT_KLBQ</h1>
-    <div className="place-items-center place-content-center h-screen w-[60%] bg-[#915C2E]/30 backdrop-blur-base gap-2">
-      <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[60%] shadow-2xl text-justify">
+    {/* Form Modal -> Register / Login */}
+    <div className="h-screen w-[60%] flex flex-col justify-center items-center bg-[#915C2E]/30 backdrop-blur-base gap-2">
+      <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[60%] shadow-2xl text-justify gap-2">
+
+      <span className="text-sm text-red-900">*Please provide a valid email address!</span>
         
       {/* OTP Verification Modal (Shared) */}
       {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
@@ -197,9 +200,6 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
           </>
         )
       }
-
-      {/* todo Warning Context: valid email address */}
-
       </div>
     </div>
 

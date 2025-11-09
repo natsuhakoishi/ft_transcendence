@@ -18,6 +18,11 @@ import { AIGamePage } from "./gamePage/AIGamePage";
 import { FetchData } from "./homePage/fetchHelper.tsx";
 
 function App() {
+  function GlobalErrorMonitor() {
+    useGlobalErrorMonitor();
+    return null;
+  }
+
   return (
     <>
       <Toaster position="top-center" />
@@ -46,11 +51,6 @@ function App() {
       </LanguageProvider>
     </>
    );
-
-  function GlobalErrorMonitor() {
-    useGlobalErrorMonitor();
-    return null;
-  }
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
