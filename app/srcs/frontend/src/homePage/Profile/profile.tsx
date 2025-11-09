@@ -123,7 +123,7 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
 
       {/* Action Button - Back */}
 
-        <button className="self-center md:mt-10 w-10 md:w-20 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
+        <button className="self-center md:mt-10 w-10 md:w-20 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase transition-transform" onClick={() => navigate("/")}>
           <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
         </button>
 

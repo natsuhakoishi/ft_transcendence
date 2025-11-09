@@ -148,8 +148,7 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 				secure: true,
 				sameSite: "none",
 				partitioned: true,
-				maxAge: 6 * 60 * 60
-				// maxAge: 2 * 60 * 60
+				maxAge: 2 * 60 * 60
 			}).send({ message: "Login successful. Cookies created." });
 		} catch {
 			res.status(500).send({ message: 'Server Error: Verify OTP - login' });

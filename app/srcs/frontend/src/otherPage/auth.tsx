@@ -21,14 +21,14 @@ const Register = ( { verifyRef, onSubmit, mode }: {
 
   return (
     <>
-      <form className="flex flex-col items-center w-full gap-2 default_text" onSubmit={handleSubmit}>
-        <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <form className="flex flex-col items-center w-full gap-2" onSubmit={handleSubmit}>
+        <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
           type="text" name="username" placeholder={t("shared.form.place_name")} required autoComplete="on"
         />
-        <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
           type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
         />
-        <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
         type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
         />
         <div className="flex gap-2">
@@ -81,12 +81,12 @@ const LoginForm = ({ verifyRef, onSubmit }: { verifyRef: React.RefObject<VerifyB
 
   return (
     <>
-      <form className="flex flex-col items-center w-full gap-2 default_text" onSubmit={handleSubmit}>
-      <input className="p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+      <form className="flex flex-col items-center w-full gap-2" onSubmit={handleSubmit}>
+      <input className="p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
         type="email" name="email" placeholder={t("shared.form.place_email")} required autoComplete="email"
       />
-      <input className="mb-2 p-1 rounded-lg placeholder-gray-400 placeholder-opacity-10 bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
-      type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
+      <input className="mb-2 p-1 rounded-lg bg-green-100 border-none outline-none focus:ring-2 focus:ring-white"
+        type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
       />
       <button type="submit" className="text-white default_button hover-increase">{t("auth.btn_signIn")}</button>
       </form>

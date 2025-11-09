@@ -63,7 +63,7 @@ function ProfileSB({ t }: TranslationProps) {
       <div className="hidden md:block"/>
 
       {/* Back Button */}
-      <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
+      <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={() => navigate("/")}>
         <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
       </button>
 

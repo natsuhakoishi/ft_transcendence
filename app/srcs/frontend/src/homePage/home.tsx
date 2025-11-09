@@ -16,7 +16,7 @@ export function LanguageBar({ bgColor = "bg-gray-800/80", optionColor = "bg-[#1E
 
   return (
     <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
-      className={`border-2 rounded p-1 text-lg ${bgColor}`}
+      className={`border-2 rounded p-1 text-lg ${bgColor} hover`}
       style={{ backgroundColor: bgColor.startsWith("#") ? bgColor : undefined }}
     >
       <option value="en" className={optionColor}>English</option>
@@ -67,7 +67,7 @@ return (
             {/* Top Left: avatar & username */}
             <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%]">
               {/* Avatar -> Profile page */}
-              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover:scale-90 transition-transform"
+              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover-increase"
                 onClick={() => navigate("/profile")}> 
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
@@ -75,7 +75,7 @@ return (
               <span className="my-1 font-mono text-blue-300">{user?.acc.username}</span>
             </div>
             {/* Button -> Friend page */}
-            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
+            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 font-bold hover hover:scale-120" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
@@ -92,11 +92,11 @@ return (
                 >{t("home.btn_tour")}</button>
 
                 {/* Button -> 1 vs 1 Mode */}
-                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
+                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl hover-increase"
                   onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
                 {/* Button -> AI Mode */}
-                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
+                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl hover-increase"
                   onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               
               </div>
@@ -115,7 +115,7 @@ return (
             {/* Dropdown -> Language Selector */}
             <LanguageBar />
             {/* Button -> Match History page */}
-            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 font-bold hover hover:scale-120" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
         </div>)
   }
