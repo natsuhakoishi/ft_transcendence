@@ -55,7 +55,7 @@ return (
           >
             {/* Normal Friend Card */}
             {friends.slice(0, 10).map((f, i) => {
-              console.log(onlineUsers);
+              // console.log(onlineUsers);
               const isOnline = onlineUsers?.some(user => user.id === f.info.id) ?? false;
               return (
                 <Friend key={i} data={f} onCardClick={() => { setSelectedF(f); setFModal(true); }} online={isOnline}  />

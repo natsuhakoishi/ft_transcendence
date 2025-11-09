@@ -180,13 +180,13 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
       <LanguageBar bgColor="" optionColor="bg-[#44332D]"/>
     </div>
     {/* Title */}
-    <h1 className="absolute top-8 text-5xl font-extrabold text-shadow-lg font-[STHupo]">FT_KLBQ</h1>
+    <h1 className={`absolute top-8 text-5xl font-extrabold text-shadow-lg font-[STHupo] [-webkit-text-stroke:1px rgba(115,107,148,0.8)]`}>FT_KLBQ</h1>
     {/* Form Modal -> Register / Login */}
     <div className="h-screen w-[60%] flex flex-col justify-center items-center bg-[#915C2E]/30 backdrop-blur-base gap-2">
       <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[60%] shadow-2xl text-justify gap-2">
 
       <span className="text-sm text-red-900">*Please provide a valid email address!</span>
-        
+
       {/* OTP Verification Modal (Shared) */}
       {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
 

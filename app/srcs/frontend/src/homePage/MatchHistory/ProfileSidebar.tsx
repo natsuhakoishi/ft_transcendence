@@ -8,6 +8,7 @@ function ProfileSB({ t }: TranslationProps) {
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const { win_games = 0, tournament_wins = 0, total_game = 0, win_rate = 0.0 } = user?.profile || {};
   const displayDash = (num: number) => (num === 0 ? "-" : num);
+  const high = typeof win_rate === "number" && win_rate >= 51.0;
 
 	return (
     <>
@@ -55,9 +56,10 @@ function ProfileSB({ t }: TranslationProps) {
         {/* Win Rate */}
         <span>{t("shared.game_stat.win_rate")}</span>
         <span className={`
-          leading-[150%] ${typeof win_rate === "number" && win_rate >= 51.0 ? "text-golden" : "text-gray-400"}
-          [text-shadow:1px_1px_2px_rgba(255,255,255,0.4),-1px_-1px_2px_rgba(255,255,255,0.7)]`}
-        >{!win_rate ? "-" : `${win_rate}%`}</span>
+          leading-[150%] ${high ? "text-golden" : "text-[#876E4B]"}
+          ${high && "[text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(255,255,255,0.9)]"} `}>
+          {!win_rate ? "-" : `${win_rate} %`}
+        </span>
       </div>
 
       <div className="hidden md:block"/>

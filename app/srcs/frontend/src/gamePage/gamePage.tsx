@@ -4,11 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
 import type { GameScore, GameState} from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
-import { LoadingScreen } from "../homePage/HomeChildC.tsx";
-import { Score } from "./Score.tsx";
-import { Player } from "./player.tsx";
-import { Result } from "./ResultPage.tsx";
-import { Banner } from "./banner.tsx";
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import { draw, sendKeyPress } from "./gameUtils.ts";
 import { GameLayout } from "./gameLayout.tsx";
@@ -150,7 +145,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     if (confirmRef.current)
                     {
                         confirmRef.current = false;
-                        toasterPluz("msg_Disconnect");
+                        toasterPluz("game.ERR_Disconnect");
                         setTimeout(()=>{
                             if (gameData.tournament) {
                                 navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }, replace: true});
@@ -162,8 +157,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     }
                     else
                     {
-                        // toasterPluz("pop.game.ERR_timeOut");
-                        // toasterPluz("pop.game.ERR_timeOut_redicrect");
                         toasterPluz("game.ERR_forgerReady");
                         navigate("/", { replace: true });
                     }

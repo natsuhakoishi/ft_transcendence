@@ -20,7 +20,9 @@ function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, u
 }
 
 function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch, }) {
-  const [date, time] = entries.tournament.start_time.split(" ");
+  const new_date = new Date(entries.tournament.start_time + "Z");
+  const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
+  const [date, time] = local_date.split(" ");
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -49,7 +51,9 @@ function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch,
 }
 
 function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: boolean, }) {
-  const [date, time] = match.game_time.split(" ");
+  const new_date = new Date(match.game_time + "Z");
+  const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
+  const [date, time] = local_date.split(" ");
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -159,17 +163,17 @@ function ExpandTourModal({ children, onClose, }: {
   }, [onClose]);
 
   return (
-  <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
-    <div className="col-start-1 flex items-center p-2 ">
-      <div ref={modalRef} className="
-      bg-[#1f3735]/80 backdrop-blur-sm 
-        border border-[#9DD6AD]/40 shadow-xl rounded-lg
-        p-5 w-full h-[50%] overflow-ellipsis ">
-          {children}
-        <p className="text-white/80 text-sm mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
+    <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
+      <div className="col-start-1 flex items-center p-2 ">
+        <div ref={modalRef} className="
+        bg-[#1f3735]/80 backdrop-blur-sm 
+          border border-[#9DD6AD]/40 shadow-xl rounded-lg
+          p-5 w-full h-65 overflow-ellipsis">
+            {children}
+          <p className="text-white/80 text-sm mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
+        </div>
       </div>
     </div>
-  </div>
   );
 }
 
@@ -187,19 +191,22 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   React.useEffect(() => {
     document.title = t("history.title");
 
-    const fetchHistory = async () => {
-      try {
-        const id = user?.acc.user_id;
-        const data = await apiFetchPrivate(`match/${id}`, { method: "GET" });
-        console.log(data);
-        setMatches(data);
-      } catch (err: any) {
-        toasterPluz("ERR_fetchH");
-      }
-    };
-    fetchHistory();
-    
-  }, []);
+    if (!loading)
+    {
+      const fetchHistory = async () => {
+        try {
+          const id = user?.acc.user_id;
+          const data = await apiFetchPrivate(`match/${id}`, { method: "GET" });
+          console.log(data);
+          setMatches(data);
+        } catch (err: any) {
+          toasterPluz("ERR_fetchH");
+        }
+      };
+      fetchHistory();
+    }
+
+  }, [loading]);
 
 	return (
   <>

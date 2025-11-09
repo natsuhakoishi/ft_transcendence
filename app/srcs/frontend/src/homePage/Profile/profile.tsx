@@ -56,7 +56,7 @@ function MenuProfile({ user } : { user: User | null } ) {
         {/* Lose */}
         <span>{t("shared.game_stat.lose")}</span>
         <span className="font-inter font-bold leading-[150%] text-silver
-          [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]">{displayDash(lose_games)}</span>
+          [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]">{displayDash(lose_games)}</span>
 
         {/* Tournament won */}
         <span className="ml-3 row-span-2">{t("shared.game_stat.tournament")}</span>
@@ -69,14 +69,15 @@ function MenuProfile({ user } : { user: User | null } ) {
         {/* Total match */}
         <div className="flex gap-2">
           <span className="font-bold">{t("shared.game_stat.total_match")}</span>
-          <span className="font-inter font-bold leading-[150%] text-[#E5EBF7]">{displayDash(total_game)}</span>
+          <span className="font-inter font-bold leading-[150%] text-[#E5EBF7] [text-shadow:-1px_-1px_2px_rgba(255,255,255,0.7)]"
+          >{displayDash(total_game)}</span>
         </div>
         
         {/* Win Rate */}
         <div className="flex gap-2">
           <span className="font-bold">{t("shared.game_stat.win_rate")}</span>
           <span className={`font-inter font-bold leading-[150%] ${typeof win_rate === "number" && win_rate >= 51.0 ? "text-golden" : "text-gray-400"}
-            [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(200,200,200,0.7)]`}>{!win_rate ? "-" : `${win_rate}%`}</span>
+            [text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-0.5px_-0.5px_2px_rgba(255,255,255,0.9)]`}>{!win_rate ? "-" : `${win_rate}%`}</span>
         </div>
       </div>
 
@@ -117,7 +118,7 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
       </div> 
 
       {/* conditional render betw Profile & Option */}
-      <div className="w-screen h-[50%] md:h-[40%] md:h-50% shadow-md shadow-gray-400 gap-2 bg-[#DBE2E9]/60 backdrop-blur-md flex justify-start">
+      <div className="w-screen h-[50%] md:h-[40%] md:h-50% shadow-md shadow-gray-400 gap-2 bg-[#ABABD1]/60 backdrop-blur-md flex justify-start">
         {menu === "Profile" ? <MenuProfile user={user} /> : <MenuOption user={user} refetch={refetchData} />}
       </div>
 
