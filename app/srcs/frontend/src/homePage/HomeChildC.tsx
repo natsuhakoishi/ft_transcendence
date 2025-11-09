@@ -1,4 +1,8 @@
+import React from "react";
 import { useLang } from "../_hooks/language";
+import { isMobile } from "../utils.ts";
+
+// Loading Screen
 
 export type Progress = {
   step: string;
@@ -26,6 +30,8 @@ export function LoadingScreen({ progress}: { progress: Progress }) {
     </div>
   );
 }
+
+// Credit Modal
 
 function CreditMember({ link, github, intra, roles }: { link: string, github: string, intra: string, roles: string}) {
   return (
@@ -70,6 +76,22 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
       <div className="mt-1 text-sm text-center">Asset ©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
     </div>
 
+    </div>
+  );
+}
+
+// Tutorial Modal
+
+export function Tutorial({ onClick }: { onClick: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const isMobileRef = React.useRef(isMobile());
+
+  return (
+    //{/* Background Layer -> blur effect */}
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
+      {/* Img - Tutorial */}
+      <div className="h-[99%] w-[69%] md:w-[60%] md:h-[68%]">
+        <img className="w-full h-full object-cover" src={`${!isMobileRef ? "/pic/tutorial_mobile.png" : "/pic/tutorial_pc.png"}`} />
+      </div>
     </div>
   );
 }

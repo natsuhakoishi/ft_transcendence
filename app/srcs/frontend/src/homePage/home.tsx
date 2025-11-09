@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Credit, LoadingScreen, type Progress } from "./HomeChildC.tsx"
+import { Credit, LoadingScreen, Tutorial, type Progress } from "./HomeChildC.tsx"
 import { useLang, withTranslation, type Lang, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
@@ -39,6 +39,7 @@ export function HomeP({ t, lang }: TranslationProps) {
   const [match, setMatch] = React.useState<boolean>(false);
   const [ AI, setAI ] = React.useState<boolean>(false);
   const [ creditM, setCreditM ] = React.useState<boolean>(false);
+  const [ tutorM, setTutorM ] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -62,6 +63,9 @@ return (
           {/* Pop Up Modal -> Credits page */}
           {creditM && <Credit onClick={setCreditM} />}
 
+          {/* Pop Up Modal -> Credits page */}
+          {tutorM && <Tutorial onClick={setTutorM} />}
+
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
             {/* Top Left: avatar & username */}
@@ -84,7 +88,7 @@ return (
             <div className="flex-1" />
 
             {/* Menu -> Select Game Mode */}
-            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl sm:mb-10">
+            <div className="relative bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl sm:mb-10">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
                 {/* Button -> Tournament Mode */}
                 <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
@@ -100,6 +104,10 @@ return (
                   onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               
               </div>
+              <button className="absolute top-2 right-2 w-12 aspect-square rounded-full border-2 border-[#AC9ABE]/50 hover-increase"
+                onClick={() => setTutorM(true)}>
+                <img className="w-full h-full object-cover" src="/pic/icons/how.png" />
+              </button>
             </div>
 
             <div className="flex-1" />
