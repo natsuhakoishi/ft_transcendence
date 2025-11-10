@@ -45,6 +45,8 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					if (!tournamentEntry)
 					{
 						const leaderboard = await getTournamentLeaderboard(match.tournament_id);
+						if (!leaderboard)
+							return res.status(500).send({ message: `Fail to fetch leaderboard with tournament ${match.tournament_id}` });
 						tournamentEntry = {
 							// mode: "tournament",
 							tournament: { id: match.tournament_id, start_time: match.game_time, first: leaderboard[0], second: leaderboard[1], third: leaderboard[2], last: leaderboard[3] },
@@ -57,9 +59,11 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					if (match.game_time < tournamentEntry.tournament.start_time)
 						tournamentEntry.tournament.start_time = match.game_time;
 					tournamentEntry.matches.push(toMatch(match));
+					// if (count == 5) break;
 				} else {
 					user_matches.push(toMatch(match));
 					count++;
+					// if (count == 5) break;
 				}
 			}
 

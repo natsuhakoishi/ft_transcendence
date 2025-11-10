@@ -57,7 +57,7 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
     <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40" onClick={() => onClick(false)}>
 
     {/* Modal -> Credit */}
-    <div className="p-1 h-[99%] w-[69%] md:w-[60%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-lg border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
+    <div className="p-1 h-[99%] w-[80%] md:w-[60%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-lg border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
       {/* Title */}
       <h1 className="text-xl md:text-2xl text-center">{t("home.btn_credit")}</h1>
       {/* Team Credit list */}
