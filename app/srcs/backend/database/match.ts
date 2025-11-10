@@ -50,7 +50,7 @@ export async function getMatchAll()
 export async function getMatchByUserId(user_id: number)
 {
 	return allSQLite(`
-		SELECT matches.*,
+		SELECT DISTINCT matches.*,
 			user1.username AS player1_username,
 			profiles1.avatar_path AS player1_avatar_path,
 			user2.username AS player2_username,
@@ -62,8 +62,11 @@ export async function getMatchByUserId(user_id: number)
 		JOIN users AS user2 ON matches.player2_id = user2.id
 		JOIN profiles AS profiles2 ON profiles2.id = matches.player2_id
 		LEFT JOIN tournament_matches ON matches.id = tournament_matches.match_id
-		WHERE matches.player1_id = ? OR matches.player2_id = ?
-		ORDER BY matches.game_time DESC`,
-		[user_id, user_id]
-	);
+		LEFT JOIN tournaments ON tournaments.id = tournament_matches.tournament_id
+		WHERE (matches.player1_id = ? OR matches.player2_id = ?)
+		AND (tournaments.status = 'completed' OR tournaments.status IS NULL)
+		ORDER BY matches.game_time DESC
+	`, [user_id, user_id]);
 }
+
+

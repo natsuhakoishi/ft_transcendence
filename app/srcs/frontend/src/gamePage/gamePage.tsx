@@ -146,7 +146,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     if (confirmRef.current)
                     {
                         confirmRef.current = false;
-                        toasterPluz("msg_Disconnect");
+                        toasterPluz("game.ERR_Disconnect");
                         setTimeout(()=>{
                             if (gameData.tournament) {
                                 navigate("/game/tournament", {state: { tournamentRoomID: TROOMID }, replace: true});
@@ -158,8 +158,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     }
                     else
                     {
-                        // toasterPluz("pop.game.ERR_timeOut");
-                        // toasterPluz("pop.game.ERR_timeOut_redicrect");
                         toasterPluz("game.ERR_forgerReady");
                         navigate("/", { replace: true });
                     }

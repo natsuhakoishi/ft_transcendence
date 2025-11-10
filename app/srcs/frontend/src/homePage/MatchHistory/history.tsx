@@ -6,6 +6,7 @@ import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } fro
 import { ProfileSideBar } from "./ProfileSidebar";
 import { useOutletContext } from "react-router-dom";
 import { LoadingScreen } from "../HomeChildC";
+import type { User } from "../../../../backend/share/type/user";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
   // console.log(entries);
@@ -19,7 +20,9 @@ function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, u
 }
 
 function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch, }) {
-  const [date, time] = entries.tournament.start_time.split(" ");
+  const new_date = new Date(entries.tournament.start_time + "Z");
+  const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
+  const [date, time] = local_date.split(" ");
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -48,7 +51,9 @@ function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch,
 }
 
 function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: boolean, }) {
-  const [date, time] = match.game_time.split(" ");
+  const new_date = new Date(match.game_time + "Z");
+  const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
+  const [date, time] = local_date.split(" ");
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -158,21 +163,22 @@ function ExpandTourModal({ children, onClose, }: {
   }, [onClose]);
 
   return (
-  <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
-    <div className="col-start-1 flex items-center p-2 ">
-      <div ref={modalRef} className="
-      bg-[#1f3735]/80 backdrop-blur-sm 
-        border border-[#9DD6AD]/40 shadow-xl rounded-lg
-        p-5 w-full h-[50%] overflow-ellipsis ">
-          {children}
-        <p className="text-white/80 text-sm mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
+    <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
+      <div className="col-start-1 flex items-center p-2 ">
+        <div ref={modalRef} className="
+        bg-[#1f3735]/80 backdrop-blur-sm 
+          border border-[#9DD6AD]/40 shadow-xl rounded-lg
+          p-5 w-full h-65 overflow-ellipsis">
+            {children}
+          <p className="text-white/80 text-sm mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
+        </div>
       </div>
     </div>
-  </div>
   );
 }
 
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
+  const { user } = useOutletContext<{ user: User | null }>();
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
   const [entries, setEntries] = useState<TournamentMatch | null>(null);
@@ -185,17 +191,22 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   React.useEffect(() => {
     document.title = t("history.title");
 
-    const fetchHistory = async () => {
-      try {
-        const data = await apiFetchPrivate("match/me", { method: "GET" });
-        setMatches(data);
-      } catch (err: any) {
-        toasterPluz("ERR_fetchH");
-      }
-    };
-    fetchHistory();
-    
-  }, []);
+    if (!loading)
+    {
+      const fetchHistory = async () => {
+        try {
+          const id = user?.acc.user_id;
+          const data = await apiFetchPrivate(`match/${id}`, { method: "GET" });
+          console.log(data);
+          setMatches(data);
+        } catch (err: any) {
+          toasterPluz("ERR_fetchH");
+        }
+      };
+      fetchHistory();
+    }
+
+  }, [loading]);
 
 	return (
   <>
@@ -206,7 +217,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
       :
     <>
     {/* History Page Content */}
-      <div className="relative w-[100dvw] h-[100dvh] grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
+      <div className="relative w-[100dvw] h-screen grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
 
         {/* Tournament Modal */}
         {TourModal && 
@@ -229,7 +240,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         </section>
 
         {/* Right side: User's profile */}
-        <section className="h-[80%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
+        <section className="h-screen flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
           <ProfileSideBar />
         </section>
 

@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Credit, LoadingScreen, type Progress } from "./HomeChildC.tsx"
+import { Credit, LoadingScreen, Tutorial, type Progress } from "./HomeChildC.tsx"
 import { useLang, withTranslation, type Lang, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
@@ -16,7 +16,7 @@ export function LanguageBar({ bgColor = "bg-gray-800/80", optionColor = "bg-[#1E
 
   return (
     <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
-      className={`border-2 rounded p-1 text-lg ${bgColor}`}
+      className={`border-2 rounded p-1 text-lg ${bgColor} hover`}
       style={{ backgroundColor: bgColor.startsWith("#") ? bgColor : undefined }}
     >
       <option value="en" className={optionColor}>English</option>
@@ -39,6 +39,7 @@ export function HomeP({ t, lang }: TranslationProps) {
   const [match, setMatch] = React.useState<boolean>(false);
   const [ AI, setAI ] = React.useState<boolean>(false);
   const [ creditM, setCreditM ] = React.useState<boolean>(false);
+  const [ tutorM, setTutorM ] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -62,12 +63,15 @@ return (
           {/* Pop Up Modal -> Credits page */}
           {creditM && <Credit onClick={setCreditM} />}
 
+          {/* Pop Up Modal -> Credits page */}
+          {tutorM && <Tutorial onClick={setTutorM} />}
+
           {/*Left part*/}
-          <div className="column-start-1 row-span-3 flex flex-col justify-between">
+          <div className="relative column-start-1 row-span-3 flex flex-col justify-between">
             {/* Top Left: avatar & username */}
-            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%]">
+            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%] backdrop-blur-lg">
               {/* Avatar -> Profile page */}
-              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover:scale-90 transition-transform"
+              <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover-increase"
                 onClick={() => navigate("/profile")}> 
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
@@ -75,31 +79,35 @@ return (
               <span className="my-1 font-mono text-blue-300">{user?.acc.username}</span>
             </div>
             {/* Button -> Friend page */}
-            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
+            <button className="absolute bottom-2 left-2 p-2 rounded-2xl bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
-          <div className="column-start-2 row-span-3 flex flex-col items-center">
+          <div className="relative column-start-2 row-span-3 flex flex-col items-center">
 
             <div className="flex-1" />
 
             {/* Menu -> Select Game Mode */}
-            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl sm:mb-10">
-              <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
+            <div className="relative w-full h-[60%] md:h-1/2 rounded-4xl bg-[#F5CFED]/55">
+              <div className="grid grid-cols-2 gap-2 p-6 px-8 md:p-10 w-full h-full place-items-center">
                 {/* Button -> Tournament Mode */}
-                <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
+                <button className="row-span-2 w-full h-full bg-[#925192]/60 rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
 
                 {/* Button -> 1 vs 1 Mode */}
-                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
+                <button className="bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
                 {/* Button -> AI Mode */}
-                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
+                <button className="bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               
               </div>
+              <button className="absolute top-1 md:top-2 right-1 md:right-2 w-9 md:w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase"
+                onClick={() => setTutorM(true)}>
+                <img className="w-full h-full object-cover" src="/pic/icons/how.png" />
+              </button>
             </div>
 
             <div className="flex-1" />
@@ -109,13 +117,13 @@ return (
           </div>
 
           {/*Right part*/}
-          <div className="column-start-3 row-span-3 flex flex-col items-end mr-3">
+          <div className="relative column-start-3 row-span-3 flex flex-col items-end mr-3">
             {/* Display -> Game Version */}
             <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
             {/* Dropdown -> Language Selector */}
             <LanguageBar />
             {/* Button -> Match History page */}
-            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            <button className="absolute bottom-2 rounded-2xl p-2 bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
         </div>)
   }

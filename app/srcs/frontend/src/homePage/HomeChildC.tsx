@@ -1,4 +1,8 @@
+import React from "react";
 import { useLang } from "../_hooks/language";
+import { isMobile } from "../utils.ts";
+
+// Loading Screen
 
 export type Progress = {
   step: string;
@@ -27,6 +31,8 @@ export function LoadingScreen({ progress}: { progress: Progress }) {
   );
 }
 
+// Credit Modal
+
 function CreditMember({ link, github, intra, roles }: { link: string, github: string, intra: string, roles: string}) {
   return (
     <div className="flex w-full gap-2 items-center">
@@ -48,10 +54,10 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40" onClick={() => onClick(false)}>
 
     {/* Modal -> Credit */}
-    <div className="p-1 h-[99%] w-[69%] md:w-[60%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-2xl border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
+    <div className="p-1 h-[99%] w-[80%] md:w-[60%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-lg border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
       {/* Title */}
       <h1 className="text-xl md:text-2xl text-center">{t("home.btn_credit")}</h1>
       {/* Team Credit list */}
@@ -70,6 +76,24 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
       <div className="mt-1 text-sm text-center">Asset ©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
     </div>
 
+    </div>
+  );
+}
+
+// Tutorial Modal
+
+export function Tutorial({ onClick }: { onClick: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const isMobileRef = React.useRef(isMobile());
+  const { t } = useLang();
+
+  return (
+    //{/* Background Layer -> blur effect */}
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40 backdrop-blur-xs overflow-auto" onClick={() => onClick(false)}>
+      {/* Img - Tutorial */}
+      <div className="w-[69%] md:w-[60%] max-h-[95vh] flex flex-col items-center rounded-2xl">
+        <h1 className="text-3xl font-bold text-shadow-lg text-center sm:mt-1 mb-1 md:mb-5">{t("home.tutor")}</h1>
+        <img className="w-full h-[80%] object-contain rounded-2xl" src={`${!isMobileRef ? "/pic/tutorial_mobile.png" : "/pic/tutorial_pc.png"}`} />
+      </div>
     </div>
   );
 }

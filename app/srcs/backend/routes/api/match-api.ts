@@ -6,16 +6,17 @@ import { getUserById } from "../../database/user.ts";
 import { getProfileById } from "../../database/profile.ts";
 
 const matchApi: FastifyPluginAsync = async (fastify: any) => {
-	fastify.get('/match/me', async (req: any, res: any) => {
+	fastify.get('/match/:id', async (req: any, res: any) => {
 		try
 		{
 			if (!req.user)
 				return res.status(401).send({ message: 'Unauthorized: missing token' });
 
-			const user = await getUserById(req.user);
+			const { id } = req.params;
+			const user = await getUserById(id);
 			if (!user)
 				return res.status(404).send({ message: 'User Not Found' });
-			const profile = await getProfileById(req.user);
+			const profile = await getProfileById(id);
 			if (!profile)
 				return res.status(404).send({ message: 'Profie Not Found' });
 
@@ -44,6 +45,8 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					if (!tournamentEntry)
 					{
 						const leaderboard = await getTournamentLeaderboard(match.tournament_id);
+						if (!leaderboard)
+							return res.status(500).send({ message: `Fail to fetch leaderboard with tournament ${match.tournament_id}` });
 						tournamentEntry = {
 							// mode: "tournament",
 							tournament: { id: match.tournament_id, start_time: match.game_time, first: leaderboard[0], second: leaderboard[1], third: leaderboard[2], last: leaderboard[3] },
@@ -56,9 +59,11 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					if (match.game_time < tournamentEntry.tournament.start_time)
 						tournamentEntry.tournament.start_time = match.game_time;
 					tournamentEntry.matches.push(toMatch(match));
+					// if (count == 5) break;
 				} else {
 					user_matches.push(toMatch(match));
 					count++;
+					// if (count == 5) break;
 				}
 			}
 

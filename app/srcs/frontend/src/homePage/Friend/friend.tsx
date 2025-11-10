@@ -55,7 +55,7 @@ return (
           >
             {/* Normal Friend Card */}
             {friends.slice(0, 10).map((f, i) => {
-              console.log(onlineUsers);
+              // console.log(onlineUsers);
               const isOnline = onlineUsers?.some(user => user.id === f.info.id) ?? false;
               return (
                 <Friend key={i} data={f} onCardClick={() => { setSelectedF(f); setFModal(true); }} online={isOnline}  />
@@ -91,7 +91,7 @@ return (
           {/* Display -> Total Friend */}
           <div className="flex items-center gap-1 md:gap-2 border border-white rounded-md p-0.5 md:p-2">
             <div className="w-3 h-3 md:w-7 md:h-7 bg-white mask-[url('/pic/icons/friends.png')] [mask-size:contain] mask-no-repeat mask-center" />
-            <span className="text-white font-semibold">{total}</span>
+            <span className="text-white text-xl font-bold">{total}</span>
           </div>
 
         </div>

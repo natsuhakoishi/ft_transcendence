@@ -81,12 +81,13 @@ export function Matching({again, setMatch, AI} : {
 
     return (
         <>
+            <div className="absolute min-h-[100lvh] w-[100lvw] inset-0 -z-10 bg-[#9390B5] overflow-hidden" />
             <div className=" bg-blue-500">
                 <h1 className="text-5xl decoration-cyan-800">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
             </div>
             <button
                 type="submit"
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 "
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
                 onClick={() => {
                     again ? navigate("/", { replace: true }) : setMatch?.(false)
                 }}
@@ -141,7 +142,7 @@ export function TMatching() {
                 <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
             </div>
             <button
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2"
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
                 type="submit"
                 onClick={() => navigate("/")}
             >Cancel

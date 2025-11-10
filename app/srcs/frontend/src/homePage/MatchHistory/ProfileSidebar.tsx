@@ -8,6 +8,7 @@ function ProfileSB({ t }: TranslationProps) {
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const { win_games = 0, tournament_wins = 0, total_game = 0, win_rate = 0.0 } = user?.profile || {};
   const displayDash = (num: number) => (num === 0 ? "-" : num);
+  const high = typeof win_rate === "number" && win_rate >= 51.0;
 
 	return (
     <>
@@ -17,9 +18,9 @@ function ProfileSB({ t }: TranslationProps) {
       <div className="hidden md:block"/>
       <div className="hidden md:block"/>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col mt-2">
         {/* Avatar */}
-        <button className="mt-2 aspect-square h-16 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
+        <button className="aspect-square h-16 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
         {/* Username */}
@@ -55,15 +56,16 @@ function ProfileSB({ t }: TranslationProps) {
         {/* Win Rate */}
         <span>{t("shared.game_stat.win_rate")}</span>
         <span className={`
-          leading-[150%] ${typeof win_rate === "number" && win_rate >= 51.0 ? "text-golden" : "text-gray-400"}
-          [text-shadow:1px_1px_2px_rgba(255,255,255,0.4),-1px_-1px_2px_rgba(255,255,255,0.7)]`}
-        >{!win_rate ? "-" : `${win_rate}%`}</span>
+          leading-[150%] ${high ? "text-golden" : "text-[#876E4B]"}
+          ${high && "[text-shadow:1px_1px_2px_rgba(80,80,80,0.6),-1px_-1px_2px_rgba(255,255,255,0.9)]"} `}>
+          {!win_rate ? "-" : `${win_rate} %`}
+        </span>
       </div>
 
       <div className="hidden md:block"/>
 
       {/* Back Button */}
-      <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
+      <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={() => navigate("/")}>
         <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
       </button>
 

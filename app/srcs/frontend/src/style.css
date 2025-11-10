@@ -8,11 +8,13 @@
 
 .default_button {
   -webkit-text-stroke: 1px rgba(0, 0, 0, 0.6);
-  /* background-color: rgba(255, 255, 255, 0.3) !important;
-  color: white !important; */
   @apply border-2 rounded-lg p-1.5 font-bold;
 }
- 
+
+.default_placeholder {
+  @apply p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-white;
+}
+
 @import "tailwindcss";
 @import "tailwindcss/preflight";
 
@@ -30,14 +32,12 @@ body {
     align-items: center;
     min-height: 100dvh;
     min-width: 100dvw;
-    overflow: hidden;
     background-color: #9390B5;
     color: white;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
     -webkit-scrollbar: hidden;
     font-weight: bold;
 }
-
 
 .hover {
   @apply cursor-pointer transition-transform ease-in-out duration-100;

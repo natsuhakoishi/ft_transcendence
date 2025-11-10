@@ -36,7 +36,9 @@
 		"btn_credit": "Credits",
 		"role_en": "Direction / Server/Web Programming",
 		"role_yb": "Game Planning & Programming",
-		"role_zw": "Visual Design / UI/UX Programming"
+		"role_zw": "Visual Design / UI/UX Programming",
+
+		"tutor": "How-to-play ?"
 	},
 
 	"profile":

@@ -28,10 +28,10 @@ export function FriendProfile({ setFModal, FProfile, handleFDelete, fetch }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50 gap-1" onClick={() => setFModal(false)}>
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/30 gap-1" onClick={() => setFModal(false)}>
 
       {/* Pop Up Modal -> Friend Profile */}
-      <div className="bg-[#FFCDB6] rounded-xl p-5 w-80 max-w-[90%] relative" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-[#FFCDB6]/50 rounded-xl p-5 w-80 max-w-[90%] relative backdrop-blur-md" onClick={(e) => e.stopPropagation()}>
       
         {/* avatar */}
         <img src={`${import.meta.env.VITE_API_AVATAR}${FProfile.info.avatar_path}`} className="w-24 h-24 rounded-full border-1 mx-auto"/>
