@@ -122,32 +122,36 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
   }, [user]);
 
   return (  
-    <>
+    <div className="w-screen flex justify-start">
       {/* Left Part - Username, Avatar, btn Delete_Avatar */}
-      <div className="w-[25%] h-full gap-2 flex flex-col justify-center items-center">
+      <div className={`w-[25%] h-full gap-1 md:gap-2 flex flex-col justify-center items-center`}>
+
         {/* Username */}
         <span className="text-lg">{previewName}</span>
+
         {/* Avatar */}
         <button className="aspect-square h-1/2 rounded-full overflow-clip border-2 border-gray-300 disable" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={preview || avatarURL} />
         </button>
+
         {/* Delete Avatar button */}
-        <button type="button" className="rounded-sm w-[50%] border-2 p-1 hover-increase"
+        <button type="button" className="rounded-sm md:w-[50%] border-2 p-0.5 px-1 md:p-1 hover-increase"
           onClick={async () =>  { await avatarDelete({ setPreview, refetch, toasterPluz }); setToggle("dltAvatar");} }
         >{t("profile.btn_delete_avatar")}</button>
-
       </div>
 
       {/* Right part - Button Menu */}
-      <div className="flex flex-col gap-2 justify-center align-middle">
+      <div className={`flex flex-col gap-1 md:gap-2 md:mt-5 justify-center align-middle`}>
+
         {/* Option 1: Update Avatar */}
         <div className="flex">
-          <button type="button" className="rounded-sm border-2 p-2 w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>{t("profile.btn_update_avatar")}</button>
+          <button type="button" className="rounded-sm border-2 p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>{t("profile.btn_update_avatar")}</button>
             <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(event) => avatarUpdate(event, setPreview, refetch, toasterPluz)}/>
         </div>
+
         {/* Option 2: Update Username */}
         <div className="flex gap-2">
-          <button type="button" className="rounded-sm border-2 p-2 w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upName")}>{t("profile.btn_update_name")}</button>
+          <button type="button" className="rounded-sm border-2 p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upName")}>{t("profile.btn_update_name")}</button>
           {/* Small modal toggled when user want change username */}
           {toggle === "upName" &&
             (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName, setToggle, refetch, toasterPluz)}>
@@ -159,18 +163,19 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
             </form>)
           }
         </div>
+
         {/* Option 3: Update Password */}
         <div className="flex gap-2">
-          <button className="rounded-sm border-2 p-2 w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upPass")}>{t("profile.btn_update_password")}</button>
+          <button className="rounded-sm border-2 p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upPass")}>{t("profile.btn_update_password")}</button>
           {/* Small modal toggled when user want change password */}
           {toggle === "upPass" &&
             (<form className="flex gap-1 items-center" onSubmit={(event) => submitPassword(event, setToggle, toasterPluz)}>
 
               <input type="password" name="old_password" placeholder={t("shared.form.place_o_password")} autoComplete="off" required
-                className="border rounded h-8 text-sm text-center"
+                className="border rounded h-8 w-40 text-sm text-center"
               />
               <input type="password" name="new_password" placeholder={t("shared.form.place_n_password")} autoComplete="off" required
-                className="border rounded h-8 text-sm text-center"
+                className="border rounded h-8 w-40 text-sm text-center"
               />
               <button type="submit" className="p-1 rounded text-[#7459A6]">✓</button>
               <button type="button" onClick={() => setToggle("")} className="p-1 text-sm rounded font-bold text-[#7459A6]">✘</button>
@@ -178,8 +183,9 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
             </form>)
           }
         </div>
+
       </div>
 
-    </>
+    </div>
   );
 }

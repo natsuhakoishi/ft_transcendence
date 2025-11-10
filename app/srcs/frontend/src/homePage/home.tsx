@@ -67,7 +67,7 @@ return (
           {tutorM && <Tutorial onClick={setTutorM} />}
 
           {/*Left part*/}
-          <div className="max-h-screen relative column-start-1 row-span-3 flex flex-col justify-between">
+          <div className="relative column-start-1 row-span-3 flex flex-col justify-between">
             {/* Top Left: avatar & username */}
             <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%] backdrop-blur-lg">
               {/* Avatar -> Profile page */}
@@ -79,17 +79,17 @@ return (
               <span className="my-1 font-mono text-blue-300">{user?.acc.username}</span>
             </div>
             {/* Button -> Friend page */}
+            <button className="absolute bottom-2 left-2 p-2 rounded-2xl bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
-            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
 
           {/*Center part*/}
-          <div className="column-start-2 row-span-3 flex flex-col items-center">
+          <div className="relative column-start-2 row-span-3 flex flex-col items-center">
 
             <div className="flex-1" />
 
             {/* Menu -> Select Game Mode */}
-            <div className="relative w-full h-1/2 sm:mb-10 rounded-4xl bg-[#F5CFED]/55">
-              <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
+            <div className="relative w-full h-[60%] md:h-1/2 rounded-4xl bg-[#F5CFED]/55">
+              <div className="grid grid-cols-2 gap-2 p-6 px-8 md:p-10 w-full h-full place-items-center">
                 {/* Button -> Tournament Mode */}
                 <button className="row-span-2 w-full h-full bg-[#925192]/60 rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
@@ -104,7 +104,7 @@ return (
                   onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               
               </div>
-              <button className="absolute top-2 right-2 w-10 md:w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase"
+              <button className="absolute top-1 md:top-2 right-1 md:right-2 w-9 md:w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase"
                 onClick={() => setTutorM(true)}>
                 <img className="w-full h-full object-cover" src="/pic/icons/how.png" />
               </button>
@@ -117,13 +117,13 @@ return (
           </div>
 
           {/*Right part*/}
-          <div className="column-start-3 row-span-3 flex flex-col items-end mr-3">
+          <div className="relative column-start-3 row-span-3 flex flex-col items-end mr-3">
             {/* Display -> Game Version */}
             <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
             {/* Dropdown -> Language Selector */}
             <LanguageBar />
             {/* Button -> Match History page */}
-            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            <button className="absolute bottom-2 rounded-2xl p-2 bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
         </div>)
   }

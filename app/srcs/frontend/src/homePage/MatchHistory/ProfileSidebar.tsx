@@ -18,9 +18,9 @@ function ProfileSB({ t }: TranslationProps) {
       <div className="hidden md:block"/>
       <div className="hidden md:block"/>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col mt-2">
         {/* Avatar */}
-        <button className="mt-2 aspect-square h-16 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
+        <button className="aspect-square h-16 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
         {/* Username */}

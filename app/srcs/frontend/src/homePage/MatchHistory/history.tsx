@@ -217,7 +217,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
       :
     <>
     {/* History Page Content */}
-      <div className="relative w-[100dvw] h-[100dvh] grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
+      <div className="relative w-[100dvw] h-screen grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
 
         {/* Tournament Modal */}
         {TourModal && 
@@ -240,7 +240,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         </section>
 
         {/* Right side: User's profile */}
-        <section className="h-[80%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
+        <section className="h-screen flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
           <ProfileSideBar />
         </section>
 

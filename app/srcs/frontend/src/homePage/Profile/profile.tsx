@@ -25,7 +25,7 @@ function MenuProfile({ user } : { user: User | null } ) {
   <div className="flex md:flex-col md:mt-5 w-full items-center md:items-baseline">
 
     {/* Upper section*/}
-    <div className="flex h-[40%] md:mt-3 mx-3 gap-3">
+    <div className="flex h-[40%] md:mt-3 items-center mx-3 gap-3">
 
       {/* Avatar, Online Status */}
       <div className="relative h-16 aspect-square">
@@ -45,7 +45,7 @@ function MenuProfile({ user } : { user: User | null } ) {
     <div className="hidden md:flex-1" />
 
     {/* Bottom section - Game stats, ex. win, lost, tournament win, win rate */}
-    <div className="flex flex-1 flex-col gap-2 mx-10 md:justify-start md:align-middle">
+    <div className="flex flex-1 flex-col gap-2 mx-10 my-2 md:justify-start md:align-middle">
       {/* First row - win count, lost count, tournament win count */}
       <div className="flex gap-3 text-xl">
         {/* Won */}
@@ -103,10 +103,10 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
     {/* Background Layer */}
     <div className="absolute inset-0 -z-10 bg-cover bg-center bg-blend-overlay bg-[linear-gradient(to_bottom,#6FB7FF4d,#daade04d,#A79BFF4d),url('/pic/profileP.jpeg')]" />
     {/* Content */}
-    <div className="relative w-[100dvw] h-[100dvh] flex flex-col justify-center gap-3 md:gap-5">
+    <div className="relative w-[100dvw] h-[100dvh] flex flex-col justify-center gap-2 md:gap-5">
 
       {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}
-      <div className="flex gap-5 mt-2 ml-5">
+      <div className={`flex gap-5 md:mt-2 ml-5 place-content-start`}>
         {/* btn Profile */}
         <button className={`default_button hover-increase transition-shadow duration-300 hover:shadow-[0_0_20px_rgba(239,230,106,1)] ${menu === "Profile" ? "text-sky-200 border-sky-200 bg-sky-200/30 shadow-[0_0_20px_rgba(202,255,246,1)]" : "text-[#E5EBF7] border-[#E5EBF7] bg-[#E5EBF7]/30"}`}
           onClick={() => setMenu("Profile")}>{t("profile.btn_profile")}</button>
@@ -118,18 +118,17 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
       </div> 
 
       {/* conditional render betw Profile & Option */}
-      <div className="w-screen h-[50%] md:h-[40%] md:h-50% shadow-md shadow-gray-400 gap-2 bg-[#ABABD1]/60 backdrop-blur-md flex justify-start">
+      <div className="w-screen h-[58%] md:h-[40%] md:h-50% shadow-md shadow-gray-400 gap-2 bg-[#ABABD1]/60 backdrop-blur-md flex justify-start">
         {menu === "Profile" ? <MenuProfile user={user} /> : <MenuOption user={user} refetch={refetchData} />}
       </div>
 
       {/* Action Button - Back */}
+      <button className="self-center md:mt-10 w-10 md:w-20 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase transition-transform" onClick={() => navigate("/")}>
+        <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
+      </button>
 
-        <button className="self-center md:mt-10 w-10 md:w-20 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase transition-transform" onClick={() => navigate("/")}>
-          <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-        </button>
+      <div className="hidden md:flex" />
 
-        <div className="hidden md:flex" />
-    
 		</div>
 		</>
 	);

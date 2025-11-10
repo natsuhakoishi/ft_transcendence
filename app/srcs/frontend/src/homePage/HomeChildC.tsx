@@ -88,13 +88,12 @@ export function Tutorial({ onClick }: { onClick: React.Dispatch<React.SetStateAc
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40 backdrop-blur-xs" onClick={() => onClick(false)}>
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40 backdrop-blur-xs overflow-auto" onClick={() => onClick(false)}>
       {/* Img - Tutorial */}
-      <div className="h-[99%] w-[69%] md:w-[60%] md:h-[68%]">
-        <h1 className="text-3xl font-bold text-shadow-lg text-center mb-5">{t("home.tutor")}</h1>
-        <img className="w-full h-[90%] object-cover rounded-lg" src={`${!isMobileRef ? "/pic/tutorial_mobile.png" : "/pic/tutorial_pc.png"}`} />
+      <div className="w-[69%] md:w-[60%] max-h-[95vh] flex flex-col items-center rounded-2xl">
+        <h1 className="text-3xl font-bold text-shadow-lg text-center sm:mt-1 mb-1 md:mb-5">{t("home.tutor")}</h1>
+        <img className="w-full h-[80%] object-contain rounded-2xl" src={`${!isMobileRef ? "/pic/tutorial_mobile.png" : "/pic/tutorial_pc.png"}`} />
       </div>
     </div>
   );
 }
-//todo add more key

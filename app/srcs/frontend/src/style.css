@@ -32,15 +32,12 @@ body {
     align-items: center;
     min-height: 100dvh;
     min-width: 100dvw;
-    overflow: hidden;
     background-color: #9390B5;
     color: white;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
     -webkit-scrollbar: hidden;
     font-weight: bold;
 }
-
-
 
 .hover {
   @apply cursor-pointer transition-transform ease-in-out duration-100;
