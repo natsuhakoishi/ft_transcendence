@@ -6,12 +6,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url'
 
-dotenv.config();
+const __filename = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.join(__filename, '..', '..', '..');
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
 const PEM_PASS = process.env.PEM_PASS;
-const NGROK_HOST = process.env.NGROK_URL ? process.env.NGROK_URL.replace(/^https?:\/\//, '') : undefined;
 
 export default defineConfig({
   plugins: [
@@ -19,8 +19,8 @@ export default defineConfig({
   ],
   server: {
     https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'certs/backend-ssl.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'certs/backend-ssl.crt')),
+      key: fs.readFileSync(path.resolve(__dirname, 'certs/klbq-ssl.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'certs/klbq-ssl.crt')),
       passphrase: PEM_PASS
     },
     host: '0.0.0.0',

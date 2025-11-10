@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 import { apiFetchPrivate } from "../../utils";
 import { useLang, withTranslation, type TranslationProps } from "../../_hooks/language";
-import type { User } from "../../../../backend/share/type/user";
 import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backend/share/type/history";
-import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./historyUtils";
+import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./HistoryChildC";
+import { ProfileSideBar } from "./ProfileSidebar";
+import { useOutletContext } from "react-router-dom";
+import { LoadingScreen } from "../HomeChildC";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
-  console.log(entries);
+  // console.log(entries);
 
   return ( entries && entries.matches && entries.matches.length >= 2 &&
     <div className="flex flex-col gap-2">
@@ -100,7 +101,7 @@ const HistoryRow = ({ match, user_id, onTournamentClick } : {
 
   return (
     <div
-      className={`relative p-2 rounded-lg flex items-center justify-between w-full h-full
+      className={`relative p-2 rounded-lg flex items-center justify-between md:w-full md:h-full
       shadow-xl shadow-indigo-950/20
       transition-transform duration-200 hover:shadow-md hover:shadow-[#9DD6AD]
       ${bannerColour} ${isTour && "cursor-pointer hover:scale-98"} `}
@@ -126,9 +127,11 @@ const HistoryList = ({ matches, user_id, onClickHandler } : {
   const records = [...matches, ...Array(5 - matches.length).fill(null)];
 
   return (
-  <div className="h-full w-full grid grid-rows-5 ">
+  <div className="h-[55%] w-full flex flex-col overflow-y-scroll p-0.5
+    md:h-full md:grid md:grid-rows-5 md:overflow-hidden"
+  >
     {records.map((record, i) => (
-      <div key={i} className="h-full p-1.5">
+      <div key={i} className="flex-1 p-0.5 md:h-full md:p-1.5">
         {!record ? <div/> :
           <HistoryRow match={record} user_id={user_id} onTournamentClick={onClickHandler} />
         }
@@ -169,13 +172,11 @@ function ExpandTourModal({ children, onClose, }: {
   );
 }
 
-
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
-  const navigate = useNavigate();
-  const user = useOutletContext<User | null>();
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
-  const [entries, setEntries] = useState<TournamentMatch | null>(null)
+  const [entries, setEntries] = useState<TournamentMatch | null>(null);
+  const { loading } = useOutletContext<{ loading: boolean}>();
 
   const handleTournamentClick = (entries: TournamentMatch) => {
     setEntries(entries); setTourModal(true);
@@ -197,43 +198,45 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   }, []);
 
 	return (
+  <>
+  {/* Background Layer */}
+  <div className="absolute h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay" />
+  { loading ?
+    <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
+      :
     <>
-    <div className="w-screen h-screen grid grid-cols-[1fr_15%] bg-cover bg-center bg-gray-100/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay">
-  
-      {/* Tournament Modal */}
-      {TourModal && (
-        <ExpandTourModal onClose={() => setTourModal(false)}>
-          <ExpandTour entries={entries} user_id={matches?.user_id ?? 0} />
-        </ExpandTourModal>
-      )}
+    {/* History Page Content */}
+      <div className="relative w-[100dvw] h-[100dvh] grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
 
-      {/* Left side: History Matches; exactly 5 rows */}
-      <section>
-      { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
-        (<>
+        {/* Tournament Modal */}
+        {TourModal && 
+          <ExpandTourModal onClose={() => setTourModal(false)}>
+            <ExpandTour entries={entries} user_id={matches?.user_id ?? 0} />
+          </ExpandTourModal>
+        }
+
+        {/* Left side: History Matches; exactly 5 rows */}
+        <section>
+        { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
           <div className="flex items-center w-full h-full font-semibold">
             <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
               <p>{t("history.status_empty")}</p>
             </div>
           </div>
-        </>)
-        :
-          <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />}
-      </section>
+            :
+          <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />
+        }
+        </section>
 
-      {/* Right side: User's profile; as addition visual */}
-      <section className="flex flex-col bg-[#1f3735] justify-center items-end gap-">
-        {/* Back Button */}
-        <button className="relative bottom-0 w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => navigate("/")}>
-          <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-        </button>
-        <button className="relative bottom-0 w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover:scale-90 transition-transform" onClick={() => {console.log(matches)}}>
-          <img src="/pic/heng.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-        </button>
-      </section>
+        {/* Right side: User's profile */}
+        <section className="h-[80%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
+          <ProfileSideBar />
+        </section>
 
-    </div>
+      </div>
     </>
+  }
+  </>
   );
 }
 

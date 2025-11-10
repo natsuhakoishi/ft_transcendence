@@ -1,7 +1,7 @@
 {
 	"_comment": "MORE GLOBAL LVL ERROR & SOME FALLBACK",
 	"401": "Session expired. Redirecting...",
-	"USER-404": "User not found. Redirecting...",
+	"ERR_USER-404": "User not found. Redirecting...",
 	"503": "Server disconnect. Retrying...",
 	"503-FAIL": "Server still unreachable. Redirecting...",
 	"503-SUCCESS": "Reconnected!",

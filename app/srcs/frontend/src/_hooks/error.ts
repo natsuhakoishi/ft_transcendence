@@ -16,7 +16,6 @@ export function useGlobalErrorMonitor() {
   React.useEffect(() => {
     //Access Token Expired
     globalErrorHandler["401"] = () => {
-      toast.error(t("pop.401"));
       timer = setTimeout(() => {
         navigate("/auth", { replace: true });
       }, 500);
@@ -24,11 +23,7 @@ export function useGlobalErrorMonitor() {
 
     //Backend Server Down
     globalErrorHandler["503"] = async () => {
-      toast.error(`${t("pop.503")}`);
-      // const currentPath = location.pathname;
-
       await new Promise(r => setTimeout(r, 1000 * 5));
-
       try {
         await apiFetchPrivate("me", { method: "POST", body: "{}" });
         toast.success(t("pop.503-SUCCESS"));
@@ -43,7 +38,7 @@ export function useGlobalErrorMonitor() {
 
     //User not found
     globalErrorHandler["404"] = () => {
-      toast.error(t("pop.USER-404"));
+      toast.error(t("pop.ERR_USER-404"));
       timer = setTimeout(() => {
         navigate("/auth", { replace: true });
       }, 500);
@@ -59,3 +54,5 @@ export function useGlobalErrorMonitor() {
 export function getGlobalErrorHandler(key: string) {
   return globalErrorHandler[key] || (() => {});
 }
+
+//behaviour set without toast, toast already baked beforehand

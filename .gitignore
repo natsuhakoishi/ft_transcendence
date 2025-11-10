@@ -5,3 +5,4 @@ klbq.db
 *.webp
 !.default.webp
 !.ai.png
+certs

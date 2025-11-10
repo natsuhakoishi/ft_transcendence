@@ -42,8 +42,6 @@ export function useLanguage() {
   return { lang, setLang, t, translations };
 }
 
-export const useLang = () => React.useContext(LanguageContext);
-
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
   const langPack = useLanguage();
 
@@ -58,6 +56,8 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     </LanguageContext.Provider>
   );
 };
+
+export const useLang = () => React.useContext(LanguageContext);
 
 export interface TranslationProps {
   t: (key: string) => string;
