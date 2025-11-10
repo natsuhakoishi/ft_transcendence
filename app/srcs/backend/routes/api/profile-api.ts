@@ -10,6 +10,109 @@ import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
 import type { User } from '../../share/type/user.ts';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
+	const ping_interval = 1000 * 45;
+	const timeout = 1000 * 80;
+	const onlineUsers = new Map();
+
+	const ping = setInterval(() => {
+		const now = Date.now();
+
+		for (const [id, entry] of onlineUsers.entries()) {
+			const { ws, username, lastPong } = entry;
+
+			// if too long since last pong, kill connection
+			if (now - (lastPong ?? 0) > timeout) {
+				console.log(`\n[Timeout] User ${id ?? "?"} (${username ?? "?"})`);
+				ws.terminate();
+				onlineUsers.delete(id);
+				continue;
+			}
+
+			// send ping to client
+			try {
+				ws.send(JSON.stringify({ type: "ping" }));
+			} catch {
+				console.log(`\n[Error] Failed to ping ${username}`);
+				ws.terminate();
+				onlineUsers.delete(id);
+			}
+		}
+	}, ping_interval);
+
+	fastify.get('/online', { websocket: true }, (connection: any) => {
+		const ws = connection;
+		let user: number;
+		let name: string;
+
+		ws.on("message", (msg: any) => {
+			const data = JSON.parse(msg.toString());
+			switch (data.type) {
+
+				case "init":
+					if (!data.id || !data.username) {
+						console.log("\Online Socket fail to create\n");
+						ws.send(JSON.stringify({ type: "error", message: "missing data" }));
+						return ;
+					}
+					console.log(`\nOnline Socket is up - ${new Date().toLocaleString('en-MY', {timeZone: 'Asia/Kuala_Lumpur'})}`);
+					console.log(`Welcome, ${data.username}. Current Online:`);
+
+					user = data.id;
+					name = data.username;
+
+					//duplicate connection hm
+					if (onlineUsers.has(user)) {
+						const prev = onlineUsers.get(user);
+						prev.ws.close();
+					}
+					onlineUsers.set(user, { username: data.username, lastPong: Date.now(), ws });
+
+					//log Fastify console
+					for (const [user, info] of onlineUsers.entries()) {
+						console.log(`${user}: ${info.username}`);
+					}
+					console.log("\n");
+
+					ws.send(JSON.stringify({
+						type: "init",
+						// list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
+						list: Array.from(onlineUsers.entries()).map(([id]) => id)
+					}));
+					return ;
+				
+				case "pong":
+					// console.log("I get pong aaw\n");
+					const entry = onlineUsers.get(user);
+					if (entry)
+						entry.lastPong = Date.now();
+					return ;
+
+				case "update":
+					console.log("Huh from update");
+					ws.send(JSON.stringify({
+						type: "update",
+						list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
+					}));
+					return ;
+			
+				case "log_out":
+					if (!user) return ;
+					console.log(`Log out - Goodby ${name ?? "who"}\n`);
+					onlineUsers.delete(user);
+					clearInterval(ping);
+					return ;
+			}
+		});
+
+		ws.on("close", () => {
+			console.log(`\nOnline Socket is closed - ${new Date().toLocaleString('en-MY', {timeZone: 'Asia/Kuala_Lumpur'})}`);
+			console.log(`Goodbye ${name ?? "who"}\n`);
+			if (user)
+				onlineUsers.delete(user);
+			clearInterval(ping);
+		});
+	});
+
 	fastify.post('/profile', async (req: any, res: any) => {
 		try
 		{
@@ -41,8 +144,8 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 					login_status: profile.login_status,
 					win_games: profile.win_games,
 					lose_games: profile.lose_games,
-					total_game: profile.matches_total,
-					win_rate: Math.floor(profile.win_games / profile.matches_total * 100),
+					total_game: profile.win_games + profile.lose_games,
+					win_rate: Math.floor(profile.win_games / (profile.win_games + profile.lose_games) * 100),
 					tournament_wins: profile.tournament_wins
 				}
 			}

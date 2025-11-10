@@ -1,7 +1,7 @@
 import type { GameData } from "../../../backend/share/type/gameData";
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
-import { LoadingScreen } from "../homePage/loadData";
+import { LoadingScreen } from "../homePage/HomeChildC";
 import { Banner } from "./banner";
 import { Player } from "./player";
 import { Result } from "./ResultPage";
@@ -42,7 +42,7 @@ export function GameLayout({
     return (
         <div>
             { //Loading Page
-                Load && 
+                Load &&
                     <div className={`absolute inset-0 flex items-center justify-center`}>
                         <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
                     </div>
@@ -50,7 +50,7 @@ export function GameLayout({
 
             {/* Result Page */}
             {
-                result && 
+                result &&
                     <div className={`absolute inset-0 flex items-center justify-center`}>
                         <Result
                             winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}
@@ -86,7 +86,7 @@ export function GameLayout({
                         txtSmall={isMobile}
                     />
                     {/* Pong game's board */}
-                    <div className="flex flex-col items-center gap-2"> 
+                    <div className="flex flex-col items-center gap-2">
                         <Score score={score} />
                         <Banner //countdown
                             confirm={confirm}

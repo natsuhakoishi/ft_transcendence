@@ -33,7 +33,10 @@
 		"btn_friend": "Friends",
 		"btn_history": "Match History",
 		"text_version": "Version ",
-		"btn_credit": "Credits"
+		"btn_credit": "Credits",
+		"role_en": "Direction / Server/Web Programming",
+		"role_yb": "Game Planning & Programming",
+		"role_zw": "Visual Design / UI/UX Programming"
 	},
 
 	"profile":
@@ -99,6 +102,7 @@
 		{
 			"_comment": "WHEN PLAYERS STAND-BY",
 			"preparing": "Press [Space] to ready: ",
+			"preparing_mob": "Tap to ready: ",
 			"ready": "Ready: ",
 			"waiting": "Waiting for opponent confirm game",
 			"onGoing": "Pong!",

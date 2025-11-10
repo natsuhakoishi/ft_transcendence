@@ -158,10 +158,16 @@ const authApi: FastifyPluginAsync = async (fastify: any) => {
 
 	// logout
 	fastify.post('/logout', async (req: any, res: any) => {
-		const user = await req.jwtVerify();
-		await setLoginStatus(user.id, false);
-		res.clearCookie("cookiesToken");
-		res.send({ message: 'Logged out successfully.' });
+		try
+		{
+			const user = await req.jwtVerify();
+			await setLoginStatus(user.id, false);
+			res.clearCookie("cookiesToken");
+			await setLoginStatus(user.id, false);
+			res.send({ message: 'Logged out successfully.' });
+		} catch {
+			res.status(500).send({ message: 'Server Error: Log Out' });
+		}
 	});
 };
 

@@ -1,54 +1,30 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
-import { loadData, LoadingScreen, type Progress } from "./loadData.tsx"
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { Credit, LoadingScreen, type Progress } from "./HomeChildC.tsx"
 import { useLang, withTranslation, type Lang, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { Matching } from "../gamePage/matching.tsx";
 
-export function LanguageBar() {
+type LanguageBarProps = {
+  bgColor?: string;
+  optionColor?: string;
+};
+
+export function LanguageBar({ bgColor = "bg-gray-800/80", optionColor = "bg-[#1E1622]" }: LanguageBarProps) {
   const { lang, setLang } = useLang();
 
   return (
-    <div className="flex items-center justify-between p-1">
-      <h1 className="text-lg font-bold"></h1>
-      <select value={lang}
-        onChange={(e) => setLang(e.target.value as Lang)}
-        className="border-2 rounded bg-gray-800"
-      >
-        <option value="en" className="bg-blue-950">English</option>
-        <option value="zh" className="bg-blue-950">繁體中文</option>
-        <option value="jp" className="bg-blue-950">日語</option>
-      </select>
-    </div>
+    <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
+      className={`border-2 rounded p-1 text-lg ${bgColor}`}
+      style={{ backgroundColor: bgColor.startsWith("#") ? bgColor : undefined }}
+    >
+      <option value="en" className={optionColor}>English</option>
+      <option value="zh" className={optionColor}>繁體中文</option>
+      <option value="jp" className={optionColor}>日語</option>
+    </select>
   );
 }
-
-function fetchD({ t, toasterPluz }: TranslationProps) { 
-  const [user, setUser] = React.useState<User | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [progress, setProgress] = React.useState<Progress>({ step: `${t("loading.step_start")}`, completed: null, total: 2 });
-
-  React.useEffect(() => {
-    console.log("Fetching data...");
-    setTimeout(() => {
-      loadData({ setLoading, setProgress, setUser }, { t, toasterPluz });
-    }, 500);
-  }, []);
-
-  const refetchData = React.useCallback(() => {
-    console.log("Refetch triggered");
-    setTimeout(() => {
-      loadData({ setLoading, setProgress, setUser }, { t, toasterPluz });
-    }, 500);
-  }, []);
-
-  return (
-    <Outlet context={{ user, loading, progress, refetchData}} />
-  );
-}
-
-export const FetchData = withTranslation(fetchD);
 
 export type SharedData = {
   user: User | null;
@@ -59,9 +35,10 @@ export type SharedData = {
 export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
   const { user, loading, progress } = useOutletContext<SharedData>();
-  const avatarURL = `${import.meta.env.VITE_API_AVATAR}/${user?.profile.avatar_path}?t=${Date.now()}`;
+  const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [match, setMatch] = React.useState<boolean>(false);
-  const [ AI, setAI ] = React.useState(false);
+  const [ AI, setAI ] = React.useState<boolean>(false);
+  const [ creditM, setCreditM ] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -72,56 +49,78 @@ export function HomeP({ t, lang }: TranslationProps) {
       toast.success(`${t("home.msg_greeting")}${user.acc.username}.`);
   }, [user, loading]);
 
-  return (
-    <>
-    {loading ? <LoadingScreen progress={progress}/> : 
-      (match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
-        (<div className="h-screen w-screen max-w-screen grid grid-cols-[1fr_2fr_1fr] bg-cover bg-center bg-black/23 bg-[url('/pic/homeP.jpg')] bg-blend-overlay text-xl">
+return (
+  <>
+  {/* Background Layer */}
+  <div className="absolute min-h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-[url('/pic/homeP.jpg')] bg-black/25 bg-blend-overlay overflow-hidden" />
+  {/* Page Content - Conditional Render [ Loading / Matching / Home Page ] */}
+  {
+    loading ? <LoadingScreen progress={progress}/> :
+      match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
+        (<div className="h-[100lvh] w-[100lvw] grid grid-cols-[1fr_2fr_1fr] overflow-hidden text-xl">
+
+          {/* Pop Up Modal -> Credits page */}
+          {creditM && <Credit onClick={setCreditM} />}
 
           {/*Left part*/}
           <div className="column-start-1 row-span-3 flex flex-col justify-between">
-            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold">
+            {/* Top Left: avatar & username */}
+            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%]">
+              {/* Avatar -> Profile page */}
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover:scale-90 transition-transform"
-                onClick={() => navigate("/profile")}>
+                onClick={() => navigate("/profile")}> 
                 <img className="w-full h-full object-cover" src={avatarURL} />
               </button>
-              <span className="my-1 font-mono text-blue-300 whitespace-nowrap overflow-x-auto">{user?.acc.username}</span>
+              {/* Display -> Username */}
+              <span className="my-1 font-mono text-blue-300">{user?.acc.username}</span>
             </div>
-            <button className="absolute p-1 bottom-2 left-4 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
+            {/* Button -> Friend page */}
+            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
           <div className="column-start-2 row-span-3 flex flex-col items-center">
+
             <div className="flex-1" />
-            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl">
+
+            {/* Menu -> Select Game Mode */}
+            <div className="bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl sm:mb-10">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
+                {/* Button -> Tournament Mode */}
                 <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
-                 onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
+                  onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
 
+                {/* Button -> 1 vs 1 Mode */}
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
-                 onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
+                  onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
+                {/* Button -> AI Mode */}
                 <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl"
-                 onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
+                  onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
+              
               </div>
             </div>
+
             <div className="flex-1" />
-            <span className="mb-3">{t("home.btn_credit")}</span>
+
+            {/* Display -> trigger Credits modal */}
+            <span className="absolute bottom-2 cursor-pointer" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
           </div>
 
           {/*Right part*/}
           <div className="column-start-3 row-span-3 flex flex-col items-end mr-3">
+            {/* Display -> Game Version */}
             <span className="p-2 font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
+            {/* Dropdown -> Language Selector */}
             <LanguageBar />
-            <button className="absolute bottom-2 right-4 p-1 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            {/* Button -> Match History page */}
+            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 hover:scale-120 transition-transform font-bold" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
-
-        </div>
-      ))
-    }
-    </>
-  );
+        </div>)
+  }
+  </>
+);
 }
 
 export const Home = withTranslation(HomeP);
