@@ -36,7 +36,9 @@
 		"btn_credit": "製作名單",
 		"role_en": "專案指導 / 伺服器與網站開發",
 		"role_yb": "遊戲企劃 & 程式開發",
-		"role_zw": "視覺設計 / UI/UX程式開發"
+		"role_zw": "視覺設計 / UI/UX程式開發",
+
+		"tutor": "如何操作 ?"
 	},
 
 	"profile":

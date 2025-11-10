@@ -40,6 +40,8 @@ body {
     font-weight: bold;
 }
 
+
+
 .hover {
   @apply cursor-pointer transition-transform ease-in-out duration-100;
 }

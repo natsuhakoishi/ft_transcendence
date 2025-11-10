@@ -67,9 +67,9 @@ return (
           {tutorM && <Tutorial onClick={setTutorM} />}
 
           {/*Left part*/}
-          <div className="column-start-1 row-span-3 flex flex-col justify-between">
+          <div className="relative column-start-1 row-span-3 flex flex-col justify-between">
             {/* Top Left: avatar & username */}
-            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%]">
+            <div className="flex gap-2 mx-1 my-1 p-1 bg-gray-300/20 rounded-2xl font-bold w-[80%] backdrop-blur-lg">
               {/* Avatar -> Profile page */}
               <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex items-center justify-center hover-increase"
                 onClick={() => navigate("/profile")}> 
@@ -79,7 +79,7 @@ return (
               <span className="my-1 font-mono text-blue-300">{user?.acc.username}</span>
             </div>
             {/* Button -> Friend page */}
-            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/50 font-bold hover hover:scale-120" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
+            <button className="absolute p-2 bottom-2 left-4 rounded-2xl bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/friends")}>{t("home.btn_friend")}</button>
           </div>
 
           {/*Center part*/}
@@ -88,23 +88,23 @@ return (
             <div className="flex-1" />
 
             {/* Menu -> Select Game Mode */}
-            <div className="relative bg-[#F5CFED]/55 w-full h-1/2 rounded-4xl sm:mb-10">
+            <div className="relative w-full h-1/2 sm:mb-10 rounded-4xl bg-[#F5CFED]/55">
               <div className="grid grid-cols-2 gap-2 p-10 w-full h-full place-items-center x">
                 {/* Button -> Tournament Mode */}
-                <button className="row-span-2 w-full h-full bg-[#925192]/80 rounded-2xl hover-increase"
+                <button className="row-span-2 w-full h-full bg-[#925192]/60 rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
 
                 {/* Button -> 1 vs 1 Mode */}
-                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl hover-increase"
+                <button className="bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
                 {/* Button -> AI Mode */}
-                <button className="bg-[#BF91B2]/85 h-full w-[90%] rounded-2xl hover-increase"
+                <button className="bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
               
               </div>
-              <button className="absolute top-2 right-2 w-12 aspect-square rounded-full border-2 border-[#AC9ABE]/50 hover-increase"
+              <button className="absolute top-2 right-2 w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase"
                 onClick={() => setTutorM(true)}>
                 <img className="w-full h-full object-cover" src="/pic/icons/how.png" />
               </button>
@@ -123,7 +123,7 @@ return (
             {/* Dropdown -> Language Selector */}
             <LanguageBar />
             {/* Button -> Match History page */}
-            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/50 font-bold hover hover:scale-120" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            <button className="absolute bottom-2 right-4 rounded-2xl p-2 bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
         </div>)
   }

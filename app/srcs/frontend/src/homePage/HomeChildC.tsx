@@ -54,10 +54,10 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40" onClick={() => onClick(false)}>
 
     {/* Modal -> Credit */}
-    <div className="p-1 h-[99%] w-[69%] md:w-[60%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-2xl border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
+    <div className="p-1 h-[99%] w-[69%] md:w-[60%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-lg border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
       {/* Title */}
       <h1 className="text-xl md:text-2xl text-center">{t("home.btn_credit")}</h1>
       {/* Team Credit list */}
@@ -84,14 +84,17 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
 
 export function Tutorial({ onClick }: { onClick: React.Dispatch<React.SetStateAction<boolean>> }) {
   const isMobileRef = React.useRef(isMobile());
+  const { t } = useLang();
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-300/20 backdrop-blur-sm" onClick={() => onClick(false)}>
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40 backdrop-blur-xs" onClick={() => onClick(false)}>
       {/* Img - Tutorial */}
       <div className="h-[99%] w-[69%] md:w-[60%] md:h-[68%]">
-        <img className="w-full h-full object-cover" src={`${!isMobileRef ? "/pic/tutorial_mobile.png" : "/pic/tutorial_pc.png"}`} />
+        <h1 className="text-3xl font-bold text-shadow-lg text-center mb-5">{t("home.tutor")}</h1>
+        <img className="w-full h-[90%] object-cover rounded-lg" src={`${!isMobileRef ? "/pic/tutorial_mobile.png" : "/pic/tutorial_pc.png"}`} />
       </div>
     </div>
   );
 }
+//todo add more key
