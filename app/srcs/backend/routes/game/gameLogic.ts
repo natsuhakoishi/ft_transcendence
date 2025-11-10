@@ -3,27 +3,28 @@ import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
 import { Room } from "../../share/type/roomData.ts";
+import { TRoom } from "../../share/type/tournamentRoomData.ts";
 import { AILogic } from "./AIGameLogic.ts";
 import { resetBall } from "./gameUtils.ts";
 
-export function start(room: Room | AIRoom, gameOver: () => void): void {
+export function start(room: Room | AIRoom, gameOver: () => void, tour: TRoom | null): void {
     room.getState().gamingStage = true;
     console.log("/gameplay: start");
 
-    startRound(room, gameOver);
+    startRound(room, gameOver, tour);
 }
 
-function startRound(room: Room | AIRoom, gameOver: () => void): void {
+function startRound(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
     resetBall(room.getState());
 
     room.broadCast("start");
 
     setTimeout(() => {
-        runLoop(room, gameOver);
+        runLoop(room, gameOver, tour);
     }, 2000);
 }
 
-export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
+export function runLoop(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
     let runtime: number = 0;
     const intervalId = setInterval( () => {
         runtime += 16;
@@ -35,7 +36,7 @@ export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
             AILogic(room, runtime);
 
         gameLoop(state);
-        if (state.playerOffline)
+        if (state.playerOffline || tour?.checkOffline())
         {
             end(room, gameOver);
             clearInterval(intervalId);
@@ -58,7 +59,7 @@ export function runLoop(room: Room | AIRoom, gameOver: () => void): void {
     }, 16); //16ms ~60fps
 }
 
-function handleGoal(room: Room | AIRoom, gameOver: () => void): void {
+function handleGoal(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
 
     room.broadCast("goal");
     
@@ -78,7 +79,7 @@ function handleGoal(room: Room | AIRoom, gameOver: () => void): void {
         return ;
     }
 
-    startRound(room, gameOver);
+    startRound(room, gameOver, tour);
 }
 
 function end(room: Room | AIRoom, gameOver: () => void): void {

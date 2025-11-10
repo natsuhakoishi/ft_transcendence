@@ -23,6 +23,8 @@ services:
         - ./certs:/certs
     networks:
         - klbq_network
+    depends_on:
+        - backend
 
 networks:
     klbq_network:

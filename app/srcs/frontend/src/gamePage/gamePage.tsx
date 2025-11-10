@@ -139,6 +139,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 }
                 else if (type === "game_over_offline" || type === "timeout")
                 {
+                    cleanTouch();
                     console.log("/gamePage: game over offline");
                     ws.close();
                     console.log("/gamepage: confirm", confirmRef.current);

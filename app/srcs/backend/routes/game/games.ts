@@ -6,6 +6,7 @@ import { handleKeyPress, start } from "./gameLogic.ts";
 import { createMatch } from "../../database/match.ts";
 import type { GameScore } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
+import { TRoom } from "../../share/type/tournamentRoomData.ts";
 
 const games: FastifyPluginAsync = async (fastify: any) => {
     // const rooms: RoomManager = new RoomManager();
@@ -32,22 +33,32 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             }
             handleKeyPress(room, data, player);
 
+            let Troom: TRoom | null = null;
+            if (data.tournament)
+                Troom = fastify.tournamentRooms.getRoomByPlayerID(room.getP1ID());
             if (room.getConfirm() === 2 && !room.getState().gamingStage)
                 start(room, () => {
                     const score: GameScore = room.getState().score;
                     try {
                         ( async () => {
-                            const MatchID: number = await createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
                             console.log("/gameplay: call database success");
                             if (data.tournament)
-                                fastify.tournamentRooms.getRoomByPlayerID(room.getP1ID()).updateWinnerNLoser(room.getP1ID(), MatchID, score.p1Score, score.p2Score);
+                            {
+                                if (Troom && !Troom.checkOffline())
+                                {
+                                    const MatchID: number = await createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
+                                    Troom.updateWinnerNLoser(room.getP1ID(), MatchID, score.p1Score, score.p2Score);
+                                }
+                            }
+                            else if (!data.tournament)
+                                await createMatch(room.getP1ID(), room.getP2ID(), score.p1Score, score.p2Score, data.tournament);
                         })()
                     }
                     catch (e) {
                         console.log(e);
                     }
                     fastify.rooms.removeRoom(room.getRoomID());
-                });
+                }, Troom);
         });
 
         ws.on("close", () =>

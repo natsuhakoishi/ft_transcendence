@@ -3,33 +3,38 @@ DC := ./docker-compose.yml
 all: re
 
 build:
-	sudo docker compose -f $(DC) build
+	docker compose -f $(DC) build
 
 up:
-	sudo docker compose -f $(DC) up -d
+	docker compose -f $(DC) up -d
 
 down:
-	sudo docker compose -f $(DC) down
+	docker compose -f $(DC) down
 
 ps:
-	sudo docker ps
+	docker ps
 
 clean:
-	sudo docker system prune
+	docker system prune
 
 dbclean:
 	rm -rf ./database/*
 	find ./app/srcs/backend/assets/avatars -type f ! \( -name 'default.*' -o -name '*_dev.*' \) -delete\
 
+cclean:
+	sudo rm -rf ./certs
+
 fclean:
-	sudo docker stop $(shell sudo docker ps -qa) 2>/dev/null || true
-	sudo docker rm $(shell sudo docker ps -qa) 2>/dev/null || true
-	sudo docker rmi $(shell sudo docker images -qa) 2>/dev/null || true
-	sudo docker volume rm $(shell sudo docker volume ls -q) 2>/dev/null || true
-	sudo docker network rm $(shell sudo docker network ls -q) 2>/dev/null || true
+	docker stop $(shell  docker ps -qa) 2>/dev/null || true
+	docker rm $(shell  docker ps -qa) 2>/dev/null || true
+	docker rmi $(shell  docker images -qa) 2>/dev/null || true
+	docker volume rm $(shell  docker volume ls -q) 2>/dev/null || true
+	docker network rm $(shell  docker network ls -q) 2>/dev/null || true
 
 aclean: dbclean fclean
 
+aaclean: dbclean cclean fclean
+
 re: down fclean up
 
-keep: re
+rere: aclean re
