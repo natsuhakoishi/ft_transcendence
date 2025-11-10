@@ -4,11 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
 import type { GameScore, GameState} from "../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
-import { LoadingScreen } from "../homePage/loadData.tsx";
-import { Score } from "./Score.tsx";
-import { Player } from "./player.tsx";
-import { Result } from "./ResultPage.tsx";
-import { Banner } from "./banner.tsx";
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import { draw, sendKeyPress } from "./gameUtils.ts";
 import { GameLayout } from "./gameLayout.tsx";
@@ -144,6 +139,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 }
                 else if (type === "game_over_offline" || type === "timeout")
                 {
+                    cleanTouch();
                     console.log("/gamePage: game over offline");
                     ws.close();
                     console.log("/gamepage: confirm", confirmRef.current);
