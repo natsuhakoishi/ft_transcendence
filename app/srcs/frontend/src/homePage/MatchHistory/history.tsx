@@ -240,7 +240,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         <section>
         { !matches || !matches.user_matches || matches.user_matches.length === 0 ?
           <div className="flex items-center w-full h-full font-semibold">
-            <div className="bg-emerald-700/50  backdrop-blur-lg w-full h-[20%] text-center place-content-center">
+            <div className={`${isMe ? "bg-emerald-700/50" : "bg-[#4B545B]/50"}  backdrop-blur-lg w-full h-[20%] text-center place-content-center`}>
               <p>{t("history.status_empty")}</p>
             </div>
           </div>
