@@ -81,19 +81,25 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                     const p4: Player = waitingTPlayers.shift()!;
     
                     const players: Player[] = [p1, p2, p3, p4];
+                    const set = new Set<number>();
                     let ok: boolean = true;
-                    for (let i = 0; i < 4; i++)
-                        for (let j = 0; j < 4; j++)
-                            if (i !== j && players[i].id === players[j].id)
-                            {
-                                ok = false;
-                                p1.ws.send(JSON.stringify({success: false}));
-                                p2.ws.send(JSON.stringify({success: false}));
-                                p3.ws.send(JSON.stringify({success: false}));
-                                p4.ws.send(JSON.stringify({success: false}));
-                            }
+                    for (const player of players)
+                    {
+                        if (set.has(player.id))
+                        {
+                            ok = false;
+                            break ;
+                        }
+                        set.add(player.id);
+                    }
 
-                    if (ok)
+                    if (!ok) {
+                        const m = JSON.stringify({success: false});
+                        players.forEach((player) => {
+                            player.ws.send(m);
+                        })
+                    }
+                    else
                     {
                         const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
     
