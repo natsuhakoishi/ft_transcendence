@@ -54,8 +54,7 @@ function Match ({ id, won, match, isTour } : { id: number, won: Winner, match: M
   const new_date = new Date(match.game_time + "Z");
   const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
   const [date, time] = local_date.split(", ");
-  const { user } = useOutletContext<{ user: User | null }>();
-  const isUser = user?.acc.user_id === match.player1.user_id ? 1 : 2;
+  const isUser = id === match.player1.user_id ? 1 : 2;
 
   return (
     <div className="flex justify-between items-center w-full">

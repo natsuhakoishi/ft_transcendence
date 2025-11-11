@@ -7,7 +7,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { checkUsernameExist, getUserById, updatePasswordById, updateUsernameById } from "../../database/user.ts";
 import { getProfileById, setAvatarPath } from "../../database/profile.ts";
 import { hashPassword, verifyPassword } from './auth-helper/pwHash.ts';
-import type { User } from '../../share/type/user.ts';
+import type { Profile, User } from '../../share/type/user.ts';
 
 const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	const ping_interval = 1000 * 45;
@@ -40,6 +40,14 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 	}, ping_interval);
 
 	fastify.get('/basic_profile/:id', async (req: any, res: any) => {
+		const { id } = req.params;
+		try {
+			const data = await getProfileById(id);
+			return {id: id, name: data.username, avatar: data.avatar_path};
+		}
+		catch (e) {
+			res.status(500).send({ message: `Server Error: fetch ${id}'s profile` });
+		}
 	});
 
 	fastify.get('/online', { websocket: true }, (connection: any) => {
