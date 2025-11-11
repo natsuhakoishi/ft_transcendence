@@ -40,7 +40,7 @@ function App() {
             <Route path="/match_history/:id" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
-          <Route path="/game" >
+          <Route path="/game" element={<NotFound />}>
             <Route path="loading" element={<Loading />} />
             <Route path="gameplay" element={<GamePage />} />
             <Route path="tournament/*" element={<TournamentGamePage />} />

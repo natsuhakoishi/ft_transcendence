@@ -195,6 +195,8 @@ function checkLeftPaddle(Paddle: Paddle, ball: Ball): void {
         ball.vx = Math.abs(ball.vx); //turn right
         ball.vy *= 1.2;
         ball.vx *= 1.2;
+
+        ball.vy += (Math.random() - 0.5) * 4;
     }
 }
 
@@ -208,5 +210,7 @@ function checkRightPaddle(Paddle: Paddle, ball: Ball): void {
         ball.vx = -Math.abs(ball.vx); //turn left
         ball.vy *= 1.2;
         ball.vx *= 1.2;
+
+        ball.vy += (Math.random() - 0.5) * 4;
     }
 }
