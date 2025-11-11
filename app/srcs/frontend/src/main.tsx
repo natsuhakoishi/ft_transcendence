@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./style.css";
 import { LoginPage } from "./otherPage/auth.tsx";
@@ -41,6 +41,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
           <Route path="/game" >
+            <Route index element={<Navigate to="/" replace />} />
             <Route path="loading" element={<Loading />} />
             <Route path="gameplay" element={<GamePage />} />
             <Route path="tournament/*" element={<TournamentGamePage />} />

@@ -56,11 +56,12 @@ export const GAME_PADDLES_MARGIN_PX: string | undefined = process.env.GAME_PADDL
 export const GAME_BALL_RADIUS_PX: string | undefined = process.env.GAME_BALL_RADIUS_PX;
 export const GAME_BALL_VX_PX: string | undefined = process.env.GAME_BALL_VX_PX;
 export const GAME_BALL_VY_PX: string | undefined = process.env.GAME_BALL_VY_PX;
+export const GAME_STUPID_AI_CONFIG: string | undefined = process.env.GAME_STUPID_AI_CONFIG;
 
 if (!GAME_BOARD_WIDTH_PX || !GAME_BOARD_HEIGHT_PX ||
 	!GAME_PADDLES_HEIGHT_PX || !GAME_PADDLES_WIDTH_PX ||
 	!GAME_PADDLES_MARGIN_PX || !GAME_BALL_RADIUS_PX ||
-	!GAME_BALL_VX_PX || !GAME_BALL_VY_PX)
+	!GAME_BALL_VX_PX || !GAME_BALL_VY_PX || !GAME_STUPID_AI_CONFIG)
 {
 	console.error('Error: Game\'s env not found');
 	process.exit(1);
