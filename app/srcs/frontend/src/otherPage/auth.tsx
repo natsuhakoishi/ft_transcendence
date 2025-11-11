@@ -188,8 +188,6 @@ export function LoginP({ t, toasterPluz }: TranslationProps) {
     <div className="h-full w-[60%] flex flex-col justify-end md:justify-center items-center mb-3 bg-[#915C2E]/30 backdrop-blur-base gap-2">
       <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[78%] md:h-[60%] shadow-2xl text-justify gap-2">
 
-      <span className={`${mode === "register" && "hidden"} text-xs md:text-sm text-red-900`}>*Please provide a valid email address!</span>
-
       {/* OTP Verification Modal (Shared) */}
       {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
 

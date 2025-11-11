@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
-import { createMatch, getMatchByUserId } from "../../database/match.ts";
+import { getMatchByUserId } from "../../database/match.ts";
 import type { MatchMeResponse, Match, TournamentMatch } from '../../share/type/history.ts';
 import { getTournamentLeaderboard } from "../../database/tournament.ts";
 import { getUserById } from "../../database/user.ts";
@@ -20,7 +20,8 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			if (!profile)
 				return res.status(404).send({ message: 'Profie Not Found' });
 
-			const matches = await getMatchByUserId(req.user);
+			const matches = await getMatchByUserId(id);
+			// console.log(matches);
 			const toMatch = (match: any): Match => ({
 				mode: match.tournament_id ? "tournament" : "match",
 				match_id: match.id,
@@ -37,8 +38,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			let count = 0;
 
 			for (const match of matches) {
-				if (count == 5) break;
-
+				if (count == 6) break;
 				if (match.tournament_id)
 				{
 					let tournamentEntry = tournament.get(match.tournament_id);
@@ -59,15 +59,14 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					if (match.game_time < tournamentEntry.tournament.start_time)
 						tournamentEntry.tournament.start_time = match.game_time;
 					tournamentEntry.matches.push(toMatch(match));
-					// if (count == 5) break;
 				} else {
 					user_matches.push(toMatch(match));
 					count++;
-					// if (count == 5) break;
 				}
 			}
-
-			res.send({ user_id: req.user, user_matches, message: "Match history get successfully" });
+			if (count == 6)
+				user_matches.pop();
+			res.send({ user_id: id, user_matches, message: "Match history get successfully" });
 		}
 		catch (error)
 		{

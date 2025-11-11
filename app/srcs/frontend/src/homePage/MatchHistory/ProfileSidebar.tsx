@@ -2,7 +2,7 @@ import { useNavigate, useOutletContext } from "react-router-dom"
 import { withTranslation, type TranslationProps } from "../../_hooks/language"
 import type { User } from "../../../../backend/share/type/user";
 
-function ProfileSB({ t }: TranslationProps) {
+function ProfileSB({ t, isMe }: { isMe: boolean } & TranslationProps ) {
   const navigate = useNavigate();
   const { user } = useOutletContext<{ user: User | null }>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
@@ -18,33 +18,35 @@ function ProfileSB({ t }: TranslationProps) {
       <div className="hidden md:block"/>
       <div className="hidden md:block"/>
 
+      { isMe &&
+      <>
       <div className="flex flex-col mt-2">
         {/* Avatar */}
-        <button className="aspect-square h-16 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
+        <button className="aspect-square h-12 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
         {/* Username */}
-        <span className="text-center text-lg md:text-2xl text-[#9DD6AD]">{user?.acc.username}</span>
+        <span className="text-center text-base md:text-2xl text-[#9DD6AD]">{user?.acc.username}</span>
       </div>
 
       <div className="hidden md:block"/>
 
       {/* User's Game Statues */}
-      <div className="mt-2 flex flex-col items-center">
+      <div className="mt-2 flex flex-col items-center text-xs md:text-base">
         <div className="hidden md:flex md:flex-col md:items-center">
-        {/* Won */}
-        <span className="hidden md:inline">{t("shared.game_stat.won")}</span>
-        <span className="hidden md:inline
-          leading-[150%] text-golden
-          [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]"
-        >{displayDash(win_games)}</span>
+          {/* Won */}
+          <span className="hidden md:inline">{t("shared.game_stat.won")}</span>
+          <span className="hidden md:inline
+            leading-[150%] text-golden
+            [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]"
+          >{displayDash(win_games)}</span>
 
-        {/* Tournament won */}
-        <span>{t("shared.game_stat.tournament")}</span>
-        <span className="
-          leading-[150%] text-golden
-          [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]"
-        >{displayDash(tournament_wins)}</span>
+          {/* Tournament won */}
+          <span>{t("shared.game_stat.tournament")}</span>
+          <span className="
+            leading-[150%] text-golden
+            [text-shadow:1px_1px_2px_rgba(0,0,0,0.6),-1px_-1px_2px_rgba(255,255,255,0.7)]"
+          >{displayDash(tournament_wins)}</span>
         </div>
 
         {/* Total match */}
@@ -61,6 +63,8 @@ function ProfileSB({ t }: TranslationProps) {
           {!win_rate ? "-" : `${win_rate} %`}
         </span>
       </div>
+      </>
+      }
 
       <div className="hidden md:block"/>
 

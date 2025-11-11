@@ -127,7 +127,7 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
       <div className={`w-[25%] h-full gap-1 md:gap-2 flex flex-col justify-center items-center`}>
 
         {/* Username */}
-        <span className="text-lg">{previewName}</span>
+        <span className="text-base md:text-lg">{previewName}</span>
 
         {/* Avatar */}
         <button className="aspect-square h-1/2 rounded-full overflow-clip border-2 border-gray-300 disable" tabIndex={-1}>
@@ -145,13 +145,13 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
 
         {/* Option 1: Update Avatar */}
         <div className="flex">
-          <button type="button" className="rounded-sm border-2 p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>{t("profile.btn_update_avatar")}</button>
+          <button type="button" className="rounded-sm border-2 p-1 md:p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => {pickAvatar(), setToggle("upAvatar")}}>{t("profile.btn_update_avatar")}</button>
             <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(event) => avatarUpdate(event, setPreview, refetch, toasterPluz)}/>
         </div>
 
         {/* Option 2: Update Username */}
         <div className="flex gap-2">
-          <button type="button" className="rounded-sm border-2 p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upName")}>{t("profile.btn_update_name")}</button>
+          <button type="button" className="rounded-sm border-2 p-1 md:p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upName")}>{t("profile.btn_update_name")}</button>
           {/* Small modal toggled when user want change username */}
           {toggle === "upName" &&
             (<form className="flex gap-1 items-center" onSubmit={(event) => submitUsername(event, setPreviewName, setToggle, refetch, toasterPluz)}>
@@ -166,7 +166,7 @@ export function MenuOption({ user, refetch } : { user : User | null; refetch: ()
 
         {/* Option 3: Update Password */}
         <div className="flex gap-2">
-          <button className="rounded-sm border-2 p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upPass")}>{t("profile.btn_update_password")}</button>
+          <button className="rounded-sm border-2 p-1 md:p-2 h-fit w-38 md:w-40 bg-[#AA89C4]/45 hover-increase" onClick={() => setToggle("upPass")}>{t("profile.btn_update_password")}</button>
           {/* Small modal toggled when user want change password */}
           {toggle === "upPass" &&
             (<form className="flex gap-1 items-center" onSubmit={(event) => submitPassword(event, setToggle, toasterPluz)}>

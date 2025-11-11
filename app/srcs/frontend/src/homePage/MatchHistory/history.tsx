@@ -4,7 +4,7 @@ import { useLang, withTranslation, type TranslationProps } from "../../_hooks/la
 import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backend/share/type/history";
 import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./HistoryChildC";
 import { ProfileSideBar } from "./ProfileSidebar";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { LoadingScreen } from "../HomeChildC";
 import type { User } from "../../../../backend/share/type/user";
 
@@ -12,7 +12,7 @@ function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, u
   // console.log(entries);
 
   return ( entries && entries.matches && entries.matches.length >= 2 &&
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 h-[90%]">
       <HistoryRow match={entries.matches[0]} user_id={user_id} onTournamentClick={() => {}}/>
       <HistoryRow match={entries.matches[1]} user_id={user_id} onTournamentClick={() => {}}/>
     </div>
@@ -22,14 +22,14 @@ function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, u
 function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch, }) {
   const new_date = new Date(entries.tournament.start_time + "Z");
   const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
-  const [date, time] = local_date.split(" ");
+  const [date, time] = local_date.split(", ");
 
   return (
     <div className="flex justify-between items-center w-full">
-      <div />
+      <div className="hidden md:block"/>
 
       <div className="flex justify-start items-center">
-        <button className="w-13 aspect-square overflow-hidden disable" tabIndex={-1}>
+        <button className="hidden md:block w-10 md:w-13 aspect-square overflow-hidden disable" tabIndex={-1}>
           <img src="/pic/icons/trophy.png" className="drop-shadow-lg w-full h-full object-cover"/>
         </button>
         <ModeIndicate mode="tour" />
@@ -44,7 +44,7 @@ function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch,
 
       <DateTime date={date} time={time} />
       <WinStatus won={won} />
-      <div />
+      <div className="hidden md:block"/>
 
     </div>
   );
@@ -53,7 +53,9 @@ function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch,
 function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: boolean, }) {
   const new_date = new Date(match.game_time + "Z");
   const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
-  const [date, time] = local_date.split(" ");
+  const [date, time] = local_date.split(", ");
+  const { user } = useOutletContext<{ user: User | null }>();
+  const isUser = user?.acc.user_id === match.player1.user_id ? 1 : 2;
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -66,7 +68,7 @@ function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: bo
         <PlayerInfo pInfo={match.player2} />
       </section>
 
-      <ScoreBoard P1={match.player1.score} P2={match.player2.score} won={won} />
+      <ScoreBoard P1={match.player1.score} P2={match.player2.score} won={won} isUser={isUser} />
       <DateTime date={date} time={time} />
       <WinStatus won={won} />
       <div />
@@ -132,17 +134,17 @@ const HistoryList = ({ matches, user_id, onClickHandler } : {
   const records = [...matches, ...Array(5 - matches.length).fill(null)];
 
   return (
-  <div className="h-[55%] w-full flex flex-col overflow-y-scroll p-0.5
-    md:h-full md:grid md:grid-rows-5 md:overflow-hidden"
-  >
-    {records.map((record, i) => (
-      <div key={i} className="flex-1 p-0.5 md:h-full md:p-1.5">
-        {!record ? <div/> :
-          <HistoryRow match={record} user_id={user_id} onTournamentClick={onClickHandler} />
-        }
-      </div>
-    ))}
-  </div>
+    <div className="h-[55%] w-full flex flex-col p-0.5 overflow-x-hidden
+      md:h-full md:grid md:grid-rows-5 md:overflow-hidden"
+    >
+      {records.map((record, i) => (
+        <div key={i} className="flex-1 p-0.5 md:h-full md:p-1.5">
+          {!record ? <div/> :
+            <HistoryRow match={record} user_id={user_id} onTournamentClick={onClickHandler} />
+          }
+        </div>
+      ))}
+    </div>
   );
 };
 
@@ -163,13 +165,14 @@ function ExpandTourModal({ children, onClose, }: {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
-      <div className="col-start-1 flex items-center p-2 ">
+    <div className="fixed inset-0 z-40 flex md:grid md:grid-cols-[1fr_15%] bg-black/50">
+      <div className="col-start-1 flex md:items-center p-2 w-[80%] md:w-full h-screen">
         <div ref={modalRef} className="
-        bg-[#1f3735]/80 backdrop-blur-sm 
+        bg-[#1f3735]/80 backdrop-blur-sm
           border border-[#9DD6AD]/40 shadow-xl rounded-lg
-          p-5 w-full h-65 overflow-ellipsis">
-            {children}
+          p-5 py-3 md:py-5 w-full h-[82%] md:h-70 overflow-ellipsis"
+        >
+          {children}
           <p className="text-white/80 text-sm mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
         </div>
       </div>
@@ -178,26 +181,29 @@ function ExpandTourModal({ children, onClose, }: {
 }
 
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
-  const { user } = useOutletContext<{ user: User | null }>();
+  const { user, loading } = useOutletContext<{ user: User | null, loading: boolean }>();
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
   const [entries, setEntries] = useState<TournamentMatch | null>(null);
-  const { loading } = useOutletContext<{ loading: boolean}>();
+  const { id } = useParams();
+  let user_id: any;
+  if (!loading)
+     user_id = id ?? user?.acc.user_id;
+  const isMe = user_id === user?.acc.user_id;
 
   const handleTournamentClick = (entries: TournamentMatch) => {
-    setEntries(entries); setTourModal(true);
+    setEntries(entries);
+    setTourModal(true);
   };
 
   React.useEffect(() => {
     document.title = t("history.title");
 
-    if (!loading)
+    if (!loading && user_id)
     {
       const fetchHistory = async () => {
         try {
-          const id = user?.acc.user_id;
-          const data = await apiFetchPrivate(`match/${id}`, { method: "GET" });
-          console.log(data);
+          const data = await apiFetchPrivate(`match/${user_id}`, { method: "GET" });
           setMatches(data);
         } catch (err: any) {
           toasterPluz("ERR_fetchH");
@@ -206,18 +212,20 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
       fetchHistory();
     }
 
-  }, [loading]);
+    return () => setMatches(null);
+  }, [loading, user_id]);
 
 	return (
   <>
   {/* Background Layer */}
-  <div className="absolute h-[100lvh] w-[100lvw] inset-0 -z-10 bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay" />
+  <div className="absolute w-[100dvw] h-[100dvh] inset-0 -z-10 bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay" />
+
   { loading ?
     <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
       :
     <>
     {/* History Page Content */}
-      <div className="relative w-[100dvw] h-screen grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%]">
+      <div className="relative w-[100svw] h-[100svh] grid grid-cols-[1fr_20%] md:grid-cols-[1fr_15%] overflow-hidden">
 
         {/* Tournament Modal */}
         {TourModal && 
@@ -235,18 +243,19 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
             </div>
           </div>
             :
-          <HistoryList matches={matches.user_matches ?? []} user_id={matches.user_id} onClickHandler={handleTournamentClick} />
+          <HistoryList matches={matches.user_matches ?? []} user_id={user_id} onClickHandler={handleTournamentClick} />
         }
         </section>
 
         {/* Right side: User's profile */}
-        <section className="h-screen flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
-          <ProfileSideBar />
+        <section className="h-[55%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
+          <ProfileSideBar isMe={isMe}/>
         </section>
 
       </div>
     </>
   }
+
   </>
   );
 }

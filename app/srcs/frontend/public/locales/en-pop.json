@@ -51,7 +51,7 @@
 
 		"ERR_UpAva_type": "File type not support. Only: webp, jpeg, jpg, png",
 		"ERR_UpAva_size": "File too large! Size < 10MB",
-		"OK_UpAva": "Avar update successfully"
+		"OK_UpAva": "Avatar update successfully"
 	},
 
 	"friend":
