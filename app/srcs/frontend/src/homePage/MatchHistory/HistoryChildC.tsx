@@ -61,7 +61,7 @@ export function PlayerInfo ({ id, pInfo }: { id: number, pInfo: Player | PlayerW
   return (
     <div className="flex flex-col items-center md:w-15 text-center">
       <div className="relative h-10 md:h-13 aspect-square flex-shrink-0">
-        <button className="aspect-square h-full rounded-full overflow-clip border-1 md:border-2 border-gray-300" tabIndex={-1}>
+        <button className="aspect-square h-full rounded-full overflow-clip hover border-1 md:border-2 border-gray-300" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
         <span className={`text-sm md:text-base text-center text-gray-200 w-full ${isMe && "p-0.5 md:p-1 bg-[#9DD6AD]/80 inline-block rounded-3xl justify-center"}`}>{isPlayerI ? pInfo.username : pInfo.name}</span>
