@@ -1,5 +1,17 @@
 import React from "react";
 import { bakery } from "../utils";
+import en from "../locales/en.json"
+import en_pop from "../locales/en-pop.json"
+import zh from "../locales/zh.json"
+import zh_pop from "../locales/zh-pop.json"
+import jp from "../locales/jp.json"
+import jp_pop from "../locales/jp-pop.json"
+
+export const dictionaries = {
+  en: { ...en, pop: en_pop },
+  zh: { ...zh, pop: zh_pop },
+  jp: { ...jp, pop: jp_pop },
+};
 
 export type Lang = "en" | "zh" | "jp";
 
@@ -11,29 +23,9 @@ export function useLanguage() {
   const [translations, setTranslations] = React.useState<Record<string, any>>({});
 
   React.useEffect(() => {
-    const file = `${lang}.json`;
-    const pop = `${lang}-pop.json`;
-
-    Promise.all([
-      fetch(`locales/${file}`)
-        .then(res => res.json())
-        .catch(() => {
-          console.error(`Missing language file: ${file}`);
-          return {};
-        }),
-      fetch(`locales/${pop}`)
-        .then(res => res.json())
-        .catch(() => {
-          console.error(`Missing language file: ${pop}`);
-          return {};
-        }),
-    ]).then(([Data, popData]) => {
-      const merged = { ...Data, pop: popData, };
-      setTranslations(merged);
-      // console.log(merged);
-      localStorage.setItem("lang", lang);
-    });
-
+    const langDict = dictionaries[lang] || dictionaries['en'];
+    setTranslations(langDict);
+    localStorage.setItem('lang', lang);
   }, [lang]);
 
   const t = (key: string): string =>
