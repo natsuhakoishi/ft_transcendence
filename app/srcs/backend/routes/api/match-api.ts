@@ -21,6 +21,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 				return res.status(404).send({ message: 'Profie Not Found' });
 
 			const matches = await getMatchByUserId(req.user);
+			console.log(matches);
 			const toMatch = (match: any): Match => ({
 				mode: match.tournament_id ? "tournament" : "match",
 				match_id: match.id,
@@ -37,8 +38,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			let count = 0;
 
 			for (const match of matches) {
-				if (count == 5) break;
-
+				if (count == 6) break;
 				if (match.tournament_id)
 				{
 					let tournamentEntry = tournament.get(match.tournament_id);
@@ -59,14 +59,13 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 					if (match.game_time < tournamentEntry.tournament.start_time)
 						tournamentEntry.tournament.start_time = match.game_time;
 					tournamentEntry.matches.push(toMatch(match));
-					// if (count == 5) break;
 				} else {
 					user_matches.push(toMatch(match));
 					count++;
-					// if (count == 5) break;
 				}
 			}
-
+			if (count == 6)
+				user_matches.pop();
 			res.send({ user_id: req.user, user_matches, message: "Match history get successfully" });
 		}
 		catch (error)

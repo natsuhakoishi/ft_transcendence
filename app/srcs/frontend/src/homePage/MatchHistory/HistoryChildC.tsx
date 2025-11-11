@@ -15,7 +15,7 @@ export function WinStatus ({ won } : { won: Winner }) {
   };
 
   return (
-    <span className={`relative font-bold text-lg ${won === true || won === 1 ? 'text-golden' : 'text-silver'}`} 
+    <span className={`relative font-bold text-base md:text-lg ${won === true || won === 1 ? 'text-golden' : 'text-silver'}`} 
       style={{ textShadow: (won || (typeof won === "number" && getOrdinal(won) === t("shared.game_stat.rank_1th")) ) ?
         '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(255,255,255,0.7)' :
         '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(192,192,192,0.8)', }}>
@@ -27,9 +27,9 @@ export function WinStatus ({ won } : { won: Winner }) {
 
 export function DateTime ({date,time} : { date :string, time :string}) {
   return (
-    <section className="relative flex flex-col items-center justify-center font-semibold text-2xl text-silver">
+    <section className="relative flex flex-col items-center justify-center font-semibold text-lg md:text-2xl text-silver">
       <span>{date}</span>
-      <span className="text-lg italic">{time}</span>
+      <span className="text-base md:text-lg italic">{time}</span>
     </section>
   );
 }
@@ -40,7 +40,7 @@ export function ScoreBoard({ P1, P2, won }: { P1: number; P2: number; won: Winne
   const player2Color = won ? 'text-silver' : 'text-golden';
 
   return (
-    <div className="relative flex gap-1 font-bold text-2xl">
+    <div className="relative flex gap-1 font-bold text-xl md:text-2xl">
       <span className={`font-inter leading-[150%] ${player1Color}`} style={{ textShadow }}>{P1}</span>
         <span className="">:</span>
       <span className={`font-inter leading-[150%] ${player2Color}`} style={{ textShadow }}>{P2}</span>
@@ -50,7 +50,7 @@ export function ScoreBoard({ P1, P2, won }: { P1: number; P2: number; won: Winne
 
 export const Versus = () => {
   return (
-    <p className="mx-2 font-bold italic text-lg">vs</p>
+    <p className="md:mx-2 font-bold italic md:text-lg">vs</p>
   );
 }
 
@@ -65,13 +65,13 @@ export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }
     isMe = pInfo.name === user?.acc.username ? true : false;
   
   return (
-    <div className="flex flex-col items-center w-15 text-center">
-      <div className="relative h-13 aspect-square flex-shrink-0">
-        <button className={`aspect-square h-full rounded-full overflow-clip border-2 border-gray-300 ${!isMe && "cursor-pointer"}`}
+    <div className="flex flex-col items-center md:w-15 text-center">
+      <div className="relative h-10 md:h-13 aspect-square flex-shrink-0">
+        <button className={`aspect-square h-full rounded-full overflow-clip border-1 md:border-2 border-gray-300 ${!isMe && "cursor-pointer"}`}
           tabIndex={-1} disabled={isMe} onClick={() => console.warn("clicked")}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
-        <span className={`text-base text-center text-gray-200 truncate w-full ${isMe && "bg-[#9DD6AD]/80 inline-block rounded-3xl justify-center"}`}>{isPlayerI ? pInfo.username : pInfo.name}</span>
+        <span className={`text-sm md:text-base text-center text-gray-200 w-full ${isMe && "p-0.5 md:p-1 bg-[#9DD6AD]/80 inline-block rounded-3xl justify-center"}`}>{isPlayerI ? pInfo.username : pInfo.name}</span>
       </div>  
     </div>
   );
@@ -82,6 +82,6 @@ export const ModeIndicate = ({ mode }: {mode: string}) => {
   const display = t(`history.mode_${mode}`);
 
   return (
-    <span className="text-2xl font-bold p-2 text-center">{display}</span>
+    <span className="text-sm md:text-2xl font-bold p-2 text-center">{display}</span>
   );
 }
