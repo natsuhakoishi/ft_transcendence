@@ -104,7 +104,7 @@ type VerifyBody = {
   otp: string;
 };
 
-export function LoginP({ t, toasterPluz }: TranslationProps) { 
+function LoginP({ t, toasterPluz }: TranslationProps) { 
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [showOTP, setShowOTP] = useState(false);

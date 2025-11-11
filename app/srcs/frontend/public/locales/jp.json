@@ -32,7 +32,7 @@
 
 		"btn_friend": "フレンド",
 		"btn_history": "対戦履歴",
-		"text_version": "Version ",
+		"text_version": "バージョン ",
 		"btn_credit": "スタッフ",
 		"role_en": "プロジェクト指導 / Server/Web開発",
 		"role_yb": "ゲーム企画 & 開発",
@@ -89,6 +89,8 @@
 	"title_AI": "AI戦",
 	"title_tour": "トーナメント",
 	"title_tourM": "トーナメント: ゲーム中...",
+
+	"rotate_warn": "端末を回してください！",
 
 	"shared":
 	{

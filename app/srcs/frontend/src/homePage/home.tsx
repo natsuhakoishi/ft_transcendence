@@ -64,7 +64,7 @@ return (
           {creditM && <Credit onClick={setCreditM} />}
 
           {/* Pop Up Modal -> Credits page */}
-          {tutorM && <Tutorial onClick={setTutorM} />}
+          {tutorM && <Tutorial onClick={() => setTutorM(false)} />}
 
           {/*Left part*/}
           <div className="relative column-start-1 row-span-3 flex flex-col justify-between">
