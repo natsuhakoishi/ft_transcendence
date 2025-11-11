@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
@@ -9,6 +9,8 @@ export function Loading() {
     const { t } = useLang();
     const navigate = useNavigate();
     const location = useLocation();
+    const [ player1, setPlayer1 ] = useState<PlayerWithProfileData | null>(null);
+    const [ player2, setPlayer2 ] = useState<PlayerWithProfileData | null>(null);
     const { playerID, playersData, AI } = (location.state || {}) as {
         playerID: string,
         playersData: MatchPlayersData,
@@ -16,12 +18,16 @@ export function Loading() {
     };
 
     console.log("loading: ", playersData);
-    const player1: PlayerWithProfileData = playersData.Players[0];
-    const player2: PlayerWithProfileData = playersData.Players[1];
-
     console.log("Loading: ", playerID);
 
     React.useEffect(() => {
+        if (!playerID || !playersData || !AI)
+        {
+            navigate("/", { replace: true });
+            return ;
+        }
+        setPlayer1(playersData.Players[0]);
+        setPlayer2(playersData.Players[1]);
         document.title = t("loading.step_start");
         console.log("Loading: to Gameplay", AI);
         const timer = setTimeout(() => {
@@ -36,9 +42,9 @@ export function Loading() {
 
     return (
         <div className="flex gap-8 items-center">
-            <Player player={player1} me={AI ? true : player1?.id.toString() === playerID} />
+            <Player player={player1!} me={AI ? true : player1?.id.toString() === playerID} />
             <h1 className="font-bold text-5xl">VS</h1>
-            <Player player={player2} me={player2?.id.toString() === playerID} />
+            <Player player={player2!} me={player2?.id.toString() === playerID} />
         </div>
     );
 }
