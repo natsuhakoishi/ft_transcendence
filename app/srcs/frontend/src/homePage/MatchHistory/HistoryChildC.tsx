@@ -2,8 +2,6 @@ import type { Player } from "../../../../backend/share/type/history";
 import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import type { Winner } from "./history";
 import { useLang } from "../../_hooks/language";
-import { useOutletContext } from "react-router-dom";
-import type { User } from "../../../../backend/share/type/user";
 
 export function WinStatus ({ won } : { won: Winner }) {
   const { t } = useLang();
@@ -55,15 +53,11 @@ export const Versus = () => {
   );
 }
 
-export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }) {
-  const { user } = useOutletContext<{ user: User | null }>();
+export function PlayerInfo ({ id, pInfo }: { id: number, pInfo: Player | PlayerWithProfileData }) {
   const isPlayerI = "username" in pInfo;
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${isPlayerI ? pInfo.avatar_path : pInfo.avatar}?t=${Date.now()}`;
-  let isMe = false;
-  if (isPlayerI)
-    isMe = pInfo.username === user?.acc.username ? true : false;
-  else
-    isMe = pInfo.name === user?.acc.username ? true : false;
+  let isMe = isPlayerI ? id === pInfo.user_id : id === pInfo.id;
+
   return (
     <div className="flex flex-col items-center md:w-15 text-center">
       <div className="relative h-10 md:h-13 aspect-square flex-shrink-0">

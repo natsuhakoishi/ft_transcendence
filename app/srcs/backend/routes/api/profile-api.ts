@@ -39,6 +39,9 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 		}
 	}, ping_interval);
 
+	fastify.get('/basic_profile/:id', async (req: any, res: any) => {
+	});
+
 	fastify.get('/online', { websocket: true }, (connection: any) => {
 		const ws = connection;
 		let user: number;

@@ -53,9 +53,11 @@ export function FriendProfile({ setFModal, FProfile, handleFDelete, fetch }: {
 
       <div onClick={(e) => e.stopPropagation()} className="flex gap-2 items-center justify-center">
         {/* Button -> Delete Friend */}
-        <button className="w-8 h-7 text-black rounded-full bg-[#ED4967] hover hover:brightness-90 transition" onClick={() => setShowConfirm(true)}
+        <button className="h-9 aspect-square text-black rounded-full bg-[#ED4967] hover hover:brightness-90 transition" onClick={() => setShowConfirm(true)}
         >✘</button>
-        <button className="px-2 w-fit h-7 text-center text-black rounded-full bg-[#F2D467] hover hover:brightness-90 transition" onClick={() => navigate(`/match_history/${FProfile.info.id}`)} >Check History</button>
+        <button className="h-9 aspect-square text-black rounded-full bg-[#F2D467] hover hover:brightness-90 transition" onClick={() => navigate(`/match_history/${FProfile.info.id}`)} >
+          <img src="/pic/icons/history.png" className="w-full h-full object-cover"/>
+        </button>
       </div>
 
       {/* Pop Up Modal - Confirmation Window on delete friend */}
