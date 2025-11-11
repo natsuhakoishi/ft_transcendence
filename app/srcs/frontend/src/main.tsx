@@ -16,6 +16,7 @@ import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 import { FetchData } from "./homePage/fetchHelper.tsx";
+import OrientationGuard from "./_hooks/mobile_orientation.tsx";
 
 function App() {
   function GlobalErrorMonitor() {
@@ -26,6 +27,7 @@ function App() {
   return (
     <>
       <Toaster position="top-center" />
+      <OrientationGuard>
       <LanguageProvider>
       <GlobalErrorMonitor />
       <Routes>
@@ -50,6 +52,7 @@ function App() {
         </Route>
       </Routes>
       </LanguageProvider>
+      </OrientationGuard>
     </>
    );
 }
