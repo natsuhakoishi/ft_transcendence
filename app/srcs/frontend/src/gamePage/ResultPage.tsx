@@ -80,6 +80,11 @@ export function TournamentResultPage() {
     const { leaderboard, playerID } = (location.state || {}) as { leaderboard: Leaderboard, playerID: number };
 
     React.useEffect(() => {
+        if  (!leaderboard || !playerID)
+        {
+            navigate("/", { replace: true });
+            return ;
+        }
         document.title = t("shared.result.title");
         console.log("TournamentResult: useEffect");
         if (!leaderboard || !playerID)
