@@ -73,7 +73,7 @@ export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateActi
         <CreditMember link="/pic/zw.png" github="Night" intra="zgoh" roles={t("home.role_zw")} />
 
       </div>
-      <div className="mt-1 text-xs md:text-sm text-center">Asset ©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
+      <div className="mt-2 md:mt-1 text-xs md:text-sm text-center">Asset ©iDreamSky | React · Tailwind CSS · TS · Fastify · Node.js | Team ft_klbq</div>
     </div>
 
     </div>

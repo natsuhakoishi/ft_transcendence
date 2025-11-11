@@ -47,7 +47,7 @@ function MenuProfile({ user } : { user: User | null } ) {
     {/* Bottom section - Game stats, ex. win, lost, tournament win, win rate */}
     <div className="flex flex-1 flex-col gap-2 mx-10 my-2 md:justify-start md:align-middle">
       {/* First row - win count, lost count, tournament win count */}
-      <div className="flex gap-3 text-xl">
+      <div className="flex gap-3 text-lg md:text-xl">
         {/* Won */}
         <span>{t("shared.game_stat.won")}</span>
         <span className="font-inter font-bold leading-[150%] text-golden
@@ -65,7 +65,7 @@ function MenuProfile({ user } : { user: User | null } ) {
       </div>
 
       {/* Second row - total match count & win rate */}
-      <div className="flex ml-0.5 gap-5 text-xl">
+      <div className="flex ml-0.5 gap-5 text-lg md:text-xl">
         {/* Total match */}
         <div className="flex gap-2">
           <span className="font-bold">{t("shared.game_stat.total_match")}</span>

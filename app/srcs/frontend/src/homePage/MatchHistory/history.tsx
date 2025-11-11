@@ -145,7 +145,6 @@ const HistoryList = ({ matches, user_id, onClickHandler } : {
     </div>
   );
 };
-// h-[55%]
 
 function ExpandTourModal({ children, onClose, }: {
   children: React.ReactNode;
@@ -164,14 +163,15 @@ function ExpandTourModal({ children, onClose, }: {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-40 grid grid-cols-[1fr_15%] bg-black/50">
-      <div className="col-start-1 flex items-center p-2 ">
+    <div className="fixed inset-0 z-40 flex md:grid md:grid-cols-[1fr_15%] bg-black/50">
+      <div className="col-start-1 flex md:items-center p-2 h-screen">
         <div ref={modalRef} className="
-        bg-[#1f3735]/80 backdrop-blur-sm 
+        bg-[#1f3735]/80 backdrop-blur-sm
           border border-[#9DD6AD]/40 shadow-xl rounded-lg
-          p-5 w-full h-65 overflow-ellipsis">
-            {children}
-          <p className="text-white/80 text-sm mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
+          p-5 w-full h-full md:h-65 overflow-ellipsis"
+        >
+          {children}
+          <p className="text-white/80 text-sm md:mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
         </div>
       </div>
     </div>
