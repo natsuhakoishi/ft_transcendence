@@ -164,11 +164,11 @@ function ExpandTourModal({ children, onClose, }: {
 
   return (
     <div className="fixed inset-0 z-40 flex md:grid md:grid-cols-[1fr_15%] bg-black/50">
-      <div className="col-start-1 flex md:items-center p-2 h-screen">
+      <div className="col-start-1 flex md:items-center p-2 w-[80%] md:w-full h-screen">
         <div ref={modalRef} className="
         bg-[#1f3735]/80 backdrop-blur-sm
           border border-[#9DD6AD]/40 shadow-xl rounded-lg
-          p-5 w-full h-full md:h-65 overflow-ellipsis"
+          p-5 py-3 md:py-5 w-full h-[80%] md:h-65 overflow-ellipsis"
         >
           {children}
           <p className="text-white/80 text-sm md:mt-3 text-center"> {t("history.msg_closeTourPop")} </p>
@@ -212,7 +212,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
 	return (
   <>
   {/* Background Layer */}
-  <div className="absolute inset-0 -z-10 bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay" />
+  <div className="absolute w-[100dvw] h-[100dvh] inset-0 -z-10 bg-cover bg-center bg-black/20 bg-[url('/pic/historyP.jpg')] bg-blend-overlay" />
 
   { loading ?
     <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />

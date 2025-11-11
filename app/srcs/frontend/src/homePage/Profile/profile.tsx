@@ -101,12 +101,12 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
 	return (
 		<>
     {/* Background Layer */}
-    <div className="absolute inset-0 -z-10 bg-cover bg-center bg-blend-overlay bg-[linear-gradient(to_bottom,#6FB7FF4d,#daade04d,#A79BFF4d),url('/pic/profileP.jpeg')]" />
+    <div className="absolute w-[100dvw] h-[100dvh] inset-0 -z-10 bg-cover bg-center bg-blend-overlay bg-[linear-gradient(to_bottom,#6FB7FF4d,#daade04d,#A79BFF4d),url('/pic/profileP.jpeg')]" />
     {/* Content */}
-    <div className="relative w-[100dvw] h-[100dvh] flex flex-col justify-center gap-2 md:gap-5">
+    <div className="relative w-[100dvw] h-[100dvh] flex flex-col justify-center gap-1 md:gap-5 overflow-hidden">
 
       {/* Menu Buttons: 'Profile' 'Option' 'Log Out' */}
-      <div className={`flex gap-5 md:mt-2 ml-5 place-content-start`}>
+      <div className={`flex gap-5 mt-0.5 md:mt-2 ml-5 place-content-start`}>
         {/* btn Profile */}
         <button className={`default_button hover-increase transition-shadow duration-300 hover:shadow-[0_0_20px_rgba(239,230,106,1)] ${menu === "Profile" ? "text-sky-200 border-sky-200 bg-sky-200/30 shadow-[0_0_20px_rgba(202,255,246,1)]" : "text-[#E5EBF7] border-[#E5EBF7] bg-[#E5EBF7]/30"}`}
           onClick={() => setMenu("Profile")}>{t("profile.btn_profile")}</button>

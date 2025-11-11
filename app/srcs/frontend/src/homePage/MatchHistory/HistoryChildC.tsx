@@ -80,8 +80,9 @@ export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }
 export const ModeIndicate = ({ mode }: {mode: string}) => {
   const { t } = useLang();
   const display = t(`history.mode_${mode}`);
+  const isTMatch = mode === "tourMatch";
 
   return (
-    <span className="text-sm md:text-2xl font-bold p-2 text-center">{display}</span>
+    <span className={`text-sm md:text-2xl font-bold p-2 text-center ${isTMatch && "whitespace-normal break-words w-25 md:w-auto"}`}>{display}</span>
   );
 }

@@ -123,7 +123,7 @@ return (
             {/* Dropdown -> Language Selector */}
             <LanguageBar />
             {/* Button -> Match History page */}
-            <button className="absolute bottom-2 rounded-2xl p-2 bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+            <button className="absolute bottom-2 rounded-2xl p-1 md:p-2 bg-gray-300/20 font-bold hover hover:scale-120 backdrop-blur-xl" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
           </div>
         </div>)
   }
