@@ -6,6 +6,7 @@ import { LoginPage } from "./otherPage/auth.tsx";
 import { Home } from "./homePage/home";
 import { useGlobalErrorMonitor } from "./_hooks/error.ts";
 import { LanguageProvider } from "./_hooks/language.tsx";
+import { OrientationGuard } from "./_hooks/mobile_orientation.tsx";
 import { TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/gamePage";
 import { TournamentGamePage } from "./gamePage/TournamentGamePage";
@@ -16,7 +17,6 @@ import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 import { FetchData } from "./homePage/fetchHelper.tsx";
-import OrientationGuard from "./_hooks/mobile_orientation.tsx";
 
 function App() {
   function GlobalErrorMonitor() {
@@ -27,8 +27,8 @@ function App() {
   return (
     <>
       <Toaster position="top-center" />
-      <OrientationGuard>
       <LanguageProvider>
+      <OrientationGuard>
       <GlobalErrorMonitor />
       <Routes>
         <Route path="/auth" element={<LoginPage />} />
@@ -51,8 +51,8 @@ function App() {
           <Route path="/404" element={<NotFound />} />
         </Route>
       </Routes>
-      </LanguageProvider>
       </OrientationGuard>
+      </LanguageProvider>
     </>
    );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { isMobile } from "../utils";
+import { withTranslation, type TranslationProps } from "./language";
 
 function useOrientation() {
   const getState = () => {
@@ -18,8 +19,7 @@ function useOrientation() {
   return state;
 }
 
-export default function OrientationGuard({ children } : { children: React.ReactNode }) {
-
+function OG({ children, t } : { children: React.ReactNode } & TranslationProps) {
   const { isPortrait } = useOrientation();
   const showOverlay = isPortrait;
 
@@ -32,8 +32,8 @@ export default function OrientationGuard({ children } : { children: React.ReactN
             <img src="/pic/icons/rotate_plz.gif" className="w-20 aspect-square object-cover"/>
             <img src="/pic/icons/rotate_warn_3.png" className="w-17 aspect-square object-cover"/>
           </div>
-          <div className="flex gap-2 justify-center items-center">
-            <p className="text-xl font-semibold">Rotate your device !</p>
+          <div className="flex justify-center items-center">
+            <p className="text-xl font-semibold">{t("rotate_warn")}</p>
             <img src="/pic/icons/rotate_warn_2.png" className="w-14 aspect-square object-cover"/>
           </div>
         </div>
@@ -43,3 +43,5 @@ export default function OrientationGuard({ children } : { children: React.ReactN
     </>
   );
 }
+
+export const OrientationGuard = withTranslation(OG);
