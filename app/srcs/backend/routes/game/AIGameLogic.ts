@@ -1,3 +1,4 @@
+import { GAME_STUPID_AI_CONFIG } from "../../server.ts";
 import type { AIRoom } from "../../share/type/AIroomData.ts";
 import type { Ball, GameState, Paddle } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
@@ -21,7 +22,7 @@ export function AILogic(room: AIRoom, runtime: number): void {
     const ai: Paddle = state.rightPaddle;
     const ball: Ball = state.ball;
 
-    if (runtime % 960 !== 0)
+    if (runtime % 960 !== 0 && GAME_STUPID_AI_CONFIG === "y")
         return ;
 
     if (runtime > 960 * 60)
@@ -30,18 +31,25 @@ export function AILogic(room: AIRoom, runtime: number): void {
         ball.vy *= 1.5;
     }
 
-    const preDirectionY: number = predictBallY(ball, state.boardHeight, 60);
-    
-    const paddleCenter = ai.y + ai.height / 2;
-    const diff = preDirectionY - paddleCenter; //between ball and paddle
+    if (GAME_STUPID_AI_CONFIG === "y")
+    {
+        const preDirectionY: number = predictBallY(ball, state.boardHeight, 60);
 
-    if (Math.abs(diff) < ai.height / 2)
-        handleKeyPressAI("stop", room);
-    else if (diff > 0)
-        handleKeyPressAI("down", room);
-    else 
-        handleKeyPressAI("up", room);
+        const paddleCenter = ai.y + ai.height / 2;
+        const diff = preDirectionY - paddleCenter; //between ball and paddle
 
+        if (Math.abs(diff) < ai.height / 2)
+            handleKeyPressAI("stop", room);
+        else if (diff > 0)
+            handleKeyPressAI("down", room);
+        else 
+            handleKeyPressAI("up", room);
+    }
+    else
+        if (ai.y + ai.height / 2 < ball.y - 10)
+            handleKeyPressAI("down", room);
+        else if (ai.y + ai.height > ball.y + 10)
+            handleKeyPressAI("up", room);
 }
 
 function predictBallY(ball: Ball, boardHeight: number, steps: number): number {
