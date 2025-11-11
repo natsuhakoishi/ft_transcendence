@@ -19,7 +19,7 @@ function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, u
   );
 }
 
-function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch, }) {
+function Tournament ({ id, won, entries } : { id: number, won: Winner, entries: TournamentMatch, }) {
   const new_date = new Date(entries.tournament.start_time + "Z");
   const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
   const [date, time] = local_date.split(", ");
@@ -36,10 +36,10 @@ function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch,
       </div>
 
       <section className="flex items-center justify-between gap-0.5 mb-6">
-        <PlayerInfo pInfo={entries.tournament.first} /> <Versus />
-        <PlayerInfo pInfo={entries.tournament.second} /> <Versus />
-        <PlayerInfo pInfo={entries.tournament.third} /> <Versus />
-        <PlayerInfo pInfo={entries.tournament.last} />
+        <PlayerInfo id={id} pInfo={entries.tournament.first} /> <Versus />
+        <PlayerInfo id={id} pInfo={entries.tournament.second} /> <Versus />
+        <PlayerInfo id={id} pInfo={entries.tournament.third} /> <Versus />
+        <PlayerInfo id={id} pInfo={entries.tournament.last} />
       </section>
 
       <DateTime date={date} time={time} />
@@ -50,12 +50,11 @@ function Tournament ({ won, entries } : { won: Winner, entries: TournamentMatch,
   );
 }
 
-function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: boolean, }) {
+function Match ({ id, won, match, isTour } : { id: number, won: Winner, match: Match , isTour: boolean, }) {
   const new_date = new Date(match.game_time + "Z");
   const local_date = new_date.toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, });
   const [date, time] = local_date.split(", ");
-  const { user } = useOutletContext<{ user: User | null }>();
-  const isUser = user?.acc.user_id === match.player1.user_id ? 1 : 2;
+  const isUser = id === match.player1.user_id ? 1 : 2;
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -64,8 +63,8 @@ function Match ({won, match, isTour } : { won: Winner, match: Match , isTour: bo
       <ModeIndicate mode={isTour ? "tourMatch" : "1vs1"} />
 
       <section className="flex items-center justify-between gap-0.5 mb-6">
-        <PlayerInfo pInfo={match.player1} /> <Versus />
-        <PlayerInfo pInfo={match.player2} />
+        <PlayerInfo id={id} pInfo={match.player1} /> <Versus />
+        <PlayerInfo id={id} pInfo={match.player2} />
       </section>
 
       <ScoreBoard P1={match.player1.score} P2={match.player2.score} won={won} isUser={isUser} />
@@ -87,7 +86,8 @@ function getBanner(tour : boolean) {
 export type Winner = 1 | 2 | 3 | 4 | false | true;
 
 const HistoryRow = ({ match, user_id, onTournamentClick } : { 
-  match: Match | TournamentMatch, user_id: number,
+  match: Match | TournamentMatch,
+  user_id: number,
   onTournamentClick: (match: TournamentMatch) => void; }
 ) => {
 
@@ -95,7 +95,8 @@ const HistoryRow = ({ match, user_id, onTournamentClick } : {
   const isTourM = "mode" in match && match.mode === "tournament";
   let isWinner: Winner = false;
 
-  if (isTour) {
+  if (isTour)
+  {
     const ranking = [match.tournament.first.id, match.tournament.second.id, match.tournament.third.id, match.tournament.last.id];
     const rankIndex = ranking.indexOf(user_id);
     if (rankIndex !== -1)
@@ -117,10 +118,10 @@ const HistoryRow = ({ match, user_id, onTournamentClick } : {
 
     {/* glowing border */}
     <div className="absolute inset-0 rounded-lg ring-1 ring-indigo-300/60 hover:ring-indigo-400/70 transition-all duration-300 pointer-events-none" />
-    
+
     {/* Trigger Conditional Render betw Tournament & 1vs1 */}
-    { isTour ? <Tournament won={isWinner} entries={match} /> : (
-      isTourM ? <Match won={isWinner} match={match} isTour={true} /> : <Match won={isWinner} match={match} isTour={false} />
+    { isTour ? <Tournament id={user_id} won={isWinner} entries={match} /> : (
+      isTourM ? <Match id={user_id} won={isWinner} match={match} isTour={true} /> : <Match id={user_id} won={isWinner} match={match} isTour={false} />
     )}
 
     </div>
@@ -128,7 +129,8 @@ const HistoryRow = ({ match, user_id, onTournamentClick } : {
 };
 
 const HistoryList = ({ matches, user_id, onClickHandler } : {
-  matches: (Match | TournamentMatch)[], user_id: number,
+  matches: (Match | TournamentMatch)[],
+  user_id: number,
   onClickHandler: (match: TournamentMatch) => void;
 }) => {
   const records = [...matches, ...Array(5 - matches.length).fill(null)];
@@ -185,10 +187,10 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
   const [entries, setEntries] = useState<TournamentMatch | null>(null);
-  const { id } = useParams();
+  const id = Number(useParams().id);
   let user_id: any;
   if (!loading)
-     user_id = id ?? user?.acc.user_id;
+    user_id = id || user?.acc.user_id;
   const isMe = user_id === user?.acc.user_id;
 
   const handleTournamentClick = (entries: TournamentMatch) => {
@@ -230,7 +232,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         {/* Tournament Modal */}
         {TourModal && 
           <ExpandTourModal onClose={() => setTourModal(false)}>
-            <ExpandTour entries={entries} user_id={matches?.user_id ?? 0} />
+            <ExpandTour entries={entries} user_id={user_id} />
           </ExpandTourModal>
         }
 
@@ -248,8 +250,8 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         </section>
 
         {/* Right side: User's profile */}
-        <section className="h-[55%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
-          <ProfileSideBar isMe={isMe}/>
+        <section className={`h-[55%] md:h-full flex flex-col ${isMe ? "bg-[#1f3735]/80" : "bg-[#383E69]/80" } justify-center items-center shadow-2xl`}>
+          <ProfileSideBar isMe={isMe} id={id}/>
         </section>
 
       </div>

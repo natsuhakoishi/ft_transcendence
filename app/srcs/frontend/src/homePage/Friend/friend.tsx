@@ -45,7 +45,7 @@ return (
       (<div className="relative flex flex-col h-[100dvh] w-[100dvw]">
 
         {/* Body: Friends Card */}
-        <div className="flex-grow md:flex-none md:h-[89%] overflow-hidden">
+        <div className="flex-grow md:flex-none md:h-[90%] overflow-hidden">
           {/* Pop Up Modal -> Show friend profile */}
           {FModal && selectedF && <FriendProfile setFModal={setFModal} FProfile={selectedF} handleFDelete={handleFDelete} fetch={fetchFriends} />}
 
