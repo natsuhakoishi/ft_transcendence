@@ -27,6 +27,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
 
                 if (p1.id === p2.id)
                 {
+                    console.log("/Matching :same player in one match");
                     p1.ws.send(JSON.stringify({success: false}));
                     p2.ws.send(JSON.stringify({success: false}));
                 }
@@ -87,6 +88,7 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                     {
                         if (set.has(player.id))
                         {
+                            console.log("/TMatching :same player in one match");
                             ok = false;
                             break ;
                         }
@@ -104,11 +106,11 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                         const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
     
                         await fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
-        
-                        p1.ws.send(JSON.stringify({success: true, RoomId: roomID}));
-                        p2.ws.send(JSON.stringify({success: true, RoomId: roomID}));
-                        p3.ws.send(JSON.stringify({success: true, RoomId: roomID}));
-                        p4.ws.send(JSON.stringify({success: true, RoomId: roomID}));
+
+                        const m = JSON.stringify({success: true, RoomId: roomID});
+                        players.forEach((player) => {
+                            player.ws.send(m);
+                        })
         
                         console.log("/TMatching: tmp room id: " + roomID);
                         console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
