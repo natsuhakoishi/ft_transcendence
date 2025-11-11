@@ -2,7 +2,7 @@ import { useNavigate, useOutletContext } from "react-router-dom"
 import { withTranslation, type TranslationProps } from "../../_hooks/language"
 import type { User } from "../../../../backend/share/type/user";
 
-function ProfileSB({ t }: TranslationProps) {
+function ProfileSB({ t, isMe }: { isMe: boolean } & TranslationProps ) {
   const navigate = useNavigate();
   const { user } = useOutletContext<{ user: User | null }>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
@@ -18,6 +18,8 @@ function ProfileSB({ t }: TranslationProps) {
       <div className="hidden md:block"/>
       <div className="hidden md:block"/>
 
+      { isMe &&
+      <>
       <div className="flex flex-col mt-2">
         {/* Avatar */}
         <button className="aspect-square h-12 md:h-35 rounded-full overflow-hidden border-1 md:border-3 border-silver disable" tabIndex={-1}>
@@ -61,6 +63,8 @@ function ProfileSB({ t }: TranslationProps) {
           {!win_rate ? "-" : `${win_rate} %`}
         </span>
       </div>
+      </>
+      }
 
       <div className="hidden md:block"/>
 

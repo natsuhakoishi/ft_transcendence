@@ -158,7 +158,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                     }
                     else
                     {
-                        toasterPluz("game.ERR_forgerReady");
+                        toasterPluz("game.ERR_forgetReady");
                         navigate("/", { replace: true });
                     }
                 }

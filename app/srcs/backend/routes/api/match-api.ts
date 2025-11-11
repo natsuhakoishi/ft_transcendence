@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
-import { createMatch, getMatchByUserId } from "../../database/match.ts";
+import { getMatchByUserId } from "../../database/match.ts";
 import type { MatchMeResponse, Match, TournamentMatch } from '../../share/type/history.ts';
 import { getTournamentLeaderboard } from "../../database/tournament.ts";
 import { getUserById } from "../../database/user.ts";
@@ -20,8 +20,8 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			if (!profile)
 				return res.status(404).send({ message: 'Profie Not Found' });
 
-			const matches = await getMatchByUserId(req.user);
-			console.log(matches);
+			const matches = await getMatchByUserId(id);
+			// console.log(matches);
 			const toMatch = (match: any): Match => ({
 				mode: match.tournament_id ? "tournament" : "match",
 				match_id: match.id,
@@ -66,7 +66,7 @@ const matchApi: FastifyPluginAsync = async (fastify: any) => {
 			}
 			if (count == 6)
 				user_matches.pop();
-			res.send({ user_id: req.user, user_matches, message: "Match history get successfully" });
+			res.send({ user_id: id, user_matches, message: "Match history get successfully" });
 		}
 		catch (error)
 		{

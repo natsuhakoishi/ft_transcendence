@@ -35,6 +35,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/friends" element={<FriendPage />} />
             <Route path="/match_history" element={<HistoryPage />} />
+            <Route path="/match_history/:id" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
           <Route path="/game" >
