@@ -25,26 +25,34 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                 const p1: PlayerWithProfileData = waitingPlayers.shift()!;
                 const p2: PlayerWithProfileData = waitingPlayers.shift()!;
 
-                fastify.rooms.createRoom(p1.id, p2.id);
-                const TmpRoomID: string = createRoomID(p1.id, p2.id);
-
-                const matchPlayersData: MatchPlayersData = {
-                    roomID: TmpRoomID,
-                    Players: [
-                        {id: p1.id, avatar: p1.avatar, name: p1.name},
-                        {id: p2.id, avatar: p2.avatar, name: p2.name}
-                    ]
-                };
-
-
-                matchPlayersData.Players.sort((a, b) => a.id - b.id );
-                console.log("/gamematching: matchPlayersData", matchPlayersData);
-
-                p1.ws.send(JSON.stringify(matchPlayersData));
-                p2.ws.send(JSON.stringify(matchPlayersData));
-
-                console.log("/gamematching: tmp room id: " + TmpRoomID);
-                console.log(`/gamematching: Matched players: ${p1.id} vs ${p2.id}`);
+                if (p1.id === p2.id)
+                {
+                    console.log("/Matching :same player in one match");
+                    p1.ws.send(JSON.stringify({success: false}));
+                    p2.ws.send(JSON.stringify({success: false}));
+                }
+                else
+                {
+                    fastify.rooms.createRoom(p1.id, p2.id);
+                    const TmpRoomID: string = createRoomID(p1.id, p2.id);
+    
+                    const matchPlayersData: MatchPlayersData = {
+                        roomID: TmpRoomID,
+                        Players: [
+                            {id: p1.id, avatar: p1.avatar, name: p1.name},
+                            {id: p2.id, avatar: p2.avatar, name: p2.name}
+                        ]
+                    };
+    
+                    matchPlayersData.Players.sort((a, b) => a.id - b.id );
+                    console.log("/gamematching: matchPlayersData", matchPlayersData);
+    
+                    p1.ws.send(JSON.stringify({success: true, data: matchPlayersData}));
+                    p2.ws.send(JSON.stringify({success: true, data: matchPlayersData}));
+    
+                    console.log("/gamematching: tmp room id: " + TmpRoomID);
+                    console.log(`/gamematching: Matched players: ${p1.id} vs ${p2.id}`);
+                }
             }
         });
 
@@ -73,17 +81,40 @@ const match: FastifyPluginAsync = async(fastify: any) => {
                     const p3: Player = waitingTPlayers.shift()!;
                     const p4: Player = waitingTPlayers.shift()!;
     
-                    const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
+                    const players: Player[] = [p1, p2, p3, p4];
+                    const set = new Set<number>();
+                    let ok: boolean = true;
+                    for (const player of players)
+                    {
+                        if (set.has(player.id))
+                        {
+                            console.log("/TMatching :same player in one match");
+                            ok = false;
+                            break ;
+                        }
+                        set.add(player.id);
+                    }
 
-                    await fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
+                    if (!ok) {
+                        const m = JSON.stringify({success: false});
+                        players.forEach((player) => {
+                            player.ws.send(m);
+                        })
+                    }
+                    else
+                    {
+                        const roomID: string = createTRoomID([p1.id, p2.id, p3.id, p4.id]);
     
-                    p1.ws.send(roomID);
-                    p2.ws.send(roomID);
-                    p3.ws.send(roomID);
-                    p4.ws.send(roomID);
-    
-                    console.log("/TMatching: tmp room id: " + roomID);
-                    console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
+                        await fastify.tournamentRooms.createTRoom([p1.id, p2.id, p3.id, p4.id]);
+
+                        const m = JSON.stringify({success: true, RoomId: roomID});
+                        players.forEach((player) => {
+                            player.ws.send(m);
+                        })
+        
+                        console.log("/TMatching: tmp room id: " + roomID);
+                        console.log(`/TMatching: Matched players: ${p1.id} & ${p2.id} & ${p3.id} & ${p4.id}`);
+                    }
                 }
             })()
         });

@@ -31,14 +31,22 @@ export function Matching({again, setMatch, AI} : {
                     })
                 })()
             };
-    
+
             ws.onmessage = async (event) => {
-                const data: MatchPlayersData = JSON.parse(event.data);
+                const {success, data} = JSON.parse(event.data);
+                console.dir(JSON.parse(event.data));
+                if (!success || !data)
+                {
+                    console.log("/Matching: matched same account or some error");
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+                    return ;
+                }
+                // const data: MatchPlayersData = JSON.parse(event.data);
                 const playerData = await apiFetchPrivate("me", { method: "GET" });
                 const playerID: string = playerData.id.toString();
                 console.log("/Matching: ", data);
                 console.log("/Matching: ", playerID);
-                
+
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
                 if (!again)
                     navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false} });
@@ -125,7 +133,13 @@ export function TMatching() {
         ws.onmessage = async (event) => {
             console.log("server: " + event.data);
 
-            const RoomId: string = event.data;
+            const {success, RoomId} = JSON.parse(event.data);
+            if (!success || !RoomId)
+            {
+                console.log("/TMatching: matched same account or some error");
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+                return ;
+            }
 
             navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT, { state: {tournamentRoomID: RoomId}, replace: true });
         };

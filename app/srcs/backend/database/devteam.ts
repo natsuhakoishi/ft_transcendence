@@ -26,15 +26,15 @@ export async function createDevTeamUser()
 	const dir_name = path.dirname(fileURLToPath(import.meta.url));
 	const dir = path.join(dir_name, '..', 'assets', 'avatars');
 
-	const qiqiAvatar = path.join(dir, 'qiqi_dev.png');
-	const yabiAvatar = path.join(dir, 'yabi_dev.png');
-	const zhenAvatar = path.join(dir, 'zhen_dev.png');
+	const qiqiAvatar = path.join(dir, 'qiqi_dev.webp');
+	const yabiAvatar = path.join(dir, 'yabi_dev.webp');
+	const zhenAvatar = path.join(dir, 'zhen_dev.webp');
 
 	const qiqiBuffer = await fs.promises.readFile(qiqiAvatar);
 	const yabiBuffer = await fs.promises.readFile(yabiAvatar);
 	const zhenBuffer = await fs.promises.readFile(zhenAvatar);
 
-	await setAvatarPath(1, 'qiqi_dev.png', qiqiBuffer);
-	await setAvatarPath(2, 'yabi_dev.png', yabiBuffer);
-	await setAvatarPath(3, 'zhen_dev.png', zhenBuffer);
+	await setAvatarPath(1, 'qiqi_dev.webp', qiqiBuffer);
+	await setAvatarPath(2, 'yabi_dev.webp', yabiBuffer);
+	await setAvatarPath(3, 'zhen_dev.webp', zhenBuffer);
 }

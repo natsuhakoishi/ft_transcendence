@@ -3,6 +3,7 @@ node_modules
 klbq.db
 .vscode
 *.webp
-!.default.webp
-!.ai.png
+!**/default.webp
+!**/ai.webp
+!**/*_dev.webp
 certs
