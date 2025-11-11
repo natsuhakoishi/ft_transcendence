@@ -18,6 +18,12 @@ function ProfileSB({ t, isMe }: { isMe: boolean } & TranslationProps ) {
       <div className="hidden md:block"/>
       <div className="hidden md:block"/>
 
+      {!isMe &&
+      <>
+      <h2>{`< Viewing >`}</h2>
+      </>
+      }
+
       { isMe &&
       <>
       <div className="flex flex-col mt-2">
@@ -69,7 +75,7 @@ function ProfileSB({ t, isMe }: { isMe: boolean } & TranslationProps ) {
       <div className="hidden md:block"/>
 
       {/* Back Button */}
-      <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={() => navigate("/")}>
+      <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={() => isMe ? navigate("/") : navigate("/match_history") }>
         <img src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
       </button>
 

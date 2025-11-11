@@ -2,6 +2,7 @@ import React from "react";
 import { useLang } from "../../_hooks/language";
 import { apiFetchPrivate } from "../../utils";
 import type { Friends } from "../../../../backend/share/type/friend";
+import { useNavigate } from "react-router-dom";
 
 export const handleFDelete = async ( friend_id: number, fetch: () => void, toasterPluz: (key: string) => void ) => {
   try {
@@ -20,12 +21,14 @@ export function FriendProfile({ setFModal, FProfile, handleFDelete, fetch }: {
   fetch: () => void,
 }) {
 
+  const navigate = useNavigate();
   const { t, toasterPluz  } = useLang();
   const [showConfirm, setShowConfirm] = React.useState<boolean>(false);
   const confirmDelete = () => {
     handleFDelete(FProfile.info.id, fetch, toasterPluz);
     setFModal(false);
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/30 gap-1" onClick={() => setFModal(false)}>
@@ -40,7 +43,7 @@ export function FriendProfile({ setFModal, FProfile, handleFDelete, fetch }: {
         {/* user id */}
         <p className="text-center text-xs italic">id: {FProfile.info.id}</p>
         {/* win & lose count */}
-        <p className="">{t("shared.game_stat.won")}: {FProfile.info.win_games} {t("shared.game_stat.lose")} {FProfile.info.lose_games}</p>
+        <p className="mt-2">{t("shared.game_stat.won")}: {FProfile.info.win_games} {t("shared.game_stat.lose")} {FProfile.info.lose_games}</p>
         {/* tournament won count */}
         <p>{t("shared.game_stat.tournament")}: {FProfile.info.tournament_wins}</p>
         {/* mutual status */}
@@ -48,12 +51,12 @@ export function FriendProfile({ setFModal, FProfile, handleFDelete, fetch }: {
       
       </div>
 
-      {/* Button -> Delete Friend */}
-      <div onClick={(e) => e.stopPropagation()}>
-        <button className="p-0.5 w-8 text-black rounded-full bg-[#ED4967] hover hover:brightness-90 transition" onClick={() => setShowConfirm(true)}
+      <div onClick={(e) => e.stopPropagation()} className="flex gap-2 items-center justify-center">
+        {/* Button -> Delete Friend */}
+        <button className="w-8 h-7 text-black rounded-full bg-[#ED4967] hover hover:brightness-90 transition" onClick={() => setShowConfirm(true)}
         >✘</button>
+        <button className="px-2 w-fit h-7 text-center text-black rounded-full bg-[#F2D467] hover hover:brightness-90 transition" onClick={() => navigate(`/match_history/${FProfile.info.id}`)} >Check History</button>
       </div>
-
 
       {/* Pop Up Modal - Confirmation Window on delete friend */}
       {showConfirm && (

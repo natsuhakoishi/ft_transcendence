@@ -248,8 +248,8 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         </section>
 
         {/* Right side: User's profile */}
-        <section className="h-[55%] md:h-full flex flex-col bg-[#1f3735]/80 justify-center items-center shadow-2xl">
-          <ProfileSideBar isMe={isMe}/>
+        <section className={`h-[55%] md:h-full flex flex-col ${isMe ? "bg-[#1f3735]/80" : "bg-[#383E69]/80" } justify-center items-center shadow-2xl`}>
+          <ProfileSideBar isMe={isMe} />
         </section>
 
       </div>

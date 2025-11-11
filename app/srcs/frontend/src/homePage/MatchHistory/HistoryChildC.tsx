@@ -2,7 +2,7 @@ import type { Player } from "../../../../backend/share/type/history";
 import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import type { Winner } from "./history";
 import { useLang } from "../../_hooks/language";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import type { User } from "../../../../backend/share/type/user";
 
 export function WinStatus ({ won } : { won: Winner }) {
@@ -56,7 +56,6 @@ export const Versus = () => {
 }
 
 export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }) {
-  const navigate = useNavigate();
   const { user } = useOutletContext<{ user: User | null }>();
   const isPlayerI = "username" in pInfo;
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${isPlayerI ? pInfo.avatar_path : pInfo.avatar}?t=${Date.now()}`;
@@ -68,12 +67,11 @@ export function PlayerInfo ({ pInfo }: { pInfo: Player | PlayerWithProfileData }
   return (
     <div className="flex flex-col items-center md:w-15 text-center">
       <div className="relative h-10 md:h-13 aspect-square flex-shrink-0">
-        <button className={`aspect-square h-full rounded-full overflow-clip border-1 md:border-2 border-gray-300 ${!isMe && "cursor-pointer"}`}
-          tabIndex={-1} disabled={isMe} onClick={() => !isMe && navigate(`/match_history/${isPlayerI ? pInfo.user_id : pInfo.id}`)} >
+        <button className="aspect-square h-full rounded-full overflow-clip border-1 md:border-2 border-gray-300" tabIndex={-1}>
           <img className="w-full h-full object-cover" src={avatarURL} />
         </button>
         <span className={`text-sm md:text-base text-center text-gray-200 w-full ${isMe && "p-0.5 md:p-1 bg-[#9DD6AD]/80 inline-block rounded-3xl justify-center"}`}>{isPlayerI ? pInfo.username : pInfo.name}</span>
-      </div>  
+      </div>
     </div>
   );
 }
