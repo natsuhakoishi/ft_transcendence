@@ -137,7 +137,7 @@ const HistoryList = ({ matches, user_id, onClickHandler } : {
   const records = [...matches, ...Array(5 - matches.length).fill(null)];
 
   return (
-    <div className="h-[55%] w-full flex flex-col p-0.5 overflow-x-hidden
+    <div className="h-screen w-full flex flex-col p-0.5 overflow-x-hidden
       md:h-full md:grid md:grid-rows-5 md:overflow-hidden"
     >
       {records.map((record, i) => (
@@ -263,7 +263,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
         </section>
 
         {/* Right side: User's profile */}
-        <section className={`h-[55%] md:h-full flex flex-col ${isMe ? "bg-[#1f3735]/80" : "bg-[#383E69]/80" } justify-center items-center shadow-2xl`}>
+        <section className={`h-screen md:h-full flex flex-col ${isMe ? "bg-[#1f3735]/80" : "bg-[#383E69]/80" } justify-center items-center shadow-2xl`}>
           <ProfileSideBar isMe={isMe} id={user_id}/>
         </section>
 

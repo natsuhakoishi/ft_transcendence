@@ -42,13 +42,13 @@ export function Friend({ data, addFriend, fetch, onCardClick, online }: {
     <>
     {toggleAdd && fetch ?
       (<form onSubmit={(event) => {handleAddFriend(event, fetch, setT_Add, toasterPluz)}}
-       className="flex flex-col items-center justify-center bg-[#F9DC7C]/70 rounded-2xl p-3 gap-1">
+       className="flex md:flex-col items-center justify-center bg-[#F9DC7C]/70 rounded-2xl p-3 gap-1">
         {/* Placeholder for friend username */}
-        <input type="text" placeholder={t("shared.form.place_name")} required name="username"  className="border rounded-md p-1 text-center w-[50%] default_placeholder" />
+        <input type="text" placeholder={t("shared.form.place_name")} required name="username" className="border rounded-md md:p-1 text-xs md:text-base text-center w-[50%] default_placeholder" />
 
-        <div className="flex justify-center items-center gap-2 text-lg mt-0.5">
-          <button type="submit" className="text-black bg-[#F9C57C]/70 rounded-md p-0.5 text-sm font-semibold hover:bg-[#FFC57C]/80 transition">✓</button>
-          <button type="button" onClick={() => setT_Add(false)} className="text-black bg-[#F9C57C]/70 rounded-md p-0.5 text-sm hover:bg-[#FFC57C]/80 transition">✘</button>
+        <div className="flex justify-center items-center gap-1 md:gap-2 text-lg mt-0.5">
+          <button type="submit" className="text-black bg-[#F9C57C]/70 rounded-md p-0.5 text-xs md:text-sm font-semibold hover:bg-[#FFC57C]/80 transition">✓</button>
+          <button type="button" onClick={() => setT_Add(false)} className="text-black bg-[#F9C57C]/70 rounded-md p-0.5 text-xs md:text-sm hover:bg-[#FFC57C]/80 transition">✘</button>
         </div>
 
       </form>)
@@ -78,7 +78,7 @@ export function Friend({ data, addFriend, fetch, onCardClick, online }: {
         <span className={`absolute bottom-1 right-1 w-3 aspect-square border-2 border-gray-300 rounded-full ${online ? "bg-online" : "bg-offline" }`}></span>
       </div>
       {/* username & id */}
-      <span className="flex flex-col flex-grow text-lg mb-7">
+      <span className="flex flex-col flex-grow text-base md:text-lg md:mb-7">
         <p>{data.info.username}</p>
         <p className="text-xs italic">id: {data.info.id}</p>
       </span>
