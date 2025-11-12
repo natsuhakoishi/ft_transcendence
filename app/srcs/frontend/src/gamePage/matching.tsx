@@ -37,7 +37,7 @@ export function Matching({again, setMatch, AI} : {
                 console.dir(JSON.parse(event.data));
                 if (!success || !data)
                 {
-                    console.log("/Matching: matched same account or some error");
+                    console.log("/Matching: same player in difference match or same match");
                     navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                     return ;
                 }

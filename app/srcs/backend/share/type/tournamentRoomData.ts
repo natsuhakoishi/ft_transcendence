@@ -7,6 +7,7 @@ import { getMatchByUserId } from "../../database/match.ts";
 import type { Player, PlayerWithProfileData } from "./Player.ts";
 import type { Matches } from "./Matches.ts";
 import { addWinLose, setLoginStatus } from "../../database/profile.ts";
+import { error } from "console";
 
 export interface Leaderboard {
     first: PlayerWithProfileData;
@@ -274,25 +275,33 @@ export class TRoomManager {
     }
 
     async createTRoom(playerID: [number, number, number, number]): Promise<void> {
-        const roomID: string = createTRoomID(playerID);
-        if (!this.rooms.has(roomID))
-        {
-            this.rooms.set(roomID, new TRoom(playerID));
-            const room: TRoom = this.rooms.get(roomID) as TRoom;
-            room.init();
-
-            const times = setInterval(() => {
-                if (room.getStatus() === "end")
-                    clearInterval(times);
-                if (room.checkOffline())
-                {
-                    console.log("/tournament game manager: player offline");
-                    room.broadCast("offline");
-                    this.removeRoom(roomID);
-                    clearInterval(times);
-                }
-            }, 1000 * 5); //every 5 second ping each player
+        try {
+            const roomID: string = createTRoomID(playerID);
+            if (!this.rooms.has(roomID))
+            {
+                this.rooms.set(roomID, new TRoom(playerID));
+                const room: TRoom = this.rooms.get(roomID) as TRoom;
+                room.init();
+    
+                const times = setInterval(() => {
+                    if (room.getStatus() === "end")
+                        clearInterval(times);
+                    if (room.checkOffline())
+                    {
+                        console.log("/tournament game manager: player offline");
+                        room.broadCast("offline");
+                        this.removeRoom(roomID);
+                        clearInterval(times);
+                    }
+                }, 1000 * 5); //every 5 second ping each player
+            }
         }
+        catch (e: any)
+        {
+            console.error("/troom:", e);
+            throw Error("Player already have room");
+        }
+        
     }
 
     getRoom(roomID: string): TRoom | null {

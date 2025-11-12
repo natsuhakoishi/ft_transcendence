@@ -114,6 +114,9 @@ export class RoomManager {
                                             //tournament offset: number of second
     createRoom(p1ID: number, p2ID: number, tournamentOffset?: number): void {
         console.log("called rooms");
+
+        if (this.getRoomByPlayerID(p1ID) || this.getRoomByPlayerID(p2ID))
+            throw Error("Player already have room");
         const roomID: string = createRoomID(p1ID, p2ID);
         if (!this.rooms.has(roomID))
             this.rooms.set(roomID, new Room([p1ID, p2ID]));
