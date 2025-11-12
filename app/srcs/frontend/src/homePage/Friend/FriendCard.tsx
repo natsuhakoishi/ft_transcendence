@@ -12,7 +12,7 @@ const handleAddFriend = async (
 
   e.preventDefault();
   const form = e.currentTarget;
-  const elements = form.elements.namedItem("user_id") as HTMLInputElement;
+  const elements = form.elements.namedItem("username") as HTMLInputElement;
   const input = elements.value.trim();
 
   try {
@@ -43,8 +43,8 @@ export function Friend({ data, addFriend, fetch, onCardClick, online }: {
     {toggleAdd && fetch ?
       (<form onSubmit={(event) => {handleAddFriend(event, fetch, setT_Add, toasterPluz)}}
        className="flex flex-col items-center justify-center bg-[#F9DC7C]/70 rounded-2xl p-3 gap-1">
-        {/* Placeholder for friend id */}
-        <input type="text" placeholder={t("shared.form.place_userID")} required name="user_id"  className="border rounded-md p-1 text-center w-[50%] default_placeholder" />
+        {/* Placeholder for friend username */}
+        <input type="text" placeholder={t("shared.form.place_name")} required name="username"  className="border rounded-md p-1 text-center w-[50%] default_placeholder" />
 
         <div className="flex justify-center items-center gap-2 text-lg mt-0.5">
           <button type="submit" className="text-black bg-[#F9C57C]/70 rounded-md p-0.5 text-sm font-semibold hover:bg-[#FFC57C]/80 transition">✓</button>
@@ -68,7 +68,7 @@ export function Friend({ data, addFriend, fetch, onCardClick, online }: {
 
   {/* Normal Friend Card */}
   return (
-    <div onClick={onCardClick} 
+    <div onClick={onCardClick}
       className="relative flex w-full h-full justify-start items-center bg-[#FFC7A2]/80 gap-4 p-3 rounded-2xl hover hover:bg-[#F9C57C]/70 hover:backdrop-blur-none transition backdrop-blur-xs"
     >
       {/* avatar & login Status */}

@@ -132,8 +132,7 @@
 			"place_password": "請輸入密碼",
 			"place_n_password": "請輸入新密碼",
 			"place_o_password": "請輸入舊密碼",
-			"place_name": "請輸入用戶名稱",
-			"place_userID": "請輸入用戶 ID"
+			"place_name": "請輸入用戶名稱"
 		},
 
 		"game_stat":

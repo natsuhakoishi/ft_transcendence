@@ -61,8 +61,7 @@
 		"OK_DltFriend": "You have deleted your friend!",
 		"OK_AddFriend": "Friend added",
 		"ERR_AddF_Self": "You can't add yourself as friend",
-		"ERR_AddF_IdNan": "ID have to be numeric value",
-		"ERR_IdInvalid": "Invalid ID"
+		"ERR_NameInvalid": "Invalid Username"
 	},
 
 	"game":

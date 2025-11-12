@@ -61,8 +61,7 @@
 		"OK_DltFriend": "フレンドを削除しました！",
 		"OK_AddFriend": "フレンド追加完了！",
 		"ERR_AddF_Self": "自分をフレンドに追加できません",
-		"ERR_AddF_IdNan": "IDは数字で入力してください",
-		"ERR_IdInvalid": "無効なIDです"
+		"ERR_NameInvalid": "無効な名前です"
 	},
 
 	"game":

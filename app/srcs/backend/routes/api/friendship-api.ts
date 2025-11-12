@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { Friends } from "../../share/type/friend.ts";
-import { getUserById } from "../../database/user.ts";
+import { getUserById, getUserByUsername } from "../../database/user.ts";
 import { addFriendbyId, checkFriendMutual, deleteFriendbyId, getFriendshipsById } from "../../database/friendship.ts";
 import { getProfileById } from "../../database/profile.ts";
 import validator from "validator";
@@ -49,23 +49,19 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 	fastify.post('/add_friend', async (req: any, res: any) => {
 		try {
 			let { friend_adding } = req.body as any;
-			
+
 			if (!friend_adding)
-				return res.status(500).send({ message: "Need user id to add friend" });
+				return res.status(500).send({ message: "Need username to add friend" });
 
-			if (!validator.isNumeric(friend_adding))
-				return res.status(400).send({ code: "friend.ERR_AddF_IdNan", message: "Error: ID have to be numeric value" });
-
-			friend_adding = Number(friend_adding);
-			const friend = await getUserById(friend_adding);
+			const friend = await getUserByUsername(friend_adding);
 			if (!friend)
-				return res.status(400).send({ code: "friend.ERR_IdInvalid", message: "Error: Invalid ID" });
+				return res.status(400).send({ code: "friend.ERR_NameInvalid", message: "Error: Invalid Username" });
 
-			if (req.user === friend_adding)
+			if (req.user === friend.id)
 				return res.status(400).send({ code: "friend.ERR_AddF_Self", message: "Error: You cannot add yourself as a friend" });
 
-			await addFriendbyId(req.user, friend_adding);
-			
+			await addFriendbyId(req.user, friend.id);
+
 			return res.send({ message: 'Friend added successfully' });
 		}
 		catch (error: any)

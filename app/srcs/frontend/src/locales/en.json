@@ -132,8 +132,7 @@
 			"place_password": "Enter password",
 			"place_n_password": "Enter new password",
 			"place_o_password": "Enter old password",
-			"place_name": "Enter username",
-			"place_userID": "Enter User ID"
+			"place_name": "Enter username"
 		},
 
 		"game_stat":

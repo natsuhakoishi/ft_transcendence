@@ -61,8 +61,7 @@
 		"OK_DltFriend": "好友已刪除！",
 		"OK_AddFriend": "成功新增好友",
 		"ERR_AddF_Self": "無法將自己新增為好友",
-		"ERR_AddF_IdNan": "ID必須為數字",
-		"ERR_IdInvalid": "無效的ID"
+		"ERR_NameInvalid": "無效的用戶名稱"
 	},
 
 	"game":

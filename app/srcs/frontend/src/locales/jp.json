@@ -132,8 +132,7 @@
 			"place_password": "パスワードを入力",
 			"place_n_password": "新しいパスワードを入力",
 			"place_o_password": "古いパスワードを入力",
-			"place_name": "ユーザー名を入力",
-			"place_userID": "ユーザーIDを入力"
+			"place_name": "ユーザー名を入力"
 		},
 
 		"game_stat":
