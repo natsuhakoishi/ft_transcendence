@@ -8,7 +8,18 @@ function ProfileSB({ t, toasterPluz, isMe, id }: { isMe: boolean, id: number } &
   const navigate = useNavigate();
   const { user } = useOutletContext<{ user: User | null }>();
   const [profile, setProfile] = React.useState<{ id: number; name: string; avatar: string } | null>(null);
-  let avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
+  const [avatarURL, setAvatarURL] = React.useState("default.webp");
+  const { win_games = 0, tournament_wins = 0, total_game = 0, win_rate = 0.0 } = user?.profile || {};
+  const displayDash = (num: number) => (num === 0 ? "-" : num);
+  const high = typeof win_rate === "number" && win_rate >= 51.0;
+
+  React.useEffect(() => {
+    if (isMe && user) {
+      setAvatarURL(`${import.meta.env.VITE_API_AVATAR}${user.profile.avatar_path}?t=${Date.now()}`);
+    } else if (profile) {
+      setAvatarURL(`${import.meta.env.VITE_API_AVATAR}${profile.avatar}?t=${Date.now()}`);
+    }
+  }, [isMe, user, profile]);
 
   React.useEffect(() => {
     if (!isMe)
@@ -17,30 +28,23 @@ function ProfileSB({ t, toasterPluz, isMe, id }: { isMe: boolean, id: number } &
         try {
           const data = await apiFetchPrivate(`basic_profile/${id}`, { method: "GET" });
           setProfile(data);
-          avatarURL = `${import.meta.env.VITE_API_AVATAR}${profile?.avatar}?t=${Date.now()}`;
         } catch (err: any) {
           toasterPluz(err);
         }
       })();
     }
-
   }, []);
-  const { win_games = 0, tournament_wins = 0, total_game = 0, win_rate = 0.0 } = user?.profile || {};
-  const displayDash = (num: number) => (num === 0 ? "-" : num);
-  const high = typeof win_rate === "number" && win_rate >= 51.0;
 
 	return (
     <>
     {/* Sidebar: User Stats & Back Button */}
-    <div className="h-full flex flex-col md:justify-between items-center">
+    <div className="h-full flex flex-col justify-center md:justify-between items-center">
 
       <div className="hidden md:block"/>
       <div className="hidden md:block"/>
 
       {!isMe &&
-        <>
         <h2 className="text-lg">{`< Viewing >`}</h2>
-        </>
       }
 
       <div className="flex flex-col mt-2">
