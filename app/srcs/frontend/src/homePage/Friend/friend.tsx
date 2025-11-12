@@ -22,7 +22,6 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
       setFriends(data.friends || []);
       setTotal(data.friends?.length || 0);
       console.log("Friends data fetched");
-      // console.log(friends);
     } catch (err: any) {
       toasterPluz("friend.ERR_fetchF");
     }

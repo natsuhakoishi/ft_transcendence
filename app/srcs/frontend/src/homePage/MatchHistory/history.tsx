@@ -4,9 +4,10 @@ import { useLang, withTranslation, type TranslationProps } from "../../_hooks/la
 import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backend/share/type/history";
 import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./HistoryChildC";
 import { ProfileSideBar } from "./ProfileSidebar";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { LoadingScreen } from "../HomeChildC";
 import type { User } from "../../../../backend/share/type/user";
+import type { Friends } from "../../../../backend/share/type/friend";
 
 function ExpandTour ({ entries, user_id } : { entries: TournamentMatch | null, user_id: number, }) {
   // console.log(entries);
@@ -183,6 +184,7 @@ function ExpandTourModal({ children, onClose, }: {
 }
 
 export function HistoryP({ t, toasterPluz }: TranslationProps) {
+  const navigate = useNavigate();
   const { user, loading } = useOutletContext<{ user: User | null, loading: boolean }>();
   const [matches, setMatches] = useState<MatchMeResponse | null>(null);
   const [TourModal, setTourModal] = useState<boolean>(false);
@@ -190,7 +192,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
   const id = Number(useParams().id);
   let user_id: any;
   if (!loading)
-    user_id = id || user?.acc.user_id;
+    user_id = Number.isFinite(id) ? id : user?.acc.user_id;
   const isMe = user_id === user?.acc.user_id;
 
   const handleTournamentClick = (entries: TournamentMatch) => {
@@ -200,22 +202,33 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
 
   React.useEffect(() => {
     document.title = t("history.title");
-
-    if (!loading && user_id)
-    {
-      const fetchHistory = async () => {
-        try {
-          const data = await apiFetchPrivate(`match/${user_id}`, { method: "GET" });
-          setMatches(data);
-        } catch (err: any) {
-          toasterPluz("ERR_fetchH");
+    const loadData = async () => {
+      try {
+        if (!loading && user_id) {
+          if (!Number.isFinite(id))
+          {
+            const data = await apiFetchPrivate(`match/${user_id}`, { method: "GET" });
+            setMatches(data);
+            return ;
+          }
+          else
+          {
+            const data = await apiFetchPrivate("my_friends", { method: "POST", body: "{}" });
+            if (!data.load || !data.friends.some((f: Friends) => f.info.id === id)) {
+              toasterPluz("game.ERR_trespassing");
+              navigate("/", { replace: true });
+              return;
+            }
+          }
         }
-      };
-      fetchHistory();
-    }
+      } catch (err: any) {
+        toasterPluz(err);
+        return ;
+      }
+    };
+    loadData();
 
-    return () => setMatches(null);
-  }, [loading, user_id]);
+  }, [loading, user_id, id]);
 
 	return (
   <>
@@ -251,7 +264,7 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
 
         {/* Right side: User's profile */}
         <section className={`h-[55%] md:h-full flex flex-col ${isMe ? "bg-[#1f3735]/80" : "bg-[#383E69]/80" } justify-center items-center shadow-2xl`}>
-          <ProfileSideBar isMe={isMe} id={id}/>
+          <ProfileSideBar isMe={isMe} id={user_id}/>
         </section>
 
       </div>
