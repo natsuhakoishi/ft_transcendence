@@ -83,7 +83,12 @@ return (
 
           {/* Button -> Refresh */}
           <button className="w-7 md:w-13 aspect-square hover hover:scale-90 border-1 md:border-2 border-silver rounded-md overflow-hidden"
-            onClick={async () => { await fetchFriends(); toasterPluz("friend.OK_refresh")} }>
+            onClick={async () => {
+              await fetchFriends();
+              toasterPluz("friend.OK_refresh");
+              if (socket.readyState === WebSocket.OPEN)
+                socket.send(JSON.stringify({ type: "update" }));
+            }}>
               <img src="/pic/icons/refresh_btn.png" className="w-full h-full object-cover"/>  
           </button>
 
