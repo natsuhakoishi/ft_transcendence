@@ -9,8 +9,8 @@ export function Loading() {
     const { t } = useLang();
     const navigate = useNavigate();
     const location = useLocation();
-    const [ player1, setPlayer1 ] = useState<PlayerWithProfileData | null>(null);
-    const [ player2, setPlayer2 ] = useState<PlayerWithProfileData | null>(null);
+    const [ player1, setPlayer1 ] = useState<PlayerWithProfileData | undefined>(undefined);
+    const [ player2, setPlayer2 ] = useState<PlayerWithProfileData | undefined>(undefined);
     const { playerID, playersData, AI } = (location.state || {}) as {
         playerID: string,
         playersData: MatchPlayersData,
@@ -21,7 +21,7 @@ export function Loading() {
     console.log("Loading: ", playerID);
 
     React.useEffect(() => {
-        if (!playerID || !playersData || !AI)
+        if (!playerID || !playersData)
         {
             navigate("/", { replace: true });
             return ;
@@ -42,9 +42,9 @@ export function Loading() {
 
     return (
         <div className="flex gap-8 items-center">
-            <Player player={player1!} me={AI ? true : player1?.id.toString() === playerID} />
+            <Player player={player1} me={AI ? true : player1?.id.toString() === playerID} />
             <h1 className="font-bold text-5xl">VS</h1>
-            <Player player={player2!} me={player2?.id.toString() === playerID} />
+            <Player player={player2} me={player2?.id.toString() === playerID} />
         </div>
     );
 }

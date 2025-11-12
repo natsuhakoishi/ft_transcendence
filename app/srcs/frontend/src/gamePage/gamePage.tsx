@@ -39,7 +39,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
     React.useEffect(() => {
         const timer = setTimeout(() => {
             setLoad(false);
-        }, 1000 * 3);
+        }, 1000 * 1.5);
 
         return () => clearTimeout(timer);
     }, []);
@@ -55,7 +55,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
             }
             console.log("GamePage: roomid:", RoomID);
 
-            const ws = new WebSocket(import.meta.env.VITE_GAME_API_GAMEPLAY!);
 
             const gameData: GameData = {
                 roomId: RoomID!,
@@ -63,11 +62,12 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 keyPress: "null",
                 tournament: isTournament ? true : false
             }
+            setGameData(gameData);
 
             try {
                 const data = await apiFetchPrivate("me", { method: "GET" });
                 gameData.playerId = data.id;
-                await setPlayerID(data.id);
+                setPlayerID(data.id);
                 console.log("/GamePage: playersData: ", playersData);
                 console.log("/GamePage: gameData: ", gameData);
                 console.log("/GamePage: PlayerID: ", data, playerID, playersData?.Players[0].id, playersData?.Players[1].id);
@@ -78,12 +78,14 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
 
+            const ws = new WebSocket(import.meta.env.VITE_GAME_API_GAMEPLAY!);
+
             //init default position and board size
             ws.onopen = () => {
                 const gameState: GameState = initGameState();
                 console.log("ws.onopen: pre rendering");
                 draw(gameState, themeRef.current);
-                setGameData(gameData);
+
                 gameData.keyPress = "init";
                 ws.send(JSON.stringify(gameData));
                 wsRef.current = ws;

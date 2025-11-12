@@ -55,11 +55,11 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
             }
 
             console.log("TournamentGamePage", playerID!);
-            const ws: WebSocket = new WebSocket(import.meta.env.VITE_GAME_API_TOURNAMENT_GAMEPLAY!);
-            wsRef.current = ws;
-
             gameDataRef.current.roomId = tournamentRoomID!;
             gameDataRef.current.playerId = parseInt(playerID!);
+
+            const ws: WebSocket = new WebSocket(import.meta.env.VITE_GAME_API_TOURNAMENT_GAMEPLAY!);
+            wsRef.current = ws;
 
             ws.onopen = () => {
                 if (!init)

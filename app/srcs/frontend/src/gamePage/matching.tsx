@@ -22,7 +22,7 @@ export function Matching({again, setMatch, AI} : {
         {
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_MATCHING);
             console.log("Matching...", import.meta.env.VITE_GAME_API_MATCHING);
-    
+
             ws.onopen = () => {
                 (async () => {
                     await sendProfile(ws, () => {
