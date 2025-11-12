@@ -9,7 +9,6 @@ import { setTournamentStatus } from "../../database/tournament.ts";
 const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
     fastify.get("/gameplay", { websocket: true }, (connection: any, req) => {
         const ws = connection;
-        let count = 0;
         console.log("/tournament/gameplay: connected");
 
         ws.on("message", (msg) => {

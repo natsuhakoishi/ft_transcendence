@@ -39,7 +39,7 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
     React.useEffect(() => {
         const timer = setTimeout(() => {
             setLoad(false);
-        }, 1000 * 3);
+        }, 1000 * 1.5);
 
         return () => clearTimeout(timer);
     }, []);
