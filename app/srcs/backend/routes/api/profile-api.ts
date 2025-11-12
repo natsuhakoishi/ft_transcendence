@@ -101,13 +101,13 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 					return ;
 
 				case "update":
-					console.log("Huh from update");
+					// console.log("Huh from update");
 					ws.send(JSON.stringify({
 						type: "update",
 						list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
 					}));
 					return ;
-			
+
 				case "log_out":
 					if (!user) return ;
 					console.log(`Log out - Goodby ${name ?? "who"}\n`);
