@@ -89,8 +89,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 
 					ws.send(JSON.stringify({
 						type: "init",
-						// list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
-						list: Array.from(onlineUsers.entries()).map(([id]) => id)
+						list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
 					}));
 					return ;
 				

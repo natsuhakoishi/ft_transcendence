@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Player } from "./player";
 import React from "react";
 import { Matching } from "./matching";
@@ -9,10 +9,12 @@ import { useLang } from "../_hooks/language";
 export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean}) {
     const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
+    const { refetchData } = useOutletContext<{ refetchData: () => void}>();
     const { t } = useLang();
 
     React.useEffect(() => {
         document.title = t("shared.result.title");
+        refetchData();
     }, []);
 
     return (
