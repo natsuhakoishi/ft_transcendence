@@ -16,7 +16,7 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 
 			const friends = await getFriendshipsById(req.user);
 			if (!friends || friends.length === 0)
-				return res.send({ friends: [] });
+				return res.send({ friends: [], load: true });
 
 			const friends_detail = await Promise.all(friends.map(async (f: any) => {
 				const friend_profile = await getProfileById(f.friend_id);
@@ -35,11 +35,10 @@ const friendshipApi: FastifyPluginAsync = async (fastify: any) =>
 						lose_games: friend_profile.lose_games,
 						tournament_wins: friend_profile.tournament_wins
 					},
-					fstatus: friend_mutual 
+					fstatus: friend_mutual
 				} as Friends
 			}));
-
-			return res.send({ friends: friends_detail, message: "Data get successfully" });
+			return res.send({ friends: friends_detail, load: true });
 		}
 		catch (error: any)
 		{

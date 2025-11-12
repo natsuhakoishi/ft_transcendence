@@ -8,23 +8,23 @@ function ProfileSB({ t, toasterPluz, isMe, id }: { isMe: boolean, id: number } &
   const navigate = useNavigate();
   const { user } = useOutletContext<{ user: User | null }>();
   const [profile, setProfile] = React.useState<{ id: number; name: string; avatar: string } | null>(null);
+  let avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
 
   React.useEffect(() => {
     if (!isMe)
     {
-        (async () => {
-          try {
-            const res = await apiFetchPrivate(`basic_profile/${id}`, { method: "GET" });
-            setProfile(res); 
-          } catch (err: any) {
-            toasterPluz(err);
-          }
-        })();
+      (async () => {
+        try {
+          const data = await apiFetchPrivate(`basic_profile/${id}`, { method: "GET" });
+          setProfile(data);
+          avatarURL = `${import.meta.env.VITE_API_AVATAR}${profile?.avatar}?t=${Date.now()}`;
+        } catch (err: any) {
+          toasterPluz(err);
+        }
+      })();
     }
 
   }, []);
-
-  const avatarURL = isMe ? `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}` : `${import.meta.env.VITE_API_AVATAR}${profile?.avatar}`;
   const { win_games = 0, tournament_wins = 0, total_game = 0, win_rate = 0.0 } = user?.profile || {};
   const displayDash = (num: number) => (num === 0 ? "-" : num);
   const high = typeof win_rate === "number" && win_rate >= 51.0;
