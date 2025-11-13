@@ -37,7 +37,7 @@ export function FriendProfile({ setFModal, FProfile, handleFDelete, fetch }: {
       <div className="bg-[#FFCDB6]/50 rounded-xl p-5 w-80 max-w-[90%] relative backdrop-blur-md" onClick={(e) => e.stopPropagation()}>
       
         {/* avatar */}
-        <img src={`${import.meta.env.VITE_API_AVATAR}${FProfile.info.avatar_path}`} className="w-24 h-24 rounded-full border-1 mx-auto"/>
+        <img src={`${import.meta.env.VITE_API_AVATAR}${FProfile.info.avatar_path}`} className="w-14 md:w-24 aspect-square rounded-full border-1 mx-auto"/>
         {/* username */}
         <h2 className="text-center text-lg font-bold mt-2">{FProfile.info.username}</h2>
         {/* user id */}

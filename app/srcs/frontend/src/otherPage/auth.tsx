@@ -182,11 +182,13 @@ function LoginP({ t, toasterPluz }: TranslationProps) {
     <div className="absolute top-0 md:top-2 right-0 md:right-2 m-2">
       <LanguageBar bgColor="" optionColor="bg-[#44332D]"/>
     </div>
+
     {/* Title */}
-    <h1 className={`absolute top-0 md:top-8 text-4xl md:text-5xl font-extrabold text-shadow-lg font-[STHupo] [-webkit-text-stroke:1px rgba(115,107,148,0.8)]`}>FT_KLBQ</h1>
+    <h1 className={`absolute top-0 md:top-8 mt-1 text-4xl md:text-5xl font-extrabold text-shadow-lg font-[STHupo] [-webkit-text-stroke:1px rgba(115,107,148,0.8)]`}>FT_KLBQ</h1>
+
     {/* Form Modal -> Register / Login */}
-    <div className="h-full w-[60%] flex flex-col justify-end md:justify-center items-center mb-3 bg-[#915C2E]/30 backdrop-blur-base gap-2">
-      <div className="flex flex-col justify-center items-center bg-[#C9DB71]/90 rounded-xl w-75 h-[78%] md:h-[60%] shadow-2xl text-justify gap-2">
+    <div className="h-full w-[60%] flex flex-col justify-end md:justify-center items-center bg-[#915C2E]/30 gap-2">
+      <div className="flex flex-col justify-center items-center border-1 border-[#ced7a3] bg-[#C9DB71]/85 rounded-xl w-75 h-[78%] md:h-[60%] shadow-2xl text-justify gap-2 mb-2">
 
       {/* OTP Verification Modal (Shared) */}
       {showOTP && <OTPModal show={setShowOTP} verifyRef={verifyRef} onVerify={() => verifyOTP(mode)} />}
@@ -196,7 +198,7 @@ function LoginP({ t, toasterPluz }: TranslationProps) {
         (
           <>
             <LoginForm verifyRef={verifyRef} onSubmit={handleLogin}>
-              <hr className="hidden md:block h-px min-w-70 my-3 border-1"></hr>
+              <hr className="hidden md:block h-px min-w-70 my-1 border-1"></hr>
               <button onClick={() => setMode("register")} className="md:w-20 default_button hover-increase">{t("auth.btn_register")}</button>
             </LoginForm>
           </>

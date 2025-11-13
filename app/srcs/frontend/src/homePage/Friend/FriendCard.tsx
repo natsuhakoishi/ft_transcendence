@@ -55,7 +55,7 @@ export function Friend({ data, addFriend, fetch, onCardClick, online }: {
         :
       <button onClick={() => setT_Add(true)}
         className="flex flex-col justify-center items-center bg-[#F9DC7C]/70 rounded-2xl hover hover:scale-103 hover:bg-[#F9C57C]/70 hover:backdrop-blur-md">
-          <img src="/pic/icons/addFriend.png" className="w-10"/>
+          <img src="/pic/icons/addFriend.png" className="w-6 md:w-10"/>
       </button>
     }
     </>
