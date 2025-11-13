@@ -106,7 +106,7 @@ async function initServer()
 	await initDB();
 
 	await fastify.register(cors, {
-		origin: [`https://${IP}:${FRONTEND_PORT}`, `https://localhost:${FRONTEND_PORT}`],
+		origin: [`https://${IP}:${FRONTEND_PORT}`],
 		credentials: true,
 		methods: ['GET', 'POST']
 	});

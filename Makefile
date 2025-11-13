@@ -18,7 +18,7 @@ clean:
 	docker system prune
 
 dbclean:
-	rm -rf ./database/*
+	sudo rm -rf ./database/*
 	find ./app/srcs/backend/assets/avatars -type f ! \( -name 'default.*' -o -name '*_dev.*' -o -name 'ai.webp' \) -delete\
 
 cclean:
