@@ -118,7 +118,7 @@ export function ProfileP({ t, toasterPluz }: TranslationProps) {
       </div> 
 
       {/* conditional render betw Profile & Option */}
-      <div className="w-screen h-[58%] md:h-[40%] md:h-50% shadow-md shadow-gray-400 gap-2 bg-[#ABABD1]/60 backdrop-blur-md flex justify-start">
+      <div className="w-screen h-[58%] md:h-[40%] md:h-50% shadow-sm shadow-gray-400 gap-2 bg-[#ABABD1]/60 backdrop-blur-md flex justify-start">
         {menu === "Profile" ? <MenuProfile user={user} /> : <MenuOption user={user} refetch={refetchData} />}
       </div>
 

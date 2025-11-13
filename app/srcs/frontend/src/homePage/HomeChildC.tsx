@@ -48,15 +48,15 @@ function CreditMember({ link, github, intra, roles }: { link: string, github: st
   );
 }
 
-export function Credit({ onClick }: { onClick: React.Dispatch<React.SetStateAction<boolean>> }) {
+export function Credit({ onClick }: { onClick: () => void }) {
   const { t } = useLang();
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center md:justify-center gap-1 bg-gray-600/40" onClick={() => onClick(false)}>
+    <div className="p-0.5 fixed inset-0 z-50 flex flex-col items-center justify-center gap-1 bg-gray-600/40" onClick={onClick}>
 
     {/* Modal -> Credit */}
-    <div className="p-1 h-[99%] w-[80%] md:w-[65%] md:h-[68%] relative flex flex-col md:justify-center md:gap-3 bg-gray-300/60 backdrop-blur-lg border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
+    <div className="p-1 h-[99%] w-[80%] md:w-[65%] md:h-[68%] relative flex flex-col justify-center md:gap-3 bg-gray-300/60 backdrop-blur-lg border-1 rounded-4xl" onClick={(e) => e.stopPropagation()}>
       {/* Title */}
       <h1 className="text-xl md:text-2xl text-center">{t("home.btn_credit")}</h1>
       {/* Team Credit list */}
@@ -87,7 +87,7 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-2 md:gap-1 bg-gray-600/40 backdrop-blur-xs overflow-auto" onClick={() => onClick(false)}>
+    <div className="p-0.5 fixed inset-0 h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-2 md:gap-1 bg-gray-600/40 backdrop-blur-xs overflow-auto" onClick={onClick}>
       {/* Img - Tutorial */}
       <div className="w-[69%] md:w-[60%] max-h-[95vh] flex flex-col items-center rounded-2xl">
         <h1 className="text-3xl font-bold text-shadow-lg text-center sm:mt-1 mb-1 md:mb-5">{t("home.tutor")}</h1>
