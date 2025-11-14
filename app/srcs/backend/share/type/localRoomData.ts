@@ -3,14 +3,14 @@ import { initGameState } from "../../routes/game/gameUtils.ts";
 import type { GameState } from "./gameState.ts";
 import type { Player } from "./Player.ts";
 
-export class AIRoom {
+export class LocalRoom {
     private id: number;
     private confirm: boolean;
     private gameState: GameState;
     private player: Player;
 
     constructor(_id: number) {
-        console.log("AIroom: create room", _id);
+        console.log("LocalRoom: create room", _id);
         this.id = _id;
         this.confirm = false;
         this.gameState = initGameState();
@@ -43,28 +43,29 @@ export class AIRoom {
     getConfirm(): boolean {
         return this.confirm;
     }
+
 }
 
-export class AIRoomManager {
-    private rooms: Map<number, AIRoom>;
+export class LocalRoomManager {
+    private rooms: Map<number, LocalRoom>;
 
     constructor() {
-        this.rooms = new Map<number, AIRoom>();
+        this.rooms = new Map<number, LocalRoom>();
     }
 
-    getRoom(_id: number): AIRoom | undefined {
+    getRoom(_id: number): LocalRoom | undefined {
             return this.rooms.get(_id);
     }
 
     createRoom(id: number) {
         if (!this.rooms.has(id))
-            this.rooms.set(id, new AIRoom(id));
-        const room: AIRoom | undefined = this.rooms.get(id);
+            this.rooms.set(id, new LocalRoom(id));
+        const room: LocalRoom | undefined = this.rooms.get(id);
         if (room)
             setTimeout(() => {
                 if (room && !room.getConfirm())
                 {
-                    console.log("AI RoomManager: timeout");
+                    console.log("Local RoomManager: timeout");
                     room.broadCast("timeout");
                     this.deleteRoom(id);
                 }
@@ -72,18 +73,18 @@ export class AIRoomManager {
     }
 
     deleteRoom(id: number): void {
-        console.log("/AIRoomManager: remove room: ", id);
+        console.log("/LocalRoomManager: remove room: ", id);
         this.rooms.delete(id);
     }
 }
 
 export default fp(async (fastify) => {
-  const AIrooms = new AIRoomManager();
-  fastify.decorate("AIrooms", AIrooms);
+  const LocalRooms = new LocalRoomManager();
+  fastify.decorate("localRooms", LocalRooms);
 });
 
 declare module "fastify" {
   interface FastifyInstance {
-    AIrooms: AIRoomManager;
+    LocalRooms: LocalRoomManager;
   }
 }

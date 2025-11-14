@@ -1,20 +1,21 @@
 import { AIRoom } from "../../share/type/AIroomData.ts";
 import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
+import type { LocalRoom } from "../../share/type/localRoomData.ts";
 import type { Player } from "../../share/type/Player.ts";
 import { Room } from "../../share/type/roomData.ts";
 import { TRoom } from "../../share/type/tournamentRoomData.ts";
 import { AILogic } from "./AIGameLogic.ts";
 import { resetBall } from "./gameUtils.ts";
 
-export function start(room: Room | AIRoom, gameOver: () => void, tour: TRoom | null): void {
+export function start(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour: TRoom | null): void {
     room.getState().gamingStage = true;
     console.log("/gameplay: start");
 
     startRound(room, gameOver, tour);
 }
 
-function startRound(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
+function startRound(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | null): void {
     resetBall(room.getState());
 
     room.broadCast("start");
@@ -24,7 +25,7 @@ function startRound(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | nu
     }, 2000);
 }
 
-export function runLoop(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
+export function runLoop(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | null): void {
     let runtime: number = 0;
     const intervalId = setInterval( () => {
         runtime += 16;
@@ -59,7 +60,7 @@ export function runLoop(room: Room | AIRoom, gameOver: () => void, tour?: TRoom 
     }, 16); //16ms ~60fps
 }
 
-function handleGoal(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
+function handleGoal(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | null): void {
 
     room.broadCast("goal");
     
@@ -82,29 +83,18 @@ function handleGoal(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | nu
     startRound(room, gameOver, tour);
 }
 
-function end(room: Room | AIRoom, gameOver: () => void): void {
+function end(room: Room | AIRoom | LocalRoom, gameOver: () => void): void {
     const state: GameState = room.getState();
 
     state.gamingStage = false;
 
-    // if (state.playerOffline)
-    // {
-    //     console.log("/gameplay: player offline");
-    //     // if (room instanceof Room)
-    //     room.mandatoryWin();
-    //     room.broadCast("game_over_offline");
-    // }
-    // else
-    // {
     console.log("/gameplay: game over");
     room.broadCast("game_over");
-    // }
     gameOver();
 }
 
 export function handleKeyPress(room: Room, data: GameData, player: Player): void {
 
-    // const pos: string = data.roomId.indexOf(data.playerId.toString()) === 0 ? "left" : "right";
     if (!data.roomId)
         return ;
     const id: string[] = data.roomId.split("-");
@@ -120,13 +110,12 @@ export function handleKeyPress(room: Room, data: GameData, player: Player): void
         room.addConfirm(data.playerId);
 
         console.log("roomID " + room.getRoomID() + ": player " + player.id.toString() + " ready! " + room.size().toString() + "/2");
-        // ws.send(JSON.stringify(room.getState()));
     }
     else if (room.getState().gamingStage)
         keyLogic(room, keypress, pos);
 }
 
-export function keyLogic(room: Room | AIRoom, keyPress: string, pos: string) {
+export function keyLogic(room: Room | AIRoom | LocalRoom, keyPress: string, pos: string) {
         if (pos === "right")
         {
             if (keyPress === "up")

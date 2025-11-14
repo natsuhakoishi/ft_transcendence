@@ -258,4 +258,4 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps)
 }
 
 
-export const LocalGamePage = withTranslation(LocalGameP);
+const LocalGamePage = withTranslation(LocalGameP);

@@ -4,10 +4,11 @@ import { apiFetchPrivate, sendProfile } from "../utils.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
 import { useLang } from "../_hooks/language.tsx";
 
-export function Matching({again, setMatch, AI} : {
+export function Matching({again, setMatch, AI, local} : {
         again: boolean,
         setMatch?: React.Dispatch<React.SetStateAction<boolean>>,
         AI: boolean
+        local: boolean
     }) {
     const navigate = useNavigate();
     const { t, toasterPluz } = useLang();
@@ -54,6 +55,29 @@ export function Matching({again, setMatch, AI} : {
                 console.log("Matching: closing ws");
                 ws.close();
             }; 
+        }
+        else if (local)
+        {
+            const ws = new WebSocket(import.meta.env.VITE_GAME_API_LOCAL_MATCHING);
+
+            ws.onopen = () => {
+                (async () =>
+                    await sendProfile(ws, () =>
+                        navigate(import.meta.env.VITE_PATH_404NOTFOUND, { replace: true})))();
+            };
+
+            ws.onmessage = async (event) => {
+                const data: MatchPlayersData = JSON.parse(event.data);
+                const playerData = await apiFetchPrivate("me", { method: "GET" });
+                const playerID: string = playerData.id.toString();
+                console.log("local Matching: ", data);
+
+                if (!again)
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true} });
+                else
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true });
+                // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
+            };
         }
         else
         {

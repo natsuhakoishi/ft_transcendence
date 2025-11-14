@@ -23,9 +23,11 @@ import tournamentGetApi from './routes/api/tournament-get-api.ts';
 import websocketPlugin from "@fastify/websocket";
 import AIRoomManagerPlugin from "./share/type/AIroomData.ts"
 import roomManagerPlugin from "./share/type/roomData.ts"
+import localRoomManagerPlugin from "./share/type/localRoomData.ts"
 import TournamentRoomManagerPlugin from "./share/type/tournamentRoomData.ts"
 import match from './routes/game/match.ts';
 import games from './routes/game/games.ts';
+import LocalGameplay from './routes/game/localGame.ts';
 import gamesTournament from './routes/game/gamesTournament.ts';
 import AI from './routes/game/gameAI.ts';
 import { createDevTeamUser } from './database/devteam.ts';
@@ -129,6 +131,7 @@ async function initServer()
 
 	// game
 	fastify.register(roomManagerPlugin);
+	fastify.register(localRoomManagerPlugin);
 	fastify.register(TournamentRoomManagerPlugin);
 	fastify.register(AIRoomManagerPlugin);
 	await fastify.register(websocketPlugin);
@@ -136,6 +139,7 @@ async function initServer()
 	await fastify.register(games, {prefix: "/game"});
 	await fastify.register(gamesTournament, {prefix: "/game/tournament"});
 	await fastify.register(AI, {prefix: '/game/AI'});
+	await fastify.register(LocalGameplay, {prefix: '/game/local'});
 
 	await fastify.register(async (privateApiRoutes: any) => {
 	await privateApiRoutes.register(jwtPlugin);

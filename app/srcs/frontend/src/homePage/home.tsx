@@ -104,7 +104,7 @@ return (
 
                 {/* Button -> Local Mode */}
                 <button className="h-full w-[90%] border-1 border-[#F5CFED]/30 bg-[#BF91B2]/65 rounded-2xl hover-increase backdrop-blur-xs"
-                >{t("home.btn_local")}</button>
+                  onClick={() => { navigate(import.meta.env.VITE_GAME_PATH_LOCAL_GAMEPLAY); }}>{t("home.btn_local")}</button>
 
               </div>
 

@@ -11,10 +11,11 @@ export function Loading() {
     const location = useLocation();
     const [ player1, setPlayer1 ] = useState<PlayerWithProfileData | undefined>(undefined);
     const [ player2, setPlayer2 ] = useState<PlayerWithProfileData | undefined>(undefined);
-    const { playerID, playersData, AI } = (location.state || {}) as {
+    const { playerID, playersData, AI, local } = (location.state || {}) as {
         playerID: string,
         playersData: MatchPlayersData,
         AI: boolean
+        local: boolean
     };
 
     console.log("loading: ", playersData);
@@ -33,6 +34,8 @@ export function Loading() {
         const timer = setTimeout(() => {
             if (AI)
                 navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: playersData}, replace: true });
+            else if (local)
+                navigate(import.meta.env.VITE_GAME_PATH_LOCAL_GAMEPLAY, { state: {playersData: playersData}, replace: true });
             else
                 navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, { state: {RoomID: playersData.roomID, isTournament: false, playersData: playersData}, replace: true });
         }, 1000 * 2);

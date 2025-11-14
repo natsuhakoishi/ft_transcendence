@@ -7,7 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_GAME_API_GAMEPLAY: string;
   readonly VITE_GAME_API_AI_GAMEPLAY: string
   readonly VITE_GAME_API_TOURNAMENT_GAMEPLAY: string;
-  
+  readonly VITE_GAME_API_LOCAL_GAMEPLAY: string;
+
   // GAME MATCHING API
   readonly VITE_GAME_API_MATCHING: string;
   readonly VITE_GAME_API_TOURNAMENT_MATCHING: string;
@@ -17,6 +18,7 @@ interface ImportMetaEnv {
   readonly VITE_GAME_PATH_GAMEPLAY: string;
   readonly VITE_GAME_PATH_TOURNAMENT_GAMEPLAY: string;
   readonly VITE_GAME_PATH_AI_GAMEPLAY: string
+  readonly VITE_GAME_PATH_LOCAL_GAMEPLAY: string;
 
   // GAME MATCHING PAGE
   readonly VITE_GAME_PATH_AI_MATCHING: string

@@ -218,7 +218,6 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
     return (
         <GameLayout
-            gameData={gameData}
             score={score}
             playersData={playersData}
             Load={Load}
