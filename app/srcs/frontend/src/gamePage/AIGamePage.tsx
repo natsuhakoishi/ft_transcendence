@@ -109,8 +109,6 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
             else if (type === "timeout")
             {
                 console.log("/AI gamepage timeout")
-                // toasterPluz("pop.game.ERR_timeOut");
-                // toasterPluz("pop.game.ERR_timeOut_redirect");
                 toasterPluz("game.ERR_forgetReady");
                 navigate("/", { replace: true });
             }

@@ -66,10 +66,9 @@
 
 	"game":
 	{
-		"ERR_timeOut": "タイムアウト",
-		"ERR_timeOut_redirect": "ホームに戻ります",
 		"ERR_forgetReady": "準備されていません。ホームに戻ります",
 
+		"ERR_matching": "重複ユーザー検出！",
 		"ERR_trespassing": "不正アクセス！",
 
 		"ERR_Disconnect": "相手が切断しました",
