@@ -63,7 +63,7 @@ return (
           {/* Pop Up Modal -> Credits page */}
           {creditM && <Credit onClick={() => setCreditM(false)} />}
 
-          {/* Pop Up Modal -> Credits page */}
+          {/* Pop Up Modal -> Tutor page */}
           {tutorM && <Tutorial onClick={() => setTutorM(false)} />}
 
           {/*Left part*/}

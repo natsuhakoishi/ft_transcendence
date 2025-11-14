@@ -87,13 +87,13 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
 
   return (
     //{/* Background Layer -> blur effect */}
-    <div className="p-0.5 fixed inset-0 h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-2 md:gap-1 bg-gray-600/40 backdrop-blur-xs overflow-auto" onClick={onClick}>
+    <div className="p-0.5 fixed inset-0 h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-2 md:gap-1 bg-gray-600/40 backdrop-blur-xs overflow-auto" onClick={(e) => e.stopPropagation()}>
       {/* Img - Tutorial */}
       <div className="w-[69%] md:w-[60%] max-h-[95vh] flex flex-col items-center rounded-2xl">
         <h1 className="text-3xl font-bold text-shadow-lg text-center sm:mt-1 mb-1 md:mb-5">{t("home.tutor")}</h1>
         <img className="w-full h-[80%] object-contain rounded-2xl" src={`${toggle === "first" ? "/pic/tutorial.png" : "/pic/tutorial_2.png"}`} />
       </div>
-      <div className="flex flex-col md:flex-row md:gap-2 md:items-start md:mt-2" onClick={(e) => e.stopPropagation()}>
+      <div className="flex flex-col md:flex-row md:gap-2 md:items-start md:mt-2">
         <button className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={() => setToggle(toggle === "first" ? "second" : "first")}>
           <img src={`${toggle === "first" ? "/pic/icons/next_btn.png" : "/pic/icons/back_btn.png" }`} className="drop-shadow-lg w-full h-full object-cover"/>  
         </button>
