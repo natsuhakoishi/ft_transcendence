@@ -16,7 +16,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
     const [ result , setResult ] = React.useState(false);
     const [ start, setStart ] = React.useState(false);
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
-    const [ gameData, setGameData ] = React.useState<GameData | null>(null);
     const key = React.useRef<boolean>(false);
     const confirmRef = React.useRef<boolean>(false);
     const [ ready, setReady ] = React.useState(false);
@@ -62,7 +61,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 keyPress: "null",
                 tournament: isTournament ? true : false
             }
-            setGameData(gameData);
 
             try {
                 const data = await apiFetchPrivate("me", { method: "GET" });
@@ -279,7 +277,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
 
     return (
         <GameLayout
-            gameData={gameData}
             score={score}
             playersData={playersData}
             Load={Load}

@@ -6,7 +6,7 @@ import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { useLang } from "../_hooks/language";
 
-export function Result({ winner, playerID, AI }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean}) {
+export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean, local?: boolean}) {
     const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
     const { refetchData } = useOutletContext<{ refetchData: () => void}>();

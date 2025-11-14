@@ -8,7 +8,6 @@ import { Result } from "./ResultPage";
 import { Score } from "./Score";
 
 export function GameLayout({
-    gameData,
     score,
     playersData,
     Load,
@@ -23,7 +22,6 @@ export function GameLayout({
     t,
     AI
 } : {
-        gameData: GameData | null,
         score: GameScore,
         playersData?: MatchPlayersData,
         Load: boolean,
@@ -92,7 +90,6 @@ export function GameLayout({
                             confirm={confirm}
                             start={start}
                             ready={ready}
-                            gameData={gameData}
                         />
                         <canvas
                             id="gameBoard"
