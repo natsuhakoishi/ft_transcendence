@@ -66,10 +66,9 @@
 
 	"game":
 	{
-		"ERR_timeOut": "Timeout",
-		"ERR_timeOut_redirect": "Back to home",
 		"ERR_forgetReady": "Timeout. Back to home",
 
+		"ERR_matching": "Same player detected!",
 		"ERR_trespassing": "Trespassing!",
 
 		"ERR_Disconnect": "Opponent disconnected",

@@ -66,10 +66,9 @@
 
 	"game":
 	{
-		"ERR_timeOut": "連線逾時",
-		"ERR_timeOut_redirect": "返回主頁",
 		"ERR_forgetReady": "逾時，返回主頁",
 
+		"ERR_matching": "偵測到重複用戶!",
 		"ERR_trespassing": "非法進入！",
 
 		"ERR_Disconnect": "對手已中斷連線",

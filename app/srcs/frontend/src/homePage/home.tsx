@@ -85,32 +85,36 @@ return (
           {/*Center part*/}
           <div className="relative column-start-2 row-span-3 flex flex-col items-center">
 
-            <div className="flex-1" />
-
             {/* Menu -> Select Game Mode */}
-            <div className="relative w-full h-[60%] md:h-1/2 rounded-4xl bg-[#F5CFED]/55">
+            <div className="relative top-1/4 w-full h-[60%] md:h-1/2 rounded-4xl bg-[#F5CFED]/55">
               {/* Game Mode */}
-              <div className="grid grid-cols-2 gap-2 p-6 px-8 md:p-10 w-full h-full place-items-center">
+              <div className="grid grid-cols-2 gap-2 p-6 md:p-10 w-full h-full">
+
                 {/* Button -> Tournament Mode */}
-                <button className="row-span-2 w-full h-full border-1 border-[#7F477F]/50 bg-[#925192]/60 rounded-2xl hover-increase backdrop-blur-xs"
+                <button className="h-full w-[90%] border-1 border-[#7F477F]/50 bg-[#925192]/60 rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
                 >{t("home.btn_tour")}</button>
-
-                {/* Button -> 1 vs 1 Mode */}
-                <button className="border-1 border-[#F5CFED]/30 bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
-                  onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
 
                 {/* Button -> AI Mode */}
                 <button className="border-1 border-[#F5CFED]/30 bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
                   onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
-              
+                {/* Button -> 1 vs 1 Mode */}
+                <button className="border-1 border-[#F5CFED]/30 bg-[#BF91B2]/65 h-full w-[90%] rounded-2xl hover-increase backdrop-blur-xs"
+                  onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
+
+                {/* Button -> Local Mode */}
+                <button className="h-full w-[90%] border-1 border-[#F5CFED]/30 bg-[#BF91B2]/65 rounded-2xl hover-increase backdrop-blur-xs"
+                >{t("home.btn_local")}</button>
+
               </div>
+
               {/* Tutorial */}
               <button onClick={() => setTutorM(true)}
                 className="absolute top-1 md:top-2 right-1 md:right-2 w-9 md:w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase hover:rotate-[15deg] transition-transform duration-300"
               >
                 <img className="w-full h-full object-cover hover-increase" src="/pic/icons/how.png" />
               </button>
+
             </div>
 
             <div className="flex-1" />
