@@ -1,4 +1,3 @@
-import type { GameData } from "../../../backend/share/type/gameData";
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { LoadingScreen } from "../homePage/HomeChildC";

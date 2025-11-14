@@ -9,6 +9,7 @@ import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { Player } from "./player";
 import { Banner } from "./banner";
 import { Score } from "./Score";
+import { startRound } from "./gameLogic";
 
 export function LocalGameP({ t, toasterPluz }: TranslationProps)
 {
@@ -18,12 +19,18 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps)
     });
     const [ start, setStart ] = useState(false);
     const [ state, setState ] = useState<GameState>(initGameState());
+    const stateRef = useRef<GameState>(initGameState());
     const [ Load, setLoad ] = useState<boolean>(true);
     const [ result , setResult ] = useState(false);
     const [ ready, setReady ] = useState(false);
-    
     const isMobileRef = useRef(isMobile());
     const [ confirm, setConfirm ] = useState(false);
+    const confirmRef = useRef<boolean>(false);
+    const key = useRef<boolean>(false);
+    const themeRef = useRef<"black" | "light" | "default">("default");
+    const [ theme, setTheme ] = useState<"black" | "light" | "default">("default");
+    const [ keypressL, setKeypressL ] = useState<"up" | "down" | "stop">("stop");
+    const [ keypressR, setKeypressR ] = useState<"up" | "down" | "stop">("stop");
 
     const [ playersData, setplayersData ] = useState<MatchPlayersData>({
         roomID: "",
@@ -39,22 +46,109 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps)
                 avatar: "default.webp"
             }
         ]
-
     });
+
+    useEffect(() => {
+            if (keypressR === "up")
+                stateRef.current.rightPaddle.vy = -10;
+            else if (keypressR === "down")
+                stateRef.current.rightPaddle.vy = 10;
+            else if (keypressR === "stop")
+                stateRef.current.rightPaddle.vy = 0;
+    }, [keypressR]);
+
+    useEffect(() => {
+            if (keypressL === "up")
+                stateRef.current.leftPaddle.vy = -10;
+            else if (keypressL === "down")
+                stateRef.current.leftPaddle.vy = 10;
+            else if (keypressL === "stop")
+                stateRef.current.leftPaddle.vy = 0;
+    }, [keypressL]);
+
+    useEffect(() => {
+        setState(stateRef.current);
+        setScore(stateRef.current.score);
+    }, [stateRef.current]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoad(false);
         }, 1000 * 1.5);
 
-        draw(state, );
+        draw(state, theme);
         return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
+        themeRef.current = theme;
+        draw(initGameState(), theme);
+    }, [theme]);
+
+    useEffect(() => {
+            let confirmGame: boolean = false;
+            const keydown = (e: KeyboardEvent) => {
+                if (confirmGame && key.current && (e.key === "w" || e.key === "W"))
+                    setKeypressL("up");
+                else if (confirmGame && key.current && (e.key === "s" || e.key === "S"))
+                    setKeypressL("down");
+                else if (confirmGame && key.current && e.key === "ArrowUp")
+                    setKeypressR("up");
+                else if (confirmGame && key.current && e.key === "ArrowDown")
+                    setKeypressR("down");
+                else if (e.key === " " && !confirmGame)
+                {
+                    console.log("LocalGamePage:" + e.key);
+                    console.log("LocalGamePage:", confirmGame);
+                    setConfirm(true);
+                    key.current = true;
+                    confirmRef.current = true;
+                    confirmGame = true;
+                    setReady(true);
+                    setStart(true);
+                    startRound(
+                        stateRef.current,
+                        score, themeRef.current,
+                        (b: boolean) => setReady(b),
+                        () => {
+                        cleanTouch();
+                        setResult(true);
+                    });
+                }
+            };
+
+            const keyup = (key: KeyboardEvent) => {
+                console.log("gamePage: keyup");
+                if (key.code === "ArrowUp" || key.code === "ArrowDown")
+                    setKeypressR("stop");
+                if (key.key === "W" || key.key === "w" ||
+                    key.key === "S" || key.key === "s"
+                )
+                    setKeypressL("stop");
+            };
+
+            // document.addEventListener("mousedown", handleClick);
+            // document.addEventListener("mouseup", handleUp);
+
+            // document.addEventListener("touchstart", handleTouch);
+            // document.addEventListener("touchend", handleUp);
+
+            document.addEventListener("keyup", keyup);
+            document.addEventListener("keydown", keydown);
+
+            function cleanTouch(): void {
+                // document.removeEventListener("mousedown", handleClick);
+                // document.removeEventListener("mouseup", handleUp);
+
+                // document.removeEventListener("touchstart", handleTouch);
+                // document.removeEventListener("touchend", handleUp);
+
+                document.removeEventListener("keydown", keydown);
+                document.removeEventListener("keyup", keyup);
+            }
 
         return () => {
-
+                cleanTouch();
         }
     }, []);
 
@@ -132,77 +226,36 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps)
                         txtSmall={isMobileRef.current}
                     />
                 </div>
+
+                {/* Theme setting bar */}
+                <div
+                    className={`
+                        relative z-20 
+                        rounded-xl
+                        bg-white text-black py-2
+                        ${isMobileRef.current || confirm || Load ? "invisible" : "visible"}
+                    `}
+                >
+                    <button
+                        className="p-4 ui"
+                        onClick={
+                            () => {
+                                console.log("setTheme");
+                                if (theme === "default")
+                                    setTheme("black");
+                                else if (theme === "black")
+                                    setTheme("light");
+                                else if (theme === "light")
+                                    setTheme("default");
+                            }
+                        }
+                    > {`${t("shared.game.theme")} [${t(`shared.game.${theme}`)}]`}
+                    </button>
+                </div>
             </div>
         </div>
     );
 }
 
-function startRound(): void {
-    resetBall(getState());
-
-    room.broadCast("start");
-
-    setTimeout(() => {
-        runLoop(room, gameOver, tour);
-    }, 2000);
-}
-
-export function runLoop(room: Room | AIRoom, gameOver: () => void, tour?: TRoom | null): void {
-    let runtime: number = 0;
-    const intervalId = setInterval( () => {
-        runtime += 16;
-
-        const state: GameState = room.getState();
-        room.broadCast("render");
-
-        if (room instanceof AIRoom)
-            AILogic(room, runtime);
-
-        gameLoop(state);
-        if (state.playerOffline || tour?.checkOffline())
-        {
-            end(room, gameOver);
-            clearInterval(intervalId);
-            return ;
-        }
-
-        if (state.ball.x <= 0)
-        {
-            state.score.p2Score++;
-            clearInterval(intervalId);
-            handleGoal(room, gameOver);
-        }
-        else if (state.ball.x >= state.boardWidth)
-        {
-            clearInterval(intervalId);
-            state.score.p1Score++;
-            handleGoal(room, gameOver);
-        }
-
-    }, 16); //16ms ~60fps
-}
-
-function handleGoal(gameState: GameState): void {
-
-    room.broadCast("goal");
-    
-    if (room.getState().playerOffline)
-    {
-        end(room, gameOver);
-        console.log("goal", room.getState().score);
-        return ;
-    }
-
-    const score: GameScore = room.getState().score;
-    console.log("goal", score);
-
-    if (score.p1Score === 3 || score.p2Score === 3)
-    {
-        end(room, gameOver);
-        return ;
-    }
-
-    startRound(room, gameOver, tour);
-}
 
 export const LocalGamePage = withTranslation(LocalGameP);

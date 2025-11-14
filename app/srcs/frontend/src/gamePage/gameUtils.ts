@@ -63,3 +63,4 @@ function drawPaddles(paddle: Paddle, ctx: CanvasRenderingContext2D, color: strin
     ctx.fillStyle = color;
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
+

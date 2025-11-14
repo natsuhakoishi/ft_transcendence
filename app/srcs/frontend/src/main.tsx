@@ -17,6 +17,7 @@ import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
 import { FetchData } from "./homePage/fetchHelper.tsx";
+import { LocalGamePage } from "./gamePage/localGamePage.tsx";
 
 function App() {
   function GlobalErrorMonitor() {
@@ -47,6 +48,7 @@ function App() {
             <Route path="tournament/*" element={<TournamentGamePage />} />
             <Route path="tournamentMatching" element={<TMatching />} />
             <Route path="AI/gameplay" element={<AIGamePage />}/>
+            <Route path="Local/gameplay" element={<LocalGamePage />}/>
           </Route>
           <Route path="*" element={<NotFound />} />
           <Route path="/404" element={<NotFound />} />

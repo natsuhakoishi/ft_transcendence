@@ -33,7 +33,9 @@ export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithPro
                             spin={true} />
                     </div>
 
-                    <AgainButton callback={() => setAgain(true)} t={t} />
+                    {
+                        !local && <AgainButton callback={() => setAgain(true)} t={t} />
+                    }
                     <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
 
                 </div>
