@@ -10,7 +10,7 @@ export function Matching({again, setMatch, AI} : {
         AI: boolean
     }) {
     const navigate = useNavigate();
-    const { t } = useLang();
+    const { t, toasterPluz } = useLang();
 
     React.useEffect( () => {
         if (!AI)
@@ -33,6 +33,7 @@ export function Matching({again, setMatch, AI} : {
                 if (!success || !data)
                 {
                     console.log("/Matching: same player in difference match or same match");
+                    toasterPluz("game.ERR_matching");
                     navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                     return ;
                 }
@@ -102,7 +103,7 @@ export function Matching({again, setMatch, AI} : {
 
 export function TMatching() {
     const navigate = useNavigate();
-    const { t } = useLang();
+    const { t, toasterPluz } = useLang();
 
     React.useEffect( () => {
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_TOURNAMENT_MATCHING);
@@ -132,6 +133,7 @@ export function TMatching() {
             if (!success || !RoomId)
             {
                 console.log("/TMatching: matched same account or some error");
+                toasterPluz("game.ERR_matching");
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                 return ;
             }
