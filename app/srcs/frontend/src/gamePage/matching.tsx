@@ -4,11 +4,6 @@ import { apiFetchPrivate, sendProfile } from "../utils.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
 import { useLang } from "../_hooks/language.tsx";
 
-// const boardWidth: number = Number(import.meta.env.VITE_GAME_BOARD_WIDTH_PX);
-// const boardHeight: number = Number(import.meta.env.VITE_GAME_BOARD_HEIGHT_PX);
-// const paddlesHeight: number = Number(import.meta.env.VITE_GAME_PADDLES_HEIGHT_PX);
-// const paddlesWidth: number = Number(import.meta.env.VITE_GAME_PADDLES_WIDTH_PX);
-
 export function Matching({again, setMatch, AI} : {
         again: boolean,
         setMatch?: React.Dispatch<React.SetStateAction<boolean>>,
