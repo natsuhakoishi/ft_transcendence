@@ -8,13 +8,17 @@ export class LocalRoom {
     private confirm: boolean;
     private gameState: GameState;
     private player: Player;
+    private left: string;
+    private right: string;
 
-    constructor(_id: number) {
+    constructor(_id: number, p1name: string, p2name: string) {
         console.log("LocalRoom: create room", _id);
         this.id = _id;
         this.confirm = false;
         this.gameState = initGameState();
         this.player = {id: 0, ws: null};
+        this.left = p1name;
+        this.right = p2name;
     }
 
     getID(): number {
@@ -44,6 +48,19 @@ export class LocalRoom {
         return this.confirm;
     }
 
+    checkName(name: string): boolean
+    {
+        return name === this.left || name === this.right
+    }
+
+    leftOrRight(name: string): "left" | "right" | "?"
+    {
+        if (name === this.left)
+            return "left";
+        else if (name === this.right)
+            return "right";
+        return "?";
+    }
 }
 
 export class LocalRoomManager {
@@ -53,14 +70,19 @@ export class LocalRoomManager {
         this.rooms = new Map<number, LocalRoom>();
     }
 
-    getRoom(_id: number): LocalRoom | undefined {
-            return this.rooms.get(_id);
+    getRoom(_id: number, name: string): LocalRoom | undefined {
+        const room: LocalRoom | undefined = this.rooms.get(_id);
+        if (!room || !room.checkName(name))
+            return undefined;
+        return room;
     }
 
-    createRoom(id: number) {
-        if (!this.rooms.has(id))
-            this.rooms.set(id, new LocalRoom(id));
-        const room: LocalRoom | undefined = this.rooms.get(id);
+    createRoom(id: number, p1name: string, p2name: string) {
+        if (!this.getRoom(id, p1name) && !this.getRoom(id, p2name))
+            this.rooms.set(id, new LocalRoom(id, p1name, p2name));
+        else 
+            throw Error("Player already have match");
+        const room: LocalRoom | undefined = this.getRoom(id, p1name);
         if (room)
             setTimeout(() => {
                 if (room && !room.getConfirm())

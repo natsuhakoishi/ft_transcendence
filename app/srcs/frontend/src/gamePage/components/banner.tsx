@@ -1,5 +1,5 @@
-import { useLang } from "../_hooks/language";
-import { isMobile } from "../utils";
+import { useLang } from "../../_hooks/language";
+import { isMobile } from "../../utils";
 import { Countdown } from "./countdown";
 
 export function Banner({

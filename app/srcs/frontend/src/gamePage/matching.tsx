@@ -1,8 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiFetchPrivate, sendProfile } from "../utils.ts";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
 import { useLang } from "../_hooks/language.tsx";
+import type { PlayerWithProfileData } from "../../../backend/share/type/Player.ts";
+import type { User } from "../../../backend/share/type/user.ts";
 
 export function Matching({again, setMatch, AI, local} : {
         again: boolean,
@@ -11,10 +13,13 @@ export function Matching({again, setMatch, AI, local} : {
         local: boolean
     }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const { t, toasterPluz } = useLang();
 
+    // const {playersData} = (location.state || {}) as { playersData: {player: PlayerWithProfileData[]}};
+
     React.useEffect( () => {
-        if (!AI)
+        if (!AI && !local)
         {
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_MATCHING);
             console.log("Matching...", import.meta.env.VITE_GAME_API_MATCHING);
@@ -59,23 +64,64 @@ export function Matching({again, setMatch, AI, local} : {
         else if (local)
         {
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_LOCAL_MATCHING);
+            console.log("matching...", import.meta.env.VITE_GAME_API_LOCAL_MATCHING);
 
             ws.onopen = () => {
-                (async () =>
-                    await sendProfile(ws, () =>
-                        navigate(import.meta.env.VITE_PATH_404NOTFOUND, { replace: true})))();
+                (async () => {
+                        const data: User = await apiFetchPrivate("profile", { method: "POST", body: "{}" });
+                        const id: number = data.acc.user_id;
+
+                        const playersData: MatchPlayersData = {
+                            roomID: id.toString(),
+                            Players: [
+                                {
+                                    id: 0,
+                                    name: "player1",
+                                },
+                                {
+                                    id: 0,
+                                    name: "player2"
+                                }
+                            ]
+                        };
+
+                        if (!playersData)
+                        {
+                            navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+                            return ;
+                        }
+                        ws.send(JSON.stringify(playersData));
+                        console.log("sent", playersData);
+                    }
+                )();
             };
 
             ws.onmessage = async (event) => {
-                const data: MatchPlayersData = JSON.parse(event.data);
+                const data: {success: boolean, playersData: MatchPlayersData} = JSON.parse(event.data);
+                const { success, playersData } = data;
+                if (!success || !playersData)
+                {
+                    console.log("/Matching: same player in difference match or same match");
+                    toasterPluz("game.ERR_matching");
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+                    return ;
+                }
+
                 const playerData = await apiFetchPrivate("me", { method: "GET" });
                 const playerID: string = playerData.id.toString();
                 console.log("local Matching: ", data);
 
                 if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true} });
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, {
+                        state: {
+                            playerID: playerID,
+                            playersData: playersData,
+                            AI: false,
+                            local: true
+                        }
+                    });
                 else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true });
+                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data}, replace: true });
                 // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
             };
         }

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
-import type { GameScore, GameState, Paddle} from "../../../backend/share/type/gameState.ts";
-import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
-import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
-import { draw, sendKeyPress } from "./gameUtils.ts";
-import { GameLayout } from "./gameLayout.tsx";
+import { initGameState, isMobile } from "../../../utils.ts";
+import type { GameScore, GameState} from "../../../../../backend/share/type/gameState.ts";
+import type { MatchPlayersData } from "../../../../../backend/share/type/Matches.ts";
+import { withTranslation, type TranslationProps } from "../../../_hooks/language.tsx";
+import { draw, sendKeyPress, sendKeyPressLocal } from "../../gameUtils.ts";
+import { GameLayout } from "../../gameLayout.tsx";
+import type { LocalGameData } from "../../../../../backend/share/type/gameData.ts";
 
 export function LocalGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
@@ -22,7 +23,10 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
         p1Score: 0,
         p2Score: 0
     });
-    const {playersData} = (location.state || {}) as { playersData: MatchPlayersData};
+    const {playersData, tournament} = (location.state || {}) as { 
+        playersData: MatchPlayersData,
+        tournament: boolean
+    };
 
     const [ theme, setTheme ] = React.useState<"black" | "light" | "default">("default");
     const themeRef = React.useRef<"black" | "light" | "default">("default");
@@ -42,9 +46,12 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
         (async () => {
             console.log("gamePage: useEffect");
 
-            const gameData = {
-                playerId: pla,
+            const gameData: LocalGameData = {
+                roomId: playersData.roomID,
+                playerId: Number(playersData.roomID),
                 keyPress: "null",
+                tournament: tournament,
+                playerName: ""
             }
 
             console.log("playersData: ", playersData);
@@ -56,7 +63,8 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
                 draw(gameState, themeRef.current);
 
                 gameData.keyPress = "init";
-                ws.send(JSON.stringify(gameData));
+                gameData.playerName = playersData.Players[0].name || "";
+                ws.send(JSON.stringify({pos: "", data: gameData}));
                 wsRef.current = ws;
             }
 
@@ -66,13 +74,13 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
                     type: string,
                     gameState: GameState
                 } = JSON.parse(msg.data);
-                // const {type, PlayersData, gameState } = JSON.parse(msg.data);
 
                 const type = parse.type;
 
                 console.log("Local Game: server sent", parse);
-                if (type === "Error" || !parse.gameState)
+                if (type === "trespassing" || !parse.gameState)
                 {
+                    cleanTouch();
                     navigate("/", { replace: true });
                     return ;
                 }
@@ -125,16 +133,20 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
 
             let confirmGame: boolean = false;
             const keydown = (e: KeyboardEvent) => {
-                if (confirmGame && key.current && (e.key === "w" || e.key === "W" || e.key === "ArrowUp"))
-                    sendKeyPress("up", ws, gameData)
-                else if (confirmGame && key.current && (e.key === "s" || e.key === "S" || e.key === "ArrowDown"))
-                    sendKeyPress("down", ws, gameData)
+                if (confirmGame && key.current && (e.key === "w" || e.key === "W"))
+                    sendKeyPressLocal("up", ws, gameData, "left", playersData.Players[0].name!);
+                else if (confirmGame && key.current && (e.key === "s" || e.key === "S"))
+                    sendKeyPressLocal("down", ws, gameData, "left", playersData.Players[0].name!);
+                else if (confirmGame && key.current && e.key === "ArrowUp")
+                    sendKeyPressLocal("up", ws, gameData, "right", playersData.Players[1].name!);
+                else if (confirmGame && key.current && e.key === "ArrowDown")
+                    sendKeyPressLocal("down", ws, gameData, "right", playersData.Players[1].name!);
                 else if (e.key === " " && !confirmGame)
                 {
                     console.log("gamePage:" + e.key);
                     console.log("gamePage:", confirmGame);
                     if (gameData.playerId) {
-                        sendKeyPress("Enter", ws, gameData);
+                        sendKeyPressLocal("Enter", ws, gameData, "left", playersData.Players[0].name!);
                         confirmGame = true;
                         setConfirm(true);
                         confirmRef.current = true;
@@ -142,70 +154,33 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
                 }
             };
 
-            const keyup = () => {
+            const keyup = (key: KeyboardEvent) => {
                 console.log("gamePage: keyup");
-                if (gameData.keyPress === "Enter" || gameData.keyPress === "up" || gameData.keyPress === "down")
-                {
-                    gameData.keyPress = "stop";
-                    if (ws.readyState === WebSocket.OPEN)
-                    {
-                        ws.send(JSON.stringify(gameData));
-                        console.log("sent stop");
-                    }
-                }
-            };
-
-
-            const handleTouch = (e: TouchEvent) => {
-                if (!confirmRef.current)
-                {
-                    sendKeyPress("Enter", ws, gameData);
-                    confirmGame = true;
-                    setConfirm(true);
-                    confirmRef.current = true;
-                }
-                else if (e.touches[0].clientY < window.innerHeight / 2) 
-                    sendKeyPress("up", ws, gameData);
-                else
-                    sendKeyPress("down", ws, gameData);
+                if (key.code === "ArrowUp" || key.code === "ArrowDown")
+                    sendKeyPressLocal("stop", ws, gameData, "right", playersData.Players[1].name!);
+                if (key.key === "W" || key.key === "w" ||
+                    key.key === "S" || key.key === "s"
+                )
+                    sendKeyPressLocal("stop", ws, gameData, "left", playersData.Players[0].name!);
             }
 
-            const handleClick = (e: MouseEvent) => {
-                const target = e.target as HTMLElement;
-                
-                if (target.closest(".ui"))
-                    return ;
+            // const handleUp = () => sendKeyPress("stop", ws, gameData);
 
-                if (!confirmRef.current)
-                {
-                    sendKeyPress("Enter", ws, gameData);
-                    confirmGame = true;
-                    setConfirm(true);
-                    confirmRef.current = true;
-                }
-                else if (e.clientY < window.innerHeight / 2)
-                    sendKeyPress("up", ws, gameData);
-                else
-                    sendKeyPress("down", ws, gameData);
-            }
+            // document.addEventListener("mousedown", handleClick);
+            // document.addEventListener("mouseup", handleUp);
 
-            const handleUp = () => sendKeyPress("stop", ws, gameData);
-
-            document.addEventListener("mousedown", handleClick);
-            document.addEventListener("mouseup", handleUp);
-
-            document.addEventListener("touchstart", handleTouch);
-            document.addEventListener("touchend", handleUp);
+            // document.addEventListener("touchstart", handleTouch);
+            // document.addEventListener("touchend", handleUp);
 
             document.addEventListener("keyup", keyup);
             document.addEventListener("keydown", keydown);
 
             function cleanTouch(): void {
-                document.removeEventListener("mousedown", handleClick);
-                document.removeEventListener("mouseup", handleUp);
+                // document.removeEventListener("mousedown", handleClick);
+                // document.removeEventListener("mouseup", handleUp);
 
-                document.removeEventListener("touchstart", handleTouch);
-                document.removeEventListener("touchend", handleUp);
+                // document.removeEventListener("touchstart", handleTouch);
+                // document.removeEventListener("touchend", handleUp);
 
                 document.removeEventListener("keydown", keydown);
                 document.removeEventListener("keyup", keyup);
@@ -213,7 +188,7 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
-                key.current = false;
+                // key.current = false;
                 confirmRef.current = false;
                 ws.close();
 
@@ -233,7 +208,7 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
             playersData={playersData}
             Load={Load}
             result={result}
-            playerID={playerID}
+            playerID={0}
             confirm={confirm}
             start={start}
             ready={ready}

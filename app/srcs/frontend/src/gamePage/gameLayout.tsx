@@ -1,10 +1,10 @@
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { LoadingScreen } from "../homePage/HomeChildC";
-import { Banner } from "./banner";
-import { Player } from "./player";
-import { Result } from "./ResultPage";
-import { Score } from "./Score";
+import { Banner } from "./components/banner";
+import { Player } from "./components/player";
+import { Result } from "./components/ResultPage";
+import { Score } from "./components/Score";
 
 export function GameLayout({
     score,

@@ -1,12 +1,12 @@
 import React from "react";
-import type { GameData } from "../../../backend/share/type/gameData.ts";
+import type { GameData } from "../../../../../backend/share/type/gameData.ts";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
-import type { Ball, GameScore, GameState, Paddle} from "../../../backend/share/type/gameState.ts";
-import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
-import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
-import { draw, sendKeyPress } from "./gameUtils.ts";
-import { GameLayout } from "./gameLayout.tsx";
+import { apiFetchPrivate, initGameState, isMobile } from "../../../utils.ts";
+import type { GameScore, GameState } from "../../../../../backend/share/type/gameState.ts";
+import type { MatchPlayersData } from "../../../../../backend/share/type/Matches.ts";
+import { withTranslation, type TranslationProps } from "../../../_hooks/language.tsx";
+import { draw, sendKeyPress } from "../../gameUtils.ts";
+import { GameLayout } from "../../gameLayout.tsx";
 
 function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();

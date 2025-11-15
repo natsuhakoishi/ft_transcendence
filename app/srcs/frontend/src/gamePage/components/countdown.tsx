@@ -1,5 +1,5 @@
 import React from "react"
-import { useLang } from "../_hooks/language";
+import { useLang } from "../../_hooks/language";
 
 export function Countdown({
         start,

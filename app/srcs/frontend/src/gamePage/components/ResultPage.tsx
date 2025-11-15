@@ -1,10 +1,10 @@
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Player } from "./player";
 import React from "react";
-import { Matching } from "./matching";
-import type { Leaderboard } from "../../../backend/share/type/tournamentRoomData";
-import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
-import { useLang } from "../_hooks/language";
+import { Matching } from "../matching";
+import type { Leaderboard } from "../../../../backend/share/type/tournamentRoomData";
+import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
+import { useLang } from "../../_hooks/language";
 
 export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean, local?: boolean}) {
     const [ again, setAgain ] = React.useState(false);
@@ -20,7 +20,7 @@ export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithPro
     return (
         <>
             {
-                again ? <Matching again={true} AI={AI} /> : (
+                again ? <Matching again={true} AI={AI} local={false}/> : (
                 <div className="relative flex flex-col items-center justify-center w-full h-screen bg-black-500"  >
 
                     <div className="flex" >

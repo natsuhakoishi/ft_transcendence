@@ -1,4 +1,4 @@
-import type { GameData } from "../../../backend/share/type/gameData";
+import type { GameData, LocalGameData } from "../../../backend/share/type/gameData";
 import type { Ball, GameState, Paddle } from "../../../backend/share/type/gameState";
 
 export function sendKeyPress(key: string, ws: WebSocket, gameData: GameData) {
@@ -7,6 +7,16 @@ export function sendKeyPress(key: string, ws: WebSocket, gameData: GameData) {
         gameData.keyPress = key;
         ws.send(JSON.stringify(gameData));
         console.log("gamePage: sent" + key);
+    }
+}
+
+export function sendKeyPressLocal(key: string, ws: WebSocket, gameData: LocalGameData, pos: "left" | "right", name: string) {
+    if (ws.readyState === WebSocket.OPEN)
+    {
+        gameData.keyPress = key;
+        gameData.playerName = name;
+        ws.send(JSON.stringify({pos: pos, data: gameData}));
+        console.log("gamePage local: sent", key);
     }
 }
 

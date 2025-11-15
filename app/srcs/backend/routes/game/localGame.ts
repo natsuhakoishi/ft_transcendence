@@ -1,30 +1,46 @@
 import type { FastifyPluginAsync } from "fastify";
 import { LocalRoom, LocalRoomManager } from "../../share/type/localRoomData.ts";
 import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
-import type { MatchPlayersData } from "../../share/type/Matches.ts";
 import { keyLogic, start } from "./gameLogic.ts";
+import type { MatchPlayersData } from "../../share/type/Matches.ts";
+import type { LocalGameData } from "../../share/type/gameData.ts";
 
 const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
-    const rooms: LocalRoomManager = fastify.AIrooms;
+    const rooms: LocalRoomManager = fastify.localRooms;
 
     fastify.get("/matching", { websocket: true }, (connection: any, req) => {
         const ws = connection;
 
         ws.on("message", (msg: any) => {
             (async () => {
-                const playerProfile: PlayerWithProfileData = JSON.parse(msg.toString());
-                console.log("/game/AI/matching: ", playerProfile);
+                const playersData: MatchPlayersData = JSON.parse(msg.toString());
+                console.log("/local/matching: ", playersData);
+                if (!playersData.Players[0].name || !playersData.Players[1].name)
+                {
+                    ws.send(JSON.stringify({success: false}));
+                    return ;
+                }
 
-                rooms.createRoom(playerProfile.id);
+                playersData.Players.sort((a, b) => a.name!.localeCompare(b.name!));
 
-                const matchPlayersData: MatchPlayersData = {
-                    roomID: "",
-                    Players: [
-                        {id: playerProfile.id, avatar: "default.webp", name: "🐱"},
-                        {id: 0, avatar: "yugiri_dev.webp", name: "🐌"}
-                    ]
-                };
-                ws.send(JSON.stringify(matchPlayersData));
+                playersData.Players[0].avatar = "default.webp";
+                playersData.Players[1].avatar = "yugiri_dev.webp";
+
+                try {
+                    rooms.createRoom(Number(playersData.roomID), 
+                        playersData.Players[0].name,
+                        playersData.Players[1].name
+                    );
+                    ws.send(JSON.stringify({
+                        success: true,
+                        playersData: playersData
+                    }));
+                    console.log("local matching sent:", playersData);
+                }
+                catch (e: any) {
+                    console.error("local matching: ", e);
+                    ws.send(JSON.stringify({success: false}));
+                }
             })()
         });
     });
@@ -33,46 +49,34 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
         const ws = connection;
 
         ws.on("message", (m: any) => {
-            const data: { playerId: number, keyPress: string} = JSON.parse(m.toString());
-            const {playerId, keyPress} = data;
-
-            console.log("local: ", m.toString());
+            const data: {pos: string, data: LocalGameData} = JSON.parse(m.toString());
             console.log("local: ", data);
-            const localRooms: LocalRoomManager = fastify.localRooms;
-            let room: LocalRoom | undefined = localRooms.getRoom(playerId);
+            const {playerId, keyPress, playerName} = data.data;
+
+            let room: LocalRoom | undefined = rooms.getRoom(playerId, playerName);
             if (!room)
             {
-                try {
-                    localRooms.createRoom(playerId);
-                    room = localRooms.getRoom(playerId);
-                    console.log("create room success");
-                }
-                catch (e: any)
-                {
-                    console.error(e);
-                    ws.send(JSON.stringify({type: "Error"}));
-                    return ;
-                }
+                console.log("trespassing");
+                ws.send(JSON.stringify({type: "trespassing"}));
+                return ;
             }
-            const player: Player = {id: playerId, ws: ws};
-            handleKeyPressLocal(keyPress, player, room);
+            if (keyPress === "init")
+                room.addPlayer({id: playerId, ws: ws});
+            handleKeyPressLocal(keyPress, room.leftOrRight(playerName), room);
 
-            if (room?.getConfirm() && !room.getState().gamingStage)
-                start(room, () => localRooms.deleteRoom(player.id), null);
+            if (room.getConfirm() && !room.getState().gamingStage)
+                start(room, () => rooms.deleteRoom(playerId), null);
         })
     });
 };
 
-function handleKeyPressLocal(keyPress: string, player: Player, room?: LocalRoom): void {
-    if (!room)
+function handleKeyPressLocal(keyPress: string, pos:  "left" | "right" | "?", room: LocalRoom): void {
+    if (pos === "?")
         return ;
-    if (keyPress === "init")
-        room.addPlayer(player);
-    else if (keyPress === "Enter" && !room.getState().gamingStage)
+    if (keyPress === "Enter" && !room.getState().gamingStage)
         room.setConfirm();
     else
-        keyLogic(room!, keyPress, player.id === 0 ? "left" : "right");
-
+        keyLogic(room, keyPress, pos);
 }
 
 export default LocalGameplay;

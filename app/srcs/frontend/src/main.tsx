@@ -7,17 +7,17 @@ import { Home } from "./homePage/home";
 import { useGlobalErrorMonitor } from "./_hooks/error.ts";
 import { LanguageProvider } from "./_hooks/language.tsx";
 import { OrientationGuard } from "./_hooks/mobile_orientation.tsx";
-import { TMatching } from "./gamePage/matching";
-import { GamePage } from "./gamePage/gamePage";
-import { TournamentGamePage } from "./gamePage/TournamentGamePage";
+import { Matching, TMatching } from "./gamePage/matching";
+import { GamePage } from "./gamePage/1v1/online/gamePage.tsx";
+import { TournamentGamePage } from "./gamePage/tournament/TournamentGamePage.tsx";
 import NotFound from "./otherPage/NotFound";
 import { FriendPage } from "./homePage/Friend/friend.tsx";
 import { HistoryPage } from "./homePage/MatchHistory/history";
 import { ProfilePage } from "./homePage/Profile/profile.tsx";
-import { Loading } from "./gamePage/LoadingPage";
-import { AIGamePage } from "./gamePage/AIGamePage";
+import { Loading } from "./gamePage/LoadingPage.tsx";
+import { AIGamePage } from "./gamePage/1v1/AI/AIGamePage.tsx";
 import { FetchData } from "./homePage/fetchHelper.tsx";
-import { LocalGamePage } from "./gamePage/lGamePage.tsx";
+import { LocalGamePage } from "./gamePage/1v1/local/lGamePage.tsx";
 
 function App() {
   function GlobalErrorMonitor() {

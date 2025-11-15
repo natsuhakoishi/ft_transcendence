@@ -38,6 +38,7 @@ export function HomeP({ t, lang }: TranslationProps) {
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [match, setMatch] = React.useState<boolean>(false);
   const [ AI, setAI ] = React.useState<boolean>(false);
+  const [ local, setLocal ] = React.useState<boolean>(false);
   const [ creditM, setCreditM ] = React.useState<boolean>(false);
   const [ tutorM, setTutorM ] = React.useState<boolean>(false);
 
@@ -57,7 +58,7 @@ return (
   {/* Page Content - Conditional Render [ Loading / Matching / Home Page ] */}
   {
     loading ? <LoadingScreen progress={progress}/> :
-      match === true ? <Matching again={false} setMatch={setMatch} AI={AI} /> :
+      match === true ? <Matching again={false} setMatch={setMatch} AI={AI} local={local} /> :
         (<div className="relative h-[100lvh] w-[100lvw] grid grid-cols-[1fr_2fr_1fr] overflow-hidden text-xl">
 
           {/* Pop Up Modal -> Credits page */}
@@ -104,7 +105,7 @@ return (
 
                 {/* Button -> Local Mode */}
                 <button className="h-full w-[90%] border-1 border-[#F5CFED]/30 bg-[#BF91B2]/65 rounded-2xl hover-increase backdrop-blur-xs"
-                  onClick={() => { navigate(import.meta.env.VITE_GAME_PATH_LOCAL_GAMEPLAY); }}>{t("home.btn_local")}</button>
+                  onClick={() => { setMatch(true); setAI(false); setLocal(true); }}>{t("home.btn_local")}</button>
 
               </div>
 

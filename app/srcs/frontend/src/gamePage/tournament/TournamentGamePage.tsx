@@ -1,13 +1,13 @@
 import React from "react";
-import { GamePage } from "./gamePage";
+import { GamePage } from "../1v1/online/gamePage";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate } from "../utils";
-import type { GameData, TData } from "../../../backend/share/type/gameData";
-import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matches";
-import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
+import { apiFetchPrivate } from "../../utils";
+import type { GameData, TData } from "../../../../backend/share/type/gameData";
+import type { Matches, MatchPlayersData } from "../../../../backend/share/type/Matches";
+import type { Player, PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
-import { TournamentResultPage } from "./ResultPage";
-import { withTranslation, type TranslationProps } from "../_hooks/language";
+import { TournamentResultPage } from "../components/ResultPage";
+import { withTranslation, type TranslationProps } from "../../_hooks/language";
 
 function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
     const p1: Player = match[0];

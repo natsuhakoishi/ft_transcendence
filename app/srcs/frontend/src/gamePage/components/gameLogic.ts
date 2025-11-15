@@ -1,5 +1,5 @@
-import type { Ball, GameScore, GameState, Paddle } from "../../../backend/share/type/gameState";
-import { draw } from "./gameUtils";
+import type { Ball, GameScore, GameState, Paddle } from "../../../../backend/share/type/gameState";
+import { draw } from "../gameUtils";
 
 export function startRound(
     state: GameState, 

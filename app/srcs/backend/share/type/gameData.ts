@@ -17,3 +17,7 @@ export interface TData {
     state?: "r1" | "r2";
     leaderboard?: Leaderboard;
 }
+
+export interface LocalGameData extends GameData {
+    playerName: string;
+}

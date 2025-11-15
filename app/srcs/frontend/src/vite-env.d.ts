@@ -23,6 +23,7 @@ interface ImportMetaEnv {
   // GAME MATCHING PAGE
   readonly VITE_GAME_PATH_AI_MATCHING: string
   readonly VITE_GAME_PATH_TOURNAMENT_MATCHING: string;
+  readonly VITE_GAME_PATH_LOCAL_MATCHING: string
 
   // GAME LOADING PAGE
   readonly VITE_GAME_PATH_GAMEPLAY_LOADING: string;
