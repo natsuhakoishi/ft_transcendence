@@ -1,5 +1,6 @@
 import React from "react";
 import { useLang } from "../_hooks/language";
+import { useNavigate } from "react-router-dom";
 
 // Loading Screen
 
@@ -101,6 +102,56 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
           <img src="/pic/icons/home_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
         </button>
       </div>
+    </div>
+  );
+}
+
+// Game Mode Modal
+
+export function GameMode({ onClick, GameM, setMatch, setAI }: {
+  onClick: React.Dispatch<React.SetStateAction<"Tour" | "Match" | "">>,
+  GameM: "Tour" | "Match" | "",
+  setMatch: React.Dispatch<React.SetStateAction<boolean>>,
+  setAI: React.Dispatch<React.SetStateAction<boolean>>
+}) {
+  const navigate = useNavigate();
+  const { t } = useLang();
+
+  return (
+    <div className="relative h-screen w-screen z-50" onClick={() => onClick("")}>
+
+      {GameM === "Tour" ?
+      <>
+        <div className="absolute inset-0 backdrop-blur-xs" />
+        <div className="flex w-1/2 h-1/2 translate-1/2 p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
+          {/* Button -> Remote Tournament */}
+          <button className="py-5 w-1/3 mx-0.5 border-1 border-[#7F477F]/50 backdrop-blur-lg bg-[#925192]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none"
+            onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
+          >{t("home.btn_tour")}</button>
+          {/* Button -> Local Tournament */}
+          <button className="py-5 w-1/3 mx-0.5 border-1 border-[#7F477F]/50 backdrop-blur-lg bg-[#925192]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none"
+          >{t("home.btn_local")}</button>
+        </div>
+      </>
+          :
+      <>
+        <div className="absolute inset-0 backdrop-blur-xs" />
+        <div className="flex w-1/2 h-1/2 translate-1/2 p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
+          {/* Button -> 1 vs 1 Mode */}
+          <button className="py-5 w-1/3 mx-0.5 border-1 border-[#F5CFED]/30 backdrop-blur-lg bg-[#BF91B2]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none"
+          onClick={() => { setMatch(true); setAI(false); }}>{t("home.btn_1vs1")}</button>
+          {/* Button -> AI Mode */}
+          <button className="py-5 w-1/3 mx-0.5 border-1 border-[#F5CFED]/30 backdrop-blur-lg bg-[#BF91B2]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none"
+          onClick={() => { setMatch(true); setAI(true); }}>{t("home.btn_AI")}</button>
+          {/* Button -> Local Mode */}
+          <button className="py-5 w-1/3 mx-0.5 border-1 border-[#F5CFED]/30 backdrop-blur-lg bg-[#BF91B2]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none"
+          >{t("home.btn_local")}</button>
+        </div>
+      </>
+      }
+
     </div>
   );
 }
