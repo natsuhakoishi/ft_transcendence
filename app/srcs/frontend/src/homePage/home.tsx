@@ -40,7 +40,7 @@ export function HomeP({ t, lang }: TranslationProps) {
   const [ AI, setAI ] = React.useState<boolean>(false);
   const [ creditM, setCreditM ] = React.useState<boolean>(false);
   const [ tutorM, setTutorM ] = React.useState<boolean>(false);
-  const [ gameM, setGameM ] = React.useState<"Tour" | "Match" | "">("");
+  const [ gameM, setGameM ] = React.useState<"Tour" | "Match" | "TourL" | "MatchL" | "">("");
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -103,9 +103,7 @@ return (
                 </button>
               </div>
               {/* Modal -> Tutorial */}
-              <button onClick={() => setTutorM(true)}
-                className="absolute top-0 right-0 w-9 md:w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase hover:rotate-[15deg] transition-transform duration-300"
-              >
+              <button onClick={() => setTutorM(true)} className="absolute top-0 right-0 w-9 md:w-12 aspect-square rounded-full border-2 border-[#AC9ABE] hover-increase hover:rotate-[15deg] transition-transform duration-300">
                 <img className="w-full h-full object-cover hover-increase" src="/pic/icons/how.png" />
               </button>
             </div>
