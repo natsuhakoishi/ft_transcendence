@@ -26,19 +26,26 @@
 		"title": "KLBQ | Home",
 		"msg_greeting": "Welcome back, ",
 
+		"_comment": "GAME MODE SECTION",
 		"btn_1vs1": "1 vs 1",
 		"btn_tour": "Tournament",
 		"btn_AI": "AI Match",
-		"btn_local": "Local Game",
+		"btn_local": "Local",
+		"place_p1": "Player 1",
+		"place_p2": "Player 2",
+		"place_p3": "Player 3",
+		"place_p4": "Player 4",
+		"btn_online": "Online",
 
-		"btn_friend": "Friends",
-		"btn_history": "Match History",
-		"text_version": "Version ",
+		"_comment": "CREDIT MODAL",
 		"btn_credit": "Credits",
 		"role_en": "Direction / Server/Web Programming",
 		"role_yb": "Game Planning & Programming",
 		"role_zw": "Visual Design / UI/UX Programming",
 
+		"btn_friend": "Friends",
+		"btn_history": "Match History",
+		"text_version": "Version ",
 		"tutor": "How-to-play ?"
 	},
 
