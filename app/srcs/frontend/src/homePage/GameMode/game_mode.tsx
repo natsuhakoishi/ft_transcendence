@@ -13,7 +13,7 @@ function MatchMode({ setGameM, GameM }: {
               : (GameM === "TourL" ? () => setGameM("Tour") : () => setGameM("Match"))}
     >
     <div className="absolute inset-0 backdrop-blur-xs" />
-      <div className="relative top-0 w-[60%] md:w-[40%] h-[60%] flex p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
+      <div className="relative top-0 w-[50%] md:w-[40%] h-[60%] md:h-[50%] flex p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
         <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
           { GameM === "Tour" && <ModeModal mode="Tour" setGameM={() => setGameM("TourL")} /> }
           { GameM === "TourL" && <LocalModal mode="Tour" /> }

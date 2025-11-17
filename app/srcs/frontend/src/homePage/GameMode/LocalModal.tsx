@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function PlayerUsername({ name, text }: { name: string, text: string}) {
   return (
-    <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
+    <input className="default_placeholder w-1/4 border text-center text-xs md:text-lg bg-white/5 backdrop-blur-2xl"
       type="text" name={name} placeholder={text} required
     />
   );
@@ -19,9 +19,9 @@ function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEve
     <>
       <div className="z-10 flex flex-col items-center">
         <h1>{mode === "Tour" ? t("home.btn_tour") : t("home.btn_1vs1")} - {t("home.btn_local")}</h1>
-        <h1 className="text-lg">{t("shared.form.place_name")}</h1>
+        <h1 className="text-base md:text-2xl">{t("shared.form.place_name")}</h1>
         <form className="relative flex flex-col items-center" onSubmit={cb}>
-          <div className="flex justify-center gap-2 mt-10 mb-5 text-lg">
+          <div className="flex justify-center gap-2 mt-5 md:mt-10 md:mb-5 text-lg">
             <PlayerUsername name="username_p1" text={t("home.place_p1")} />
             <PlayerUsername name="username_p2" text={t("home.place_p2")} />
             { mode === "Tour" &&
