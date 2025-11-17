@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { apiFetchPrivate } from "../../utils.ts";
 import { withTranslation, type TranslationProps } from "../../_hooks/language.tsx";
 import type { Friends } from "../../../../backend/share/type/friend.ts";
-import { LoadingScreen } from "../HomeChildC.tsx";
+import { LoadingScreen } from "../HomeComponents.tsx";
 import { Friend } from "./FriendCard.tsx";
 import { FriendProfile, handleFDelete } from "./FriendModal.tsx";
-import { useSocket } from "../fetchHelper.tsx";
+import { useSocket } from "../helpers.tsx";
 
 export function FriendP({ t, toasterPluz }: TranslationProps) {
   const navigate = useNavigate();

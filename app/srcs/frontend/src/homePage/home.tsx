@@ -1,30 +1,10 @@
 import React from "react";
 import toast from "react-hot-toast"
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Credit, LoadingScreen, Tutorial, type Progress } from "./HomeChildC.tsx"
-import { useLang, withTranslation, type Lang, type TranslationProps } from "../_hooks/language.tsx";
+import { Credit, LanguageBar, LoadingScreen, Tutorial, type Progress } from "./HomeComponents.tsx"
+import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
-import { GameMode } from "./GameModeSection.tsx";
-
-type LanguageBarProps = {
-  bgColor?: string;
-  optionColor?: string;
-};
-
-export function LanguageBar({ bgColor = "bg-gray-800/80", optionColor = "bg-[#1E1622]" }: LanguageBarProps) {
-  const { lang, setLang } = useLang();
-
-  return (
-    <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
-      className={`appearance-none border-2 rounded p-1 text-lg ${bgColor} hover`}
-      style={{ backgroundColor: bgColor.startsWith("#") ? bgColor : undefined }}
-    >
-      <option value="en" className={optionColor}>English</option>
-      <option value="zh" className={optionColor}>繁體中文</option>
-      <option value="jp" className={optionColor}>日語</option>
-    </select>
-  );
-}
+import { GameMode } from "./GameMode/game_mode.tsx";
 
 export type SharedData = {
   user: User | null;
@@ -36,8 +16,7 @@ export function HomeP({ t, lang }: TranslationProps) {
   const navigate = useNavigate();
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
-  const [ creditM, setCreditM ] = React.useState<boolean>(false);
-  const [ tutorM, setTutorM ] = React.useState<boolean>(false);
+  const [ modal, setModal ] = React.useState<React.ReactNode>("");
   const [ gameM, setGameM ] = React.useState<"Tour" | "Match" | "TourL" | "MatchL" | "">("");
 
   React.useEffect(() => {
@@ -51,25 +30,24 @@ export function HomeP({ t, lang }: TranslationProps) {
 
 return (
   <>
-
   <div className="h-[100lvh] w-[100lvw] flex justify-center items-center overflow-hidden">
     <div className="fixed inset-0 -z-10 bg-cover bg-center bg-[url('/pic/homeP.jpg')] bg-black/25 bg-blend-overlay" />
+    {/* the layout to cover home page content when selecting match mode */}
     { gameM && (<div className="fixed inset-0 z-20 bg-cover bg-center bg-[url('/pic/homeP.jpg')] bg-black/25 bg-blend-overlay" /> )}
+
     { loading ? <LoadingScreen progress={progress}/> :
       <>
       <div className="relative h-full w-full grid grid-cols-[1fr_2fr_1fr] grid-rows-1 overflow-hidden text-lg md:text-2xl">
-        {creditM && <Credit onClick={() => setCreditM(false)} />}
-        {tutorM && <Tutorial onClick={() => setTutorM(false)} />}
+        {modal}
 
         <div className="flex flex-col ml-1">
-          {/* Top Left: avatar & username */}
           <div className="absolute flex gap-1 mx-1 my-2 p-1 bg-gray-300/20 rounded-2xl font-bold w-fit backdrop-blur-lg">
-            {/* Avatar -> Profile page */}
+            {/* Avatar(Button) -> Profile page */}
             <button className="w-12 h-12 rounded-full overflow-clip border-2 border-[#AC9ABE]/50 flex-shrink items-center justify-center hover-increase"
               onClick={() => navigate("/profile")}> 
               <img className="w-full h-full object-cover" src={avatarURL} />
             </button>
-            {/* Display -> Username */}
+            {/* Text -> Username */}
             <span className="font-mono text-blue-300 pr-2">{user?.acc.username}</span>
           </div>
           {/* Button -> Friend page */}
@@ -77,10 +55,12 @@ return (
         </div>
 
         <div className="flex flex-col items-center">
-          {/* Section -> pick Game Mode & Match Mode */}
-          <GameMode TutorOn={() => setTutorM(true)}  setGameM={setGameM} gameM={gameM}/>
+          {/* Section -> pick Game Mode & Match Mode via modal menu*/}
+          <GameMode TutorOn={() => setModal(<Tutorial onClick={() => setModal("")} />)} setGameM={setGameM} gameM={gameM}/>
           {/* Text -> toggle Credits modal */}
-          <span className="absolute bottom-2 cursor-pointer" onClick={() => setCreditM(true)} >{t("home.btn_credit")}</span>
+          <span className="absolute bottom-2 cursor-pointer" onClick={() => setModal(<Credit onClick={() => setModal("")} />)}>
+            {t("home.btn_credit")}
+          </span>
         </div>
 
         <div className="flex flex-col items-end mr-0.5 md:mr-3 gap-2">
@@ -94,8 +74,8 @@ return (
       </div>
       </>
     }
-  </div>
 
+  </div>
   </>
   );
 }

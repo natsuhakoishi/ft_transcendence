@@ -1,9 +1,9 @@
 import React from "react";
 import toast from "react-hot-toast";
-import { useLang } from "../_hooks/language";
+import { useLang } from "../../_hooks/language";
 import { useNavigate } from "react-router-dom";
-import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
-import { Matching } from "../gamePage/matching";
+import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
+import { Matching } from "../../gamePage/matching";
 
 function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM: () => void }) {
   const navigate = useNavigate();
