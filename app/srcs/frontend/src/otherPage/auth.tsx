@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../utils";
 import { useLang, withTranslation, type TranslationProps } from "../_hooks/language";
-import { LanguageBar } from "../homePage/home";
+import { LanguageBar } from "../homePage/HomeComponents";
 
 const Register = ( { verifyRef, onSubmit, mode }: {
   verifyRef: React.RefObject<VerifyBody>,

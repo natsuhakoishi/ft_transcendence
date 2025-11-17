@@ -2,7 +2,7 @@ import React from "react";
 import type { User } from "../../../backend/share/type/user";
 import { withTranslation, type TranslationProps } from "../_hooks/language";
 import { apiFetchPrivate } from "../utils";
-import type { Progress } from "./HomeChildC";
+import type { Progress } from "./HomeComponents";
 import { Outlet } from "react-router-dom";
 
 type ProgressObj<T> = {
