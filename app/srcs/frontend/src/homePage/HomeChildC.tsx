@@ -1,9 +1,5 @@
 import React from "react";
 import { useLang } from "../_hooks/language";
-import { useNavigate } from "react-router-dom";
-import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
-import toast from "react-hot-toast";
-import { Matching } from "../gamePage/matching";
 
 // Loading Screen
 
@@ -90,11 +86,13 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
   const [toggle, setToggle] = React.useState<"first" | "second">("first");
 
   return (
-    <div className="h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-3" onClick={onClick}>
-    <div className="fixed inset-0 bg-gray-600/40 backdrop-blur-xs "/>
+    <div className="fixed h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-3" onClick={onClick}>
+    <div className="absolute inset-0 bg-gray-600/40 backdrop-blur-xs"/>
 
       <div className="relative w-[70%] md:w-[60%] max-h-[95vh] flex flex-col items-center rounded-2xl">
-        <h1 className="w-fit text-3xl font-bold text-shadow-lg" onClick={(e) => e.stopPropagation()}>{t("home.tutor")}</h1>
+        <h1 className="w-fit text-3xl font-bold text-shadow-lg" onClick={(e) => e.stopPropagation()}>
+          {t("home.tutor")}
+        </h1>
         <div className="relative w-full h-[200px] md:h-[400px] mt-2" onClick={(e) => e.stopPropagation()}>
           <img className="w-full h-full object-cover rounded-2xl" src={`${toggle === "first" ? "/pic/tutorial.png" : "/pic/tutorial_2.png"}`} />
         </div>
@@ -105,157 +103,6 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
         </button>
       </div>
 
-    </div>
-  );
-}
-
-
-function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM: () => void }) {
-  const navigate = useNavigate();
-  const { t } = useLang();
-  const [match, setMatch] = React.useState<React.ReactNode>(null);
-
-  return (
-    <>
-
-    {match}
-
-    { mode === "Tour" ?
-    <>
-      {/* Button -> Remote Tournament */}
-      <button onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
-        className="py-5 w-1/3 mx-0.5 border-1 border-[#7F477F]/50 backdrop-blur-lg bg-[#925192]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none">
-        {t("home.btn_online")}
-      </button>
-
-      {/* Button -> Local Tournament */}
-      <button onClick={setGameM}
-        className="py-5 w-1/3 mx-0.5 border-1 border-[#7F477F]/50 backdrop-blur-lg bg-[#925192]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none">
-        {t("home.btn_local")}
-      </button>
-    </>
-      :
-    <>
-      {/* Button -> Online Mode */}
-      <button onClick={() => setMatch(<Matching again={false} setMatch={() => setMatch(null)} AI={false} />)}
-        className="py-5 w-1/3 mx-0.5 border-1 border-[#F5CFED]/30 backdrop-blur-lg bg-[#BF91B2]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none">
-        {t("home.btn_online")}
-      </button>
-      
-      {/* Button -> AI Mode */}
-      <button onClick={() => setMatch(<Matching again={false} setMatch={() => setMatch(null)} AI={true} />)}
-        className="py-5 w-1/3 mx-0.5 border-1 border-[#F5CFED]/30 backdrop-blur-lg bg-[#BF91B2]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none">
-        {t("home.btn_AI")}
-      </button>
-
-      {/* Button -> Local Mode */}
-      <button onClick={setGameM}
-        className="py-5 w-1/3 mx-0.5 border-1 border-[#F5CFED]/30 backdrop-blur-lg bg-[#BF91B2]/50 rounded-2xl hover-increase hover:mx-2 transition-all hover:brightness-110 hover:backdrop-blur-none">
-        {t("home.btn_local")}
-      </button>
-    </>
-    }
-
-    </>
-  );
-};
-
-// Game Mode Modal
-
-export function GameMode({ setGameM, GameM }: {
-  setGameM: React.Dispatch<React.SetStateAction<"Tour" | "Match" | "TourL" | "MatchL" | "">>,
-  GameM: "Tour" | "Match" | "TourL" | "MatchL" | "",
-}) {
-  const navigate = useNavigate();
-  const { t, toasterPluz } = useLang();
-
-  const handleLocalName = (e: React.FormEvent<HTMLFormElement>, count: number) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    let playersData :PlayerWithProfileData[] = [];
-    const name = new Map<string, number>();
-    for (let idx = 1; idx <= count; ++idx)
-    {
-      const temp = formData.get(`username_p${idx}`) as string;
-      if (temp.length < 3) return (toast.error(`User ${idx}`), toasterPluz("ERR_NameTooShort"));
-      if (temp.length > 8) return (toast.error(`User ${idx}`), toasterPluz("ERR_NameTooLong"));
-      if (name.has(temp))
-      {
-        toast.error(`User ${idx}`);
-        toasterPluz("ERR_NameRepeat");
-        return ;
-      }
-      name.set(temp,idx);
-      playersData.push({ id: 0, name: temp });
-    }
-    // console.log(playersData);
-    if (count === 4)
-      console.log("这是tournament •ᴗ•");
-    else
-      console.log("这个是普通match •ᴗ•");
-  };
-
-  return (
-    <div className="relative h-screen w-screen z-50" onClick={ GameM === "Tour" || GameM === "Match" ? () => setGameM("") : ( GameM === "TourL" ? () => setGameM("Tour") : () => setGameM("Match")) }>
-
-    <div className="absolute inset-0 backdrop-blur-xs" />
-      <div className="flex w-1/2 h-1/2 translate-1/2 p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
-      <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
-
-      { GameM === "Tour" && <ModeModal mode={"Tour"} setGameM={() => setGameM("TourL")} /> }
-      { GameM === "TourL" &&
-        <>
-          <div className="z-10 flex flex-col items-center">
-            <h1>{t("home.btn_tour")} - {t("home.btn_local")}</h1>
-            <h1 className="text-lg">{t("shared.form.place_name")}</h1>
-            <form className="relative flex flex-col items-center" onSubmit={(e) => handleLocalName(e,4)}>
-              <div className="flex justify-center gap-2 mt-10 mb-5 text-lg">
-                <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
-                  type="text" name="username_p1" placeholder={t("home.place_p1")} required
-                />       
-                <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
-                  type="text" name="username_p2" placeholder={t("home.place_p2")} required
-                />       
-                <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
-                  type="text" name="username_p3" placeholder={t("home.place_p3")} required
-                />       
-                <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
-                  type="text" name="username_p4" placeholder={t("home.place_p4")} required
-                />
-              </div>
-              <button type="submit" className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase">
-                <img src="/pic/icons/next_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-              </button>
-            </form>
-          </div>
-        </>
-      }
-
-      { GameM === "Match" && <ModeModal mode={"Match"} setGameM={() => setGameM("MatchL")} /> }
-
-      { GameM === "MatchL" &&
-        <>
-          <div className="z-10 flex flex-col items-center">
-            <h1>{t("home.btn_1vs1")} - {t("home.btn_local")}</h1>
-            <h1 className="text-lg">{t("shared.form.place_name")}</h1>
-            <form className="relative flex flex-col items-center" onSubmit={(e) => handleLocalName(e,2)}>
-              <div className="flex justify-center gap-2 mt-10 mb-5 text-lg">
-                <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
-                  type="text" name="username_p1" placeholder={t("home.place_p1")}  required
-                />       
-                <input className="default_placeholder w-1/4 border text-center bg-white/5 backdrop-blur-2xl"
-                  type="text" name="username_p2" placeholder={t("home.place_p2")}  required
-                />
-              </div>
-              <button type="submit" className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase">
-                <img src="/pic/icons/next_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
-              </button>
-            </form>
-          </div>
-        </>
-      }
-
-      </div>
     </div>
   );
 }
