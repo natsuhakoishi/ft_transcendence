@@ -77,7 +77,14 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
     if (count === 4)
       console.log("这是tournament •ᴗ•");
     else
-      console.log("这个是普通match •ᴗ•");
+      navigate(import.meta.env.VITE_GAME_PATH_MATCHING, {
+        state: {
+          playersData: playersData,
+          again: false,
+          mode: "local"
+        },
+        replace: true
+      })
   };
 
 	return (

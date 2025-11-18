@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import type { GameData, localTData, TData } from "../../../../backend/share/type/gameData";
+import type { GameData, localTData } from "../../../../backend/share/type/gameData";
 import type { MatchPlayersData } from "../../../../backend/share/type/Matches";
 import { LocalTournamentLoading } from "./TournamentLoadingPage";
 import { TournamentResultPage } from "../components/ResultPage";

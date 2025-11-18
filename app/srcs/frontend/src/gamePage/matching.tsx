@@ -6,30 +6,35 @@ import { useLang } from "../_hooks/language.tsx";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player.ts";
 import type { User } from "../../../backend/share/type/user.ts";
 
-export function Matching({again, setMatch, AI, local} : {
-        again: boolean,
-        setMatch?: (value?: boolean) => void,
-        AI: boolean
-        local: boolean
-    }) {
+export function Matching() {
     const navigate = useNavigate();
     const location = useLocation();
     const { t, toasterPluz } = useLang();
 
-    // const {playersData} = (location.state || {}) as { playersData: {player: PlayerWithProfileData[]}};
+    const {playersData, again, mode} = (location.state || {}) as {
+        playersData: PlayerWithProfileData[],
+        again: boolean,
+        mode: "normal" | "AI" | "local"
+    };
 
     React.useEffect( () => {
-        if (!AI && !local)
+        if (!mode )
+        {
+            navigate("/", { replace: true });
+            console.log("trespassing");
+            return ;
+        }
+
+        if (mode === "normal")
         {
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_MATCHING);
             console.log("Matching...", import.meta.env.VITE_GAME_API_MATCHING);
 
             ws.onopen = () => {
                 (async () => {
-                    await sendProfile(ws, () => {
-                        // navigate(import.meta.env.VITE_PATH_404NOTFOUND, { state: {msg: "G"}});
-                        navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
-                    })
+                    await sendProfile(ws, () => 
+                        navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true})
+                    );
                 })()
             };
 
@@ -61,7 +66,7 @@ export function Matching({again, setMatch, AI, local} : {
                 ws.close();
             }; 
         }
-        else if (local)
+        else if (mode === "local")
         {
             const ws = new WebSocket(import.meta.env.VITE_GAME_API_LOCAL_MATCHING);
             console.log("matching...", import.meta.env.VITE_GAME_API_LOCAL_MATCHING);
@@ -71,27 +76,18 @@ export function Matching({again, setMatch, AI, local} : {
                         const data: User = await apiFetchPrivate("profile", { method: "POST", body: "{}" });
                         const id: number = data.acc.user_id;
 
-                        const playersData: MatchPlayersData = {
+                        const matchData: MatchPlayersData = {
                             roomID: id.toString(),
-                            Players: [
-                                {
-                                    id: 0,
-                                    name: "player1",
-                                },
-                                {
-                                    id: 0,
-                                    name: "player2"
-                                }
-                            ]
+                            Players: playersData
                         };
 
-                        if (!playersData)
+                        if (!matchData)
                         {
                             navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                             return ;
                         }
-                        ws.send(JSON.stringify(playersData));
-                        console.log("sent", playersData);
+                        ws.send(JSON.stringify(matchData));
+                        console.log("sent", matchData);
                     }
                 )();
             };
@@ -155,11 +151,11 @@ export function Matching({again, setMatch, AI, local} : {
 
     return (
         <div className="absolute h-screen w-screen overflow-hidden z-60 bg-[#9390B5] flex flex-col items-center justify-center">
-            <h1 className="bg-blue-300 w-fit text-5xl py-1">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
+            <h1 className="bg-blue-300 w-fit text-5xl py-1">{mode === "AI" ? t("matching_AI") : t("matching_1vs1")}</h1>
             <button
                 className="border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"
                 onClick={() => {
-                    again ? navigate("/", { replace: true }) : setMatch?.(false)
+                    again ? navigate("/", { replace: true }) : () => {}
                 }}
                 >{t("shared.btn_cancel")}
             </button>

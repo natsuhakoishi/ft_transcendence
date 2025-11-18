@@ -44,6 +44,7 @@ function App() {
           </Route>
           <Route path="/game" >
             <Route index element={<Navigate to="/" replace />} />
+            <Route path="matching" element={<Matching />} />
             <Route path="loading" element={<Loading tournament={false} />} />
             <Route path="gameplay" element={<GamePage />} />
             <Route path="tournament/*" element={<TournamentGamePage />} />

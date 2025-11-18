@@ -1,7 +1,7 @@
 import type { Matches, MatchPlayersData } from "../../../../backend/share/type/Matches";
 import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import { useLang } from "../../_hooks/language";
-import { LoadingScreen } from "../../homePage/HomeChildC";
+import { LoadingScreen } from "../../homePage/HomeComponents";
 import { Player } from "../components/player";
 
 export interface LoadingProps {
