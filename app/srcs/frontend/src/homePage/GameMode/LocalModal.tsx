@@ -4,13 +4,20 @@ import type { PlayerWithProfileData } from "../../../../backend/share/type/Playe
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-function PlayerUsername({ name, text }: { name: string, text: string}) {
+function PlayerUsername({ name, text, defaultName }: { name: string, text: string, defaultName: string }) {
   return (
     <input className="default_placeholder w-full border text-center text-xs md:text-lg bg-white/5 backdrop-blur-2xl"
-      type="text" name={name} placeholder={text} required
+      type="text" name={name} placeholder={text} defaultValue={defaultName} required
     />  
   );
 }
+
+const getName = (idx: number) => ({
+  1: "Michele",
+  2: "Yugiri",
+  3: "Ming",
+  4: "Lawine"
+})[idx];
 
 function PlayerAvatar({ avatar }: { avatar: string }) {
   return (
@@ -27,8 +34,8 @@ function PlayerAvatar({ avatar }: { avatar: string }) {
 const getAvatar = (idx: number) => ({
   1: "default.webp",
   2: "yugiri_dev.webp",
-  3: "zhen_dev.webp",
-  4: "yabi_dev.webp"
+  3: "ming_dev.webp",
+  4: "lawine_dev.webp"
 })[idx];
 
 function LocalProfile({ idx }: { idx: number}) {
@@ -44,7 +51,7 @@ function LocalProfile({ idx }: { idx: number}) {
   return (
     <div className="flex flex-col items-center w-1/4 text-center gap-1">
       <PlayerAvatar avatar={avatar} />
-      <PlayerUsername name={name} text={text} />
+      <PlayerUsername name={name} text={text} defaultName={getName(idx) as string}/>
     </div>
   );
 };
@@ -79,7 +86,7 @@ function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEve
 
 export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
   const navigate = useNavigate();
-  const { toasterPluz } = useLang();
+  const { t, toasterPluz } = useLang();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -91,19 +98,19 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
       const temp = formData.get(`username_p${idx}`) as string;
       if (temp.length < 3)
       {
-        toast.error(`User ${idx}`)
+        toast.error(t(`home.place_p${idx}`))
         toasterPluz("ERR_NameTooShort");
         return ;
       }
       if (temp.length > 8) 
       {
-        toast.error(`User ${idx}`);
+        toast.error(t(`home.place_p${idx}`))
         toasterPluz("ERR_NameTooLong");
         return ;
       }
       if (name.has(temp))
       {
-        toast.error(`User ${idx}`);
+        toast.error(t(`home.place_p${idx}`))
         toasterPluz("ERR_NameRepeat");
         return ;
       }
