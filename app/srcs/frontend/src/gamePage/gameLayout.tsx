@@ -1,6 +1,6 @@
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
-import { LoadingScreen } from "../homePage/HomeChildC";
+import { LoadingScreen } from "../homePage/HomeComponents";
 import { Banner } from "./components/banner";
 import { Player } from "./components/player";
 import { Result } from "./components/ResultPage";

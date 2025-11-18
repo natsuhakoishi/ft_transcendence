@@ -16,7 +16,7 @@ import { HistoryPage } from "./homePage/MatchHistory/history";
 import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage.tsx";
 import { AIGamePage } from "./gamePage/1v1/AI/AIGamePage.tsx";
-import { FetchData } from "./homePage/fetchHelper.tsx";
+import { FetchData } from "./homePage/helpers.tsx";
 import { LocalGamePage } from "./gamePage/1v1/local/lGamePage.tsx";
 import { LocalTournamentGamePage } from "./gamePage/tournament/LocalTournamentGamePage.tsx";
 

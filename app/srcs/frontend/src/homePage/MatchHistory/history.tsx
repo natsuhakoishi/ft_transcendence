@@ -5,7 +5,7 @@ import type { MatchMeResponse, Match, TournamentMatch } from "../../../../backen
 import { DateTime, ModeIndicate, PlayerInfo, ScoreBoard, Versus, WinStatus } from "./HistoryChildC";
 import { ProfileSideBar } from "./ProfileSidebar";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { LoadingScreen } from "../HomeChildC";
+import { LoadingScreen } from "../HomeComponents";
 import type { User } from "../../../../backend/share/type/user";
 import type { Friends } from "../../../../backend/share/type/friend";
 

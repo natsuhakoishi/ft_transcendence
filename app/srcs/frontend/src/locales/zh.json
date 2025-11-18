@@ -26,19 +26,26 @@
 		"title": "KLBQ | 主頁",
 		"msg_greeting": "歡迎回來, ",
 
+		"_comment": "GAME MODE SECTION",
 		"btn_1vs1": "單人對局",
 		"btn_tour": "多人對局",
 		"btn_AI": "人機對局",
-		"btn_local": "本地游戲",
+		"btn_local": "本地對戰",
+		"place_p1": "玩家 1",
+		"place_p2": "玩家 2",
+		"place_p3": "玩家 3",
+		"place_p4": "玩家 4",
+		"btn_online": "線上對戰",
 
-		"btn_friend": "好友",
-		"btn_history": "對局記錄",
-		"text_version": "版本號 ",
+		"_comment": "CREDIT MODAL",
 		"btn_credit": "製作名單",
 		"role_en": "專案指導 / 伺服器與網站開發",
 		"role_yb": "遊戲企劃 & 程式開發",
 		"role_zw": "視覺設計 / UI/UX程式開發",
 
+		"btn_friend": "好友",
+		"btn_history": "對局記錄",
+		"text_version": "版本號 ",
 		"tutor": "如何操作 ?"
 	},
 

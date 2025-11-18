@@ -37,6 +37,7 @@ body {
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.525);
     -webkit-scrollbar: hidden;
     font-weight: bold;
+    @apply select-none;
 }
 
 .hover {
