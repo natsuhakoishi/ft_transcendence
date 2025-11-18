@@ -1,6 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
-import { LocalRoom, LocalRoomManager } from "../../share/type/localRoomData.ts";
-import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
+import { LocalRoom, LocalRoomManager } from "../../share/type/localRoom.ts";
 import { keyLogic, start } from "./gameLogic.ts";
 import type { MatchPlayersData } from "../../share/type/Matches.ts";
 import type { LocalGameData } from "../../share/type/gameData.ts";
@@ -56,7 +55,7 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
             let room: LocalRoom | undefined = rooms.getRoom(playerId, playerName);
             if (!room)
             {
-                console.log("trespassing");
+                console.log("/local: trespassing");
                 ws.send(JSON.stringify({type: "trespassing"}));
                 return ;
             }
@@ -67,6 +66,11 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
             if (room.getConfirm() && !room.getState().gamingStage)
                 start(room, () => rooms.deleteRoom(playerId), null);
         })
+
+        ws.on("close", () =>
+        {
+            console.log("/Local: player disconnected");
+        });
     });
 };
 

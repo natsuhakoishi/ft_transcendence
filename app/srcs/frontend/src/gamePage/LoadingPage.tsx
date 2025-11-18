@@ -5,7 +5,7 @@ import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { Player } from "./components/player";
 import { useLang } from "../_hooks/language";
 
-export function Loading() {
+export function Loading({ tournament }: {tournament: boolean}) {
     const { t } = useLang();
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,11 +39,11 @@ export function Loading() {
                         playersData: playersData
                     }, replace: true 
                 });
-            else if (local)
+            else if (local && !tournament)
                 navigate(import.meta.env.VITE_GAME_PATH_LOCAL_GAMEPLAY, {
                     state: {
                         playersData: playersData,
-                        tournament: false
+                        tournament: tournament
                     }, replace: true
                 });
             else

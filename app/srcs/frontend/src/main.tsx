@@ -18,6 +18,7 @@ import { Loading } from "./gamePage/LoadingPage.tsx";
 import { AIGamePage } from "./gamePage/1v1/AI/AIGamePage.tsx";
 import { FetchData } from "./homePage/fetchHelper.tsx";
 import { LocalGamePage } from "./gamePage/1v1/local/lGamePage.tsx";
+import { LocalTournamentGamePage } from "./gamePage/tournament/LocalTournamentGamePage.tsx";
 
 function App() {
   function GlobalErrorMonitor() {
@@ -43,12 +44,13 @@ function App() {
           </Route>
           <Route path="/game" >
             <Route index element={<Navigate to="/" replace />} />
-            <Route path="loading" element={<Loading />} />
+            <Route path="loading" element={<Loading tournament={false} />} />
             <Route path="gameplay" element={<GamePage />} />
             <Route path="tournament/*" element={<TournamentGamePage />} />
             <Route path="tournamentMatching" element={<TMatching />} />
             <Route path="AI/gameplay" element={<AIGamePage />}/>
             <Route path="local/gameplay" element={<LocalGamePage />}/>
+            <Route path="local/tournament/*" element={<LocalTournamentGamePage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
           <Route path="/404" element={<NotFound />} />

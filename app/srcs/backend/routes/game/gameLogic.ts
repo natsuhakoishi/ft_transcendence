@@ -1,7 +1,7 @@
 import { AIRoom } from "../../share/type/AIroomData.ts";
 import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
-import type { LocalRoom } from "../../share/type/localRoomData.ts";
+import type { LocalRoom } from "../../share/type/localRoom.ts";
 import type { Player } from "../../share/type/Player.ts";
 import { Room } from "../../share/type/roomData.ts";
 import { TRoom } from "../../share/type/tournamentRoomData.ts";

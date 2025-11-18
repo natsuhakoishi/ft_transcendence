@@ -231,3 +231,92 @@ export function TMatching() {
         </>
     );
 }
+
+
+export function LocalTMatching() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { t, toasterPluz } = useLang();
+
+    // const { playersData } = (location.state || {}) as PlayerWithProfileData[];
+
+    React.useEffect( () => {
+        // if (!playersData)
+        // {
+
+        // }
+
+        const ws = new WebSocket(import.meta.env.VITE_GAME_API_LOCAL_TOURNAMENT_MATCHING);
+        console.log("Tournament Matching...", import.meta.env.VITE_GAME_API_LOCAL_TOURNAMENT_MATCHING);
+        let playerID: number;
+
+        ws.onopen = () => {
+            (async () => {
+                try {
+                    const data = await apiFetchPrivate("me", { method: "GET" });
+                    playerID = data.id;
+                    console.log(playerID);
+                    const playersProfile: PlayerWithProfileData[] = [
+                        {
+                            id: 0,
+                            name: "p1",
+                        },
+                        {
+                            id: 0,
+                            name: "p2",
+                        },
+                        {
+                            id: 0,
+                            name: "p3",
+                        },
+                        {
+                            id: 0,
+                            name: "p4",
+                        }
+                    ];
+
+                    ws.send(JSON.stringify({id: playerID, playersProfile: playersProfile}));
+                    console.log("sent ID");
+                }
+                catch (e) {
+                    console.log("TMatching: fetch error: ", e);
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND);
+                }
+            })();
+        };
+
+        ws.onmessage = async (event) => {
+            console.log("server: " + event.data);
+            const data: {success: boolean, id: number}= JSON.parse(event.data);
+            const {success, id} = data;
+            if (!success || !id)
+            {
+                console.log("/local TMatching: matched same account or some error");
+                toasterPluz("game.ERR_matching");
+                navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+                return ;
+            }
+
+            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY, { state: {id: id}, replace: true });
+        };
+
+        return () => { //when user press 'back button'
+            console.log("Matching: closing ws");
+            ws.close();
+        };
+    }, []);
+
+    return (
+        <>
+            <div className="container bg-blue-500">
+                <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
+            </div>
+            <button
+                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
+                type="submit"
+                onClick={() => navigate("/")}
+            >Cancel
+            </button>
+        </>
+    );
+}

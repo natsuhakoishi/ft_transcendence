@@ -35,16 +35,16 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
     setTimeout(() => {
         setLoad(false);
-    }, 1000 * 3);
+    }, 1000 * 1.5);
 
     React.useEffect(() => {
+        document.title = t("title_AI");
         if (!playersData)
         {
             toasterPluz("game.ERR_trespassing");
             navigate("/", { replace: true });
             return ;
         }
-        document.title = t("title_AI");
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_AI_GAMEPLAY);
 
         const gameData: GameData = {

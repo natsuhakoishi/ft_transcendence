@@ -1,20 +1,19 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { data, useLocation, useNavigate } from "react-router-dom";
 import { initGameState, isMobile } from "../../../utils.ts";
 import type { GameScore, GameState} from "../../../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../../../backend/share/type/Matches.ts";
 import { withTranslation, type TranslationProps } from "../../../_hooks/language.tsx";
-import { draw, sendKeyPress, sendKeyPressLocal } from "../../gameUtils.ts";
+import { draw, sendKeyPressLocal } from "../../gameUtils.ts";
 import { GameLayout } from "../../gameLayout.tsx";
 import type { LocalGameData } from "../../../../../backend/share/type/gameData.ts";
 
-export function LocalGameP({ t, toasterPluz }: TranslationProps) {
+export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const [ Load , setLoad ] = React.useState(true);
     const [ result , setResult ] = React.useState(false);
     const [ start, setStart ] = React.useState(false);
-    const [ playerID, setPlayerID ] = React.useState<number>(0);
     const key = React.useRef<boolean>(false);
     const confirmRef = React.useRef<boolean>(false);
     const [ ready, setReady ] = React.useState(false);
@@ -43,6 +42,12 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
 
     React.useEffect(() => {
         document.title = t("title_local_match");
+        if (!playersData)
+        {
+            toasterPluz("game.ERR_trespassing");
+            navigate("/", { replace: true });
+            return ;
+        }
         (async () => {
             console.log("gamePage: useEffect");
 
@@ -81,6 +86,7 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
                 if (type === "trespassing" || !parse.gameState)
                 {
                     cleanTouch();
+                    toasterPluz("game.ERR_trespassing");
                     navigate("/", { replace: true });
                     return ;
                 }
@@ -103,7 +109,7 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
 
                     setTimeout( () => {
                         setReady(false);
-                        console.log("/gamepage: setTimeout ", start, ready);
+                        console.log("/gamePage: setTimeout ", start, ready);
                     }, 2000);
                 }
                 else if (type === "goal")
@@ -117,8 +123,16 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
                     confirmRef.current = false;
                     console.log("/gamePage: game over");
                     ws.close();
+
                     setTimeout(()=>{
-                        setResult(true);
+                        if (tournament)
+                        {
+                            console.log("/localGamePage: gameOver");
+                            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY, { state: {id: gameData.playerId}, replace: true });
+                            onGameOver?.();
+                        }
+                        else
+                            setResult(true);
                     }, 1000*2);
                 }
                 else if (type === "timeout")
@@ -145,7 +159,7 @@ export function LocalGameP({ t, toasterPluz }: TranslationProps) {
                 {
                     console.log("gamePage:" + e.key);
                     console.log("gamePage:", confirmGame);
-                    if (gameData.playerId) {
+                    if (gameData.playerId && ws.readyState === WebSocket.OPEN) {
                         sendKeyPressLocal("Enter", ws, gameData, "left", playersData.Players[0].name!);
                         confirmGame = true;
                         setConfirm(true);

@@ -77,7 +77,7 @@ export class LocalRoomManager {
         return room;
     }
 
-    createRoom(id: number, p1name: string, p2name: string) {
+    createRoom(id: number, p1name: string, p2name: string, tournamentOffset?: number) {
         if (!this.getRoom(id, p1name) && !this.getRoom(id, p2name))
             this.rooms.set(id, new LocalRoom(id, p1name, p2name));
         else 
@@ -91,7 +91,7 @@ export class LocalRoomManager {
                     room.broadCast("timeout");
                     this.deleteRoom(id);
                 }
-            }, 1000 * 13);
+            }, (tournamentOffset ? 1000 * tournamentOffset : 1000 * 13));
     }
 
     deleteRoom(id: number): void {

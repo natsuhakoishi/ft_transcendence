@@ -1,4 +1,4 @@
-import type { Matches } from "./Matches";
+import type { Matches, MatchPlayersData } from "./Matches";
 import type { PlayerWithProfileData } from "./Player";
 import type { Leaderboard } from "./tournamentRoomData";
 
@@ -20,4 +20,16 @@ export interface TData {
 
 export interface LocalGameData extends GameData {
     playerName: string;
+}
+
+export interface localTData {
+    round1: MatchPlayersData[];
+    round2: MatchPlayersData[];
+
+    state: null | "r1" | "r2";
+    matchCount: number;
+    matches: Record<number, MatchPlayersData>; //1,2,3,4 round for each match
+
+    players: Record<string, PlayerWithProfileData>;
+    leaderboard?: Leaderboard;
 }
