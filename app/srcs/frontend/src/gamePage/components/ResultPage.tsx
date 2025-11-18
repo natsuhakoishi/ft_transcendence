@@ -1,13 +1,11 @@
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Player } from "./player";
 import React from "react";
-import { Matching } from "../matching";
 import type { Leaderboard } from "../../../../backend/share/type/tournamentRoomData";
 import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import { useLang } from "../../_hooks/language";
 
 export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean, local?: boolean}) {
-    const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
     const { refetchData } = useOutletContext<{ refetchData: () => void}>();
     const { t } = useLang();
@@ -19,27 +17,32 @@ export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithPro
 
     return (
         <>
-            {
-                again ? <Matching again={true} AI={AI} local={false}/> : (
-                <div className="relative flex flex-col items-center justify-center w-full h-screen bg-black-500"  >
+            <div className="relative flex flex-col items-center justify-center w-full h-screen bg-black-500"  >
 
-                    <div className="flex" >
-                        <h1 className={`text-5xl font-bold mb-6`} >{t("shared.result.msg_winner")}</h1>
-                    </div>
-                    <div className="flex items-center space-x-4 mb-12">
-                        <Player
-                            player={winner}
-                            me={playerID === winner?.id}
-                            spin={true} />
-                    </div>
-
-                    {
-                        !local && <AgainButton callback={() => setAgain(true)} t={t} />
-                    }
-                    <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
-
+                <div className="flex" >
+                    <h1 className={`text-5xl font-bold mb-6`} >{t("shared.result.msg_winner")}</h1>
                 </div>
-            )}
+                <div className="flex items-center space-x-4 mb-12">
+                    <Player
+                        player={winner}
+                        me={playerID === winner?.id}
+                        spin={true} />
+                </div>
+
+                <AgainButton
+                    t={t}
+                    callback={() => {
+                        if (AI && !local)
+                            navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { again: true, mode: "AI" }, replace: true})
+                        else if (local && !AI)
+                            navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { again: true, mode: "normal" }, replace: true})
+                        else
+                            navigate("/", { state: { game: "MatchL" }, replace: true});
+                    }}
+                />
+                <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
+
+            </div>
         </>
     );
 }

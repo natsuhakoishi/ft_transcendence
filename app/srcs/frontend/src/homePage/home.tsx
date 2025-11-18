@@ -1,6 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Credit, LanguageBar, LoadingScreen, Tutorial, type Progress } from "./HomeComponents.tsx"
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
@@ -14,10 +14,12 @@ export type SharedData = {
 
 export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
+  const location = useLocation();
+  const { game } = (location.state || {}) as { game: GameModalMode };
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [ modal, setModal ] = React.useState<React.ReactNode>("");
-  const [ gameM, setGameM ] = React.useState<GameModalMode>("");
+  const [ gameM, setGameM ] = game ? React.useState<GameModalMode>(game) : React.useState<GameModalMode>("");
 
   React.useEffect(() => {
     document.title = t("home.title");

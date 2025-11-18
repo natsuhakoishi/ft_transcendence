@@ -126,8 +126,7 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
           playersData: playersData,
           again: false,
           mode: "local"
-        },
-        replace: true
+        }
       })
   };
 

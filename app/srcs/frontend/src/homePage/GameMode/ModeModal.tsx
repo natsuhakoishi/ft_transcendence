@@ -40,11 +40,11 @@ export function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM
       <>
         {/* Button -> Online Mode */}
         <ModeButton mode="Match" text={t("home.btn_online")}
-          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: false, again: false, mode: "normal", replace: true}})}
+          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: false, again: false, mode: "normal"} })}
         />
         {/* Button -> AI Mode */}
         <ModeButton mode="Match" text={t("home.btn_AI")}
-          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: true, again: false, mode: "AI" }, replace: true})}
+          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: true, again: false, mode: "AI" } })}
         />
         {/* Button -> Local Mode */}
         <ModeButton mode="Match" onClick={setGameM} text={t("home.btn_local")} />
