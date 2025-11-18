@@ -150,13 +150,11 @@ export function Matching() {
     }, []);
 
     return (
-        <div className="absolute h-screen w-screen overflow-hidden z-60 bg-[#9390B5] flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
             <h1 className="bg-blue-300 w-fit text-5xl py-1">{mode === "AI" ? t("matching_AI") : t("matching_1vs1")}</h1>
             <button
-                className="border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"
-                onClick={() => {
-                    again ? navigate("/", { replace: true }) : () => {}
-                }}
+                className="text-2xl border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"   
+                onClick={() => navigate("/")}
                 >{t("shared.btn_cancel")}
             </button>
         </div>
@@ -296,16 +294,13 @@ export function LocalTMatching() {
     }, []);
 
     return (
-        <>
-            <div className="container bg-blue-500">
-                <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
-            </div>
+        <div className="flex flex-col items-center justify-center">
+            <h1 className="bg-blue-300 w-fit text-5xl py-1">{t("matching_1vs1")}</h1>
             <button
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
-                type="submit"
+                className="text-2xl border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"   
                 onClick={() => navigate("/")}
-            >Cancel
+                >{t("shared.btn_cancel")}
             </button>
-        </>
+        </div>
     );
 }
