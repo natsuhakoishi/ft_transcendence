@@ -3,22 +3,33 @@ import { useLang } from "../../_hooks/language";
 import { ModeModal } from "./ModeModal";
 import { LocalModal } from "./LocalModal";
 
+export type GameModalMode = "Tour" | "Match" | "TourL" | "MatchL" | "";
+
+const transitions = {
+  "Tour": "",
+  "Match": "",
+  "TourL": "Tour",
+  "MatchL": "Match",
+  "": ""
+};
+
 function MatchMode({ setGameM, GameM }: {
-  setGameM: React.Dispatch<React.SetStateAction<"Tour" | "Match" | "TourL" | "MatchL" | "">>,
-  GameM: "Tour" | "Match" | "TourL" | "MatchL" | "",
+  setGameM: React.Dispatch<React.SetStateAction<GameModalMode>>,
+  GameM: GameModalMode,
 }) {
+  const handleTransition = () => {
+    setGameM(transitions[GameM] as GameModalMode);
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={ GameM === "Tour" || GameM === "Match" ? () => setGameM("")
-              : (GameM === "TourL" ? () => setGameM("Tour") : () => setGameM("Match"))}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={handleTransition}>
     <div className="absolute inset-0 backdrop-blur-xs" />
-      <div className="relative top-0 w-[50%] md:w-[40%] h-[60%] md:h-[50%] flex p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
+      <div className="relative top-0 w-[55%] md:w-[40%] h-[65%] md:h-[50%] flex p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
         <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
-          { GameM === "Tour" && <ModeModal mode="Tour" setGameM={() => setGameM("TourL")} /> }
-          { GameM === "TourL" && <LocalModal mode="Tour" /> }
-          { GameM === "Match" && <ModeModal mode={"Match"} setGameM={() => setGameM("MatchL")} /> }
-          { GameM === "MatchL" && <LocalModal mode="Match" /> }
+          {GameM === "Tour" && <ModeModal mode="Tour" setGameM={() => setGameM("TourL")} /> }
+          {GameM === "TourL" && <LocalModal mode="Tour" /> }
+          {GameM === "Match" && <ModeModal mode={"Match"} setGameM={() => setGameM("MatchL")} /> }
+          {GameM === "MatchL" && <LocalModal mode="Match" /> }
       </div>
     </div>
   );
@@ -26,8 +37,8 @@ function MatchMode({ setGameM, GameM }: {
 
 export function GameMode({ TutorOn, setGameM, gameM }: {
   TutorOn: () => void,
-  setGameM: React.Dispatch<React.SetStateAction<"Tour" | "Match" | "TourL" | "MatchL" | "">>,
-  gameM: "Tour" | "Match" | "TourL" | "MatchL" | "",
+  setGameM: React.Dispatch<React.SetStateAction<GameModalMode>>,
+  gameM: GameModalMode,
 }) {
   const { t } = useLang();
 

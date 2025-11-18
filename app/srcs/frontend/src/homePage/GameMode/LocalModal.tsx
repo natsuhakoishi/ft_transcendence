@@ -6,11 +6,48 @@ import { useNavigate } from "react-router-dom";
 
 function PlayerUsername({ name, text }: { name: string, text: string}) {
   return (
-    <input className="default_placeholder w-1/4 border text-center text-xs md:text-lg bg-white/5 backdrop-blur-2xl"
+    <input className="default_placeholder w-full border text-center text-xs md:text-lg bg-white/5 backdrop-blur-2xl"
       type="text" name={name} placeholder={text} required
-    />
+    />  
   );
 }
+
+function PlayerAvatar({ avatar }: { avatar: string }) {
+  return (
+    <div className="relative h-10 md:h-13 aspect-square flex-shrink-0">
+      <button className="aspect-square h-full rounded-full overflow-clip hover border-1 md:border-2 border-gray-300" tabIndex={-1}>
+        <img className="w-full h-full object-cover" src={avatar}
+          onError={(e) => {(e.currentTarget as HTMLImageElement).src = `${import.meta.env.VITE_API_AVATAR}default.webp`; }}
+        />
+      </button>
+    </div>
+  );
+}
+
+const getAvatar = (idx: number) => ({
+  1: "default.webp",
+  2: "yugiri_dev.webp",
+  3: "zhen_dev.webp",
+  4: "yabi_dev.webp"
+})[idx];
+
+function LocalProfile({ idx }: { idx: number}) {
+  if (idx < 1 || idx > 4)
+    return ;
+
+  const { t } = useLang();
+  const name = `username_p${idx}`;
+  const key = `home.place_p${idx}`;
+  const text = t(key);
+  const avatar = `${import.meta.env.VITE_API_AVATAR}${getAvatar(idx)}`
+
+  return (
+    <div className="flex flex-col items-center w-1/4 text-center gap-1">
+      <PlayerAvatar avatar={avatar} />
+      <PlayerUsername name={name} text={text} />
+    </div>
+  );
+};
 
 function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEvent<HTMLFormElement>) => void }) {
   const { t } = useLang();
@@ -19,19 +56,19 @@ function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEve
     <>
       <div className="z-10 flex flex-col items-center">
         <h1>{mode === "Tour" ? t("home.btn_tour") : t("home.btn_1vs1")} - {t("home.btn_local")}</h1>
-        <h1 className="text-base md:text-2xl">{t("shared.form.place_name")}</h1>
+        <h1 className="text-base md:text-lg">{t("shared.form.place_name")} !</h1>
         <form className="relative flex flex-col items-center" onSubmit={cb}>
-          <div className="flex justify-center gap-2 mt-5 md:mt-10 md:mb-5 text-lg">
-            <PlayerUsername name="username_p1" text={t("home.place_p1")} />
-            <PlayerUsername name="username_p2" text={t("home.place_p2")} />
+          <div className="flex justify-center gap-2 my-2 md:my-5 text-lg">
+            <LocalProfile idx={1} />
+            <LocalProfile idx={2} />
             { mode === "Tour" &&
               <>
-                <PlayerUsername name="username_p3" text={t("home.place_p3")} />
-                <PlayerUsername name="username_p4" text={t("home.place_p4")} />
+                <LocalProfile idx={3} />
+                <LocalProfile idx={4} />
               </>
             }
           </div>
-          <button type="submit" className="mt-3 w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase">
+          <button type="submit" className="w-8 md:w-12 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase">
             <img src="/pic/icons/next_btn.png" className="drop-shadow-lg w-full h-full object-cover"/>  
           </button>
         </form>
@@ -71,7 +108,7 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
         return ;
       }
       name.set(temp,idx);
-      playersData.push({ id: 0, name: temp });
+      playersData.push({ id: 0, name: temp, avatar: `${import.meta.env.VITE_API_AVATAR}${getAvatar(idx)}` });
     }
     // console.log(playersData);
     if (count === 4)
