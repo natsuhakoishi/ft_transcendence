@@ -26,19 +26,26 @@
 		"title": "KLBQ | ホーム",
 		"msg_greeting": "おかえり、",
 
+		"_comment": "GAME MODE SECTION",
 		"btn_1vs1": "1 vs 1",
 		"btn_tour": "トーナメント",
 		"btn_AI": "AI戦",
-		"btn_local": "ローカルゲーム",
+		"btn_local": "ローカル",
+		"place_p1": "プレ1",
+		"place_p2": "プレ2",
+		"place_p3": "プレ3",
+		"place_p4": "プレ4",
+		"btn_online": "オンライン",
 
-		"btn_friend": "フレンド",
-		"btn_history": "対戦履歴",
-		"text_version": "バージョン ",
+		"_comment": "CREDIT MODAL",
 		"btn_credit": "スタッフ",
 		"role_en": "プロジェクト指導 / Server/Web開発",
 		"role_yb": "ゲーム企画 & 開発",
 		"role_zw": "ビジュアルデザイン / UI/UX開発",
 
+		"btn_friend": "フレンド",
+		"btn_history": "対戦履歴",
+		"text_version": "バージョン ",
 		"tutor": "遊び方"
 	},
 

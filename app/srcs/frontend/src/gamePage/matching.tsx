@@ -6,7 +6,7 @@ import { useLang } from "../_hooks/language.tsx";
 
 export function Matching({again, setMatch, AI} : {
         again: boolean,
-        setMatch?: React.Dispatch<React.SetStateAction<boolean>>,
+        setMatch?: (value?: boolean) => void,
         AI: boolean
     }) {
     const navigate = useNavigate();
@@ -84,20 +84,16 @@ export function Matching({again, setMatch, AI} : {
     }, []);
 
     return (
-        <>
-            <div className="absolute min-h-[100lvh] w-[100lvw] inset-0 -z-10 bg-[#9390B5] overflow-hidden" />
-            <div className=" bg-blue-500">
-                <h1 className="text-5xl decoration-cyan-800">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
-            </div>
+        <div className="absolute h-screen w-screen overflow-hidden z-60 bg-[#9390B5] flex flex-col items-center justify-center">
+            <h1 className="bg-blue-300 w-fit text-5xl py-1">{AI ? t("matching_AI") : t("matching_1vs1")}</h1>
             <button
-                type="submit"
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
+                className="border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"
                 onClick={() => {
                     again ? navigate("/", { replace: true }) : setMatch?.(false)
                 }}
-            >{t("shared.btn_cancel")}
+                >{t("shared.btn_cancel")}
             </button>
-        </>
+        </div>
     );
 }
 
@@ -148,16 +144,13 @@ export function TMatching() {
     }, []);
 
     return (
-        <>
-            <div className="container bg-blue-500">
-                <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
-            </div>
+        <div className="flex flex-col items-center justify-center">
+            <h1 className="bg-blue-300 w-fit text-5xl py-1">{t("matching_tour")}</h1>
             <button
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
-                type="submit"
+                className="text-2xl border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"   
                 onClick={() => navigate("/")}
-            >Cancel
+                >{t("shared.btn_cancel")}
             </button>
-        </>
+        </div>
     );
 }

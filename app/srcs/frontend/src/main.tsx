@@ -16,7 +16,7 @@ import { HistoryPage } from "./homePage/MatchHistory/history";
 import { ProfilePage } from "./homePage/Profile/profile.tsx";
 import { Loading } from "./gamePage/LoadingPage";
 import { AIGamePage } from "./gamePage/AIGamePage";
-import { FetchData } from "./homePage/fetchHelper.tsx";
+import { FetchData } from "./homePage/helpers.tsx";
 
 function App() {
   function GlobalErrorMonitor() {
