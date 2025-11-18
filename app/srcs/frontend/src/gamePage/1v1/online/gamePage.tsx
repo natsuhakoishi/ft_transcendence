@@ -1,12 +1,12 @@
 import React from "react";
-import type { GameData } from "../../../backend/share/type/gameData.ts";
+import type { GameData } from "../../../../../backend/share/type/gameData.ts";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate, initGameState, isMobile } from "../utils.ts";
-import type { GameScore, GameState} from "../../../backend/share/type/gameState.ts";
-import type { MatchPlayersData } from "../../../backend/share/type/Matches.ts";
-import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
-import { draw, sendKeyPress } from "./gameUtils.ts";
-import { GameLayout } from "./gameLayout.tsx";
+import { apiFetchPrivate, initGameState, isMobile } from "../../../utils.ts";
+import type { GameScore, GameState } from "../../../../../backend/share/type/gameState.ts";
+import type { MatchPlayersData } from "../../../../../backend/share/type/Matches.ts";
+import { withTranslation, type TranslationProps } from "../../../_hooks/language.tsx";
+import { draw, sendKeyPress } from "../../gameUtils.ts";
+import { GameLayout } from "../../gameLayout.tsx";
 
 function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & TranslationProps) {
     const navigate = useNavigate();
@@ -16,7 +16,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
     const [ result , setResult ] = React.useState(false);
     const [ start, setStart ] = React.useState(false);
     const [ playerID, setPlayerID ] = React.useState<number | null>(null);
-    const [ gameData, setGameData ] = React.useState<GameData | null>(null);
     const key = React.useRef<boolean>(false);
     const confirmRef = React.useRef<boolean>(false);
     const [ ready, setReady ] = React.useState(false);
@@ -62,7 +61,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
                 keyPress: "null",
                 tournament: isTournament ? true : false
             }
-            setGameData(gameData);
 
             try {
                 const data = await apiFetchPrivate("me", { method: "GET" });
@@ -279,7 +277,6 @@ function GameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => void } & Tra
 
     return (
         <GameLayout
-            gameData={gameData}
             score={score}
             playersData={playersData}
             Load={Load}

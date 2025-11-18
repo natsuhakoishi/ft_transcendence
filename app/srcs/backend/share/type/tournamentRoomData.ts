@@ -1,13 +1,10 @@
 import { createTRoomID, initLeaderboard, initTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
 import type { TData } from "./gameData.ts";
 import fp from "fastify-plugin";
-import type { DBMatchData } from "./db_MatchData.ts";
-import { bindMatchTournament, createTournament, getTournamentLeaderboard, joinTournament, updateTournamentRank } from "../../database/tournament.ts";
-import { getMatchByUserId } from "../../database/match.ts";
+import { bindMatchTournament, createTournament, joinTournament, updateTournamentRank } from "../../database/tournament.ts";
 import type { Player, PlayerWithProfileData } from "./Player.ts";
 import type { Matches } from "./Matches.ts";
-import { addWinLose, setLoginStatus } from "../../database/profile.ts";
-import { error } from "console";
+import { addWinLose } from "../../database/profile.ts";
 
 export interface Leaderboard {
     first: PlayerWithProfileData;

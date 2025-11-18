@@ -2,19 +2,20 @@ import React, { useState } from "react";
 import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
-import { Player } from "./player";
+import { Player } from "./components/player";
 import { useLang } from "../_hooks/language";
 
-export function Loading() {
+export function Loading({ tournament }: {tournament: boolean}) {
     const { t } = useLang();
     const navigate = useNavigate();
     const location = useLocation();
     const [ player1, setPlayer1 ] = useState<PlayerWithProfileData | undefined>(undefined);
     const [ player2, setPlayer2 ] = useState<PlayerWithProfileData | undefined>(undefined);
-    const { playerID, playersData, AI } = (location.state || {}) as {
+    const { playerID, playersData, AI, local } = (location.state || {}) as {
         playerID: string,
         playersData: MatchPlayersData,
         AI: boolean
+        local: boolean
     };
 
     console.log("loading: ", playersData);
@@ -24,6 +25,7 @@ export function Loading() {
         if (!playerID || !playersData)
         {
             navigate("/", { replace: true });
+            console.log("trespassing");
             return ;
         }
         setPlayer1(playersData.Players[0]);
@@ -32,12 +34,28 @@ export function Loading() {
         console.log("Loading: to Gameplay", AI);
         const timer = setTimeout(() => {
             if (AI)
-                navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: playersData}, replace: true });
+                navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, {
+                    state: {
+                        playersData: playersData
+                    }, replace: true 
+                });
+            else if (local && !tournament)
+                navigate(import.meta.env.VITE_GAME_PATH_LOCAL_GAMEPLAY, {
+                    state: {
+                        playersData: playersData,
+                        tournament: tournament
+                    }, replace: true
+                });
             else
-                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, { state: {RoomID: playersData.roomID, isTournament: false, playersData: playersData}, replace: true });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, {
+                    state: {
+                        RoomID: playersData.roomID,
+                        isTournament: false,
+                        playersData: playersData
+                    }, replace: true });
         }, 1000 * 2);
 
-    return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
     }, []);
 
     return (

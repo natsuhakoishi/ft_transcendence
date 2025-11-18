@@ -1,14 +1,12 @@
-import type { GameData } from "../../../backend/share/type/gameData";
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
 import { LoadingScreen } from "../homePage/HomeComponents";
-import { Banner } from "./banner";
-import { Player } from "./player";
-import { Result } from "./ResultPage";
-import { Score } from "./Score";
+import { Banner } from "./components/banner";
+import { Player } from "./components/player";
+import { Result } from "./components/ResultPage";
+import { Score } from "./components/Score";
 
 export function GameLayout({
-    gameData,
     score,
     playersData,
     Load,
@@ -23,7 +21,6 @@ export function GameLayout({
     t,
     AI
 } : {
-        gameData: GameData | null,
         score: GameScore,
         playersData?: MatchPlayersData,
         Load: boolean,
@@ -92,7 +89,6 @@ export function GameLayout({
                             confirm={confirm}
                             start={start}
                             ready={ready}
-                            gameData={gameData}
                         />
                         <canvas
                             id="gameBoard"

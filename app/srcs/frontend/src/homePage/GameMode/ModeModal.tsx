@@ -42,11 +42,11 @@ export function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM
       <>
         {/* Button -> Online Mode */}
         <ModeButton mode="Match" text={t("home.btn_online")}
-          onClick={() => setMatch(<Matching again={false} setMatch={() => setMatch(null)} AI={false} />)}
+          onClick={() => setMatch(<Matching again={false} setMatch={() => setMatch(null)} AI={false} local={false}/>)}
         />
         {/* Button -> AI Mode */}
         <ModeButton mode="Match" text={t("home.btn_AI")}
-          onClick={() => setMatch(<Matching again={false} setMatch={() => setMatch(null)} AI={true} />)}
+          onClick={() => setMatch(<Matching again={false} setMatch={() => setMatch(null)} AI={true} local={false} />)}
         />
         {/* Button -> Local Mode */}
         <ModeButton mode="Match" onClick={setGameM} text={t("home.btn_local")} />

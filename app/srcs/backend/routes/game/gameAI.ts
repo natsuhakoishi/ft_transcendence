@@ -53,7 +53,7 @@ const AI: FastifyPluginAsync = async (fastify: any) => {
             handleKeyPressAI(parse.keyPress, room, player);
 
             if (room.getConfirm() && !room.getState().gamingStage)
-                start(room, () => fastify.AIrooms.deleteRoom(player.id));
+                start(room, () => fastify.AIrooms.deleteRoom(player.id), null);
         })
 
         ws.on("close", () =>

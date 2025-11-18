@@ -1,13 +1,14 @@
 import React from "react";
-import { GamePage } from "./gamePage";
+import { GamePage } from "../1v1/online/gamePage";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { apiFetchPrivate } from "../utils";
-import type { GameData, TData } from "../../../backend/share/type/gameData";
-import type { Matches, MatchPlayersData } from "../../../backend/share/type/Matches";
-import type { Player, PlayerWithProfileData } from "../../../backend/share/type/Player";
+import { apiFetchPrivate } from "../../utils";
+import type { GameData, TData } from "../../../../backend/share/type/gameData";
+import type { Matches, MatchPlayersData } from "../../../../backend/share/type/Matches";
+import type { Player, PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import { TournamentLoading } from "./TournamentLoadingPage";
-import { TournamentResultPage } from "./ResultPage";
-import { withTranslation, type TranslationProps } from "../_hooks/language";
+import { TournamentResultPage } from "../components/ResultPage";
+import { withTranslation, type TranslationProps } from "../../_hooks/language";
+import { Loading } from "../LoadingPage";
 
 function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
     const p1: Player = match[0];
@@ -50,7 +51,7 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
                 playerID = data.id;
             }
             catch (e) {
-                console.log("FlowPage: trespassing");
+                console.log("TournamentGamePage: trespassing");
                 navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
             }
 
@@ -179,6 +180,10 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
             <Route
                 path="result"
                 element={<TournamentResultPage/>}
+            />
+            <Route
+                path="loading"
+                element={<Loading tournament={true}/>}
             />
             {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>

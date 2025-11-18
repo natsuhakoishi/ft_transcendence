@@ -43,11 +43,6 @@ export class AIRoom {
     getConfirm(): boolean {
         return this.confirm;
     }
-
-    mandatoryWin(): void {
-        this.gameState.score.p2Score = 3;
-        this.gameState.score.p1Score = 0;
-    }
 }
 
 export class AIRoomManager {

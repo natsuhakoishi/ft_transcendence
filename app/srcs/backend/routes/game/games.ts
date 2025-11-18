@@ -66,7 +66,6 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             console.log("/gameplay: player disconnected");
         });
     });
-
-};
+}
 
 export default games;

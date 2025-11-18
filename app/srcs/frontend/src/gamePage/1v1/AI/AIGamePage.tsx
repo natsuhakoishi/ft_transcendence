@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
-import type { GameScore, GameState } from "../../../backend/share/type/gameState";
-import type { MatchPlayersData } from "../../../backend/share/type/Matches";
-import { initGameState, isMobile } from "../utils";
-import type { GameData } from "../../../backend/share/type/gameData";
-import { withTranslation, type TranslationProps } from "../_hooks/language";
-import { draw, sendKeyPress } from "./gameUtils";
-import { GameLayout } from "./gameLayout";
+import type { GameScore, GameState } from "../../../../../backend/share/type/gameState";
+import type { MatchPlayersData } from "../../../../../backend/share/type/Matches";
+import { initGameState, isMobile } from "../../../utils";
+import type { GameData } from "../../../../../backend/share/type/gameData";
+import { withTranslation, type TranslationProps } from "../../../_hooks/language";
+import { draw, sendKeyPress } from "../../gameUtils";
+import { GameLayout } from "../../gameLayout";
 
 function AIGameP({ t, toasterPluz }: TranslationProps) {
     const navigate = useNavigate();
@@ -35,16 +35,16 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
     setTimeout(() => {
         setLoad(false);
-    }, 1000 * 3);
+    }, 1000 * 1.5);
 
     React.useEffect(() => {
+        document.title = t("title_AI");
         if (!playersData)
         {
             toasterPluz("game.ERR_trespassing");
             navigate("/", { replace: true });
             return ;
         }
-        document.title = t("title_AI");
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_AI_GAMEPLAY);
 
         const gameData: GameData = {
@@ -218,7 +218,6 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
 
     return (
         <GameLayout
-            gameData={gameData}
             score={score}
             playersData={playersData}
             Load={Load}

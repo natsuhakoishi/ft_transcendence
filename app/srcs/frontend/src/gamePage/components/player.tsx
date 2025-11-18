@@ -1,4 +1,4 @@
-import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
+import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 
 export function Player({ player, me, spin, small, txtSmall}: { player?: PlayerWithProfileData, me: boolean, spin?: boolean, small?: boolean, txtSmall?: boolean}) {
 

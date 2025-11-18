@@ -2,7 +2,7 @@ import { randomInt } from "crypto";
 import { getProfileById } from "../../database/profile.ts";
 import { GAME_BALL_RADIUS_PX, GAME_BALL_VX_PX, GAME_BALL_VY_PX, GAME_BOARD_HEIGHT_PX, GAME_BOARD_WIDTH_PX, GAME_PADDLES_HEIGHT_PX, GAME_PADDLES_MARGIN_PX, GAME_PADDLES_WIDTH_PX } from "../../server.ts";
 import type { Profile } from "../../share/type/db_ProfileData.ts";
-import type { TData } from "../../share/type/gameData.ts";
+import type { localTData, TData } from "../../share/type/gameData.ts";
 import type { GameState } from "../../share/type/gameState.ts";
 import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
 import type { Leaderboard } from "../../share/type/tournamentRoomData.ts";
@@ -88,6 +88,26 @@ export async function initTData(playerID: [number, number, number, number]): Pro
             [playerID[1].toString()] : await getPlayerData(playerID[1]),
             [playerID[2].toString()] : await getPlayerData(playerID[2]),
             [playerID[3].toString()] : await getPlayerData(playerID[3]),
+        },
+        leaderboard: initLeaderboard()
+    };
+    return data;
+}
+
+export function initLocalTData(players: PlayerWithProfileData[]): localTData {
+    const data: localTData = {
+        round1: [],
+        round2: [],
+        state: null,
+
+        matchCount: 0,
+        matches: {},
+
+        players: {
+            [players[0].name!.toString()] : players[0],
+            [players[1].name!.toString()] : players[1],
+            [players[2].name!.toString()] : players[2],
+            [players[3].name!.toString()] : players[3],
         },
         leaderboard: initLeaderboard()
     };

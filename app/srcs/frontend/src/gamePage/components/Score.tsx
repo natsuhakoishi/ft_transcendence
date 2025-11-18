@@ -1,4 +1,4 @@
-import type { GameScore } from "../../../backend/share/type/gameState.ts";
+import type { GameScore } from "../../../../backend/share/type/gameState.ts";
 
 function Eq({score} : {score: GameScore}) {
     return (
