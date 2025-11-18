@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { Credit, LanguageBar, LoadingScreen, Tutorial, type Progress } from "./HomeComponents.tsx"
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
-import { GameMode } from "./GameMode/game_mode.tsx";
+import { GameMode, type GameModalMode } from "./GameMode/game_mode.tsx";
 
 export type SharedData = {
   user: User | null;
@@ -17,7 +17,7 @@ export function HomeP({ t, lang }: TranslationProps) {
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [ modal, setModal ] = React.useState<React.ReactNode>("");
-  const [ gameM, setGameM ] = React.useState<"Tour" | "Match" | "TourL" | "MatchL" | "">("");
+  const [ gameM, setGameM ] = React.useState<GameModalMode>("");
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -56,7 +56,9 @@ return (
 
         <div className="flex flex-col items-center">
           {/* Section -> pick Game Mode & Match Mode via modal menu*/}
-          <GameMode TutorOn={() => setModal(<Tutorial onClick={() => setModal("")} />)} setGameM={setGameM} gameM={gameM}/>
+          <GameMode setGameM={setGameM} gameM={gameM}
+            TutorOn={() => setModal(<Tutorial onClick={() => setModal("")} />)}
+          />
           {/* Text -> toggle Credits modal */}
           <span className="absolute bottom-2 cursor-pointer" onClick={() => setModal(<Credit onClick={() => setModal("")} />)}>
             {t("home.btn_credit")}
