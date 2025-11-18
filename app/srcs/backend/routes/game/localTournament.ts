@@ -4,6 +4,7 @@ import { createRoomID } from "./gameUtils.ts";
 import type { Matches, MatchPlayersData } from "../../share/type/Matches.ts";
 import type { Player, PlayerWithProfileData } from "../../share/type/Player.ts";
 import { LocalTRoom, LocalTRoomManager } from "../../share/type/localTournamentRoom.ts";
+import { LocalRoomManager } from "../../share/type/localRoom.ts";
 
 const localTournament: FastifyPluginAsync = async (fastify: any) => {
     const rooms: LocalTRoomManager = fastify.localTournamentRooms;
@@ -67,9 +68,10 @@ const localTournament: FastifyPluginAsync = async (fastify: any) => {
                 room.makeRound1();
             else if (room.getData().matchCount > 2)
                 room.makeRound2();
-            if (room.getData().matchCount < 2 && data.keyPress === "over")
-                handleRound1(room, rooms, data.playerId);
-            else if (room.getStatus() === "round2" && data.keyPress === "over")
+
+            if (room.getData().matchCount < 2)
+                handleRound1(room, fastify.localRooms, data.playerId);
+            else if (room.getStatus() === "round2")
             {
                 room.makeRound2();
                 const round2: Matches = room.getData().round2;
@@ -107,7 +109,7 @@ const localTournament: FastifyPluginAsync = async (fastify: any) => {
     });
 }
 
-function handleRound1(room: LocalTRoom, rooms: LocalTRoomManager, id: number): void
+function handleRound1(room: LocalTRoom, rooms: LocalRoomManager, id: number): void
 {
     const data: localTData = room.getData();
 
@@ -117,10 +119,15 @@ function handleRound1(room: LocalTRoom, rooms: LocalTRoomManager, id: number): v
 
         group1.roomID = id.toString();
         data.round1[1].roomID = id.toString();;
+        const players: PlayerWithProfileData[] = group1.Players;
 
-        rooms.createTRoom(id, group1.Players);
+        rooms.createRoom(id, 
+            players[0].name!,
+            players[1].name!,
+            15
+        );
 
-        room.broadCast("update", "r1");
+        room.broadCast("update");
         setTimeout(() => {
             room.startRound();
         }, 1000 * 3);
@@ -128,9 +135,13 @@ function handleRound1(room: LocalTRoom, rooms: LocalTRoomManager, id: number): v
     else
     {
         const group2: MatchPlayersData = data.round1[1];
-        const players2: PlayerWithProfileData[] = group2.Players;
+        const players: PlayerWithProfileData[] = group2.Players;
 
-        rooms.createTRoom(id, players2);
+        rooms.createRoom(id, 
+            players[0].name!,
+            players[1].name!,
+            15
+        );
         room.startRound();
     }
 }

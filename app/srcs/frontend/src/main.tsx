@@ -7,7 +7,7 @@ import { Home } from "./homePage/home";
 import { useGlobalErrorMonitor } from "./_hooks/error.ts";
 import { LanguageProvider } from "./_hooks/language.tsx";
 import { OrientationGuard } from "./_hooks/mobile_orientation.tsx";
-import { Matching, TMatching } from "./gamePage/matching";
+import { LocalTMatching, Matching, TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/1v1/online/gamePage.tsx";
 import { TournamentGamePage } from "./gamePage/tournament/TournamentGamePage.tsx";
 import NotFound from "./otherPage/NotFound";
@@ -51,6 +51,7 @@ function App() {
             <Route path="tournamentMatching" element={<TMatching />} />
             <Route path="AI/gameplay" element={<AIGamePage />}/>
             <Route path="local/gameplay" element={<LocalGamePage />}/>
+            <Route path="local/tourmatching" element={<LocalTMatching />} />
             <Route path="local/tournament/*" element={<LocalTournamentGamePage />} />
           </Route>
           <Route path="*" element={<NotFound />} />

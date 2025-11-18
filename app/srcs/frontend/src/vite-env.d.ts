@@ -20,14 +20,14 @@ interface ImportMetaEnv {
   // GAME GAMEPLAY PAGE
   readonly VITE_GAME_PATH_GAMEPLAY: string;
   readonly VITE_GAME_PATH_TOURNAMENT_GAMEPLAY: string;
-  readonly VITE_GAME_PATH_AI_GAMEPLAY: string
+  readonly VITE_GAME_PATH_AI_GAMEPLAY: string;
   readonly VITE_GAME_PATH_LOCAL_GAMEPLAY: string;
   readonly VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY: string;
 
   // GAME MATCHING PAGE
-  readonly VITE_GAME_PATH_AI_MATCHING: string
+  readonly VITE_GAME_PATH_AI_MATCHING: string;
   readonly VITE_GAME_PATH_TOURNAMENT_MATCHING: string;
-  readonly VITE_GAME_PATH_LOCAL_MATCHING: string
+  readonly VITE_GAME_PATH_LOCAL_MATCHING: string;
   readonly VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING: string;
 
   // GAME LOADING PAGE

@@ -74,8 +74,14 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
       playersData.push({ id: 0, name: temp });
     }
     // console.log(playersData);
+    console.log(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING);
     if (count === 4)
-      console.log("这是tournament •ᴗ•");
+      navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING, {
+        state: {
+          playersData: playersData
+        },
+        replace: true
+      })
     else
       navigate(import.meta.env.VITE_GAME_PATH_MATCHING, {
         state: {

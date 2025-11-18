@@ -43,11 +43,9 @@ export class LocalTRoom {
         return this.offline;
     }
 
-    broadCast(_type: string, state?: "r1" | "r2"): void {
-        const tmp = TDataWithOutWS(this.data, state);
-        console.log("broadCast sent: ", tmp, tmp.leaderboard, {first: tmp.leaderboard?.first, second: tmp.leaderboard?.second});
+    broadCast(_type: string): void {
         if (this.player.ws.readyState === WebSocket.OPEN)
-            this.player.ws.send(JSON.stringify({type: _type, state: TDataWithOutWS(this.data, state)}));
+            this.player.ws.send(JSON.stringify({type: _type, state: this.data}));
         else
         {
             console.log("localTRoom: broadCast: offline: ", this.player.id);
