@@ -11,9 +11,8 @@ export function Matching() {
     const location = useLocation();
     const { t, toasterPluz } = useLang();
 
-    const {playersData, again, mode} = (location.state || {}) as {
+    const {playersData, mode} = (location.state || {}) as {
         playersData: PlayerWithProfileData[],
-        again: boolean,
         mode: "normal" | "AI" | "local"
     };
 
@@ -55,10 +54,7 @@ export function Matching() {
                 console.log("/Matching: ", playerID);
 
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false} });
-                else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
             };
 
             return () => { //when user press 'back button'
@@ -107,18 +103,15 @@ export function Matching() {
                 const playerID: string = playerData.id.toString();
                 console.log("local Matching: ", data);
 
-                if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, {
-                        state: {
-                            playerID: playerID,
-                            playersData: playersData,
-                            AI: false,
-                            local: true
-                        }
-                    });
-                else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data}, replace: true });
-                // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, {
+                    state: {
+                        playerID: playerID,
+                        playersData: playersData,
+                        AI: false,
+                        local: true
+                    },
+                    replace: true
+                });
             };
         }
         else
@@ -139,10 +132,7 @@ export function Matching() {
                 console.log("AI Matching: ", data);
 
                 console.log("AI matching: to", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true} });
-                else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true});
                 // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
             };
 
@@ -150,13 +140,11 @@ export function Matching() {
     }, []);
 
     return (
-        <div className="absolute h-screen w-screen overflow-hidden z-60 bg-[#9390B5] flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
             <h1 className="bg-blue-300 w-fit text-5xl py-1">{mode === "AI" ? t("matching_AI") : t("matching_1vs1")}</h1>
             <button
-                className="border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"
-                onClick={() => {
-                    again ? navigate("/", { replace: true }) : () => {}
-                }}
+                className="text-2xl border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"   
+                onClick={() => navigate("/")}
                 >{t("shared.btn_cancel")}
             </button>
         </div>
@@ -282,16 +270,13 @@ export function LocalTMatching() {
     }, []);
 
     return (
-        <>
-            <div className="container bg-blue-500">
-                <h1 className="text-5xl decoration-cyan-800">{t("matching_tour")}</h1>
-            </div>
+        <div className="flex flex-col items-center justify-center">
+            <h1 className="bg-blue-300 w-fit text-5xl py-1">{t("matching_1vs1")}</h1>
             <button
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2 hover"
-                type="submit"
+                className="text-2xl border-white border-2 rounded-2xl px-2 py-1 mt-5 hover-increase hover:bg-white/80"   
                 onClick={() => navigate("/")}
-            >Cancel
+                >{t("shared.btn_cancel")}
             </button>
-        </>
+        </div>
     );
 }

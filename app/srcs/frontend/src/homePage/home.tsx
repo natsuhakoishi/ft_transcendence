@@ -1,10 +1,11 @@
 import React from "react";
 import toast from "react-hot-toast"
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Credit, LanguageBar, LoadingScreen, Tutorial, type Progress } from "./HomeComponents.tsx"
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { GameMode, type GameModalMode } from "./GameMode/game_mode.tsx";
+import type { PlayerWithProfileData } from "../../../backend/share/type/Player.ts";
 
 export type SharedData = {
   user: User | null;
@@ -14,10 +15,12 @@ export type SharedData = {
 
 export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
+  const location = useLocation();
+  const { game, data } = (location.state || {}) as { game: GameModalMode, data: PlayerWithProfileData[] };
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [ modal, setModal ] = React.useState<React.ReactNode>("");
-  const [ gameM, setGameM ] = React.useState<GameModalMode>("");
+  const [ gameM, setGameM ] = game ? React.useState<GameModalMode>(game) : React.useState<GameModalMode>("");
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -56,7 +59,7 @@ return (
 
         <div className="flex flex-col items-center">
           {/* Section -> pick Game Mode & Match Mode via modal menu*/}
-          <GameMode setGameM={setGameM} gameM={gameM}
+          <GameMode setGameM={setGameM} gameM={gameM} data={data}
             TutorOn={() => setModal(<Tutorial onClick={() => setModal("")} />)}
           />
           {/* Text -> toggle Credits modal */}

@@ -19,8 +19,6 @@ import { AIGamePage } from "./gamePage/1v1/AI/AIGamePage.tsx";
 import { FetchData } from "./homePage/helpers.tsx";
 import { LocalGamePage } from "./gamePage/1v1/local/lGamePage.tsx";
 import { LocalTournamentGamePage } from "./gamePage/tournament/LocalTournamentGamePage.tsx";
-import { LocalTournamentLoading } from "./gamePage/tournament/TournamentLoadingPage.tsx";
-import { TournamentResultPage } from "./gamePage/components/ResultPage.tsx";
 
 function App() {
   function GlobalErrorMonitor() {

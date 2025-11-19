@@ -1,5 +1,5 @@
 import React from "react";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { initGameState, isMobile } from "../../../utils.ts";
 import type { GameScore, GameState} from "../../../../../backend/share/type/gameState.ts";
 import type { MatchPlayersData } from "../../../../../backend/share/type/Matches.ts";
@@ -41,7 +41,7 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
     }, []);
 
     React.useEffect(() => {
-        document.title = t("title_local_match");
+        document.title = `${t("home.btn_local")} ${tournament ? t("title_tour") : t("title_match")}`;
         if (!playersData)
         {
             toasterPluz("game.ERR_trespassing");
