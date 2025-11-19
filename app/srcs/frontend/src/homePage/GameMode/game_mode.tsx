@@ -2,6 +2,7 @@ import React from "react";
 import { useLang } from "../../_hooks/language";
 import { ModeModal } from "./ModeModal";
 import { LocalModal } from "./LocalModal";
+import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 
 export type GameModalMode = "Tour" | "Match" | "TourL" | "MatchL" | "";
 
@@ -13,9 +14,10 @@ const transitions = {
   "": ""
 };
 
-function MatchMode({ setGameM, GameM }: {
+function MatchMode({ setGameM, GameM, data }: {
   setGameM: React.Dispatch<React.SetStateAction<GameModalMode>>,
   GameM: GameModalMode,
+  data?: PlayerWithProfileData[],
 }) {
   const handleTransition = () => {
     setGameM(transitions[GameM] as GameModalMode);
@@ -27,18 +29,19 @@ function MatchMode({ setGameM, GameM }: {
       <div className="relative top-0 w-[55%] md:w-[40%] h-[65%] md:h-[50%] flex p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
         <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
           {GameM === "Tour" && <ModeModal mode="Tour" setGameM={() => setGameM("TourL")} /> }
-          {GameM === "TourL" && <LocalModal mode="Tour" /> }
-          {GameM === "Match" && <ModeModal mode={"Match"} setGameM={() => setGameM("MatchL")} /> }
-          {GameM === "MatchL" && <LocalModal mode="Match" /> }
+          {GameM === "TourL" && <LocalModal mode="Tour" data={data} /> }
+          {GameM === "Match" && <ModeModal mode="Match" setGameM={() => setGameM("MatchL")} /> }
+          {GameM === "MatchL" && <LocalModal mode="Match" data={data} /> }
       </div>
     </div>
   );
 }
 
-export function GameMode({ TutorOn, setGameM, gameM }: {
+export function GameMode({ TutorOn, setGameM, gameM, data }: {
   TutorOn: () => void,
   setGameM: React.Dispatch<React.SetStateAction<GameModalMode>>,
   gameM: GameModalMode,
+  data?: PlayerWithProfileData[],
 }) {
   const { t } = useLang();
 
@@ -47,7 +50,7 @@ export function GameMode({ TutorOn, setGameM, gameM }: {
       <div className="relative top-1/4 w-full h-[60%] md:h-1/2 rounded-4xl bg-[#F5CFED]/40">
       { gameM !== "" ?
         <div className="p-7 md:p-10 w-full h-full">
-          <MatchMode setGameM={setGameM} GameM={gameM} />
+          <MatchMode setGameM={setGameM} GameM={gameM} data={data} />
         </div>
       :
         <>

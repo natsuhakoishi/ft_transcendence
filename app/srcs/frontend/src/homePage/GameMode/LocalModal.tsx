@@ -38,7 +38,7 @@ const getAvatar = (idx: number) => ({
   4: "lawine_dev.webp"
 })[idx];
 
-function LocalProfile({ idx }: { idx: number}) {
+function LocalProfile({ idx, data }: { idx: number, data?: PlayerWithProfileData[] }) {
   if (idx < 1 || idx > 4)
     return ;
 
@@ -51,12 +51,16 @@ function LocalProfile({ idx }: { idx: number}) {
   return (
     <div className="flex flex-col items-center w-1/4 text-center gap-1">
       <PlayerAvatar avatar={avatar} />
-      <PlayerUsername name={name} text={text} defaultName={getName(idx) as string}/>
+      <PlayerUsername name={name} text={text} defaultName={data ? data[idx-1]?.name! : getName(idx) as string}/>
     </div>
   );
 };
 
-function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEvent<HTMLFormElement>) => void }) {
+function LocalForm({ mode, cb, data }: {
+  mode: "Tour" | "Match",
+  cb: (e: React.FormEvent<HTMLFormElement>) => void,
+  data?: PlayerWithProfileData[],
+}) {
   const { t } = useLang();
 
   return (
@@ -66,12 +70,12 @@ function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEve
         <h1 className="text-base md:text-lg">{t("shared.form.place_name")} !</h1>
         <form className="relative flex flex-col items-center" onSubmit={cb}>
           <div className="flex justify-center gap-2 my-2 md:my-5 text-lg">
-            <LocalProfile idx={1} />
-            <LocalProfile idx={2} />
+            <LocalProfile idx={1} data={data}/>
+            <LocalProfile idx={2} data={data} />
             { mode === "Tour" &&
               <>
-                <LocalProfile idx={3} />
-                <LocalProfile idx={4} />
+                <LocalProfile idx={3} data={data}/>
+                <LocalProfile idx={4} data={data}/>
               </>
             }
           </div>
@@ -84,7 +88,7 @@ function LocalForm({ mode, cb }: { mode: "Tour" | "Match", cb: (e: React.FormEve
   );
 }
 
-export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
+export function LocalModal({ mode, data }: { mode: "Tour" | "Match", data?: PlayerWithProfileData[] }) {
   const navigate = useNavigate();
   const { t, toasterPluz } = useLang();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,33 +96,37 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
     const formData = new FormData(e.currentTarget);
     let playersData :PlayerWithProfileData[] = [];
     const count = mode === "Tour" ? 4 : 2;
-    const name = new Map<string, number>();
-    for (let idx = 1; idx <= count; ++idx)
+    if (!data)
     {
-      const temp = formData.get(`username_p${idx}`) as string;
-      if (temp.length < 3)
+      console.log("new local data creating");
+      const name = new Map<string, number>();
+      for (let idx = 1; idx <= count; ++idx)
       {
-        toast.error(t(`home.place_p${idx}`))
-        toasterPluz("ERR_NameTooShort");
-        return ;
+        const temp = formData.get(`username_p${idx}`) as string;
+        if (temp.length < 3)
+        {
+          toast.error(t(`home.place_p${idx}`))
+          toasterPluz("ERR_NameTooShort");
+          return ;
+        }
+        if (temp.length > 8) 
+        {
+          toast.error(t(`home.place_p${idx}`))
+          toasterPluz("ERR_NameTooLong");
+          return ;
+        }
+        if (name.has(temp))
+        {
+          toast.error(t(`home.place_p${idx}`))
+          toasterPluz("ERR_NameRepeat");
+          return ;
+        }
+        name.set(temp,idx);
+        playersData.push({ id: 0, name: temp, avatar: getAvatar(idx) });
       }
-      if (temp.length > 8) 
-      {
-        toast.error(t(`home.place_p${idx}`))
-        toasterPluz("ERR_NameTooLong");
-        return ;
-      }
-      if (name.has(temp))
-      {
-        toast.error(t(`home.place_p${idx}`))
-        toasterPluz("ERR_NameRepeat");
-        return ;
-      }
-      name.set(temp,idx);
-      playersData.push({ id: 0, name: temp, avatar: getAvatar(idx) });
     }
     // console.log(playersData);
-    console.log(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING);
+
     if (count === 4)
       navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING, {
         state: {
@@ -130,13 +138,13 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
       navigate(import.meta.env.VITE_GAME_PATH_MATCHING, {
         state: {
           playersData: playersData,
-          again: false,
           mode: "local"
-        }
+        },
+        replace: true
       })
   };
 
 	return (
-      <LocalForm mode={mode} cb={(e) => handleSubmit(e)} />
+      <LocalForm mode={mode} cb={(e) => handleSubmit(e)} data={data}/>
   );
 }

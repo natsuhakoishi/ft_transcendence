@@ -5,6 +5,7 @@ import { Credit, LanguageBar, LoadingScreen, Tutorial, type Progress } from "./H
 import { withTranslation, type TranslationProps } from "../_hooks/language.tsx";
 import type { User } from "../../../backend/share/type/user.ts";
 import { GameMode, type GameModalMode } from "./GameMode/game_mode.tsx";
+import type { PlayerWithProfileData } from "../../../backend/share/type/Player.ts";
 
 export type SharedData = {
   user: User | null;
@@ -15,7 +16,7 @@ export type SharedData = {
 export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
   const location = useLocation();
-  const { game } = (location.state || {}) as { game: GameModalMode };
+  const { game, data } = (location.state || {}) as { game: GameModalMode, data: PlayerWithProfileData[] };
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [ modal, setModal ] = React.useState<React.ReactNode>("");
@@ -58,7 +59,7 @@ return (
 
         <div className="flex flex-col items-center">
           {/* Section -> pick Game Mode & Match Mode via modal menu*/}
-          <GameMode setGameM={setGameM} gameM={gameM}
+          <GameMode setGameM={setGameM} gameM={gameM} data={data}
             TutorOn={() => setModal(<Tutorial onClick={() => setModal("")} />)}
           />
           {/* Text -> toggle Credits modal */}

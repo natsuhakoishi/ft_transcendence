@@ -14,9 +14,8 @@ export function Result({
     winner?: PlayerWithProfileData, 
     playerID: number | null, 
     AI: boolean, 
-    localPlayersProfile: PlayerWithProfileData[]
+    localPlayersProfile?: PlayerWithProfileData[]
 }) {
-    const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
     const { refetchData } = useOutletContext<{ refetchData: () => void}>();
     const { t } = useLang();
@@ -28,31 +27,31 @@ export function Result({
 
     return (
         <>
-            <div className="relative flex flex-col items-center justify-center w-full h-screen bg-black-500"  >
-
-                <div className="flex" >
-                    <h1 className={`text-5xl font-bold mb-6`} >{t("shared.result.msg_winner")}</h1>
-                </div>
-                <div className="flex items-center space-x-4 mb-12">
+            <div className="relative w-full h-full flex flex-col md:justify-center items-center overflow-hidden">
+                <div>
+                    <h1 className={`text-4xl md:text-5xl font-bold md:mb-6 `} >{t("shared.result.msg_winner")}</h1>
                     <Player
                         player={winner}
                         me={playerID === winner?.id}
                         spin={true} />
                 </div>
-
-                <AgainButton
-                    t={t}
-                    callback={() => {
-                        if (AI && !local)
-                            navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { again: true, mode: "AI" }, replace: true})
-                        else if (local && !AI)
-                            navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { again: true, mode: "normal" }, replace: true})
-                        else
-                            navigate("/", { state: { game: "MatchL" }, replace: true});
-                    }}
-                />
-                <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
-
+                <div className="w-1/3 flex justify-between mr-5 md:mt-20">
+                    <AgainButton
+                        t={t}
+                        callback={() => {
+                            if (localPlayersProfile)
+                                navigate("/", { state: { game: "MatchL", data: localPlayersProfile }, replace: true});
+                            else
+                            {
+                                if (AI)
+                                    navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { mode: "AI" }, replace: true})
+                                else
+                                    navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { mode: "normal" }, replace: true})
+                            }
+                        }}
+                    />
+                    <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
+                </div>
             </div>
         </>
     );
@@ -60,9 +59,9 @@ export function Result({
 
 function HomeButton({ callback, t }: { callback: () => void, t: (key: string) => string }) {
     return (
-        <div className="absolute bottom-6 right-[30%] text-black px-6 py-3 rounded">
+        <div className="text-black rounded">
             <button
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2"
+                className="items-center border-black-300 border-2 rounded-lg p-1 md:text-2xl hover-increase"
                 onClick={callback}
             >{t("shared.result.btn_home")}
             </button>
@@ -72,11 +71,11 @@ function HomeButton({ callback, t }: { callback: () => void, t: (key: string) =>
 
 function AgainButton({ callback, t }: { callback: () => void, t: (key: string) => string }) {
     return (
-        <div className="absolute bottom-6 left-[30%] text-black px-6 py-3 rounded">
+        <div className="text-black rounded">
             <button
-                className="items-center border-black-300 border-2 rounded-lg p-1 mt-2"
+                className="items-center border-black-300 border-2 rounded-lg p-1 md:text-2xl hover-increase"
                 onClick={callback}
-            >{t("shared.result.btn_again")}
+                >{t("shared.result.btn_again")}
             </button>
         </div>
     );
@@ -85,7 +84,7 @@ function AgainButton({ callback, t }: { callback: () => void, t: (key: string) =
 function Rank({rank, player, me}: {rank: string, player: PlayerWithProfileData, me: boolean}) {
     return (
         <div>
-            <h1 className="text-4xl text-black-500 font-bold mb-2">{rank}</h1>
+            <h1 className="text-2xl md:text-4xl font-bold text-center mb-2">{rank}</h1>
             <Player player={player} me={me} />
         </div>
     );
@@ -115,11 +114,11 @@ export function TournamentResultPage() {
     }, []);
 
     return (
-        <div className="grid place-items-center w-screen h-screen">
+        <div className="w-screen h-screen flex flex-col justify-center items-center">
             <div className="
-                    flex gap-2
-                    w-4/5 h-auto
-                    lg:w-3/4
+                    relative flex gap-2
+                    w-full h-2/3
+                    justify-center items-center
                 ">
                 <Rank
                     rank={t("shared.game_stat.rank_1th")}
@@ -137,6 +136,17 @@ export function TournamentResultPage() {
                     rank={t("shared.game_stat.rank_4th")}
                     player={leaderboard.last}
                     me={leaderboard.last.id === playerID} />
+            </div>
+            <div className="w-1/3 flex justify-between mr-5 mt-5 md:mt-20">
+                <AgainButton
+                    t={t}
+                    callback={() => {
+                        if (localPlayersProfile)
+                            navigate("/", { state: { game: "TourL", data: localPlayersProfile }, replace: true});
+                        else
+                            navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING, { replace: true });
+                    }}
+                />
                 <HomeButton callback={() => navigate("/", { replace: true })} t={t} />
             </div>
     </div>

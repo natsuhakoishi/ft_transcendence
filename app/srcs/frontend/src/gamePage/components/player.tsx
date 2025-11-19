@@ -7,20 +7,20 @@ export function Player({ player, me, spin, small, txtSmall}: { player?: PlayerWi
             className={`
                 flex flex-col 
                 ${small ? "scale-70" : ""}
-                items-center gap-2
+                items-center md:gap-2
             `}
         >
             <img
                 src={import.meta.env.VITE_API_AVATAR + player?.avatar}
                 alt={player?.name}
                 className={`
-                    rounded-full border
+                    rounded-full border aspect-square w-25 md:w-auto
                     ${spin ? "animate-spin" : ""}
                 `}
             />
             <h1
                 className={`
-                    ${txtSmall ? "text-lg" : "text-4xl"}
+                    ${txtSmall ? "text-base md:text-lg" : "text-2xl md:text-4xl"}
                     text-black-500
                     font-bold mb-2
                     ${me ? "bg-green-100" : ""}

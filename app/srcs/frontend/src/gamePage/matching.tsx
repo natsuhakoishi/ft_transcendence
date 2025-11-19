@@ -11,9 +11,8 @@ export function Matching() {
     const location = useLocation();
     const { t, toasterPluz } = useLang();
 
-    const {playersData, again, mode} = (location.state || {}) as {
+    const {playersData, mode} = (location.state || {}) as {
         playersData: PlayerWithProfileData[],
-        again: boolean,
         mode: "normal" | "AI" | "local"
     };
 
@@ -55,10 +54,7 @@ export function Matching() {
                 console.log("/Matching: ", playerID);
 
                 console.log("/Matching: to: ", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false} });
-                else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: false}, replace: true });
             };
 
             return () => { //when user press 'back button'
@@ -107,18 +103,15 @@ export function Matching() {
                 const playerID: string = playerData.id.toString();
                 console.log("local Matching: ", data);
 
-                if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, {
-                        state: {
-                            playerID: playerID,
-                            playersData: playersData,
-                            AI: false,
-                            local: true
-                        }, replace: true
-                    });
-                else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data}, replace: true });
-                // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, {
+                    state: {
+                        playerID: playerID,
+                        playersData: playersData,
+                        AI: false,
+                        local: true
+                    },
+                    replace: true
+                });
             };
         }
         else
@@ -139,10 +132,7 @@ export function Matching() {
                 console.log("AI Matching: ", data);
 
                 console.log("AI matching: to", import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING);
-                if (!again)
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true});
-                else
-                    navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true});
+                navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY_LOADING, { state: {playerID: playerID, playersData: data, AI: true}, replace: true});
                 // navigate(import.meta.env.VITE_GAME_PATH_AI_GAMEPLAY, { state: {playersData: data} });
             };
 

@@ -24,7 +24,6 @@ function ModeButton({ mode, text, onClick }: {
 export function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM: () => void }) {
   const navigate = useNavigate();
   const { t } = useLang();
-  const [match, setMatch] = React.useState<React.ReactNode>(null);
 
   return (
     <>
@@ -32,7 +31,9 @@ export function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM
     { mode === "Tour" ?
       <>
         {/* Button -> Remote Tournament */}
-        <ModeButton mode="Tour" onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)} text={t("home.btn_online")} />
+        <ModeButton mode="Tour" text={t("home.btn_online")}
+          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_MATCHING)}
+        />
         {/* Button -> Local Tournament */}
         <ModeButton mode="Tour" onClick={setGameM} text={t("home.btn_local")} />
       </>
@@ -40,11 +41,11 @@ export function ModeModal({ mode, setGameM }: { mode: "Tour" | "Match", setGameM
       <>
         {/* Button -> Online Mode */}
         <ModeButton mode="Match" text={t("home.btn_online")}
-          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: false, again: false, mode: "normal"} })}
+          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: false, mode: "normal"} })}
         />
         {/* Button -> AI Mode */}
         <ModeButton mode="Match" text={t("home.btn_AI")}
-          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: true, again: false, mode: "AI" } })}
+          onClick={() => navigate(import.meta.env.VITE_GAME_PATH_MATCHING, { state: { AI: true, mode: "AI" } })}
         />
         {/* Button -> Local Mode */}
         <ModeButton mode="Match" onClick={setGameM} text={t("home.btn_local")} />
