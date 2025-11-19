@@ -23,9 +23,6 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
     const themeRef = React.useRef<"black" | "light" | "default">("default");
     const wsRef = React.useRef<WebSocket | null>(null);
     const isMobileRef = React.useRef(isMobile());
-
-    const [ gameData, setGameData ] = React.useState<GameData | null>(null);
-
     const [ score, setScore ] = React.useState<GameScore>({
         p1Score: 0,
         p2Score: 0
@@ -58,7 +55,6 @@ function AIGameP({ t, toasterPluz }: TranslationProps) {
             const gameState: GameState = initGameState();
             console.log("ws.onopen: pre rendering");
             draw(gameState, themeRef.current);
-            setGameData(gameData);
             gameData.keyPress = "init";
             setPlayerID(gameData.playerId);
             ws.send(JSON.stringify(gameData));
