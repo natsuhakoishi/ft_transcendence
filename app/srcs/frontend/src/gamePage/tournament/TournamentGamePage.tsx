@@ -8,7 +8,6 @@ import type { Player, PlayerWithProfileData } from "../../../../backend/share/ty
 import { TournamentLoading } from "./TournamentLoadingPage";
 import { TournamentResultPage } from "../components/ResultPage";
 import { withTranslation, type TranslationProps } from "../../_hooks/language";
-import { Loading } from "../LoadingPage";
 
 function createMAtchPlayersData(roomID: string, players: Record<string, PlayerWithProfileData>, match: Player[]): MatchPlayersData {
     const p1: Player = match[0];
@@ -180,10 +179,6 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
             <Route
                 path="result"
                 element={<TournamentResultPage/>}
-            />
-            <Route
-                path="loading"
-                element={<Loading tournament={true}/>}
             />
             {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>

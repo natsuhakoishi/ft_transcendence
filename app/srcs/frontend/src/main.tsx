@@ -7,7 +7,7 @@ import { Home } from "./homePage/home";
 import { useGlobalErrorMonitor } from "./_hooks/error.ts";
 import { LanguageProvider } from "./_hooks/language.tsx";
 import { OrientationGuard } from "./_hooks/mobile_orientation.tsx";
-import { Matching, TMatching } from "./gamePage/matching";
+import { LocalTMatching, Matching, TMatching } from "./gamePage/matching";
 import { GamePage } from "./gamePage/1v1/online/gamePage.tsx";
 import { TournamentGamePage } from "./gamePage/tournament/TournamentGamePage.tsx";
 import NotFound from "./otherPage/NotFound";
@@ -19,6 +19,8 @@ import { AIGamePage } from "./gamePage/1v1/AI/AIGamePage.tsx";
 import { FetchData } from "./homePage/helpers.tsx";
 import { LocalGamePage } from "./gamePage/1v1/local/lGamePage.tsx";
 import { LocalTournamentGamePage } from "./gamePage/tournament/LocalTournamentGamePage.tsx";
+import { LocalTournamentLoading } from "./gamePage/tournament/TournamentLoadingPage.tsx";
+import { TournamentResultPage } from "./gamePage/components/ResultPage.tsx";
 
 function App() {
   function GlobalErrorMonitor() {
@@ -51,7 +53,8 @@ function App() {
             <Route path="tournamentMatching" element={<TMatching />} />
             <Route path="AI/gameplay" element={<AIGamePage />}/>
             <Route path="local/gameplay" element={<LocalGamePage />}/>
-            <Route path="local/tournament/*" element={<LocalTournamentGamePage />} />
+            <Route path="local/tourmatching" element={<LocalTMatching />} />
+            <Route path="localTournament/*" element={<LocalTournamentGamePage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
           <Route path="/404" element={<NotFound />} />

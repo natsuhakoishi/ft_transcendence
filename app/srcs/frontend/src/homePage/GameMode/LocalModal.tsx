@@ -115,11 +115,17 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
         return ;
       }
       name.set(temp,idx);
-      playersData.push({ id: 0, name: temp, avatar: `${import.meta.env.VITE_API_AVATAR}${getAvatar(idx)}` });
+      playersData.push({ id: 0, name: temp, avatar: getAvatar(idx) });
     }
     // console.log(playersData);
+    console.log(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING);
     if (count === 4)
-      console.log("这是tournament •ᴗ•");
+      navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING, {
+        state: {
+          playersData: playersData
+        },
+        replace: true
+      })
     else
       navigate(import.meta.env.VITE_GAME_PATH_MATCHING, {
         state: {
