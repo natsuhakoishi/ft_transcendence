@@ -14,7 +14,7 @@ export function Loading({ tournament }: {tournament: boolean}) {
     const { playerID, playersData, AI, local } = (location.state || {}) as {
         playerID: string,
         playersData: MatchPlayersData,
-        AI: boolean
+        AI: boolean,
         local: boolean
     };
 
@@ -46,7 +46,7 @@ export function Loading({ tournament }: {tournament: boolean}) {
                         tournament: tournament
                     }, replace: true
                 });
-            else
+            else if (!local)
                 navigate(import.meta.env.VITE_GAME_PATH_GAMEPLAY, {
                     state: {
                         RoomID: playersData.roomID,

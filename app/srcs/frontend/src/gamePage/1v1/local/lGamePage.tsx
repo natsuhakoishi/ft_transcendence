@@ -45,6 +45,7 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
         if (!playersData)
         {
             toasterPluz("game.ERR_trespassing");
+            console.log("local gamePage missing playersData");
             navigate("/", { replace: true });
             return ;
         }
@@ -82,7 +83,7 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
 
                 const type = parse.type;
 
-                console.log("Local Game: server sent", parse);
+                // console.log("Local Game: server sent", parse);
                 if (type === "trespassing" || !parse.gameState)
                 {
                     cleanTouch();
@@ -127,8 +128,10 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
                     setTimeout(()=>{
                         if (tournament)
                         {
-                            console.log("/localGamePage: gameOver");
-                            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY, { state: {id: gameData.playerId}, replace: true });
+                            cleanTouch();
+                            ws.close();
+                            console.log("/localGamePage: gameOver", gameData.playerId);
+                            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT, { state: {id: gameData.playerId}, replace: true });
                             onGameOver?.();
                         }
                         else
@@ -231,6 +234,7 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
             setTheme={setTheme}
             t={t}
             AI={false}
+            localPlayersProfile={playersData.Players}
         />
     )
 }

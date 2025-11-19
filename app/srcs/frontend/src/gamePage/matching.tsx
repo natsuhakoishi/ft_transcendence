@@ -225,14 +225,11 @@ export function LocalTMatching() {
     const location = useLocation();
     const { t, toasterPluz } = useLang();
 
-    // const { playersData } = (location.state || {}) as PlayerWithProfileData[];
+    const { playersData } = (location.state || {}) as {
+        playersData: PlayerWithProfileData[]
+    };
 
     React.useEffect( () => {
-        // if (!playersData)
-        // {
-
-        // }
-
         const ws = new WebSocket(import.meta.env.VITE_GAME_API_LOCAL_TOURNAMENT_MATCHING);
         console.log("Tournament Matching...", import.meta.env.VITE_GAME_API_LOCAL_TOURNAMENT_MATCHING);
         let playerID: number;
@@ -240,29 +237,18 @@ export function LocalTMatching() {
         ws.onopen = () => {
             (async () => {
                 try {
+                    if (!playersData)
+                    {
+                        navigate("/", { replace: true });
+                        console.log("trespassing");
+                        return ;
+                    }
+
                     const data = await apiFetchPrivate("me", { method: "GET" });
                     playerID = data.id;
                     console.log(playerID);
-                    const playersProfile: PlayerWithProfileData[] = [
-                        {
-                            id: 0,
-                            name: "p1",
-                        },
-                        {
-                            id: 0,
-                            name: "p2",
-                        },
-                        {
-                            id: 0,
-                            name: "p3",
-                        },
-                        {
-                            id: 0,
-                            name: "p4",
-                        }
-                    ];
 
-                    ws.send(JSON.stringify({id: playerID, playersProfile: playersProfile}));
+                    ws.send(JSON.stringify({id: playerID, playersProfile: playersData}));
                     console.log("sent ID");
                 }
                 catch (e) {
@@ -284,7 +270,7 @@ export function LocalTMatching() {
                 return ;
             }
 
-            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY, { state: {id: id}, replace: true });
+            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT, { state: {id: id}, replace: true });
         };
 
         return () => { //when user press 'back button'
