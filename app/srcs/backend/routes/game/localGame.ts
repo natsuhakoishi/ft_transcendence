@@ -22,7 +22,7 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
                     return ;
                 }
 
-                playersData.Players.sort((a, b) => a.name!.localeCompare(b.name!));
+                // playersData.Players.sort((a, b) => a.name!.localeCompare(b.name!));
 
                 try {
                     rooms.createRoom(Number(playersData.roomID), 

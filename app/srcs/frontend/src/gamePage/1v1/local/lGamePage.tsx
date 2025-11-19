@@ -240,7 +240,7 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
 
             return () => { //when user press 'back button'
                 console.log("GamePage: closing ws");
-                // key.current = false;
+                key.current = false;
                 confirmRef.current = false;
                 ws.close();
 
