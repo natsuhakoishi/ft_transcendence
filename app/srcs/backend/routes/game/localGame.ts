@@ -3,6 +3,8 @@ import { LocalRoom, LocalRoomManager } from "../../share/type/localRoom.ts";
 import { keyLogic, start } from "./gameLogic.ts";
 import type { MatchPlayersData } from "../../share/type/Matches.ts";
 import type { LocalGameData } from "../../share/type/gameData.ts";
+import type { LocalTRoom, LocalTRoomManager } from "../../share/type/localTournamentRoom.ts";
+import type { GameScore } from "../../share/type/gameState.ts";
 
 const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
     const rooms: LocalRoomManager = fastify.localRooms;
@@ -21,9 +23,6 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
                 }
 
                 playersData.Players.sort((a, b) => a.name!.localeCompare(b.name!));
-
-                playersData.Players[0].avatar = "default.webp";
-                playersData.Players[1].avatar = "yugiri_dev.webp";
 
                 try {
                     rooms.createRoom(Number(playersData.roomID), 
@@ -64,7 +63,27 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
             handleKeyPressLocal(keyPress, room.leftOrRight(playerName), room);
 
             if (room.getConfirm() && !room.getState().gamingStage)
-                start(room, () => rooms.deleteRoom(playerId), null);
+                start(room, () => {
+                        if (data.data.tournament)
+                        {
+                            console.log("local gameplay tournament flag: ", playerId);
+                            const trooms: LocalTRoomManager = fastify.localTournamentRooms;
+                            const troom: LocalTRoom | null = trooms.getRoomByPlayerID(playerId);
+                            if (!troom)
+                            {
+                                console.log("local gameplay tournament flag: troom not found ");
+                                ws.send(JSON.stringify({type: "trespassing"}));
+                            }
+                            else 
+                            {
+                                const score: GameScore = room.getState().score;
+                                troom.updateWinnerNLoser(playerName, score.p1Score, score.p2Score);
+                                console.log("local gameplay tournament flag: update score", playerName);
+                            }
+                        }
+                        rooms.deleteRoom(playerId);
+                    }
+                , null);
         })
 
         ws.on("close", () =>

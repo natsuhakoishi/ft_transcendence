@@ -115,7 +115,7 @@ export function LocalModal({ mode }: { mode: "Tour" | "Match" }) {
         return ;
       }
       name.set(temp,idx);
-      playersData.push({ id: 0, name: temp, avatar: `${import.meta.env.VITE_API_AVATAR}${getAvatar(idx)}` });
+      playersData.push({ id: 0, name: temp, avatar: getAvatar(idx) });
     }
     // console.log(playersData);
     console.log(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_MATCHING);

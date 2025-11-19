@@ -2,10 +2,10 @@ import React from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import type { GameData, localTData } from "../../../../backend/share/type/gameData";
 import type { MatchPlayersData } from "../../../../backend/share/type/Matches";
-import { LocalTournamentLoading } from "./TournamentLoadingPage";
-import { TournamentResultPage } from "../components/ResultPage";
 import { withTranslation, type TranslationProps } from "../../_hooks/language";
+import { LocalTournamentLoading } from "./TournamentLoadingPage";
 import { LocalGamePage } from "../1v1/local/lGamePage";
+import { TournamentResultPage } from "../components/ResultPage";
 import { Loading } from "../LoadingPage";
 
 function LocalTournamentGameP({ t, toasterPluz }: TranslationProps) { 
@@ -16,15 +16,24 @@ function LocalTournamentGameP({ t, toasterPluz }: TranslationProps) {
     const { id } = (location.state || {}) as {id: number};
     const wsRef = React.useRef<WebSocket | null>(null);
     const gameDataRef = React.useRef<GameData>({
-        roomId: id.toString(),
+        roomId: "",
         playerId: id,
         keyPress: "init",
         tournament: true
     });
     const [leaderboard, setLeaderboard] = React.useState<MatchPlayersData[]>();
+    // const [currentPage, setCurrentPage] = React.useState<"loading" | "gameplay" | "result">("loading");
+    // const [playersData, setPlayersData] = React.useState<MatchPlayersData>();
 
     React.useEffect(() => {
         document.title = t("title_tour");
+        if (!id)
+        {
+            toasterPluz("game.ERR_trespassing");
+            console.log("LocalTournamentGamePage Trespassing ^u^b", id);
+            navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+            return ;
+        }
         ( async () => {
             console.log("LocalTournamentGamePage: useEffect");
             if (!id)
@@ -41,6 +50,7 @@ function LocalTournamentGameP({ t, toasterPluz }: TranslationProps) {
             ws.onopen = () => {
                 if (!init)
                 {
+                    gameDataRef.current.roomId = id.toString();
                     console.log("LocalTournamentGamePage: init");
                     ws.send(JSON.stringify(gameDataRef.current));
                     init = true;
@@ -53,6 +63,7 @@ function LocalTournamentGameP({ t, toasterPluz }: TranslationProps) {
                 const { state } = parse;
 
                 console.log("LocalTournamentGamePage: rev msg", parse);
+                console.log("LocalTournamentGamePage: state", state);
 
                 if (type === "trespassing")
                 {
@@ -66,34 +77,51 @@ function LocalTournamentGameP({ t, toasterPluz }: TranslationProps) {
                         setLeaderboard(state.round1);
                     else
                         setLeaderboard(state.round2);
-                    console.log("LocalTournamentGamePage: setLoad to false", parse.state);
                     setLoad(false);
+                    console.log("LocalTournamentGamePage: setLoad to false", parse.state);
                 }
                 else if (type === "startRound")
                 {
-                    console.log("LocalTournamentGamePage: round1");
+                    console.log("LocalTournamentGamePage: round1", state.matchCount);
                     const matchData: MatchPlayersData = state.matches[state.matchCount];
-                    
-                    navigate("/game/tournament/local/loading", {
-                        state: {tournament: true},
-                        replace: true
-                    });
+                    // console.log("LocalTournamentGamePage: matchData", matchData, state.matches, state.matchCount);
                     setTimeout(() => {
-                        navigate(import.meta.env.VITE_GAME_PATH_LOCAL_GAMEPLAY, {
-                            state: {
+                        console.log("LocalTournamentGamePage: navigating with matchData", matchData);
+                        navigate("./loading", {
+                            state: { 
+                                playerID: id,
                                 playersData: matchData,
-                                tournament: true
+                                AI: false,
+                                local: true
                             }, replace: true 
                         });
+                        setTimeout(() => {
+                            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY, {
+                                state: { 
+                                    playersData: matchData,
+                                    tournament: true 
+                                }, replace: true 
+                            });
+                        }, 1000 * 2);
                     }, 1000 * 2);
+                        console.log("to gamePage");
                 }
                 else if (type === "end")
                 {
                     console.log("LocalTournamentGamePage: end");
                     console.log("LocalTournamentGamePage: leaderboard: ", parse);
                     setTimeout(() => {
-                        console.log("LocalTournamentGamePage: to:", import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT);
-                        navigate(import.meta.env.VITE_GAME_PATH_TOURNAMENT_RESULT, { state: {leaderboard: parse.state.leaderboard, playerID: 0}, replace: true});
+                        console.log("LocalTournamentGamePage: to:", import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_RESULT);
+                        navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_RESULT, { state: {
+                            leaderboard: parse.state.leaderboard,
+                            playerID: 0,
+                            localPlayersProfile: [
+                                parse.state.leaderboard?.first,
+                                parse.state.leaderboard?.second,
+                                parse.state.leaderboard?.third,
+                                parse.state.leaderboard?.last
+                            ]
+                        }, replace: true});
                     }, 1000 * 4);
                     //TODO possible to return to game page if hit "back" while navigating
                 }
@@ -133,32 +161,14 @@ function LocalTournamentGameP({ t, toasterPluz }: TranslationProps) {
         }
     }
 
-    return (
-        <Routes>
-            <Route
-                path="/"
-                element={
-                    <LocalTournamentLoading
-                        matches={leaderboard}
-                        load={load}
-                    />
-                }
-            />
-            <Route
-                path="gameplay"
-                element={ <LocalGamePage onGameOver={handleGameOver}/>}
-            />
-            <Route
-                path="result"
-                element={<TournamentResultPage/>}
-            />
-            <Route
-                path="loading"
-                element={<Loading tournament={true}/>}
-            />
-            {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
-    );
+return (
+    <Routes>
+        <Route path="/" element={ <LocalTournamentLoading matches={leaderboard} load={load} /> } />
+        <Route path="gameplay" element={ <LocalGamePage onGameOver={handleGameOver}/>} /> 
+        <Route path="result" element={<TournamentResultPage/>} /> 
+        <Route path="loading" element={<Loading tournament={true}/>} /> 
+        {/* <Route path="*" element={<NotFound />} /> */} 
+    </Routes> );
 }
 
 export const LocalTournamentGamePage = withTranslation(LocalTournamentGameP);

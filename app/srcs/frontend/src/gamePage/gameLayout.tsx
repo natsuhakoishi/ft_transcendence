@@ -1,5 +1,6 @@
 import type { GameScore } from "../../../backend/share/type/gameState";
 import type { MatchPlayersData } from "../../../backend/share/type/Matches";
+import type { PlayerWithProfileData } from "../../../backend/share/type/Player";
 import { LoadingScreen } from "../homePage/HomeComponents";
 import { Banner } from "./components/banner";
 import { Player } from "./components/player";
@@ -19,7 +20,8 @@ export function GameLayout({
     theme,
     setTheme,
     t,
-    AI
+    AI,
+    localPlayersProfile
 } : {
         score: GameScore,
         playersData?: MatchPlayersData,
@@ -34,6 +36,7 @@ export function GameLayout({
         setTheme: React.Dispatch<React.SetStateAction<"default" | "black" | "light">>
         t: any
         AI: boolean
+        localPlayersProfile?: PlayerWithProfileData[]
     }) {
 
     return (
@@ -53,6 +56,7 @@ export function GameLayout({
                             winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}
                             playerID={playerID}
                             AI={AI}
+                            localPlayersProfile={localPlayersProfile}
                         />
                     </div>
             }

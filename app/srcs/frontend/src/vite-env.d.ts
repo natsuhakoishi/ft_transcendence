@@ -35,9 +35,11 @@ interface ImportMetaEnv {
 
   // GAME TOURNAMENT PAGE
   readonly VITE_GAME_PATH_TOURNAMENT: string;
+  readonly VITE_GAME_PATH_LOCAL_TOURNAMENT: string;
 
   // GAME TOURNAMENT RESULT PAGE
   readonly VITE_GAME_PATH_TOURNAMENT_RESULT: string;
+  readonly VITE_GAME_PATH_LOCAL_TOURNAMENT_RESULT: string;
 
   // GAME SETTING
   readonly VITE_GAME_BOARD_WIDTH_PX: string;

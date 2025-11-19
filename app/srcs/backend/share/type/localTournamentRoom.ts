@@ -2,7 +2,7 @@ import { initLeaderboard, initLocalTData, TDataWithOutWS } from "../../routes/ga
 import type { localTData } from "./gameData.ts";
 import fp from "fastify-plugin";
 import type { Player, PlayerWithProfileData } from "./Player.ts";
-import type { Matches } from "./Matches.ts";
+import type { Matches, MatchPlayersData } from "./Matches.ts";
 import { addWinLose } from "../../database/profile.ts";
 import type { Leaderboard } from "./tournamentRoomData.ts";
 
@@ -37,7 +37,7 @@ export class LocalTRoom {
     }
 
     checkOffline(): boolean {
-        if (!this.offline)
+        if (!this.offline && this.player.ws)
             if (this.player.ws.readyState !== WebSocket.OPEN)
                     this.offline = true;
         return this.offline;
@@ -62,16 +62,13 @@ export class LocalTRoom {
     }
 
     startRound(): void {
-        this.data.matchCount++;
-        if (this.data.matchCount <= 2)
-            this.data.state = "r1";
-        else
-            this.data.state = "r2";
         this.broadCast("startRound");
+        this.data.matchCount++;
     }
 
     makeRound1(): void {
         console.log("TGameplay: makeRound1");
+        this.status = "round1";
         const matches: [PlayerWithProfileData, PlayerWithProfileData][] = this.makeMatches();
         const A: PlayerWithProfileData = matches[0][0];
         const B: PlayerWithProfileData = matches[0][1];
@@ -88,10 +85,28 @@ export class LocalTRoom {
                 Players: [C, D]
             }
         ];
+
+        this.data.state = "r1";
+        this.data.matches[0] = this.data.round1[0];
+        this.data.matches[1] = this.data.round1[1];
     }
 
     makeRound2(): void {
-        this.data.round2 = [this.r1winners, this.r1losers];
+        console.log("makeRound2");
+
+        this.data.round2 = [
+            {
+                roomID: "", 
+                Players: this.r1winners
+            }, 
+            {
+                roomID: "",
+                Players: this.r1losers
+            }
+        ];
+
+        this.data.matches[2] = this.data.round2[0];
+        this.data.matches[3] = this.data.round2[1];
     }
 
     private makeMatches(): [PlayerWithProfileData, PlayerWithProfileData][] {
@@ -113,44 +128,43 @@ export class LocalTRoom {
         ];
     }
 
-    updateWinnerNLoser(id: number, matchID: number, p1Score: number, p2Score: number): void {
+    updateWinnerNLoser(playerName: string, p1Score: number, p2Score: number): void {
         if (this.status === "round1" && this.r1flag < 2)
         {
             this.r1flag++;
-            const r1: Matches = this.data.round1;
-            if (r1.matches[0][0].id === id || r1.matches[0][1].id === id)
+            const r1: MatchPlayersData[] = this.data.round1;
+            if (r1[0].Players[0].name === playerName || r1[0].Players[1].name === playerName)
                 if (p1Score > p2Score)
-                    this.addResult(this.r1losers, this.r1winners, r1.matches[0][1], r1.matches[0][0]);
+                    this.addResult(this.r1losers, this.r1winners, r1[0].Players[1], r1[0].Players[0]);
                 else
-                    this.addResult(this.r1losers, this.r1winners, r1.matches[0][0], r1.matches[0][1]);
+                    this.addResult(this.r1losers, this.r1winners, r1[0].Players[0], r1[0].Players[1]);
             else
                 if (p1Score > p2Score)
-                    this.addResult(this.r1losers, this.r1winners, r1.matches[1][1], r1.matches[1][0])
+                    this.addResult(this.r1losers, this.r1winners, r1[1].Players[1], r1[1].Players[0])
                 else
-                    this.addResult(this.r1losers, this.r1winners, r1.matches[1][0], r1.matches[1][1])
+                    this.addResult(this.r1losers, this.r1winners, r1[1].Players[0], r1[1].Players[1])
             if (this.r1flag === 2)
                 this.status = "round2";
         }
         else if (this.status === "round2" && this.r2flag < 2)
         {
             this.r2flag++;
-            const r2: Matches = this.data.round2;
-            if (r2.matches[0][0].id === id || r2.matches[0][1].id === id) 
+            const r2: MatchPlayersData[] = this.data.round2;
+            if (r2[0].Players[0].name === playerName || r2[0].Players[1].name === playerName)
                 if (p1Score > p2Score)
-                    this.setLeaderboard("first", "second", r2.matches[0][0], r2.matches[0][1]);
+                    this.setLeaderboard("first", "second", r2[0].Players[0], r2[0].Players[1]);
                 else
-                    this.setLeaderboard("first", "second", r2.matches[0][1], r2.matches[0][0]);
+                    this.setLeaderboard("first", "second", r2[0].Players[1], r2[0].Players[0]);
             else
                 if (p1Score > p2Score)
-                    this.setLeaderboard("third", "last", r2.matches[1][0], r2.matches[1][1]);
+                    this.setLeaderboard("third", "last", r2[1].Players[0], r2[1].Players[1]);
                 else
-                    this.setLeaderboard("third", "last", r2.matches[1][1], r2.matches[1][0]);
+                    this.setLeaderboard("third", "last", r2[1].Players[1], r2[1].Players[0]);
 
             if (this.r2flag === 2)
             {
                 this.data.leaderboard = this.leaderboard;
                 console.log("updateWNL: ", this.data.leaderboard);
-                addWinLose(this.leaderboard.first.id, "tournament_wins");
                 this.status = "end";
 
                 // console.log("r2 matches data:", r2.matches[0], r2.matches[1]);
@@ -160,12 +174,12 @@ export class LocalTRoom {
         console.log("updateWNL: ", this.r1flag, this.r2flag, this.status);
     }
 
-    setLeaderboard(a: keyof Leaderboard, b: keyof Leaderboard, winner: Player, loser: Player) {
-        this.leaderboard[a] = this.data.players[winner.id.toString()];
-        this.leaderboard[b] = this.data.players[loser.id.toString()];
+    setLeaderboard(a: keyof Leaderboard, b: keyof Leaderboard, winner: PlayerWithProfileData, loser: PlayerWithProfileData) {
+        this.leaderboard[a] = this.data.players[winner.name!];
+        this.leaderboard[b] = this.data.players[loser.name!];
     }
 
-    getStatus(): string | null {
+    getStatus(): null | "round1" | "round2"| "end" {
         return this.status;
     }
 
@@ -176,11 +190,6 @@ export class LocalTRoom {
     addResult(losers: PlayerWithProfileData[], winners: PlayerWithProfileData[], loser: PlayerWithProfileData, winner: PlayerWithProfileData): void {
         losers.push(loser);
         winners.push(winner);
-        if (losers.length === 2)
-        {
-            losers.sort((a, b) => a.id - b.id );
-            winners.sort((a, b) => a.id - b.id );
-        }
     }
 
     getR1Winners(): PlayerWithProfileData[] {

@@ -12,7 +12,7 @@ export class LocalRoom {
     private right: string;
 
     constructor(_id: number, p1name: string, p2name: string) {
-        console.log("LocalRoom: create room", _id);
+        console.log("LocalRoom: create room", _id, p1name, p2name);
         this.id = _id;
         this.confirm = false;
         this.gameState = initGameState();

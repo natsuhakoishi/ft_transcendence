@@ -6,7 +6,17 @@ import type { Leaderboard } from "../../../../backend/share/type/tournamentRoomD
 import type { PlayerWithProfileData } from "../../../../backend/share/type/Player";
 import { useLang } from "../../_hooks/language";
 
-export function Result({ winner, playerID, AI, local }: { winner?: PlayerWithProfileData, playerID: number | null, AI: boolean, local?: boolean}) {
+export function Result({ 
+    winner, 
+    playerID, 
+    AI, 
+    localPlayersProfile
+}: { 
+    winner?: PlayerWithProfileData, 
+    playerID: number | null, 
+    AI: boolean, 
+    localPlayersProfile: PlayerWithProfileData[]
+}) {
     const [ again, setAgain ] = React.useState(false);
     const navigate = useNavigate();
     const { refetchData } = useOutletContext<{ refetchData: () => void}>();
@@ -81,19 +91,22 @@ export function TournamentResultPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const { t } = useLang();
-    const { leaderboard, playerID } = (location.state || {}) as { leaderboard: Leaderboard, playerID: number };
+    const { leaderboard, playerID, localPlayersProfile } = (location.state || {}) as { 
+        leaderboard: Leaderboard,
+        playerID: number,
+        localPlayersProfile: PlayerWithProfileData[]
+    };
 
     React.useEffect(() => {
-        if  (!leaderboard || !playerID)
-        {
-            navigate("/", { replace: true });
-            return ;
-        }
         document.title = t("shared.result.title");
         console.log("TournamentResult: useEffect");
-        if (!leaderboard || !playerID)
-            navigate(import.meta.env.VITE_PATH_404NOTFOUND, { replace: true });
-        console.log("TOurnamentResult: ", leaderboard);
+        if  (!leaderboard)
+        {
+            navigate("/", { replace: true });
+            console.log("result page: trespassing");
+            return ;
+        }
+        console.log("tournamentResult: ", leaderboard);
 
     }, []);
 

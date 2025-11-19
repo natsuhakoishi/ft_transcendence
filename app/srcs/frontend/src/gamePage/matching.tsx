@@ -272,7 +272,7 @@ export function LocalTMatching() {
                 return ;
             }
 
-            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT_GAMEPLAY, { state: {id: id}, replace: true });
+            navigate(import.meta.env.VITE_GAME_PATH_LOCAL_TOURNAMENT, { state: {id: id}, replace: true });
         };
 
         return () => { //when user press 'back button'
