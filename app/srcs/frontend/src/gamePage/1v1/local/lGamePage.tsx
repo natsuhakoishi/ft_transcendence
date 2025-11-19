@@ -181,13 +181,47 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
                     sendKeyPressLocal("stop", ws, gameData, "left", playersData.Players[0].name!);
             }
 
-            // const handleUp = () => sendKeyPress("stop", ws, gameData);
+            const handleTouch = (e: TouchEvent) => {
+                if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN)
+                    return;
 
+                const t = e.touches[0];
+                if (!t)
+                    return ;
+
+                if (!confirmGame)
+                {
+                    sendKeyPressLocal("Enter", ws, gameData, "left", playersData.Players[0].name!);
+                    confirmGame = true;
+                    setConfirm(true);
+                    confirmRef.current = true;
+                }
+                else
+                {
+                    const isLeft = t.clientX < window.innerWidth / 2;
+                    const isUp = t.clientY < window.innerHeight / 2;
+                    
+                    const side = isLeft ? "left" : "right";
+                    const playerName = isLeft ? playersData.Players[0].name! : playersData.Players[1].name!;
+                    const action = isUp ? "up" : "down";
+    
+                    sendKeyPressLocal(action, wsRef.current, gameData, side, playerName);
+                }
+            }
+
+            const handleTouchEnd = () => {
+                if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN)
+                    return;
+
+                sendKeyPressLocal("stop", wsRef.current, gameData, "left", playersData.Players[0].name!);
+                sendKeyPressLocal("stop", wsRef.current, gameData, "right", playersData.Players[1].name!);
+            };
+
+            document.addEventListener("touchstart", handleTouch);
+            document.addEventListener("touchmove", handleTouch);
+            document.addEventListener("touchend", handleTouchEnd);
             // document.addEventListener("mousedown", handleClick);
             // document.addEventListener("mouseup", handleUp);
-
-            // document.addEventListener("touchstart", handleTouch);
-            // document.addEventListener("touchend", handleUp);
 
             document.addEventListener("keyup", keyup);
             document.addEventListener("keydown", keydown);
@@ -196,8 +230,9 @@ export function LocalGameP({ onGameOver, t, toasterPluz }: { onGameOver?: () => 
                 // document.removeEventListener("mousedown", handleClick);
                 // document.removeEventListener("mouseup", handleUp);
 
-                // document.removeEventListener("touchstart", handleTouch);
-                // document.removeEventListener("touchend", handleUp);
+                document.removeEventListener("touchstart", handleTouch);
+                document.removeEventListener("touchmove", handleTouch);
+                document.removeEventListener("touchend", handleTouchEnd);
 
                 document.removeEventListener("keydown", keydown);
                 document.removeEventListener("keyup", keyup);
