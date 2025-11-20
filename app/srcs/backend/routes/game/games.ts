@@ -1,15 +1,16 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { GameData } from "../../share/type/gameData.ts";
-import { Room } from "../../share/type/roomData.ts";
+import { Room, RoomManager } from "../../share/type/roomData.ts";
 import { Trespassing } from "./gameUtils.ts";
 import { handleKeyPress, start } from "./gameLogic.ts";
 import { createMatch } from "../../database/match.ts";
 import type { GameScore } from "../../share/type/gameState.ts";
 import type { Player } from "../../share/type/Player.ts";
-import { TRoom } from "../../share/type/tournamentRoomData.ts";
+import { TRoom, TRoomManager } from "../../share/type/tournamentRoomData.ts";
 
 const games: FastifyPluginAsync = async (fastify: any) => {
-    // const rooms: RoomManager = new RoomManager();
+    const rooms: RoomManager = fastify.rooms;
+    const tournamentRooms: TRoomManager = fastify.tournamentRooms;
 
     fastify.get("/gameplay", { websocket: true }, (connection: any, req: any) => {
         const ws = connection;
@@ -23,8 +24,8 @@ const games: FastifyPluginAsync = async (fastify: any) => {
             const player: Player = { id: data.playerId, ws: ws };
             console.log("/gameplay: ", data);
 
-            fastify.rooms.showRooms();
-            const room: Room | null = fastify.rooms.getRoomByPlayerID(player.id);
+            rooms.showRooms();
+            const room: Room | null = rooms.getRoomByPlayerID(player.id);
             console.log("/gameplay check trespassing", player.id, (room ? "ok" : "tps"));
             if (!room) {
                 if (data.keyPress !== "stop" || data.playerId != 0)
@@ -35,7 +36,7 @@ const games: FastifyPluginAsync = async (fastify: any) => {
 
             let Troom: TRoom | null = null;
             if (data.tournament)
-                Troom = fastify.tournamentRooms.getRoomByPlayerID(room.getP1ID());
+                Troom = tournamentRooms.getRoomByPlayerID(room.getP1ID());
             if (room.getConfirm() === 2 && !room.getState().gamingStage)
                 start(room, () => {
                     const score: GameScore = room.getState().score;
@@ -57,7 +58,7 @@ const games: FastifyPluginAsync = async (fastify: any) => {
                     catch (e) {
                         console.log(e);
                     }
-                    fastify.rooms.removeRoom(room.getRoomID());
+                    rooms.removeRoom(room.getRoomID());
                 }, Troom);
         });
 

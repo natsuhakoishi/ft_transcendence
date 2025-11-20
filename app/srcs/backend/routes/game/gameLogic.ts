@@ -2,20 +2,21 @@ import { AIRoom } from "../../share/type/AIroomData.ts";
 import type { GameData } from "../../share/type/gameData.ts";
 import type { Ball, GameScore, GameState, Paddle } from "../../share/type/gameState.ts";
 import type { LocalRoom } from "../../share/type/localRoom.ts";
+import type { LocalTRoom } from "../../share/type/localTournamentRoom.ts";
 import type { Player } from "../../share/type/Player.ts";
 import { Room } from "../../share/type/roomData.ts";
 import { TRoom } from "../../share/type/tournamentRoomData.ts";
 import { AILogic } from "./AIGameLogic.ts";
 import { resetBall } from "./gameUtils.ts";
 
-export function start(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour: TRoom | null): void {
+export function start(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour: TRoom | LocalTRoom | null): void {
     room.getState().gamingStage = true;
     console.log("/gameplay: start");
 
     startRound(room, gameOver, tour);
 }
 
-function startRound(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | null): void {
+function startRound(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | LocalTRoom | null): void {
     resetBall(room.getState());
 
     room.broadCast("start");
@@ -25,7 +26,7 @@ function startRound(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?
     }, 2000);
 }
 
-export function runLoop(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | null): void {
+export function runLoop(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | LocalTRoom | null): void {
     let runtime: number = 0;
     const intervalId = setInterval( () => {
         runtime += 16;
@@ -60,7 +61,7 @@ export function runLoop(room: Room | AIRoom | LocalRoom, gameOver: () => void, t
     }, 16); //16ms ~60fps
 }
 
-function handleGoal(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | null): void {
+function handleGoal(room: Room | AIRoom | LocalRoom, gameOver: () => void, tour?: TRoom | LocalTRoom | null): void {
 
     room.broadCast("goal");
     

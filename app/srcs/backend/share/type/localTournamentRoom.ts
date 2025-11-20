@@ -1,9 +1,8 @@
-import { initLeaderboard, initLocalTData, TDataWithOutWS } from "../../routes/game/gameUtils.ts";
+import { initLeaderboard, initLocalTData } from "../../routes/game/gameUtils.ts";
 import type { localTData } from "./gameData.ts";
 import fp from "fastify-plugin";
 import type { Player, PlayerWithProfileData } from "./Player.ts";
-import type { Matches, MatchPlayersData } from "./Matches.ts";
-import { addWinLose } from "../../database/profile.ts";
+import type { MatchPlayersData } from "./Matches.ts";
 import type { Leaderboard } from "./tournamentRoomData.ts";
 
 export class LocalTRoom {
@@ -229,7 +228,7 @@ export class LocalTRoomManager {
                         this.removeRoom(playerID);
                         clearInterval(times);
                     }
-                }, 1000 * 5); //every 5 second ping each player
+                }, 1000 * 2); //every 2 second ping each player
             }
             else
                 throw Error("Player already have room");
