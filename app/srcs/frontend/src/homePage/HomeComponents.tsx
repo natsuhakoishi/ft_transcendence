@@ -42,7 +42,7 @@ export function LanguageBar({ bgColor = "bg-gray-800/80", optionColor = "bg-[#1E
 
   return (
     <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}
-      className={`appearance-none border-2 rounded p-1 text-lg ${bgColor} hover`}
+      className={`appearance-none border-2 rounded p-1 text-lg text-center ${bgColor} hover`}
     >
       <option value="en" className={optionColor}>English</option>
       <option value="zh" className={optionColor}>繁體中文</option>
@@ -93,9 +93,25 @@ export function Credit({ onClick }: { onClick: () => void }) {
 
 // Tutorial Modal
 
+const TutorialImg = {
+  "T1": "/pic/tutorial.png",
+  "T2": "/pic/tutorial_2.png",
+  "T3": "/pic/tutorial_3.png",
+  "T4": "/pic/tutorial_4.png",
+}
+
 export function Tutorial({ onClick }: { onClick: () => void }) {
   const { t } = useLang();
-  const [toggle, setToggle] = React.useState<"first" | "second">("first");
+  const steps = ["T1", "T2", "T3", "T4"] as const;
+  const [toggle, setToggle] = React.useState<"T1" | "T2" | "T3" | "T4">("T1");
+  const handleNext = () => {
+    const idx = steps.indexOf(toggle);
+    setToggle(steps[idx + 1] || steps[0]);
+  };
+  const handleBack = () => {
+    const idx = steps.indexOf(toggle);
+    setToggle(steps[(idx - 1 + steps.length) % steps.length]);
+  }
 
   return (
     <div className="fixed h-screen w-screen z-50 flex md:flex-col items-center justify-center gap-3" onClick={onClick}>
@@ -106,12 +122,17 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
           {t("home.tutor")}
         </h1>
         <div className="relative w-full h-[200px] md:h-[400px] mt-2" onClick={(e) => e.stopPropagation()}>
-          <img className="w-full h-full object-cover rounded-2xl" src={`${toggle === "first" ? "/pic/tutorial.png" : "/pic/tutorial_4.png"}`} />
+          <img draggable="false" className="w-full h-full object-cover rounded-2xl" src={TutorialImg[toggle]} />
         </div>
       </div>
-      <div onClick={(e) => e.stopPropagation()}>
-        <button className="absolute md:relative w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={() => setToggle(toggle === "first" ? "second" : "first")}>
-          <img src={`${toggle === "first" ? "/pic/icons/next_btn.png" : "/pic/icons/back_btn.png" }`} className="drop-shadow-lg w-full h-full object-cover"/>  
+      <div onClick={(e) => e.stopPropagation()} className="absolute max-md:right-6 md:relative flex flex-col md:flex-row gap-2">
+        { toggle !== "T1" &&
+          <button className="w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={handleBack}>
+            <img draggable="false" src="/pic/icons/back_btn.png" className="drop-shadow-lg w-full h-full object-cover" />
+          </button>
+        }
+        <button className="w-11 md:w-15 aspect-square border-2 border-silver rounded-md overflow-hidden hover-increase" onClick={handleNext}>
+          <img src="/pic/icons/next_btn.png" className="drop-shadow-lg w-full h-full object-cover" />
         </button>
       </div>
 

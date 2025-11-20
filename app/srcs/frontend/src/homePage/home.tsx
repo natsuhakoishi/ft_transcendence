@@ -47,6 +47,7 @@ return (
     { loading ? <LoadingScreen progress={progress}/> :
       <>
       <div className="relative h-full w-full grid grid-cols-[1fr_2fr_1fr] grid-rows-1 overflow-hidden text-lg md:text-2xl">
+
         {modal}
 
         <div className="flex flex-col ml-1">
@@ -74,14 +75,16 @@ return (
           </span>
         </div>
 
-        <div className="flex flex-col items-end mr-0.5 md:mr-3 gap-2">
-          {/* Text -> Game Version */}
-          <span className="text-base">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
+        {/* Text -> Game Version */}
+        <span className="absolute top-1 right-0.5 md:right-3 text-base text-end">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
+
+        <div className="absolute top-8 right-0.5 md:right-3">
           {/* Dropdown -> Language Selector */}
           <LanguageBar />
-          {/* Button -> Match History page */}
-          <button className="absolute bottom-2 rounded-2xl p-2 border-1 border-gray-200/30 bg-gray-300/20 whitespace-nowrap font-bold hover hover:scale-120 hover:mr-1 backdrop-blur-lg" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
         </div>
+        {/* Button -> Match History page */}
+        <button className="absolute bottom-2 right-0.5 md:right-3 rounded-2xl p-2 border-1 border-gray-200/30 bg-gray-300/20 whitespace-nowrap font-bold hover hover:scale-120 hover:mr-1 backdrop-blur-lg" onClick={() => navigate("/match_history")}>{t("home.btn_history")}</button>
+
       </div>
       </>
     }
