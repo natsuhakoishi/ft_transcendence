@@ -122,7 +122,7 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
           {t("home.tutor")}
         </h1>
         <div className="relative w-full h-[200px] md:h-[400px] mt-2" onClick={(e) => e.stopPropagation()}>
-          <img draggable="false" className="w-full h-full object-cover rounded-2xl" src={TutorialImg[toggle]} />
+          <img draggable="false" className="w-full h-full object-contain rounded-2xl" src={TutorialImg[toggle]} />
         </div>
       </div>
       <div onClick={(e) => e.stopPropagation()} className="absolute max-md:right-6 md:relative flex flex-col md:flex-row gap-2">
