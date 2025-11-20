@@ -98,14 +98,12 @@ export class TRoom {
     }
 
     startRound1(): void {
-        const round1: Matches = this.data.round1;
         this.status = "round1";
         this.broadCast("startRound1");
         
     }
 
     startRound2(): void {
-        const round2: Matches = this.data.round2;
         this.status = "round2";
         this.broadCast("startRound2");
     }
@@ -279,7 +277,7 @@ export class TRoomManager {
                 this.rooms.set(roomID, new TRoom(playerID));
                 const room: TRoom = this.rooms.get(roomID) as TRoom;
                 room.init();
-    
+
                 const times = setInterval(() => {
                     if (room.getStatus() === "end")
                         clearInterval(times);
@@ -290,7 +288,7 @@ export class TRoomManager {
                         this.removeRoom(roomID);
                         clearInterval(times);
                     }
-                }, 1000 * 5); //every 5 second ping each player
+                }, 1000 * 2); //every 2 second ping each player
             }
         }
         catch (e: any)
