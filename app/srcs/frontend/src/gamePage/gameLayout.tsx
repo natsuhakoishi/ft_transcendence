@@ -51,7 +51,7 @@ export function GameLayout({
             {/* Result Page */}
             {
                 result &&
-                    <div className={`fixed inset-0 flex items-center justify-center`}>
+                    <div className={`fixed inset-0 flex items-center justify-center overflow-clip`}>
                         <Result
                             winner={score.p1Score > score.p2Score ? playersData?.Players[0] : playersData?.Players[1]}
                             playerID={playerID}

@@ -35,13 +35,13 @@ export function FriendP({ t, toasterPluz }: TranslationProps) {
 return (
   <>
   {/* Background Layer */}
-  <div className="absolute h-[100dvh] w-[100dvw] inset-0 -z-10 bg-cover bg-center bg-[url('/pic/friendP.jpg')] bg-black/50 bg-blend-overlay" />
+  <div className="absolute h-[100dvh] w-[100dvw] inset-0 -z-10 bg-cover bg-center bg-[url('/pic/friendP.jpg')] bg-black/50 bg-blend-overlay overflow-auto md:overflow-clip" />
   {/* Page Content - Conditional Render [ Loading / Friend Page ] */}
   {
     !socket ?
       <LoadingScreen progress={{step: t("loading.step_start"), completed: null, total: 1}} />
     :
-      (<div className="relative flex flex-col h-[100svh] w-[100svw]">
+      (<div className="relative flex flex-col h-[100svh] w-[100svw] overflow-auto md:overflow-clip">
 
         {/* Body: Friends Card */}
         <div className="flex-grow md:flex-none md:h-[90%]">

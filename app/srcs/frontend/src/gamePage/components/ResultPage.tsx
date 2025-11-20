@@ -27,9 +27,9 @@ export function Result({
 
     return (
         <>
-            <div className="relative w-full h-full flex flex-col md:justify-center items-center overflow-hidden">
-                <div>
-                    <h1 className={`text-4xl md:text-5xl font-bold md:mb-6 `} >{t("shared.result.msg_winner")}</h1>
+            <div className="relative w-full h-full flex flex-col md:justify-center items-center">
+                <div className="flex flex-col items-center">
+                    <h1 className={`text-4xl md:text-5xl font-bold mt-2 md:mb-6 `} >{t("shared.result.msg_winner")}</h1>
                     <Player
                         player={winner}
                         me={playerID === winner?.id}

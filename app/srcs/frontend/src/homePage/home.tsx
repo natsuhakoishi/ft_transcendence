@@ -16,11 +16,12 @@ export type SharedData = {
 export function HomeP({ t, lang }: TranslationProps) { 
   const navigate = useNavigate();
   const location = useLocation();
-  const { game, data } = (location.state || {}) as { game: GameModalMode, data: PlayerWithProfileData[] };
+  const state = (location.state || {}) as { game: GameModalMode, data: PlayerWithProfileData[] };
+  const [ data , setData ] =  React.useState<PlayerWithProfileData[]>(state.data ?? []);
   const { user, loading, progress } = useOutletContext<SharedData>();
   const avatarURL = `${import.meta.env.VITE_API_AVATAR}${user?.profile.avatar_path}?t=${Date.now()}`;
   const [ modal, setModal ] = React.useState<React.ReactNode>("");
-  const [ gameM, setGameM ] = game ? React.useState<GameModalMode>(game) : React.useState<GameModalMode>("");
+  const [ gameM, setGameM ] = state.game ? React.useState<GameModalMode>(state.game) : React.useState<GameModalMode>("");
 
   React.useEffect(() => {
     document.title = t("home.title");
@@ -30,6 +31,11 @@ export function HomeP({ t, lang }: TranslationProps) {
     if (user && !loading)
       toast.success(`${t("home.msg_greeting")}${user.acc.username}.`);
   }, [user, loading]);
+
+  React.useEffect(() => {
+    if (gameM === "Match" || gameM === "Tour")
+      setData([]);
+  }, [gameM]);
 
 return (
   <>

@@ -1,7 +1,5 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useLang } from "../../_hooks/language";
-import { Matching } from "../../gamePage/matching";
 
 function ModeButton({ mode, text, onClick }: {
 	mode: "Tour" | "Match",

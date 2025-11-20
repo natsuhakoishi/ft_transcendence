@@ -29,7 +29,9 @@ function ProfileSB({ t, toasterPluz, isMe, id }: { isMe: boolean, id: number } &
           const data = await apiFetchPrivate(`basic_profile/${id}`, { method: "GET" });
           setProfile(data);
         } catch (err: any) {
-          toasterPluz(err);
+          if (err.status != 404)
+            toasterPluz(err);
+          return ;
         }
       })();
     }

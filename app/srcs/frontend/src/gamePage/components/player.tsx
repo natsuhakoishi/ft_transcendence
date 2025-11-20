@@ -11,6 +11,7 @@ export function Player({ player, me, spin, small, txtSmall}: { player?: PlayerWi
             `}
         >
             <img
+                draggable={false}
                 src={import.meta.env.VITE_API_AVATAR + player?.avatar}
                 alt={player?.name}
                 className={`

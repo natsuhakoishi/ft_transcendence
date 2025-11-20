@@ -89,7 +89,7 @@ const LoginForm = ({ verifyRef, onSubmit, children }: { verifyRef: React.RefObje
           type="password" name="password" placeholder={t("shared.form.place_password")} required autoComplete="current-password"
         />
         <div className="flex items-center md:flex-col gap-2 ">
-          <button type="submit" className="md:mt-3 md:w-20 text-white default_button hover-increase">{t("auth.btn_signIn")}</button>
+          <button type="submit" className="md:mt-3 w-fit md:w-21 text-white default_button hover-increase">{t("auth.btn_signIn")}</button>
           {children}
         </div>
       </form>
@@ -199,7 +199,7 @@ function LoginP({ t, toasterPluz }: TranslationProps) {
           <>
             <LoginForm verifyRef={verifyRef} onSubmit={handleLogin}>
               <hr className="hidden md:block h-px min-w-70 my-1 border-1"></hr>
-              <button onClick={() => setMode("register")} className="md:w-20 default_button hover-increase">{t("auth.btn_register")}</button>
+              <button onClick={() => setMode("register")} className="md:mt-3 w-fit md:w-21 default_button hover-increase">{t("auth.btn_register")}</button>
             </LoginForm>
           </>
         )

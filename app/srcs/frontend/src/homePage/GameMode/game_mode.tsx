@@ -14,13 +14,13 @@ const transitions = {
   "": ""
 };
 
-function MatchMode({ setGameM, GameM, data }: {
+function MatchMode({ setGameM, gameM, data }: {
   setGameM: React.Dispatch<React.SetStateAction<GameModalMode>>,
-  GameM: GameModalMode,
-  data?: PlayerWithProfileData[],
+  gameM: GameModalMode,
+  data?: PlayerWithProfileData[]
 }) {
   const handleTransition = () => {
-    setGameM(transitions[GameM] as GameModalMode);
+    setGameM(transitions[gameM] as GameModalMode);
   }
 
   return (
@@ -28,10 +28,10 @@ function MatchMode({ setGameM, GameM, data }: {
     <div className="absolute inset-0 backdrop-blur-xs" />
       <div className="relative top-0 w-[55%] md:w-[40%] h-[65%] md:h-[50%] flex p-3 gap-0.5 justify-center items-center" onClick={(e) => e.stopPropagation()}>
         <div className="absolute inset-0 bg-[#F5CFED]/40 border border-[#b69bb0]/60 rounded-4xl" />
-          {GameM === "Tour" && <ModeModal mode="Tour" setGameM={() => setGameM("TourL")} /> }
-          {GameM === "TourL" && <LocalModal mode="Tour" data={data} /> }
-          {GameM === "Match" && <ModeModal mode="Match" setGameM={() => setGameM("MatchL")} /> }
-          {GameM === "MatchL" && <LocalModal mode="Match" data={data} /> }
+          {gameM === "Tour" && <ModeModal mode="Tour" setGameM={() => setGameM("TourL")} /> }
+          {gameM === "TourL" && <LocalModal mode="Tour" data={data} /> }
+          {gameM === "Match" && <ModeModal mode="Match" setGameM={() => setGameM("MatchL")} /> }
+          {gameM === "MatchL" && <LocalModal mode="Match" data={data} /> }
       </div>
     </div>
   );
@@ -50,7 +50,7 @@ export function GameMode({ TutorOn, setGameM, gameM, data }: {
       <div className="relative top-1/4 w-full h-[60%] md:h-1/2 rounded-4xl bg-[#F5CFED]/40">
       { gameM !== "" ?
         <div className="p-7 md:p-10 w-full h-full">
-          <MatchMode setGameM={setGameM} GameM={gameM} data={data} />
+          <MatchMode setGameM={setGameM} gameM={gameM} data={data} />
         </div>
       :
         <>

@@ -205,24 +205,20 @@ export function HistoryP({ t, toasterPluz }: TranslationProps) {
     const loadData = async () => {
       try {
         if (!loading && user_id) {
-          if (!Number.isFinite(id))
+          const data = await apiFetchPrivate(`match/${user_id}`, { method: "GET" });
+          setMatches(data);
+          if (Number.isFinite(id))
           {
-            const data = await apiFetchPrivate(`match/${user_id}`, { method: "GET" });
-            setMatches(data);
-            return ;
-          }
-          else
-          {
-            const data = await apiFetchPrivate("my_friends", { method: "POST", body: "{}" });
-            if (!data.load || !data.friends.some((f: Friends) => f.info.id === id)) {
+            const temp = await apiFetchPrivate("my_friends", { method: "POST", body: "{}" });
+            if (!temp.load || !temp.friends.some((f: Friends) => f.info.id === id)) {
               toasterPluz("game.ERR_trespassing");
               navigate("/", { replace: true });
-              return;
             }
           }
         }
       } catch (err: any) {
-        toasterPluz(err);
+        if (err.status != 404)
+          toasterPluz(err);
         return ;
       }
     };

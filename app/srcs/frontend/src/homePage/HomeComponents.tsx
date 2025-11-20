@@ -106,7 +106,7 @@ export function Tutorial({ onClick }: { onClick: () => void }) {
           {t("home.tutor")}
         </h1>
         <div className="relative w-full h-[200px] md:h-[400px] mt-2" onClick={(e) => e.stopPropagation()}>
-          <img className="w-full h-full object-cover rounded-2xl" src={`${toggle === "first" ? "/pic/tutorial.png" : "/pic/tutorial_2.png"}`} />
+          <img className="w-full h-full object-cover rounded-2xl" src={`${toggle === "first" ? "/pic/tutorial.png" : "/pic/tutorial_4.png"}`} />
         </div>
       </div>
       <div onClick={(e) => e.stopPropagation()}>

@@ -51,7 +51,7 @@ function LocalProfile({ idx, data }: { idx: number, data?: PlayerWithProfileData
   return (
     <div className="flex flex-col items-center w-1/4 text-center gap-1">
       <PlayerAvatar avatar={avatar} />
-      <PlayerUsername name={name} text={text} defaultName={data ? data[idx-1]?.name! : getName(idx) as string}/>
+      <PlayerUsername name={name} text={text} defaultName={data && data?.length > 0 ? data[idx-1]?.name! : getName(idx) as string}/>
     </div>
   );
 };
@@ -96,7 +96,7 @@ export function LocalModal({ mode, data }: { mode: "Tour" | "Match", data?: Play
     const formData = new FormData(e.currentTarget);
     let playersData :PlayerWithProfileData[] = [];
     const count = mode === "Tour" ? 4 : 2;
-    if (!data)
+    if (data?.length === 0)
     {
       console.log("new local data creating");
       const name = new Map<string, number>();
