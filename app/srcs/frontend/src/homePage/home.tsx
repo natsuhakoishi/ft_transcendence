@@ -76,7 +76,7 @@ return (
 
         <div className="flex flex-col items-end mr-0.5 md:mr-3 gap-2">
           {/* Text -> Game Version */}
-          <span className="font-semibold">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
+          <span className="text-base">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
           {/* Dropdown -> Language Selector */}
           <LanguageBar />
           {/* Button -> Match History page */}

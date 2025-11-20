@@ -94,7 +94,7 @@ export function LocalModal({ mode, data }: { mode: "Tour" | "Match", data?: Play
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    let playersData :PlayerWithProfileData[] = [];
+    let playersData :PlayerWithProfileData[] = data && data.length > 0 ? data : [];
     const count = mode === "Tour" ? 4 : 2;
     if (data?.length === 0)
     {
