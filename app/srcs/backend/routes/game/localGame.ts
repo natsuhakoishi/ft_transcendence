@@ -8,6 +8,7 @@ import type { GameScore } from "../../share/type/gameState.ts";
 
 const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
     const rooms: LocalRoomManager = fastify.localRooms;
+    const tournamentRooms: LocalTRoomManager = fastify.localTournamentRooms;
 
     fastify.get("/matching", { websocket: true }, (connection: any, req) => {
         const ws = connection;
@@ -16,13 +17,13 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
             (async () => {
                 const playersData: MatchPlayersData = JSON.parse(msg.toString());
                 console.log("/local/matching: ", playersData);
-                if (!playersData.Players[0].name || !playersData.Players[1].name)
+                if (!playersData.Players || !playersData.Players[0].name || !playersData.Players[1].name)
                 {
                     ws.send(JSON.stringify({success: false}));
                     return ;
                 }
 
-                playersData.Players.sort((a, b) => a.name!.localeCompare(b.name!));
+                // playersData.Players.sort((a, b) => a.name!.localeCompare(b.name!));
 
                 try {
                     rooms.createRoom(Number(playersData.roomID), 
@@ -62,13 +63,15 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
                 room.addPlayer({id: playerId, ws: ws});
             handleKeyPressLocal(keyPress, room.leftOrRight(playerName), room);
 
+            let Troom: LocalTRoom | null = null;
+            if (data.data.tournament)
+                Troom = tournamentRooms.getRoomByPlayerID(data.data.playerId);
             if (room.getConfirm() && !room.getState().gamingStage)
                 start(room, () => {
                         if (data.data.tournament)
                         {
                             console.log("local gameplay tournament flag: ", playerId);
-                            const trooms: LocalTRoomManager = fastify.localTournamentRooms;
-                            const troom: LocalTRoom | null = trooms.getRoomByPlayerID(playerId);
+                            const troom: LocalTRoom | null = tournamentRooms.getRoomByPlayerID(playerId);
                             if (!troom)
                             {
                                 console.log("local gameplay tournament flag: troom not found ");
@@ -83,7 +86,7 @@ const LocalGameplay: FastifyPluginAsync = async(fastify: any) => {
                         }
                         rooms.deleteRoom(playerId);
                     }
-                , null);
+                , Troom);
         })
 
         ws.on("close", () =>

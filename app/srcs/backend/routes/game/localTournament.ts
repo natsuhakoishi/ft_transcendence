@@ -82,34 +82,10 @@ const localTournament: FastifyPluginAsync = async (fastify: any) => {
             catch (e: any)
             {
                 console.error(e);
-                room.broadCast("trespassing");
+                room.broadCast("Player already have match");
                 rooms.removeRoom(data.playerId);
                 return ;
             }
-            // else if (room.getStatus() === "round2")
-            // {
-            //     room.makeRound2();
-            //     const round2: Matches = room.getData().round2;
-            //     if (round2.roomID.length === 0)
-            //     {
-            //         const AGroup: Player[] = room.getR1Winners();
-            //         const BGroup: Player[] = room.getR1Losers();
-            //         round2.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
-            //         round2.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
-
-            //         fastify.rooms.createRoom(AGroup[0].id, AGroup[1].id, 20);
-            //         fastify.rooms.createRoom(BGroup[0].id, BGroup[1].id, 20);
-
-            //         fastify.rooms.showRooms();
-            //         setTimeout(() => {
-            //             room.broadCast("update", "r2");
-            //             setTimeout(() => {
-            //                 room.startRound2();
-            //             }, 1000 * 5);
-            //         }, 1000 * 5);
-            //     }
-            // }
-
         });
 
         ws.on("close", () =>

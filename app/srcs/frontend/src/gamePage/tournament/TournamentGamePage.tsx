@@ -81,6 +81,12 @@ function TournamentGameP({ t, toasterPluz }: TranslationProps) {
                     console.log("TournamentGamePage ws.onmessage: Trespassing ^u^b");
                     navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
                 }
+                else if (type === "Player already have match")
+                {
+                    console.log("/TournamentGamePage: same player in difference match or same match");
+                    toasterPluz("game.ERR_matching");
+                    navigate(import.meta.env.VITE_PATH_404NOTFOUND, {replace: true});
+                }
                 else if (type === "update")
                 {
                     if (parse.state.state === "r1")

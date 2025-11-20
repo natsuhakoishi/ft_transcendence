@@ -1,5 +1,5 @@
 import { initDB } from "./tables.ts";
-import { createUser, getUserAll, updateUsernameById } from "./user.ts";
+import { createUser, getUserAll, getUserById, updateUsernameById } from "./user.ts";
 import { createMatch, getMatchAll, getMatchByUserId } from "./match.ts";
 import { bindMatchTournament, createTournament, getMatchesByTournamentId, getTournamentAll, getTournamentLeaderboard, getTournamentParticipantsByTournamentId, joinTournament } from "./tournament.ts";
 import { addWinLose, createProfile, getProfileById, getProfilesAll } from "./profile.ts";
@@ -39,15 +39,16 @@ async function main()
 		// 	await getTournamentParticipantsByTournamentId(1),
 			// await getMatchesByTournamentId(36),
 			// await getTournamentLeaderboard(36)
-		// 	// await 
+		// 	// await
 			// await getMatchAll()
-			await getMatchByUserId(1)	
+			// await getMatchByUserId(1)
 		);
 
 		// console.log(await getTournamentAll());
 		// console.log(await getMatchesByTournamentId(26));
-		
-		
+
+		// const user = await getUserById(1);
+		// console.log(user);
 	}
 	catch (error)
 	{
