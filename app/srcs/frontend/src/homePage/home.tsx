@@ -77,7 +77,6 @@ return (
 
         {/* Text -> Game Version */}
         <span className="absolute top-1 right-0.5 md:right-3 text-base text-end">{t("home.text_version")} {import.meta.env.VITE_VERSION}</span>
-
         <div className="absolute top-8 right-0.5 md:right-3">
           {/* Dropdown -> Language Selector */}
           <LanguageBar />

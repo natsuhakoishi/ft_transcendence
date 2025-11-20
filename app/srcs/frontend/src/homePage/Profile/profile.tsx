@@ -83,7 +83,7 @@ function MenuProfile({ user } : { user: User | null } ) {
 
     </div>
 
-    <div className="flex-1" />
+    <div className="hidden md:flex-1" />
 
   </div>
   );
