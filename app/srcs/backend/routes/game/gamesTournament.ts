@@ -35,48 +35,9 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             try {
                 if (room.size() === 4) {
                     if (!room.getStatus())
-                    {
-                        room.makeRound1();
-                        const round1: Matches = room.getData().round1;
-                        const players: [Player[],Player[]] = room.getData().round1.matches;
-                        const AGroup: Player[] = players[0];
-                        const BGroup: Player[] = players[1];
-
-                        rooms.createRoom(AGroup[0].id, AGroup[1].id, 15);
-                        rooms.createRoom(BGroup[0].id, BGroup[1].id, 15);
-                        round1.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
-                        round1.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
-
-                        room.broadCast("update", "r1");
-                        setTimeout(() => {
-                            room.broadCast("update", "r1");
-                            room.startRound1();
-                            setTournamentStatus(room.getDBID(), "on-going");
-                        }, 1000 * 3);
-                    }
+                        handleRound1(room, rooms);
                     else if (room.getStatus() === "round2" && data.keyPress === "over")
-                    {
-                        room.makeRound2();
-                        const round2: Matches = room.getData().round2;
-                        if (round2.roomID.length === 0)
-                        {
-                            const AGroup: Player[] = room.getR1Winners();
-                            const BGroup: Player[] = room.getR1Losers();
-                            round2.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
-                            round2.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
-        
-                            rooms.createRoom(AGroup[0].id, AGroup[1].id, 20);
-                            rooms.createRoom(BGroup[0].id, BGroup[1].id, 20);
-
-                            rooms.showRooms();
-                            setTimeout(() => {
-                                room.broadCast("update", "r2");
-                                setTimeout(() => {
-                                    room.startRound2();
-                                }, 1000 * 5);
-                            }, 1000 * 5);
-                        }
-                    }
+                        handleRound2(room, rooms);
                     else if (room.getStatus() === "end" && data.keyPress === "over")
                     {
                         console.log("tournament/gameplay: end");
@@ -100,6 +61,51 @@ const gamesTournament: FastifyPluginAsync = async (fastify: any) => {
             console.log("/tournament/gameplay: player disconnected");
         });
     });
+}
+
+function handleRound1(room: TRoom, rooms: RoomManager): void
+{
+    room.makeRound1();
+    const round1: Matches = room.getData().round1;
+    const players: [Player[],Player[]] = room.getData().round1.matches;
+    const AGroup: Player[] = players[0];
+    const BGroup: Player[] = players[1];
+
+    rooms.createRoom(AGroup[0].id, AGroup[1].id, 15);
+    rooms.createRoom(BGroup[0].id, BGroup[1].id, 15);
+    round1.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
+    round1.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
+
+    room.broadCast("update", "r1");
+    setTimeout(() => {
+        room.broadCast("update", "r1");
+        room.startRound1();
+        setTournamentStatus(room.getDBID(), "on-going");
+    }, 1000 * 3);
+}
+
+function handleRound2(room: TRoom, rooms: RoomManager): void
+{
+    room.makeRound2();
+    const round2: Matches = room.getData().round2;
+    if (round2.roomID.length === 0)
+    {
+        const AGroup: Player[] = room.getR1Winners();
+        const BGroup: Player[] = room.getR1Losers();
+        round2.roomID[0] = createRoomID(AGroup[0].id, AGroup[1].id);
+        round2.roomID[1] = createRoomID(BGroup[0].id, BGroup[1].id);
+
+        rooms.createRoom(AGroup[0].id, AGroup[1].id, 20);
+        rooms.createRoom(BGroup[0].id, BGroup[1].id, 20);
+
+        rooms.showRooms();
+        setTimeout(() => {
+            room.broadCast("update", "r2");
+            setTimeout(() => {
+                room.startRound2();
+            }, 1000 * 5);
+        }, 1000 * 5);
+    }
 }
 
 export default gamesTournament;
