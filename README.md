@@ -1,25 +1,15 @@
 # Ft_transcendence
-<!-- insert gameplay gif --->
-//To be inserted\
-A website Pong game. By:\
-[**natsuhakoishi**](https://github.com/natsuhakoishi) ➙ `Team Lead / Direction / Server/Web Programming`\
-[**Yabi924**](https://github.com/Yabi924) ➙ `Game Planning & Programming`\
-[**nightZQ**](https://github.com/nightZQ) ➙ `Visual Design / UI/UX Programming`
+![Gameplay_1vs1](https://github.com/user-attachments/assets/c924298e-4468-4745-9976-77b5822da95c)\
+A website Pong game, with theme inspired by game Strinova. By:
+> &nbsp;&nbsp;&nbsp;&nbsp;[**natsuhakoishi**](https://github.com/natsuhakoishi) ➙ `Team Lead & Direction & Server/Web Programming`\
+> &nbsp;&nbsp;&nbsp;&nbsp;[**Yabi924**](https://github.com/Yabi924) ➙ `Game Planning & Programming`\
+> &nbsp;&nbsp;&nbsp;&nbsp;[**nightZQ**](https://github.com/nightZQ) ➙ `Visual Design & UI/UX Programming`\
+> &nbsp;&nbsp;&nbsp;&nbsp;Assets ➙ Strinova @ iDreamSky
 
 <details>
-  <summary>Table of Contents</summary>
+  <summary><h6>Table of Contents</h6></summary>
   <ol>
-    <li>
-      <a href="#screenshots">Screenshots</a>
-      <ul>
-        <li>Home</li>
-        <li>Tutorial</li>
-        <li>Profile</li>
-        <li>Match History - Overall</li>
-        <li>Match History - Tournament Mode(Expanded)</li>
-        <li>Friend</li>
-      </ul>
-    </li>
+  	<li><a href="#screenshots">Screenshots</a></li>
     <li>
       <a href="#installation">Installation</a>
       <ul>
@@ -33,13 +23,13 @@ A website Pong game. By:\
         <li><a href="#tech-stack">Tech Stack</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#future-planning">Future Planning</a></li>
-        <li><a href="#guide">Guide</a></li>
+        <!-- <li><a href="#guide">Guide</a></li> ---Qiqi-->
       </ul>
     </li>
   </ol>
 </details>
 
-<br />
+
 
 <!-------------------------------------------------------------->
 ## Screenshots
@@ -51,7 +41,13 @@ A website Pong game. By:\
   <br />
   <details>
     <summary>
-      <ins><i>Home</i></ins>
+      <ins><i>Match making page for Local Tournament mode</i></ins>
+    </summary>
+	<img width="768" height="432" alt="Screenshot_LocalMatchMaking" src="https://github.com/user-attachments/assets/b7d65eb2-a6bf-413b-b9f8-c7adf6773606" />  
+  </details>
+  <details>
+    <summary>
+      <ins><i>Home page</i></ins>
     </summary>
     <img width="768" height="432" alt="Screenshot_Home" src="https://github.com/user-attachments/assets/8507655e-8726-477a-9df3-fa9ea80083b9" />
   </details>
@@ -63,27 +59,33 @@ A website Pong game. By:\
   </details>
   <details>
     <summary>
-      <ins><i>Profile</i></ins>
+      <ins><i>User profile page</i></ins>
     </summary>
     <img width="768" height="432" alt="Screenshot_Profile" src="https://github.com/user-attachments/assets/43202870-2f9c-43e4-9049-37cff65e3a9f" />
   </details>
   <details>
     <summary>
-      <ins><i>Match History - Overall</i></ins>
+      <ins><i>Match history page</i></ins>
     </summary>
-    <img width="768" height="432" alt="Screenshot 2025-11-18 215208" src="https://github.com/user-attachments/assets/7a685f5d-6e21-44bc-bd5e-f27e15cb1dbd" />
+    <img width="768" height="432" alt="Screenshot_History" src="https://github.com/user-attachments/assets/7a685f5d-6e21-44bc-bd5e-f27e15cb1dbd" />
   </details>
   <details>
     <summary>
-      <ins><i>Match History - Tournament Mode(Expanded)</i></ins>
+      <ins><i>Match history page but checking tournament matches</i></ins>
     </summary>
     <img width="768" height="432" alt="Screenshot_ExpandTournamentHistory" src="https://github.com/user-attachments/assets/0aaecac7-6704-4855-8820-979799aa8929" />
   </details>
   <details>
     <summary>
-      <ins><i>Friend</i></ins>
+      <ins><i>Friend page</i></ins>
     </summary>
-    <img width="768" height="432" alt="Screenshot 2025-11-21 221709" src="https://github.com/user-attachments/assets/68597f35-73cc-4227-bdbd-4e1e177eb680" />
+    <img width="768" height="432" alt="Screenshot_Friend" src="https://github.com/user-attachments/assets/68597f35-73cc-4227-bdbd-4e1e177eb680" />
+  </details>
+  <details>
+    <summary>
+      <ins><i>Checking friend's history page</i></ins>
+    </summary>
+	<img width="768" height="432" alt="Screenshot_FriendsHistory" src="https://github.com/user-attachments/assets/272c91ed-a6a0-4dfe-acf3-abaea0724443" />
   </details>
 </details>
 
@@ -96,7 +98,7 @@ A website Pong game. By:\
 #### <ins><i>Requirements</i></ins>
 #### <ins><i>Steps</i></ins>
 
-<br />
+
 
 <!-------------------------------------------------------------->
 ## About Project
@@ -110,7 +112,7 @@ A website Pong game. By:\
 - Pong Game (Remote Play & Local Game)
 - Pong Game (AI)
 - Support Multi-devices
-- Support Multi-language [EN/JP/CH]
+- Support Multi-language [EN/JP/ZH]
 - Support Mozilla Firefox & Chromium-based Browsers
 - 2FA Authentication
 - User Profile Management
@@ -125,9 +127,6 @@ A website Pong game. By:\
 - `Code` - refactor for frontend's part
 - `Feature` - Auto-fetching for online status
 - `Fix` - Screen's overflow & scroll
-
-<!-- Qiqi's part -->
-#### <ins><i>Guide</i></ins>
 
 
 
