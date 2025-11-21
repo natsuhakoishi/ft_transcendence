@@ -104,9 +104,9 @@ A website Pong game, with theme inspired by game Strinova. By:
 ## About Project
 
 #### <ins><i>Tech Stack</i></ins>
-[![CMake][CMake]]() [![Docker][Docker]](https://www.docker.com/) [![Git][Git]]() [![GitHub][GitHub]]() [![NPM][NPM]]()\
-[![Vite][Vite]]() [![React][React.js]](https://reactjs.org/) [![JavaScript][JavaScript]]() [![TypeScript][TypeScript]](https://www.typescriptlang.org/) [![TailwindCSS][TailwindCSS]](https://tailwindcss.com/)\
-[![Node.js][Node.js]](https://nodejs.org/en) [![Fastify][Fastify]](https://fastify.dev/) [![SQLite][SQLite]]()
+[![CMake][CMake]](https://cmake.org/) [![Docker][Docker]](https://www.docker.com/) [![Git][Git]](https://git-scm.com/) [![GitHub][GitHub]](https://github.com/) [![NPM][NPM]](https://www.npmjs.com/)\
+[![Vite][Vite]](https://vite.dev/) [![React][React.js]](https://reactjs.org/) [![TypeScript][TypeScript]](https://www.typescriptlang.org/) [![TailwindCSS][TailwindCSS]](https://tailwindcss.com/)\
+[![Node.js][Node.js]](https://nodejs.org/en) [![Fastify][Fastify]](https://fastify.dev/) [![SQLite][SQLite]](https://sqlite.org/)
 
 #### <ins><i>Features</i></ins>
 - Pong Game (Remote Play & Local Game)
@@ -139,7 +139,6 @@ A website Pong game, with theme inspired by game Strinova. By:
 [CMake]: https://img.shields.io/badge/CMake-%23064F8C?style=for-the-badge&logo=cmake
 [NPM]: https://img.shields.io/badge/NPM-%23CB3837?style=for-the-badge&logo=npm&logoColor=white
 [Vite]: https://img.shields.io/badge/Vite-%23646CFF?style=for-the-badge&logo=vite&logoColor=white
-[JavaScript]: https://img.shields.io/badge/JavaScript-black?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E
 [TypeScript]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
 [TailwindCSS]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
 [React.js]: https://img.shields.io/badge/React-373e4a?style=for-the-badge&logo=react&logoColor=61DAFB
