@@ -6,9 +6,9 @@ services:
     ports:
         - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
-        - ./database:/database
-        - ./app/srcs/backend:/app/srcs/backend
-        - ./certs:/certs
+        - backend_db:/database
+        - backend_dir:/app/srcs/backend
+        - backend_cert:/certs
     networks:
         - klbq_network
 
@@ -19,8 +19,8 @@ services:
     ports:
         - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     volumes:
-        - ./app/srcs/frontend:/app/srcs/frontend
-        - ./certs:/certs
+        - frontend_dir:/app/srcs/frontend
+        - backend_cert:/certs
     networks:
         - klbq_network
     depends_on:
@@ -28,3 +28,10 @@ services:
 
 networks:
     klbq_network:
+
+volumes:
+    backend_db:
+    backend_dir:
+    backend_cert:
+    frontend_dir:
+

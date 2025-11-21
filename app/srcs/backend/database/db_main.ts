@@ -47,8 +47,8 @@ async function main()
 		// console.log(await getTournamentAll());
 		// console.log(await getMatchesByTournamentId(26));
 
-		// const user = await getUserById(1);
-		// console.log(user);
+		const user = await getUserById(4);
+		console.log(user);
 	}
 	catch (error)
 	{

@@ -92,7 +92,7 @@ const profileApi: FastifyPluginAsync = async(fastify: any) => {
 						list: Array.from(onlineUsers.entries()).map(([id, { username }]) => ({ id, username }))
 					}));
 					return ;
-				
+
 				case "pong":
 					// console.log("I get pong aaw\n");
 					const entry = onlineUsers.get(user);
