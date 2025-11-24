@@ -1,4 +1,4 @@
-# Ft_transcendence
+# ft_klbq @ ft_transcendence
 ![Gameplay_1vs1](https://github.com/user-attachments/assets/c924298e-4468-4745-9976-77b5822da95c)\
 A website Pong game, with theme inspired by game Strinova. By:
 > &nbsp;&nbsp;&nbsp;&nbsp;[**natsuhakoishi**](https://github.com/natsuhakoishi) ➙ `Team Lead & Direction & Server/Web Programming`\
