@@ -1,4 +1,8 @@
 # ft_klbq @ ft_transcendence
+[3](https://img.shields.io/badge/3-white?style=flat&labelColor=red&color=black) 
+[2](https://img.shields.io/badge/2-white?style=flat&labelColor=red&color=black) 
+[1](https://img.shields.io/badge/1-white?style=flat&labelColor=yellow&color=black) 
+[Pong](https://img.shields.io/badge/Pong!-white?style=flat&labelColor=green&color=black)\
 ![Gameplay_1vs1](https://github.com/user-attachments/assets/c924298e-4468-4745-9976-77b5822da95c)\
 A website Pong game, with theme inspired by game Strinova. By:
 > &nbsp;&nbsp;&nbsp;&nbsp;[**natsuhakoishi**](https://github.com/natsuhakoishi) ➙ `Team Lead & Direction & Server/Web Programming`\
@@ -11,7 +15,7 @@ A website Pong game, with theme inspired by game Strinova. By:
   <ol>
   	<li><a href="#screenshots">Screenshots</a></li>
     <li>
-      <a href="#installation">Installation</a>
+      <a href="#installation">Installation [TBA]</a>
       <ul>
         <li>Requirements</li>
         <li>Steps</li>
@@ -93,12 +97,12 @@ A website Pong game, with theme inspired by game Strinova. By:
 
 <!-------------------------------------------------------------->
 <!-- Qiqi's part -->
+<!--
 ## Installation
 
 #### <ins><i>Requirements</i></ins>
 #### <ins><i>Steps</i></ins>
-
-
+-->
 
 <!-------------------------------------------------------------->
 ## About Project
@@ -111,7 +115,7 @@ A website Pong game, with theme inspired by game Strinova. By:
 #### <ins><i>Features</i></ins>
 - Pong Game (Remote Play & Local Game)
 - Pong Game (AI)
-- Support Multi-devices
+- Support Multi-platform devices
 - Support Multi-language [EN/JP/ZH]
 - Support Mozilla Firefox & Chromium-based Browsers
 - 2FA Authentication
@@ -120,17 +124,15 @@ A website Pong game, with theme inspired by game Strinova. By:
 - Friend System
 
 #### <ins><i>Future Planning</i></ins>
-- `UI` - Further update for responsive design
-- `UI` - Toaster's update
-- `UI` - Animation update for mobile devices
-- `UI` - Add tooltip
-- `Code` - refactor for frontend's part
-- `Feature` - Auto-fetching for online status
-- `Fix` - Screen's overflow & scroll
-
-
-
-
+- [ ] `UI` - Toaster's update (closed on-click)
+- [ ] `UI` - update & fix on mobile
+- [ ] `UI` - Add mobile's animation
+- [ ] `UI` - Add tooltip
+- [ ] `Code` - refactor for frontend's part
+- [ ] `Feature` - Auto-fetching for online status
+- [ ] `Security` - verify identity when player perform movement in game
+- [ ] `UX` - login page & OTP modal on mobile
+- [ ]`Security` - data validation moved to backend
 
 <!-- Resources -->
 [Docker]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
