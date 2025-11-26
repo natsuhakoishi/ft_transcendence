@@ -1,8 +1,9 @@
+![3](https://img.shields.io/badge/3-white?style=flat&labelColor=red&color=black) 
+![2](https://img.shields.io/badge/2-white?style=flat&labelColor=red&color=black) 
+![1](https://img.shields.io/badge/1-white?style=flat&labelColor=yellow&color=black) 
+![Pong](https://img.shields.io/badge/Pong!-white?style=flat&labelColor=green&color=black)
+
 # ft_klbq @ ft_transcendence
-[3](https://img.shields.io/badge/3-white?style=flat&labelColor=red&color=black) 
-[2](https://img.shields.io/badge/2-white?style=flat&labelColor=red&color=black) 
-[1](https://img.shields.io/badge/1-white?style=flat&labelColor=yellow&color=black) 
-[Pong](https://img.shields.io/badge/Pong!-white?style=flat&labelColor=green&color=black)\
 ![Gameplay_1vs1](https://github.com/user-attachments/assets/c924298e-4468-4745-9976-77b5822da95c)\
 A website Pong game, with theme inspired by game Strinova. By:
 > &nbsp;&nbsp;&nbsp;&nbsp;[**natsuhakoishi**](https://github.com/natsuhakoishi) ➙ `Team Lead & Direction & Server/Web Programming`\
@@ -108,7 +109,8 @@ A website Pong game, with theme inspired by game Strinova. By:
 ## About Project
 
 #### <ins><i>Tech Stack</i></ins>
-[![CMake][CMake]](https://cmake.org/) [![Docker][Docker]](https://www.docker.com/) [![Git][Git]](https://git-scm.com/) [![GitHub][GitHub]](https://github.com/) [![NPM][NPM]](https://www.npmjs.com/)\
+[![CMake][CMake]](https://cmake.org/) [![Docker][Docker]](https://www.docker.com/) [![Git][Git]](https://git-scm.com/)
+[![GitHub][GitHub]](https://github.com/) [![NPM][NPM]](https://www.npmjs.com/)\
 [![Vite][Vite]](https://vite.dev/) [![React][React.js]](https://reactjs.org/) [![TypeScript][TypeScript]](https://www.typescriptlang.org/) [![TailwindCSS][TailwindCSS]](https://tailwindcss.com/)\
 [![Node.js][Node.js]](https://nodejs.org/en) [![Fastify][Fastify]](https://fastify.dev/) [![SQLite][SQLite]](https://sqlite.org/)
 
@@ -132,7 +134,7 @@ A website Pong game, with theme inspired by game Strinova. By:
 - [ ] `Feature` - Auto-fetching for online status
 - [ ] `Security` - verify identity when player perform movement in game
 - [ ] `UX` - login page & OTP modal on mobile
-- [ ]`Security` - data validation moved to backend
+- [ ] `Security` - data validation moved to backend
 
 <!-- Resources -->
 [Docker]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
